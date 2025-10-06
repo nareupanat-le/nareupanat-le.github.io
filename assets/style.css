@@ -1,0 +1,200 @@
+/* =========================================================
+   style.css — Nareupanat
+   Table of Contents
+   01) Design Tokens (CSS variables)
+   02) Base / Reset
+   03) Layout Containers
+   04) Header & Navigation
+   05) Typography
+   06) Components
+       06.1) Avatar
+   07) Pages
+       07.1) Home (two-column hero)
+       07.2) CV (equal columns)
+       07.3) CV (25/75 split)
+   08) Utilities
+   09) Responsive (breakpoints)
+   10) Debug Guides (toggle with .debug on <html>)
+   ========================================================= */
+
+
+/* ========== 01) Design Tokens (CSS variables) ========== */
+:root{
+  /* layout */
+  --container: 840px;
+  --gap: 24px;
+  --radius: 16px;
+
+  /* colors */
+  --fg: #111;
+  --muted: #7A5C3A;                /* ใช้กับ .byline (คุณตั้งไว้เป็นโทนน้ำตาล) */
+  --link: #7A5C3A;                 /* earth tone */
+  --link-hover: #61492F;
+  --link-visited: #4E3A29;
+  --link-underline: rgba(122,92,58,.45);
+
+  /* type scale */
+  --fs-h1: clamp(28px, 2.6vw, 40px);
+  --fs-h2: clamp(22px, 2.0vw, 28px);
+  --fs-h3: clamp(18px, 1.6vw, 22px);
+  --fs-h4: clamp(16px, 1.4vw, 20px);
+  --fs-h5: clamp(16px, calc(1.1vw + 6px), 18px);
+  --lh-headings: 1.25;
+  --spc-heading-top: 24px;
+  --spc-heading-bottom: 12px;
+}
+
+
+/* ========== 02) Base / Reset ========== */
+*{ box-sizing: border-box }
+html,body{ margin:0; padding:0 }
+body{
+  font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;
+  color:var(--fg);
+}
+
+
+/* ========== 03) Layout Containers ========== */
+.site-header, main, .site-footer{
+  max-width:var(--container);
+  margin:0 auto;
+  padding:20px;
+}
+
+
+/* ========== 04) Header & Navigation ========== */
+.site-header{ display:flex; gap:16px; align-items:center; flex-wrap:wrap }
+.brand{ font-weight:700; font-size:20px; text-decoration:none; color:var(--fg) }
+.nav a{ margin-right:12px; text-decoration:none; color:var(--link) }
+.nav a:last-child{ margin-right:0 }
+
+
+/* ========== 05) Typography ========== */
+h1{
+  font-size: var(--fs-h1);
+  line-height: var(--lh-headings);
+  margin: var(--spc-heading-top) 0 var(--spc-heading-bottom);
+}
+h2{
+  font-size: var(--fs-h2);
+  line-height: var(--lh-headings);
+  margin: var(--spc-heading-top) 0 var(--spc-heading-bottom);
+}
+h3{
+  font-size: var(--fs-h3);
+  line-height: var(--lh-headings);
+  margin: var(--spc-heading-top) 0 var(--spc-heading-bottom);
+}
+h4{
+  font-size: var(--fs-h4);
+  line-height: var(--lh-headings);
+  margin: calc(var(--spc-heading-top)*.7) 0 calc(var(--spc-heading-bottom)*.7);
+}
+h5{
+  font-size: var(--fs-h5);
+  line-height: var(--lh-headings);
+  margin: calc(var(--spc-heading-top)*.55) 0 calc(var(--spc-heading-bottom)*.55);
+}
+.byline{ color:var(--muted) }
+ul{ padding-left:20px }
+li{ margin:4px 0 }
+a{
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: .08em;
+  text-underline-offset: 2px;
+  text-decoration-color: var(--link-underline);
+}
+a:hover, a:focus{
+  color: var(--link-hover);
+  text-decoration-color: currentColor;
+}
+a:visited{ color: var(--link-visited) }
+a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
+
+
+/* ========== 06) Components ========== */
+/* 06.1) Avatar */
+.avatar{
+  width:260px; height:260px;
+  object-fit:cover;
+  border-radius:var(--radius);
+  display:block;
+  margin:0 auto; /* center horizontally */
+}
+
+
+/* ========== 07) Pages ========== */
+/* 07.1) Home (two-column hero) */
+.two-col{
+  display:grid;
+  grid-template-columns:minmax(0,1.2fr) minmax(0,0.8fr);
+  gap:var(--gap);
+  align-items:start;
+}
+.two-col .col-text, .two-col .col-photo{ min-width:0 }
+.col-text{ max-width:65ch }          /* ความกว้างบรรทัดอ่านสบาย */
+.col-photo{ align-self:center }      /* กลางแนวตั้งคอลัมน์ขวา */
+
+/* 07.2) CV (equal columns) */
+.two-col--equal{ grid-template-columns:1fr 1fr }
+.two-col--equal .col-text{ max-width:none }
+
+/* 07.3) CV (25/75 split) */
+.two-col--25-75{ grid-template-columns:minmax(0,0.5fr) minmax(0,1.5fr) }
+.two-col--25-75 .col-text{ max-width:none }
+
+/* Publications list */
+.pubs{ margin:12px 0 0; padding-left:1.5rem; }
+.pubs li{ margin:10px 0; }
+
+
+/* ========== 08) Utilities ========== */
+.muted{ color:var(--muted) }
+.justify{ text-align:justify; text-justify:inter-word; hyphens:auto }
+.text-right{ text-align:right }
+.text-left{ text-align:left }
+.text-center{ text-align:center }
+.items-start{ align-items:start !important }              /* ใช้กับ .two-col */
+.two-col > * > :first-child{ margin-top:0 }               /* ชิดบนจริงของบล็อกแรก */
+.center-x{ display:flex; flex-direction:column; align-items:center }
+.list-tight{ margin-top:6px; margin-bottom:0 }
+.list-tight li{ margin:2px 0 }
+/* multi-column list */
+.list-cols-2{
+  column-count: 2;              /* = ทำ 2 คอลัมน์เท่ากัน */
+  column-gap: var(--gap);       /* ระยะห่างระหว่างคอลัมน์ */
+  column-fill: balance;         /* กระจายน้ำหนักให้สูงพอ ๆ กัน */
+}
+.list-cols-2 li{
+  break-inside: avoid;          /* อย่าให้รายการแตกคอลัมน์กลางคัน */
+  -webkit-column-break-inside: avoid;
+  margin: 4px 0;                /* เว้นรายการแต่ละบรรทัดนิดหน่อย */
+}
+.list-cols-2 a{
+  overflow-wrap: anywhere;      /* ชื่อวารสารยาว ๆ จะตัดคำได้ ไม่ล้นคอลัมน์ */
+}
+
+@media (max-width: 700px){
+  .list-cols-2{ column-count: 1; }  /* มือถือกลับเป็นคอลัมน์เดียว อ่านง่าย */
+}
+
+
+/* ========== 09) Responsive (breakpoints) ========== */
+@media (max-width:600px){
+  .two-col{ grid-template-columns:1fr }
+  .col-photo{ align-self:start }
+  .avatar{ width:200px; height:200px }
+  .text-right{ text-align:left }       /* มือถือให้อ่านง่าย */
+  .two-col--equal,
+  .two-col--25-75{ grid-template-columns:1fr }
+}
+
+
+/* ========== 10) Debug Guides (toggle with .debug on <html>) ========== */
+html.debug body{ outline:4px solid rgba(0,0,0,.3) }
+html.debug .site-header,
+html.debug main,
+html.debug .site-footer{
+  outline:2px dashed rgba(255,140,0,.7)
+}
