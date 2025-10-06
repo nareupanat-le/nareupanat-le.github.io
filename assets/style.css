@@ -143,6 +143,25 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
 /* 07.3) CV (25/75 split) */
 .two-col--25-75{ grid-template-columns:minmax(0,0.5fr) minmax(0,1.5fr) }
 .two-col--25-75 .col-text{ max-width:none }
+/* --- ให้บาง section คง 2 คอลัมน์แม้จอเล็ก --- */
+.two-col.stay-2col { /* desktop ใช้ layout เดิม */
+  grid-template-columns: minmax(0,0.5fr) minmax(0,1.5fr);
+}
+
+/* มือถือ: บังคับสองคอลัมน์แบบ "label + content" ที่อ่านง่าย */
+@media (max-width:600px){
+  /* ปกติทุก .two-col จะกลายเป็นคอลัมน์เดียว */
+  .two-col{ grid-template-columns: 1fr; }
+  /* ยกเว้นอันที่ติด .stay-2col */
+  .two-col.stay-2col{
+    /* คอลัมน์ซ้ายเป็นความกว้างตามตัวอักษร (7.5 ตัว) ขวาเป็นเนื้อหา */
+    grid-template-columns: 7.5ch 1fr;
+    gap: 8px 12px;
+    align-items: start;
+  }
+  .two-col.stay-2col .col-text{ text-align: right; }   /* ป้ายซ้ายชิดขวา */
+  .two-col.stay-2col .text-left{ overflow-wrap: anywhere; } /* กันล้น */
+}
 
 /* Publications list */
 .pubs{ margin:12px 0 0; padding-left:1.5rem; }
