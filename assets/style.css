@@ -48,6 +48,10 @@
 /* ========== 02) Base / Reset ========== */
 *{ box-sizing: border-box }
 html,body{ margin:0; padding:0 }
+html{
+  -webkit-text-size-adjust: 100%;  /* Safari/iOS */
+  text-size-adjust: 100%;          /* มาตรฐาน */
+}
 body{
   font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;
   color:var(--fg);
@@ -194,8 +198,6 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
   .two-col--25-75{ grid-template-columns:1fr }
 }
 
-/* ========== 09) Responsive (breakpoints) ========== */
-/* ========== 09) Responsive (breakpoints) ========== */
 @media (max-width:600px){
   /* ค่าพื้นฐาน: ทุก .two-col เป็นคอลัมน์เดียว */
   .two-col{ grid-template-columns: 1fr; }
@@ -215,6 +217,16 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
   }
   .two-col.stay-2col .col-text{ text-align: right; }     
   .two-col.stay-2col .text-left{ overflow-wrap: anywhere; }
+}
+
+/* มือถือแนวนอน: บังคับฟอนต์สองคอลัมน์ให้เท่ากัน */
+@media (max-width: 900px) and (orientation: landscape){
+  .two-col.stay-2col .col-text,
+  .two-col.stay-2col .text-left,
+  .two-col.stay-2col .text-left a{
+    font-size: 1rem;      /* = 16px ตาม body */
+    line-height: 1.6;
+  }
 }
 
 
