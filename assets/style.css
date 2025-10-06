@@ -148,21 +148,6 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
   grid-template-columns: minmax(0,0.5fr) minmax(0,1.5fr);
 }
 
-/* มือถือ: บังคับสองคอลัมน์แบบ "label + content" ที่อ่านง่าย */
-@media (max-width:600px){
-  /* ปกติทุก .two-col จะกลายเป็นคอลัมน์เดียว */
-  .two-col{ grid-template-columns: 1fr; }
-  /* ยกเว้นอันที่ติด .stay-2col */
-  .two-col.stay-2col{
-    /* คอลัมน์ซ้ายเป็นความกว้างตามตัวอักษร (7.5 ตัว) ขวาเป็นเนื้อหา */
-    grid-template-columns: 7.5ch 1fr;
-    gap: 8px 12px;
-    align-items: start;
-  }
-  .two-col.stay-2col .col-text{ text-align: right; }   /* ป้ายซ้ายชิดขวา */
-  .two-col.stay-2col .text-left{ overflow-wrap: anywhere; } /* กันล้น */
-}
-
 /* Publications list */
 .pubs{ margin:12px 0 0; padding-left:1.5rem; }
 .pubs li{ margin:10px 0; }
@@ -208,6 +193,29 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
   .two-col--equal,
   .two-col--25-75{ grid-template-columns:1fr }
 }
+
+/* ========== 09) Responsive (breakpoints) ========== */
+@media (max-width:600px){
+  /* ค่าพื้นฐาน: ทุก .two-col โผล่เป็นคอลัมน์เดียว */
+  .two-col{ grid-template-columns: 1fr; }
+  .col-photo{ align-self:start }
+  .avatar{ width:200px; height:200px }
+
+  /* ตัวช่วยการอ่านทั่วไป */
+  .text-right{ text-align:left }       /* มือถือให้อ่านง่าย */
+  .two-col--equal,
+  .two-col--25-75{ grid-template-columns: 1fr; }
+
+  /* === ข้อยกเว้น: section ที่ติด .stay-2col ให้ยังคง 2 คอลัมน์บนมือถือ === */
+  .two-col.stay-2col{
+    grid-template-columns: 8ch 1fr;  /* ป้ายซ้ายกว้างคงที่, ขวาเป็นเนื้อหา */
+    gap: 8px 12px;
+    align-items: start;
+  }
+  .two-col.stay-2col .col-text{ text-align: right; }     /* ป้ายซ้ายชิดขวา */
+  .two-col.stay-2col .text-left{ overflow-wrap: anywhere; } /* กันคำยาวล้น */
+}
+
 
 
 /* ========== 10) Debug Guides (toggle with .debug on <html>) ========== */
