@@ -53,20 +53,22 @@
     Let $\mathbf{S}$ be an ordered semigroup.
     The operation $\cdot$ defined on $S$ can be extended to $\mathcal{P}(S)$ the set of all subsets of $S$, defined by $AB := \{ ab : a \in A \text{ and } b \in B \}$.
     We note here that $AB = \emptyset$ if $A$ or $B$ is empty.
+    For a nonempty subset $A$ of $S$ and $n \in \mathbb{N}$, we denote the $n$-product of $A$ by $A^n$.
+    We set $A^0B = B = BA^0$ for any nonempty subsets $A$ and $B$ of $S$.
     Moreover, the partial order $\leq$ induces a subset $(A]$ of $S$ defined by $(A] := \{ x \in S : x \leq a \text{ for some } a \in A \}$ for all $A \subseteq S$.
   </p>
   <p class="justify">
     Now, let me recall some of the important substructures of ordered semigroups.
     Let $\mathbf{S}$ be an ordered semigroup.
     A nonempty subset $A$ of $S$ is said to be a <em>subsemigroup</em> of $\mathbf{S}$ if $AA \subseteq A$.
-    We call a subsemigroup $A$ of an ordered semigroup $\langle S; \cdot, \leq \rangle$ satisfying $(A] \subseteq A$:
+    We call a subsemigroup $A$ of an ordered semigroup $\mathbf{S}$ satisfying $(A] \subseteq A$:
     <ul>
-      <li>a <em>left ideal</em> of $\langle S; \cdot, \leq \rangle$ if $SA \subseteq A$;</li>
-      <li>a <em>right ideal</em> of $\langle S; \cdot, \leq \rangle$ if $AS \subseteq A$;</li>
-      <li>a <em>two-sided ideal</em> of $\langle S; \cdot, \leq \rangle$ if $A$ is both a left and a right ideal of $\langle S; \cdot, \leq \rangle$;</li>
-      <li>a <em>quasi-ideal</em> of $\langle S; \cdot, \leq \rangle$ if $(AS] \cap (SA] \subseteq A$;</li>
-      <li>a <em>bi-ideal</em> of $\langle S; \cdot, \leq \rangle$ if $ASA \subseteq A$;</li>
-      <li>an <em>interior ideal</em> of $\langle S; \cdot, \leq \rangle$ if $SAS \subseteq A$.</li>
+      <li>a <em>left ideal</em> of $\mathbf{S}$ if $SA \subseteq A$;</li>
+      <li>a <em>right ideal</em> of $\mathbf{S}$ if $AS \subseteq A$;</li>
+      <li>a <em>two-sided ideal</em> of $\mathbf{S}$ if $A$ is both a left and a right ideal of $\langle S; \cdot, \leq \rangle$;</li>
+      <li>a <em>quasi-ideal</em> of $\mathbf{S}$ if $(AS] \cap (SA] \subseteq A$;</li>
+      <li>a <em>bi-ideal</em> of $\mathbf{S}$ if $ASA \subseteq A$;</li>
+      <li>an <em>interior ideal</em> of $\mathbf{S}$ if $SAS \subseteq A$.</li>
     </ul>
     In certain literatures, the subsemigroup property of bi-ideals and interior ideals is not necessary.
     However, in this note such a property is required.
@@ -76,19 +78,28 @@
     Nevertheless, these notions are extended into the notions of $(m,n)$-ideals and $n$-interior ideals as follows.
   </p>
   <p class="justify">
-    On March, 2022, I was assigned by MathSciNet to review a paper written by Niovi Kehayopulu.
-    The paper considered three related concepts:
-    <ul class="list-tight">
-      <li>$poe$-semigroups;</li>
-      <li>$\vee e$-semigroups;</li>
-      <li>$le$-semigroups.</li>
+    Let $m, n \in \mathbb{N}$, not all zero.
+    A subsemigroup $A$ of an ordered semigroup $\mathbf{S}$ satisfying $(A] \subseteq A$ is said to be:
+    <ul>
+      <li>an <em>(m,n)-ideal</em> of $\mathbf{S}$ if $A^mSA^n \subseteq A$;</li>
+      <li>an <em>$n$-interior ideal</em> of $\mathbf{S}$ if $SA^nS \subseteq A$.</li>
     </ul>
+    We observe that a left, a right, bi-, and an interior ideal is a $(0,1)$-, a $(1,0)$, a $(1,1)$-, and $1$-interior ideal.
+    Therefore, the notions of $(m,n)$-ideals and $n$-interior ideals are generalizations of certain ideals.
   </p>
   <p class="justify">
-    A <em>$poe$-semigroup</em> $\langle S; \cdot, \leq \rangle$ is an ordered semigroup having the greatest element $e$.
+    However, the notions of $(m,n)$-ideals and $n$-interior ideals in ordered semigroups can be defined in a more abstract way.
+    It was started in semigroup theory, in 1989, 
+  </p>
+  <p class="justify">
+    On March, 2022, I was assigned by MathSciNet to review a paper written by Niovi Kehayopulu.
+    The paper considered three related concepts: $poe$-semigroups, $\vee e$-semigroups, and $le$-semigroups.
+  </p>
+  <p class="justify">
+    A <em>$poe$-semigroup</em> $\mathbf{S}$ is an ordered semigroup having the greatest element $e$.
     That is, $x \leq e$ for all $x \in S$.
     An algebra $\langle S; \cdot, \vee \rangle$ of type $(2,2)$ is said to be a <em>$\vee e$-semigroup</em> if $\langle S; \cdot \rangle$ is a semigroup, $\langle S; \vee \rangle$ is a joint-semilattice with the greatest element $e$, and the operation $\cdot$ distributes over $\vee$.
-    Lastly, an algebra $\langle S; \cdot, \vee, \wedge \rangle$ is called an <em>lattice ordered semigroup with the greatest element</em> or <em>$le$-semigroup</em> if $\langle S; \cdot \rangle$ is a semigroup, $\langle S; \vee, \wedge \rangle$ is a lattice with the greatest element $e$, and the operation $\cdot$ distributes over $\vee$.
+    Finally, an algebra $\langle S; \cdot, \vee, \wedge \rangle$ is called an <em>lattice ordered semigroup with the greatest element</em> or <em>$le$-semigroup</em> if $\langle S; \cdot \rangle$ is a semigroup, $\langle S; \vee, \wedge \rangle$ is a lattice with the greatest element $e$, and the operation $\cdot$ distributes over $\vee$.
     It is not difficult to see that we can regard a $\vee e$-semigroup and an $le$-semigroup as a $poe$-semigroup in a natural way.
     This means that the above three structures are ordered semigroups.
   </p>
