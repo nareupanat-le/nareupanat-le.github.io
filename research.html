@@ -109,7 +109,14 @@
   </p>
   <p class="justify">
     Let $\mathbf{S}$ be an ordered semigroup, and $\alpha = \alpha_1 \cdots \alpha_m \in \mathsf{B}$ with $\vert \alpha \vert = m$ for some $m \in \mathbb{N}$.
-    We define a <em>valuation</em> of $\alpha$ in $\mathbf{S}$ as a mapping $\overline{\alpha} \colon S \to S$ assigning by $\overline{\alpha}(A) := B_1 \cdots B_m$, where
+    We define a <em>valuation</em> of $\alpha$ in $\mathcal{P}(S)$ as a mapping $\overline{\alpha} \colon \mathcal{P}(S) \to \mathcal{P}(S)$ assigning by
+    $$\overline{\alpha}(A) :=
+    \begin{cases}
+      \emptyset & \text{if } A = \emptyset, \\
+      B_1 \cdots B_m & \text{otherwise},
+    \end{cases}
+    $$
+    where
     $$B_i =
     \begin{cases}
       A & \text{if } \alpha_i = 1, \\
@@ -145,7 +152,27 @@
   <p class="justify">
     Kehayopulu described the relationships of (hyper)ideals among these three related structures and others, for instance, (ordered) semigroup and (ordered) hypersemigroups.
     Moreover, the past study of Kehayopulu implies that the concept of $poe$-semigroups is a representation of ordered semigroups.
-    This study inspired me for further study of ideals in these three structures.
+    This study inspire me for further study ideals in the context of these three structures.
+  </p>
+  <p class="justify">
+    Let $\mathbf{S}$ be a $poe$-semigroup, and $\alpha = \alpha_1 \cdots \alpha_m \in \mathsf{B}$ with $\vert \alpha \vert = m$ for some $m \in \mathbb{N}$.
+    Let us modify the notion of valuation on $\mathcal{P}(S)$ as follows.
+    The <em>valuation</em> of $\alpha$ on $S$ is defined as a mapping $\overline{\alpha} \colon S \to S$ assigning by $\overline{\alpha}(a) := x_1 \cdots x_m$, where
+    $$x_i =
+    \begin{cases}
+      a & \text{if } \alpha_i = 1, \\
+      e & \text{otherwise},
+    \end{cases}
+    $$
+    for all $i \in [m]$.
+    By this defining, we see that for every $\alpha, \beta \in \mathsf{B}$, $\overline{\alpha \beta}(a) = \overline{\alpha}(a) \overline{\beta}(a)$ for all $a \in S$.
+  </p>
+  <p class="justify">
+    Let $\mathbf{S}$ be a $poe$-semigroup.
+    An element $a \in S$ is said to be a <em>subidempotent</em> of $\mathbf{S}$ if $a^2 \leq a$.
+    Given $\alpha \in \mathsf{F}$, a subidempotent $a$ of $\mathbf{S}$ is called an <em>$\alpha$-ideal element</em> of $\mathbf{S}$ if
+    $$\overline{\alpha}(a) \leq a.$$
+    Now, let us briefly illustrate the relation between the concepts of $\alpha$-ideals in ordered semigroups and $\alpha$-ideal elements in $poe$-semigroups.
   </p>
 </main>
 <footer class="site-footer"><p>© <span id="y"></span> Nareupanat Lekkoksung</p></footer>
