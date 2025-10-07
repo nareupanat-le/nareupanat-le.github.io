@@ -39,6 +39,9 @@
   <p class="justify">
     I am working on ideal theory in ordered semigroups.
     Let me provide some brief concepts of ideals in ordered semigroups as follows.
+    Let $\mathbb{N}$ be the set of all natural numbers, and $\mathbb{N}_0$ the set of all nonnegative integers.
+    That is, $\mathbb{N}_0 = \mathbb{N} \cup \{0\}$.
+    For any $n \in \mathbb{N}$, we denote the set $\{1,\ldots,n\}$ by $[n]$.
   </p>
   <p class="justify">
     An <em>ordered semigroup</em> is an algebraic system $\langle S; \cdot, \leq \rangle$ consisting of a nonempty set $S$, an associative binary operation $\cdot$ on $S$, and a partial order $\leq$ defined on $S$ such that the partial order is compatible with the binary operation $\cdot$.
@@ -84,19 +87,52 @@
       <li>an <em>(m,n)-ideal</em> of $\mathbf{S}$ if $A^mSA^n \subseteq A$;</li>
       <li>an <em>$n$-interior ideal</em> of $\mathbf{S}$ if $SA^nS \subseteq A$.</li>
     </ul>
-    We observe that a left, a right, bi-, and an interior ideal is a $(0,1)$-, a $(1,0)$, a $(1,1)$-, and $1$-interior ideal.
+    We observe that a left ideal, a right ideal, a bi-ideal, and an interior ideal is a $(0,1)$-ideal, a $(1,0)$-ideal, a $(1,1)$-ideal, and a $1$-interior ideal.
     Therefore, the notions of $(m,n)$-ideals and $n$-interior ideals are generalizations of certain ideals.
   </p>
   <p class="justify">
     However, the notions of $(m,n)$-ideals and $n$-interior ideals in ordered semigroups can be defined in a more abstract way.
-    It was started in semigroup theory, in 1989, 
+    It was started in semigroup theory, in 1989, Miccoli and Pondělíček introduced the concept of $\alpha$-ideals in semigroups.
+    In this note let we recall the notion of $\alpha$-ideals in the context of ordered semigroups.
+    To this end, we need the concept of full words.
+  </p>
+  <p class="justify">
+    Let $X$ be an <em>alphabet</em>.
+    We denote the <em>free monoid</em> and the <em>free semigroup</em> over $X$ by $X^*$ and $X^+$, respectively.
+    The neutral element of $X^*$ is called the <em>empty word</em>, and it is denoted by $\varepsilon$.
+    That is, $X^+ = X^* \smallsetminus \{ \varepsilon \}$.
+    For $\alpha \in X^*$, the <em>length</em> of $\alpha$ is denoted by $\vert \alpha \vert$.
+    We note that $\vert \alpha \vert = 0$ if $\alpha = \varepsilon$.
+    If $X = \{0,1\}$, then we write $X^+$ by $\mathsf{B}$ and its elements are called <em>words</em>.
+    We denote by $\mathsf{F}$ the set of all words such that each word is built up from both variables $0$ and $1$.
+    Each element in $\mathsf{F}$ is called a <em>full word</em>.
+  </p>
+  <p class="justify">
+    Let $\mathbf{S}$ be an ordered semigroup, and $\alpha = \alpha_1 \cdots \alpha_m \in \mathsf{B}$ with $\vert \alpha \vert = m$ for some $m \in \mathbb{N}$.
+    We define a <em>valuation</em> of $\alpha$ in $\mathbf{S}$ as a mapping $\overline{\alpha} \colon S \to S$ assigning by $\overline{\alpha}(A) := B_1 \cdots B_m$, where
+    $$B_i =
+    \begin{cases}
+      A & \text{if } \alpha_i = 1, \\
+      S & \text{otherwise},
+    \end{cases}
+    $$
+    for all $i \in [m]$.
+  </p>
+  <p class="justify">
+    Now, we are ready to recall the notion of $\alpha$-ideals in ordered semigorups.
+    Let $\mathbf{S}$ be an ordered semigroup, and $\alpha \in \mathsf{F}$.
+    We called a subsemigroup $A$ of $\mathbf{S}$ such that $(A] \subseteq A$ an <em>$\alpha$-ideal</em> of $\mathbf{S}$ if
+    $$\overline{\alpha}(A) \subseteq A.$$
+    We see that an $(m,n)$-ideal and $n$-interior ideal is a $1^m01^n$-ideal and $01^n0$-ideal, respectively.
+    In this case, we can regard the concept of $\alpha$-ideals a generalizations of $(m,n)$-ideals and $n$-interior ideals.
+    We observe that by the notion of $\alpha$-ideals enable us to understand several unknown ideals in ordered semigroups.
   </p>
   <p class="justify">
     On March, 2022, I was assigned by MathSciNet to review a paper written by Niovi Kehayopulu.
     The paper considered three related concepts: $poe$-semigroups, $\vee e$-semigroups, and $le$-semigroups.
   </p>
   <p class="justify">
-    A <em>$poe$-semigroup</em> $\mathbf{S}$ is an ordered semigroup having the greatest element $e$.
+    A <em>$poe$-semigroup</em> is an ordered semigroup $\mathbf{S}$ having the greatest element $e$.
     That is, $x \leq e$ for all $x \in S$.
     An algebra $\langle S; \cdot, \vee \rangle$ of type $(2,2)$ is said to be a <em>$\vee e$-semigroup</em> if $\langle S; \cdot \rangle$ is a semigroup, $\langle S; \vee \rangle$ is a joint-semilattice with the greatest element $e$, and the operation $\cdot$ distributes over $\vee$.
     Finally, an algebra $\langle S; \cdot, \vee, \wedge \rangle$ is called an <em>lattice ordered semigroup with the greatest element</em> or <em>$le$-semigroup</em> if $\langle S; \cdot \rangle$ is a semigroup, $\langle S; \vee, \wedge \rangle$ is a lattice with the greatest element $e$, and the operation $\cdot$ distributes over $\vee$.
