@@ -188,6 +188,18 @@
     Can the notion of full words extend to this?
     To extend this concept, we need some further investigations of full words.
   </p>
+  <p class="justify">
+    Let $\alpha \in \mathsf{F}$, and $n \in \mathbb{N}$ such that $n \geq \vert \alpha \vert$.
+    An $n$-tuple $(u_1, \ldots, u_n) \in C^n$ is called a <em>canonical tuple</em> of $\alpha$ with length $n$ if $\alpha = u_1 \cdots u_n$ and the following statements hold: (1) $u_1 \not = \varepsilon$; (2) $u_i = \varepsilon$ implies $u_{i-1} \not = 1$ for all $1 < i \leq n$.
+    For instance, let $\alpha = 1010$.
+    Then, $(1,0,1,0), (1,0,1,0,\varepsilon), (1,0,\varepsilon,1,0,\varepsilon)$ and $(1,0,1,0,\varepsilon,\varepsilon,\varepsilon)$ are canonical tuples of $\alpha$ with length $4,5,6$ and $7$, respective.
+    However, $(1,0,1,\varepsilon,0)$ is not a canonical tuple of $\alpha$ with length $5$.
+  </p>
+  <p class="justify">
+    Let $C = \{0,1,\varepsilon\}$ and ${\leq_C} := {\Delta_C \cup \{ (\varepsilon,0), (\varepsilon,1), (0,1) \}}$, where $\Delta_C$ is the equality relation on $C$.
+    Then, the structure $\mathbf{C} := \langle C; \leq_C \rangle$ is a totally ordered set.
+    This structure plays an important role in comparing full words.
+  </p>
 </main>
 <footer class="site-footer"><p>© <span id="y"></span> Nareupanat Lekkoksung</p></footer>
 <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
