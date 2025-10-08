@@ -242,7 +242,7 @@
   <p class="justify">
     Let $X$ be an antichain of $\mathbf{F}$.
     A partition of $X$ is called an <em>ideal assignment set</em> of $X$, shortly an ideal assignment set.
-    If this partition is trivial, we call it a <em>trivial ideal assignment set</em>.
+    If it is a trivial partition, we call a <em>trivial ideal assignment set</em>.
     For instance, $\{ \{10\}, \{01,010\} \}, \{ \{10,0101\} \}$ are ideal assignment sets.
     Indeed, $\{ \{10,0101\} \}$ is a trivial ideal assignment set.
     However, $\{ \{10,101\}, \{010\} \}$ is not an ideal assignment set.
@@ -250,9 +250,23 @@
   <p class="justify">
     Now, we are ready to define an abstraction of $\alpha$-ideal elements.
     Let $\mathbf{S}$ be an $le$-semigroup, and $\mathcal{A}$ an ideal assignment set.
-    A subidempotent $a$ of $\mathbf{S}$ is said to be an $\mathcal{A}$-ideal element of $\mathbf{S}$ if
+    A subidempotent $a$ of $\mathbf{S}$ is said to be an <em>$\mathcal{A}$-ideal element</em> of $\mathbf{S}$ if
     $$\bigwedge_{\alpha \in \Gamma} \overline{\alpha}(a) \leq a$$
     for every block $\Gamma$ of $\mathcal{A}$.
+  </p>
+  <p class="justify">
+    We observe that:
+    <ul>
+      <li>an $\alpha$-ideal element is a $\{\{\alpha\}\}$-ideal element;</li>
+      <li>a two-sided ideal element is a $\{\{10\}, \{01\}\}$-ideal element;</li>
+      <li>a quasi-ideal element is a $\{\{10,01\}\}$-ideal element.</li>
+    </ul>
+  </p>
+  <p class="justify">
+    The concept of partition ideal elements is a satisfactory concept that can describe the known notions of ideal elements.
+    Furthermore, this concept sheds light on understanding several unknown ideal elements.
+    This could be a beneficial tool in the investigation of ordered semigroup theory.
+    Therefore, in my focus, I am considering several algebraic properties of ordered semigroups in terms of partition ideal elements.
   </p>
 </main>
 <footer class="site-footer"><p>© <span id="y"></span> Nareupanat Lekkoksung</p></footer>
