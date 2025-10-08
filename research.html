@@ -239,6 +239,21 @@
   <p class="justify">
     The concept of the reduction relation not only helps us define an abstraction of $\alpha$-ideal elements in $poe$-semigroups, but also plays a crucial role in the investigation of several algebraic properties of $poe$-semigroups.
   </p>
+  <p class="justify">
+    Let $X$ be an antichain of $\mathbf{F}$.
+    A partition of $X$ is called an <em>ideal assignment set</em> of $X$, shortly an ideal assignment set.
+    If this partition is trivial, we call it a <em>trivial ideal assignment set</em>.
+    For instance, $\{ \{10\}, \{01,010\} \}, \{ \{10,0101\} \}$ are ideal assignment sets.
+    Indeed, $\{ \{10,0101\} \}$ is a trivial ideal assignment set.
+    However, $\{ \{10,101\}, \{010\} \}$ is not an ideal assignment set.
+  </p>
+  <p class="justify">
+    Now, we are ready to define an abstraction of $\alpha$-ideal elements.
+    Let $\mathbf{S}$ be an $le$-semigroup, and $\mathcal{A}$ an ideal assignment set.
+    A subidempotent $a$ of $\mathbf{S}$ is said to be an $\mathcal{A}$-ideal element of $\mathbf{S}$ if
+    $$\bigwedge_{\alpha \in \Gamma} \overline{\alpha}(a) \leq a$$
+    for every block $\Gamma$ of $\mathcal{A}$.
+  </p>
 </main>
 <footer class="site-footer"><p>© <span id="y"></span> Nareupanat Lekkoksung</p></footer>
 <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
