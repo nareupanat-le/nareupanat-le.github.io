@@ -211,6 +211,17 @@
     Then, $\mathbf{u}, \mathbf{v} \in \mathsf{C}_6(\alpha)$ and $\mathbf{w} \in \mathsf{C}_6(\beta)$.
     We see that $\mathbf{u} \leq \mathbf{w}$, but $\mathbf{u} \not \leq \mathbf{w}$.
   </p>
+  <p class="justify">
+    Now, let us introduce the concept of the reduction relation on the set of all full words.
+    Let $\alpha,\beta \in \mathsf{F}$.
+    We say that $\alpha$ is a <em>reduction</em> of $\beta$, denoted by $\alpha \leq \beta$, if for any $n \in \mathbb{N}$ with $n \geq \vert \beta \vert$ and $\mathbf{v} \in \mathsf{C}_n(\beta)$, there exists $\mathbf{u} \in \mathsf{C}_n(\alpha)$ such that $\mathbf{u} \leq \mathbf{v}$.
+    Otherwise, we say that $\alpha$ is not a reduction of $\beta$ and we denote by $\alpha \not \leq \beta$.
+    For example, $10 \leq 101$, but $010 \not \leq 101$.
+  </p>
+  <p class="justify">
+    We observe that considering whether two full words are related under the reduction relation is not convenient.
+    In the 18th International Conference of Young Algebraists (ICYAT2025) in Thailand, Erkko Lehtonen suggested me the following criteria for determining this relation as follows.
+  </p>
 </main>
 <footer class="site-footer"><p>© <span id="y"></span> Nareupanat Lekkoksung</p></footer>
 <script>document.getElementById('y').textContent=new Date().getFullYear()</script>
