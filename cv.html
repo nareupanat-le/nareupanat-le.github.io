@@ -228,5 +228,24 @@
   </section>
 </main>
 <footer class="site-footer"><p>© <span id="y"></span> Nareupanat Lekkoksung</p></footer>
-<script>document.getElementById('y').textContent=new Date().getFullYear()</script>
+<!-- Scripts ควรอยู่ท้ายสุดของ body เพื่อโหลดหน้าเว็บให้เสร็จก่อน -->
+<script>
+  // Script แสดงปีปัจจุบัน
+  document.getElementById('y').textContent = new Date().getFullYear();
+
+  // Script สำหรับ Highlight เมนูปัจจุบัน
+  document.addEventListener("DOMContentLoaded", function() {
+    var currentUrl = window.location.pathname; 
+    var navLinks = document.querySelectorAll('.nav a');
+    
+    navLinks.forEach(function(link) {
+      var linkUrl = link.getAttribute('href');
+      
+      // ตรวจสอบทั้งแบบปกติ และกรณี index.html (บาง Server home คือ / บางทีคือ /index.html)
+      if (linkUrl === currentUrl || (linkUrl === '/' && currentUrl === '/index.html')) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
 </body></html>
