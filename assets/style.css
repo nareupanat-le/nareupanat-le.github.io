@@ -1,5 +1,5 @@
 /* =========================================================
-   style.css — Nareupanat
+   style.css — Nareupanat (Justify Kept + Minimal Year Width)
    Table of Contents
    01) Design Tokens (CSS variables)
    02) Base / Reset
@@ -12,7 +12,7 @@
        07.1) Home (two-column hero)
        07.2) CV (equal columns)
        07.3) CV (25/75 split)
-       07.4) Timeline (Narrow left column)
+       07.4) Timeline (Fit content)
    08) Utilities
    09) Responsive (breakpoints)
    10) Debug Guides (toggle with .debug on <html>)
@@ -169,8 +169,9 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
 .two-col--25-75{ grid-template-columns:minmax(0,0.5fr) minmax(0,1.5fr) }
 .two-col--25-75 .col-text{ max-width:none }
 
-/* 07.4) Timeline / Years (Narrow left column) */
-.two-col--timeline { grid-template-columns: 100px 1fr; }
+/* 07.4) Timeline / Years */
+/* ใช้ max-content เพื่อให้กว้างเท่าที่จำเป็น (พอดีเลขปี) ไม่กินที่เปล่าประโยชน์ */
+.two-col--timeline { grid-template-columns: max-content 1fr; }
 
 
 /* ========== 08) Utilities ========== */
@@ -204,7 +205,6 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
 
 
 /* ========== 09) Responsive (breakpoints) ========== */
-/* รวม Media Query ให้เหลือ block เดียวเพื่อความเป็นระเบียบ */
 @media (max-width:600px){
   /* ค่าพื้นฐาน: ทุก .two-col เป็นคอลัมน์เดียว */
   .two-col{ grid-template-columns: 1fr; }
@@ -220,12 +220,21 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
 
   /* === ข้อยกเว้น: section ที่ติด .stay-2col ให้ยังคง 2 คอลัมน์บนมือถือ === */
   .two-col.stay-2col{
-    grid-template-columns: 8ch 1fr; /* ป้ายซ้ายคงที่ + เนื้อหาขวา */
-    gap: 8px 12px;
-    align-items: start;
+    /* ใช้ max-content เพื่อให้ปี ค.ศ. กินที่น้อยที่สุดเท่าที่จะทำได้ */
+    grid-template-columns: max-content 1fr; 
+    gap: 12px; /* ลด gap ลงเล็กน้อยเพื่อให้เหลือที่ให้ justify ทำงานได้ดีขึ้น */
+    align-items: baseline;
   }
-  .two-col.stay-2col .col-text{ text-align: right; }
-  .two-col.stay-2col .text-left{ overflow-wrap: anywhere; }
+
+  /* ปี ค.ศ. บนมือถือ ให้ชิดซ้าย */
+  .two-col.stay-2col .col-text { 
+    text-align: left;
+  }
+  
+  /* ป้องกัน Link ยาวๆ ดัน layout จนพัง */
+  .two-col.stay-2col .text-left { 
+    overflow-wrap: anywhere; 
+  }
 }
 
 /* มือถือแนวนอน */
