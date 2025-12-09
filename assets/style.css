@@ -12,7 +12,7 @@
        07.1) Home (two-column hero)
        07.2) CV (equal columns)
        07.3) CV (25/75 split)
-       07.4) Timeline (Narrow left column) <--- เพิ่มส่วนนี้
+       07.4) Timeline (Narrow left column)
    08) Utilities
    09) Responsive (breakpoints)
    10) Debug Guides (toggle with .debug on <html>)
@@ -29,8 +29,8 @@
 
   /* colors */
   --fg: #111;
-  --muted: #7A5C3A;                /* ใช้กับ .byline (คุณตั้งไว้เป็นโทนน้ำตาล) */
-  --link: #7A5C3A;                 /* earth tone */
+  --muted: #7A5C3A;
+  --link: #7A5C3A;
   --link-hover: #61492F;
   --link-visited: #4E3A29;
   --link-underline: rgba(122,92,58,.45);
@@ -51,8 +51,8 @@
 *{ box-sizing: border-box }
 html,body{ margin:0; padding:0 }
 html{
-  -webkit-text-size-adjust: 100%;  /* Safari/iOS */
-  text-size-adjust: 100%;          /* มาตรฐาน */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 body{
   font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;
@@ -74,7 +74,7 @@ body{
   gap: 16px;
   align-items: center;
   flex-wrap: wrap;
-  padding-bottom: 10px; /* เพิ่มระยะห่างด้านล่างนิดหน่อย */
+  padding-bottom: 10px;
 }
 
 .brand{
@@ -82,66 +82,48 @@ body{
   font-size: 20px;
   text-decoration: none;
   color: var(--fg);
-  margin-right: auto; /* ดันเมนูไปขวาสุด (Optional: ถ้าชอบให้เมนูชิดขวา) */
+  margin-right: auto;
 }
 
 /* Base style for Navigation Links */
 .nav a {
   text-decoration: none;
   color: var(--link);
-  padding: 6px 12px;           /* เพิ่มพื้นที่รอบตัวอักษรสำหรับกรอบ */
-  border: 1px solid transparent; /* จองพื้นที่เส้นขอบไว้ก่อน เพื่อไม่ให้ layout กระตุกเวลา hover */
-  border-radius: var(--radius);  /* ความโค้งมนตาม Theme */
-  transition: all 0.2s ease;     /* Animation ให้ลื่นไหล */
-  display: inline-block;         /* จำเป็นเพื่อให้ transform ทำงานได้ดี */
+  padding: 6px 12px;
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  transition: all 0.2s ease;
+  display: inline-block;
 }
 
-/* Hover State: เมื่อเอาเมาส์ไปวาง */
+/* Hover State */
 .nav a:hover {
   color: var(--link-hover);
-  background-color: rgba(122, 92, 58, 0.08); /* สีพื้นหลังจางๆ (Earth tone) */
-  transform: translateY(-2px);   /* ขยับขึ้น 2px */
+  background-color: rgba(122, 92, 58, 0.08);
+  transform: translateY(-2px);
 }
 
-/* Active State: บอกว่ากำลังอยู่หน้านี้ */
+/* Active State */
 .nav a.active {
-  color: var(--fg);              /* สีเข้มขึ้น */
+  color: var(--fg);
   font-weight: 600;
-  border-color: var(--muted);    /* สีกรอบตาม Earth tone */
+  border-color: var(--muted);
   background-color: rgba(122, 92, 58, 0.05);
-  cursor: default;               /* เปลี่ยนเมาส์ให้รู้ว่าคลิกไม่ได้ (เพราะอยู่ที่นี่แล้ว) */
+  cursor: default;
 }
 
 
 /* ========== 05) Typography ========== */
-h1{
-  font-size: var(--fs-h1);
-  line-height: var(--lh-headings);
-  margin: var(--spc-heading-top) 0 var(--spc-heading-bottom);
-}
-h2{
-  font-size: var(--fs-h2);
-  line-height: var(--lh-headings);
-  margin: var(--spc-heading-top) 0 var(--spc-heading-bottom);
-}
-h3{
-  font-size: var(--fs-h3);
-  line-height: var(--lh-headings);
-  margin: var(--spc-heading-top) 0 var(--spc-heading-bottom);
-}
-h4{
-  font-size: var(--fs-h4);
-  line-height: var(--lh-headings);
-  margin: calc(var(--spc-heading-top)*.7) 0 calc(var(--spc-heading-bottom)*.7);
-}
-h5{
-  font-size: var(--fs-h5);
-  line-height: var(--lh-headings);
-  margin: calc(var(--spc-heading-top)*.55) 0 calc(var(--spc-heading-bottom)*.55);
-}
+h1{ font-size: var(--fs-h1); line-height: var(--lh-headings); margin: var(--spc-heading-top) 0 var(--spc-heading-bottom); }
+h2{ font-size: var(--fs-h2); line-height: var(--lh-headings); margin: var(--spc-heading-top) 0 var(--spc-heading-bottom); }
+h3{ font-size: var(--fs-h3); line-height: var(--lh-headings); margin: var(--spc-heading-top) 0 var(--spc-heading-bottom); }
+h4{ font-size: var(--fs-h4); line-height: var(--lh-headings); margin: calc(var(--spc-heading-top)*.7) 0 calc(var(--spc-heading-bottom)*.7); }
+h5{ font-size: var(--fs-h5); line-height: var(--lh-headings); margin: calc(var(--spc-heading-top)*.55) 0 calc(var(--spc-heading-bottom)*.55); }
+
 .byline{ color:var(--muted) }
 ul{ padding-left:20px }
 li{ margin:4px 0 }
+
 a{
   color: var(--link);
   text-decoration: underline;
@@ -158,13 +140,12 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
 
 
 /* ========== 06) Components ========== */
-/* 06.1) Avatar */
 .avatar{
   width:260px; height:260px;
   object-fit:cover;
   border-radius:var(--radius);
   display:block;
-  margin:0 auto; /* center horizontally */
+  margin:0 auto;
 }
 
 
@@ -177,8 +158,8 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
   align-items:start;
 }
 .two-col .col-text, .two-col .col-photo{ min-width:0 }
-.col-text{ max-width:65ch }          /* ความกว้างบรรทัดอ่านสบาย */
-.col-photo{ align-self:center }      /* กลางแนวตั้งคอลัมน์ขวา */
+.col-text{ max-width:65ch }
+.col-photo{ align-self:center }
 
 /* 07.2) CV (equal columns) */
 .two-col--equal{ grid-template-columns:1fr 1fr }
@@ -189,17 +170,7 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
 .two-col--25-75 .col-text{ max-width:none }
 
 /* 07.4) Timeline / Years (Narrow left column) */
-/* ปรับให้เหลือแค่ 100px (ประมาณ 10-12 ตัวอักษร) พอดีสำหรับปี ค.ศ. */
 .two-col--timeline { grid-template-columns: 100px 1fr; }
-
-/* --- ให้บาง section คง 2 คอลัมน์แม้จอเล็ก --- */
-.two-col.stay-2col { /* desktop ใช้ layout เดิม */
-  /* ค่าเริ่มต้นจะใช้ตาม class ที่กำกับ (เช่น --timeline หรือ --25-75) */
-}
-
-/* Publications list */
-.pubs{ margin:12px 0 0; padding-left:1.5rem; }
-.pubs li{ margin:10px 0; }
 
 
 /* ========== 08) Utilities ========== */
@@ -208,74 +179,64 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
 .text-right{ text-align:right }
 .text-left{ text-align:left }
 .text-center{ text-align:center }
-.items-start{ align-items:start !important }              /* ใช้กับ .two-col */
-.two-col > * > :first-child{ margin-top:0 }               /* ชิดบนจริงของบล็อกแรก */
+.items-start{ align-items:start !important }
+.two-col > * > :first-child{ margin-top:0 }
 .center-x{ display:flex; flex-direction:column; align-items:center }
 .list-tight{ margin-top:6px; margin-bottom:0 }
 .list-tight li{ margin:2px 0 }
+
 /* multi-column list */
 .list-cols-2{
-  column-count: 2;              /* = ทำ 2 คอลัมน์เท่ากัน */
-  column-gap: var(--gap);       /* ระยะห่างระหว่างคอลัมน์ */
-  column-fill: balance;         /* กระจายน้ำหนักให้สูงพอ ๆ กัน */
+  column-count: 2;
+  column-gap: var(--gap);
+  column-fill: balance;
 }
 .list-cols-2 li{
-  break-inside: avoid;          /* อย่าให้รายการแตกคอลัมน์กลางคัน */
+  break-inside: avoid;
   -webkit-column-break-inside: avoid;
-  margin: 4px 0;                /* เว้นรายการแต่ละบรรทัดนิดหน่อย */
+  margin: 4px 0;
 }
-.list-cols-2 a{
-  overflow-wrap: anywhere;      /* ชื่อวารสารยาว ๆ จะตัดคำได้ ไม่ล้นคอลัมน์ */
-}
+.list-cols-2 a{ overflow-wrap: anywhere; }
 
 @media (max-width: 700px){
-  .list-cols-2{ column-count: 1; }  /* มือถือกลับเป็นคอลัมน์เดียว อ่านง่าย */
+  .list-cols-2{ column-count: 1; }
 }
 
 
 /* ========== 09) Responsive (breakpoints) ========== */
-@media (max-width:600px){
-  .two-col{ grid-template-columns:1fr }
-  .col-photo{ align-self:start }
-  .avatar{ width:200px; height:200px }
-  .text-right{ text-align:left }       /* มือถือให้อ่านง่าย */
-  .two-col--equal,
-  .two-col--25-75,
-  .two-col--timeline { grid-template-columns:1fr } /* Default มือถือให้ซ้อนกัน */
-}
-
+/* รวม Media Query ให้เหลือ block เดียวเพื่อความเป็นระเบียบ */
 @media (max-width:600px){
   /* ค่าพื้นฐาน: ทุก .two-col เป็นคอลัมน์เดียว */
   .two-col{ grid-template-columns: 1fr; }
-  .col-photo{ align-self:start }
-  .avatar{ width:200px; height:200px }
-
-  /* ตัวช่วยการอ่านทั่วไป */
-  .text-right{ text-align:left }       
+  
+  /* Reset modifiers */
   .two-col--equal,
   .two-col--25-75,
   .two-col--timeline { grid-template-columns: 1fr; }
 
+  .col-photo{ align-self:start }
+  .avatar{ width:200px; height:200px }
+  .text-right{ text-align:left }
+
   /* === ข้อยกเว้น: section ที่ติด .stay-2col ให้ยังคง 2 คอลัมน์บนมือถือ === */
   .two-col.stay-2col{
-    grid-template-columns: 8ch 1fr;   /* ป้ายซ้ายคงที่ + เนื้อหาขวา */
+    grid-template-columns: 8ch 1fr; /* ป้ายซ้ายคงที่ + เนื้อหาขวา */
     gap: 8px 12px;
     align-items: start;
   }
-  .two-col.stay-2col .col-text{ text-align: right; }     
+  .two-col.stay-2col .col-text{ text-align: right; }
   .two-col.stay-2col .text-left{ overflow-wrap: anywhere; }
 }
 
-/* มือถือแนวนอน: บังคับฟอนต์สองคอลัมน์ให้เท่ากัน */
+/* มือถือแนวนอน */
 @media (max-width: 900px) and (orientation: landscape){
   .two-col.stay-2col .col-text,
   .two-col.stay-2col .text-left,
   .two-col.stay-2col .text-left a{
-    font-size: 1rem;      /* = 16px ตาม body */
+    font-size: 1rem;
     line-height: 1.6;
   }
 }
-
 
 
 /* ========== 10) Debug Guides (toggle with .debug on <html>) ========== */
@@ -286,18 +247,14 @@ html.debug .site-footer{
   outline:2px dashed rgba(255,140,0,.7)
 }
 
+
 /* ========== 11) Print Styles ========== */
 @media print {
-  .site-header, .site-footer { display: none; } /* ซ่อนเมนูและ footer */
+  .site-header, .site-footer { display: none; }
   body { font-size: 12pt; line-height: 1.4; color: #000; }
   a { text-decoration: none; color: #000; }
-  
-  /* แสดง URL หลัง Link เพื่อให้อ้างอิงได้ (Optional) */
   a[href^="http"]:after { content: " (" attr(href) ")"; font-size: 0.9em; }
-  
   .container, main { max-width: 100%; width: 100%; margin: 0; padding: 0; }
-  .two-col { display: grid; grid-template-columns: 1fr 3fr; gap: 1cm; } /* บังคับ layout เดิมตอนพิมพ์ */
-  
-  /* ป้องกันหน้าขาดกลางหัวข้อ */
+  .two-col { display: grid; grid-template-columns: 1fr 3fr; gap: 1cm; }
   h3, h4, section { break-inside: avoid; page-break-inside: avoid; }
 }
