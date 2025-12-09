@@ -12,9 +12,11 @@
        07.1) Home (two-column hero)
        07.2) CV (equal columns)
        07.3) CV (25/75 split)
+       07.4) Timeline (Narrow left column) <--- เพิ่มส่วนนี้
    08) Utilities
    09) Responsive (breakpoints)
    10) Debug Guides (toggle with .debug on <html>)
+   11) Print Styles
    ========================================================= */
 
 
@@ -67,10 +69,6 @@ body{
 
 
 /* ========== 04) Header & Navigation ========== */
-/* .site-header{ display:flex; gap:16px; align-items:center; flex-wrap:wrap }
-.brand{ font-weight:700; font-size:20px; text-decoration:none; color:var(--fg) }
-.nav a{ margin-right:12px; text-decoration:none; color:var(--link) }
-.nav a:last-child{ margin-right:0 } */
 .site-header{
   display: flex;
   gap: 16px;
@@ -189,9 +187,14 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
 /* 07.3) CV (25/75 split) */
 .two-col--25-75{ grid-template-columns:minmax(0,0.5fr) minmax(0,1.5fr) }
 .two-col--25-75 .col-text{ max-width:none }
+
+/* 07.4) Timeline / Years (Narrow left column) */
+/* ปรับให้เหลือแค่ 100px (ประมาณ 10-12 ตัวอักษร) พอดีสำหรับปี ค.ศ. */
+.two-col--timeline { grid-template-columns: 100px 1fr; }
+
 /* --- ให้บาง section คง 2 คอลัมน์แม้จอเล็ก --- */
 .two-col.stay-2col { /* desktop ใช้ layout เดิม */
-  grid-template-columns: minmax(0,0.5fr) minmax(0,1.5fr);
+  /* ค่าเริ่มต้นจะใช้ตาม class ที่กำกับ (เช่น --timeline หรือ --25-75) */
 }
 
 /* Publications list */
@@ -237,7 +240,8 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
   .avatar{ width:200px; height:200px }
   .text-right{ text-align:left }       /* มือถือให้อ่านง่าย */
   .two-col--equal,
-  .two-col--25-75{ grid-template-columns:1fr }
+  .two-col--25-75,
+  .two-col--timeline { grid-template-columns:1fr } /* Default มือถือให้ซ้อนกัน */
 }
 
 @media (max-width:600px){
@@ -249,7 +253,8 @@ a:focus-visible{ outline: 2px solid var(--link); outline-offset: 2px }
   /* ตัวช่วยการอ่านทั่วไป */
   .text-right{ text-align:left }       
   .two-col--equal,
-  .two-col--25-75{ grid-template-columns: 1fr; }
+  .two-col--25-75,
+  .two-col--timeline { grid-template-columns: 1fr; }
 
   /* === ข้อยกเว้น: section ที่ติด .stay-2col ให้ยังคง 2 คอลัมน์บนมือถือ === */
   .two-col.stay-2col{
