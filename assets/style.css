@@ -67,10 +67,52 @@ body{
 
 
 /* ========== 04) Header & Navigation ========== */
-.site-header{ display:flex; gap:16px; align-items:center; flex-wrap:wrap }
+/* .site-header{ display:flex; gap:16px; align-items:center; flex-wrap:wrap }
 .brand{ font-weight:700; font-size:20px; text-decoration:none; color:var(--fg) }
 .nav a{ margin-right:12px; text-decoration:none; color:var(--link) }
-.nav a:last-child{ margin-right:0 }
+.nav a:last-child{ margin-right:0 } */
+.site-header{
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-bottom: 10px; /* เพิ่มระยะห่างด้านล่างนิดหน่อย */
+}
+
+.brand{
+  font-weight: 700;
+  font-size: 20px;
+  text-decoration: none;
+  color: var(--fg);
+  margin-right: auto; /* ดันเมนูไปขวาสุด (Optional: ถ้าชอบให้เมนูชิดขวา) */
+}
+
+/* Base style for Navigation Links */
+.nav a {
+  text-decoration: none;
+  color: var(--link);
+  padding: 6px 12px;           /* เพิ่มพื้นที่รอบตัวอักษรสำหรับกรอบ */
+  border: 1px solid transparent; /* จองพื้นที่เส้นขอบไว้ก่อน เพื่อไม่ให้ layout กระตุกเวลา hover */
+  border-radius: var(--radius);  /* ความโค้งมนตาม Theme */
+  transition: all 0.2s ease;     /* Animation ให้ลื่นไหล */
+  display: inline-block;         /* จำเป็นเพื่อให้ transform ทำงานได้ดี */
+}
+
+/* Hover State: เมื่อเอาเมาส์ไปวาง */
+.nav a:hover {
+  color: var(--link-hover);
+  background-color: rgba(122, 92, 58, 0.08); /* สีพื้นหลังจางๆ (Earth tone) */
+  transform: translateY(-2px);   /* ขยับขึ้น 2px */
+}
+
+/* Active State: บอกว่ากำลังอยู่หน้านี้ */
+.nav a.active {
+  color: var(--fg);              /* สีเข้มขึ้น */
+  font-weight: 600;
+  border-color: var(--muted);    /* สีกรอบตาม Earth tone */
+  background-color: rgba(122, 92, 58, 0.05);
+  cursor: default;               /* เปลี่ยนเมาส์ให้รู้ว่าคลิกไม่ได้ (เพราะอยู่ที่นี่แล้ว) */
+}
 
 
 /* ========== 05) Typography ========== */
