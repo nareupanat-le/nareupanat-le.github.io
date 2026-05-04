@@ -2827,12 +2827,13 @@
         document.addEventListener('click', (event) => {
             if (!isPLOPanelOpen) return;
 
-            // ตรวจสอบว่าจุดที่คลิก ไม่ใช่จากเมนูด้านซ้าย (.plo-card) และไม่ใช่จากหัวตาราง (th)
+            // ตรวจสอบว่าจุดที่คลิก เป็นปุ่มที่ใช้เปิด PLO หรือไม่ (แถบซ้าย, หัวตาราง, หรือป้ายสีๆ ในตาราง)
             const isClickOnPLOCard = event.target.closest('.plo-card');
             const isClickOnTableHead = event.target.closest('th');
+            const isClickOnBadge = event.target.closest('span[onclick]'); // เพิ่มบรรทัดนี้เพื่อดักจับป้ายในตาราง
 
             // ถ้าไม่ได้คลิกที่ปุ่มเปิดใดๆ เลย ให้ปิดกล่อง (กดตรงอื่นของจอ)
-            if (!isClickOnPLOCard && !isClickOnTableHead) {
+            if (!isClickOnPLOCard && !isClickOnTableHead && !isClickOnBadge) {
                 closePLOPanel();
             }
         });
