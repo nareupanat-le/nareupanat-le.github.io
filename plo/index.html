@@ -2823,16 +2823,16 @@
             isPLOPanelOpen = false;
         }
 
-        // --- ให้คัดลอกโค้ดตั้งแต่บรรทัดนี้ไปวางต่อท้าย ---
+        // Event Listener สำหรับตรวจจับการคลิกหน้าจอเพื่อปิด Panel
         document.addEventListener('click', (event) => {
-            // ถ้ากล่องปิดอยู่ ให้ข้ามไป
             if (!isPLOPanelOpen) return;
 
-            // เช็คว่าจุดที่คลิก ไม่ใช่ปุ่มเมนู PLO ด้านซ้าย (เพื่อไม่ให้มันไปตีกันตอนกดเปิด)
+            // ตรวจสอบว่าจุดที่คลิก ไม่ใช่จากเมนูด้านซ้าย (.plo-card) และไม่ใช่จากหัวตาราง (th)
             const isClickOnPLOCard = event.target.closest('.plo-card');
+            const isClickOnTableHead = event.target.closest('th');
 
-            // ถ้าไม่ได้คลิกที่ปุ่มเปิด ให้ปิดกล่องเลย (คลิกตรงไหนของจอก็ปิด)
-            if (!isClickOnPLOCard) {
+            // ถ้าไม่ได้คลิกที่ปุ่มเปิดใดๆ เลย ให้ปิดกล่อง (กดตรงอื่นของจอ)
+            if (!isClickOnPLOCard && !isClickOnTableHead) {
                 closePLOPanel();
             }
         });
