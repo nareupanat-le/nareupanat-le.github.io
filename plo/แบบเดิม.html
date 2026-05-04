@@ -29,89 +29,61 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #94a3b8; 
         }
-
-        /* ปรับแต่งตารางสำหรับมือถือ */
-        @media (max-width: 1024px) {
-            .responsive-table thead {
-                display: none;
-            }
-            .responsive-table tr {
-                display: block;
-                margin-bottom: 1.5rem;
-                background: white;
-                border: 1px solid #e2e8f0;
-                border-radius: 1rem;
-                padding: 1rem;
-                box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            }
-            .responsive-table td {
-                display: block;
-                width: 100% !important;
-                padding: 0.5rem 0 !important;
-                border: none !important;
-            }
-            .responsive-table td::before {
-                content: attr(data-label);
-                font-weight: 800;
-                color: #64748b;
-                font-size: 0.75rem;
-                text-transform: uppercase;
-                display: block;
-                margin-bottom: 0.25rem;
-            }
-        }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 flex flex-col text-slate-800">
+<body class="min-h-screen bg-slate-50 flex flex-col text-slate-800 relative overflow-hidden">
 
     <!-- Header -->
-    <header class="bg-indigo-900 text-white p-4 shadow-md z-30 flex items-center justify-between sticky top-0">
+    <header class="bg-indigo-900 text-white p-4 shadow-md z-30 flex items-center justify-between relative">
         <div class="flex items-center space-x-3">
             <i class="ph-fill ph-book-open text-3xl md:text-4xl text-indigo-300"></i>
             <div>
-                <h1 class="text-lg md:text-2xl font-black tracking-wide">Curriculum Mapping</h1>
-                <p class="text-[10px] md:text-sm text-indigo-200 uppercase tracking-tighter">OBE Knowledge Base</p>
+                <h1 class="text-xl md:text-2xl font-black tracking-wide">Curriculum Mapping Presentation</h1>
+                <p class="text-xs md:text-sm text-indigo-200">ระบบฐานข้อมูลหลักสูตรและผลลัพธ์การเรียนรู้ (OBE)</p>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Layout -->
-    <div class="flex flex-col lg:flex-row flex-1 relative">
+    <!-- Main Content Layout (2 Columns for Desktop) -->
+    <div class="flex flex-col lg:flex-row flex-1 overflow-hidden h-[calc(100vh-84px)] relative">
         
-        <!-- Sidebar: PLOs Reference -->
-        <div class="w-full lg:w-80 xl:w-96 bg-white border-b lg:border-r border-slate-200 flex flex-col shadow-sm lg:sticky lg:top-[72px] lg:h-[calc(100vh-72px)] z-10">
-            <div class="p-4 lg:p-5 border-b border-indigo-100 bg-indigo-50/80 flex items-center space-x-3">
-                <i class="ph-fill ph-users-three text-indigo-700 text-2xl lg:text-3xl"></i>
+        <!-- Left Sidebar: PLOs Reference (ย้ายมาซ้าย) -->
+        <div class="w-full lg:w-80 xl:w-96 bg-white border-r border-slate-200 flex flex-col shadow-[4px_0_15px_-3px_rgba(0,0,0,0.05)] z-10 h-1/4 lg:h-full flex-shrink-0 relative">
+            <div class="p-5 border-b border-indigo-100 bg-indigo-50/80 flex items-center space-x-3">
+                <i class="ph-fill ph-users-three text-indigo-700 text-3xl"></i>
                 <div>
-                    <h2 class="font-black text-indigo-900 text-lg lg:text-xl leading-tight">PLOs Reference</h2>
-                    <p class="text-xs font-semibold text-indigo-600">ผลลัพธ์การเรียนรู้ระดับหลักสูตร</p>
+                    <h2 class="font-black text-indigo-900 text-xl">PLOs Reference</h2>
+                    <p class="text-sm font-semibold text-indigo-600">ผลลัพธ์การเรียนรู้ระดับหลักสูตร</p>
                 </div>
             </div>
-            
-            <!-- Horizontal scroll on Mobile, Vertical on Desktop -->
-            <div class="flex lg:flex-col overflow-x-auto lg:overflow-y-auto p-4 space-x-3 lg:space-x-0 lg:space-y-3" id="ploSidebarContent">
+            <div class="p-3 bg-slate-50 border-b border-slate-200 text-center">
+                <p class="text-xs font-bold text-slate-500 flex items-center justify-center">
+                    <i class="ph-bold ph-hand-pointing mr-1 text-base text-indigo-400"></i> คลิกที่กล่องเพื่ออ่านข้อความเต็ม
+                </p>
+            </div>
+            <div class="overflow-y-auto flex-1 p-4 space-y-3" id="ploSidebarContent">
                 <!-- PLOs will be injected here by JS -->
             </div>
         </div>
 
-        <!-- Center Content: Course Detail & CLOs -->
-        <div class="flex-1 bg-slate-100 p-4 md:p-6 lg:p-8" id="mainContent">
+        <!-- Center Content: Course Detail & CLOs (ย้ายมาขวา) -->
+        <div class="flex-1 overflow-y-auto bg-slate-100 p-6 lg:p-8 h-full relative" id="mainContent">
             <!-- Course details will be injected here by JS -->
         </div>
 
-        <!-- Sliding Panel for PLO Detail -->
-        <div id="ploDetailPanel" class="fixed inset-y-0 left-0 h-full w-full md:w-[450px] bg-white border-r-4 border-indigo-600 shadow-[20px_0_50px_rgba(0,0,0,0.2)] z-[50] transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
-            <div class="p-5 border-b border-slate-100 flex justify-between items-center bg-indigo-50/50">
+        <!-- Sliding Panel for PLO Detail (เลื่อนจากซ้าย) -->
+        <div id="ploDetailPanel" class="absolute top-0 left-0 h-full w-full md:w-[450px] bg-white border-r-4 border-indigo-600 shadow-[10px_0_25px_rgba(0,0,0,0.15)] z-30 transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-start bg-indigo-50/50">
                 <div class="flex items-center space-x-3">
-                    <i class="ph-fill ph-target text-indigo-600 text-3xl"></i>
-                    <h2 id="panelPLOTitle" class="text-2xl font-black text-indigo-900 uppercase">PLO X</h2>
+                    <i class="ph-fill ph-target text-indigo-600 text-4xl"></i>
+                    <h2 id="panelPLOTitle" class="text-3xl font-black text-indigo-900">PLO X</h2>
                 </div>
                 <button onclick="closePLOPanel()" class="text-slate-400 hover:text-rose-500 transition-colors p-2 rounded-full hover:bg-rose-50">
                     <i class="ph-bold ph-x text-2xl"></i>
                 </button>
             </div>
-            <div class="p-6 md:p-8 overflow-y-auto flex-1">
-                <p id="panelPLOText" class="text-xl md:text-2xl leading-relaxed text-slate-800 font-medium">
+            <div class="p-8 overflow-y-auto flex-1">
+                <p id="panelPLOText" class="text-2xl leading-relaxed text-slate-800 font-medium">
                     ข้อความ PLO จะมาแสดงที่นี่
                 </p>
             </div>
@@ -120,7 +92,7 @@
 
     <!-- JavaScript Logic -->
     <script>
-        // ข้อมูล PLO_DATA และ COURSES_DATA (ยกมาจากเดิม)
+        // --- ข้อมูลระดับหลักสูตร (PLOs) ---
         const PLO_DATA = {
             "PLO 1": "อธิบายหลักการ ทฤษฎีทางคณิตศาสตร์ สถิติ และวิทยาศาสตร์ ที่เป็นพื้นฐานสำคัญในการพัฒนางานด้านเทคโนโลยีดิจิทัล",
             "PLO 2": "ประยุกต์ใช้เทคโนโลยีดิจิทัล ระบบจัดการฐานข้อมูล และซอฟต์แวร์ประยุกต์ เพื่อบริหารจัดการข้อมูลและเพิ่มประสิทธิภาพการปฏิบัติงาน",
@@ -131,6 +103,7 @@
             "PLO 7": "แสดงออกถึงความเป็นผู้นำและผู้ตามที่ดี การทำงานเป็นทีม มีความรับผิดชอบ"
         };
 
+        // --- ข้อมูลรายวิชาทั้งหมด ---
         const COURSES_DATA = [
             {
                 id: "31-405-010-101",
@@ -2249,118 +2222,6 @@
                 ]
             },
             {
-                id: "31-405-014-305",
-                code: "31-405-014-305",
-                nameTH: "การฝึกปฏิบัติระบบวางแผนทรัพยากรองค์กร",
-                nameEN: "Practice on Enterprise Resource Planning System",
-                credits: "1(0-2-1)",
-                prerequisite: "31-405-014-304 ระบบวางแผนทรัพยากรองค์กร หรือเรียนควบคู่กัน",
-                descriptionTH: "การฝึกปฏิบัติเกี่ยวกับความสำคัญและที่มาของระบบวางแผนทรัพยากรองค์กร หน้าที่ทางธุรกิจกระบวนการธุรกิจ การพัฒนาระบบการวางแผนทรัพยากร องค์กร การขายและการตลาด คำสั่งซื้อ การผลิตและห่วงโซ่อุปทาน บัญชี ทรัพยากรมนุษย์ แบบจำลองกระบวนการ",
-                descriptionEN: "The practice on the importance and background of enterprise resource planning; business functions; business processes; development of ERP systems; marketing and sales, order, production and supply chain; accounting; human resources; process modeling; process improvement",
-                clos: [
-                    {
-                        text: "ปฏิบัติการสร้างแบบจำลองกระบวนการทางธุรกิจโดยใช้ซอฟต์แวร์สำเร็จรูป",
-                        plos: [
-                            "PLO 2: การตอบสนองตามการชี้แนะ (Manipulation)"
-                        ],
-                        assessmentMethod: "ตรวจใบงานปฏิบัติการ",
-                        assessmentTool: "ชิ้นงานไฟล์แผนภาพกระบวนการธุรกิจที่วาดผ่านซอฟต์แวร์ ประเมินจากความถูกต้องของลำดับและเงื่อนไขการทำงาน"
-                    },
-                    {
-                        text: "ปฏิบัติการใช้งานระบบวางแผนทรัพยากรองค์กรในฟังก์ชันการขาย การผลิต บัญชี และทรัพยากรมนุษย์",
-                        plos: [
-                            "PLO 2: ความถูกต้องแม่นยำ (Precision)"
-                        ],
-                        assessmentMethod: "การสอบปฏิบัติการ",
-                        assessmentTool: "การสอบแบบจำกัดเวลาหน้าเครื่องคอมพิวเตอร์ ให้นักศึกษาทำรายการ เช่น การเปิด PO, การบันทึกใบสั่งขาย, หรือการบันทึกบัญชีลงในระบบ ERP (เช่น SAP, Odoo) และตรวจสอบความถูกต้องของระบบ"
-                    },
-                    {
-                        text: "วางแผนจัดการทรัพยากรในห่วงโซ่อุปทานโดยใช้ข้อมูลและตัวแบบทางคณิตศาสตร์พื้นฐานในระบบ ERP",
-                        plos: [
-                            "PLO 3: สร้างสรรค์ (Creating)"
-                        ],
-                        assessmentMethod: "โครงงานย่อยในห้องปฏิบัติการ",
-                        assessmentTool: "ให้นักศึกษาใช้ข้อมูลและเครื่องมือคำนวณในระบบ ERP เพื่อสร้างแผนการสั่งผลิตหรือแผนการใช้วัตถุดิบ (MRP) ประเมินจากความสมเหตุสมผลของแผนและการใช้ตัวแบบการคำนวณ"
-                    },
-                    {
-                        text: "แสดงออกถึงความมีระเบียบวินัย ความรับผิดชอบ และความซื่อสัตย์ในการใช้ห้องปฏิบัติการและซอฟต์แวร์",
-                        plos: [
-                            "PLO 6: เห็นคุณค่า (Valuing)"
-                        ],
-                        assessmentMethod: "การตรวจสอบผลงานและการสังเกตพฤติกรรม",
-                        assessmentTool: "บันทึกเวลาเข้าเรียนห้องปฏิบัติการ การส่งใบงานตรงเวลา และความซื่อสัตย์ในการทำรายการในระบบด้วย User ของตนเอง (ไม่คัดลอกข้อมูลเพื่อน)"
-                    },
-                    {
-                        text: "ปฏิบัติงานร่วมกับผู้อื่นในการทำใบงานปฏิบัติการระบบ ERP พร้อมทั้งรับฟังความคิดเห็นของสมาชิกในกลุ่ม",
-                        plos: [
-                            "PLO 7: ตอบสนอง (Responding)"
-                        ],
-                        assessmentMethod: "การประเมินเพื่อนร่วมกลุ่ม",
-                        assessmentTool: "แบบประเมินพฤติกรรมการมีส่วนร่วม ในการจำลองการทำงานเป็นทีมข้ามแผนก ในระบบ ERP เช่น คนหนึ่งทำฝ่ายขาย ส่งข้อมูลให้อีกคนทำฝ่ายผลิต"
-                    }
-                ]
-            },
-            {
-                id: "31-405-014-306",
-                code: "31-405-014-306",
-                nameTH: "ข้อมูลขนาดใหญ่และการวิเคราะห์",
-                nameEN: "Big Data and Analytics",
-                credits: "3(2-2-5)",
-                prerequisite: "-",
-                descriptionTH: "แนวคิด หลักการ และองค์ประกอบข้อมูลขนาดใหญ่ คลาวด์และข้อมูลขนาดใหญ่ เครื่องมือพื้นฐาน โมเดลข้อมูลและวิธีการจัดเก็บ อัลกอริทึมในการวิเคราะห์ข้อมูล ประเด็นเกี่ยวกับการแสดงภาพและการเคลื่อนย้ายของข้อมูลขนาดใหญ่ กรณีศึกษาในการจัดการและการวิเคราะห์ข้อมูลขนาดใหญ่ในงานธุรกิจ การฝึกปฏิบัติเกี่ยวกับข้อมูลขนาดใหญ่และการวิเคราะห์",
-                descriptionEN: "Concept, principle, and element of big data; cloud and big data; basic tools; data model and storage methods; data analysis algorithms; issues relating to visualization and the movement of large data; case studies of managing and analyzing large data in business applications; practice on big data and analytics",
-                clos: [
-                    {
-                        text: "อธิบายแนวคิด หลักการ องค์ประกอบของข้อมูลขนาดใหญ่ และสถาปัตยกรรมระบบคลาวด์",
-                        plos: [
-                            "PLO 1: เข้าใจ (Understanding)"
-                        ],
-                        assessmentMethod: "การสอบข้อเขียน",
-                        assessmentTool: "ข้อสอบปรนัยหรืออัตนัย วัดความเข้าใจในองค์ประกอบของ Big Data (เช่น 5Vs) และสถาปัตยกรรมคลาวด์เบื้องต้น"
-                    },
-                    {
-                        text: "ปฏิบัติการบริหารจัดการและจัดเก็บข้อมูลขนาดใหญ่โดยใช้ซอฟต์แวร์สำเร็จรูป",
-                        plos: [
-                            "PLO 2: การตอบสนองตามการชี้แนะ (Manipulation)"
-                        ],
-                        assessmentMethod: "ตรวจใบงานปฏิบัติการ",
-                        assessmentTool: "ชิ้นงานการเขียนคำสั่งเพื่อนำเข้า และจัดการข้อมูลขนาดใหญ่บนซอฟต์แวร์หรือแพลตฟอร์มคลาวด์"
-                    },
-                    {
-                        text: "วิเคราะห์ข้อมูลขนาดใหญ่เชิงธุรกิจโดยใช้อัลกอริทึมทางคณิตศาสตร์และสถิติ",
-                        plos: [
-                            "PLO 2: วิเคราะห์ (Analyzing)"
-                        ],
-                        assessmentMethod: "การสอบปฏิบัติการและการวิเคราะห์กรณีศึกษา",
-                        assessmentTool: "กำหนดชุดข้อมูลขนาดใหญ่ ให้นักศึกษาเลือกใช้อัลกอริทึม (เช่น Clustering, Classification) ในการประมวลผลและเขียนรายงานสรุปผลการวิเคราะห์เชิงธุรกิจ"
-                    },
-                    {
-                        text: "สื่อสารผลการวิเคราะห์ข้อมูลผ่านเทคนิคการสร้างภาพนิทัศน์",
-                        plos: [
-                            "PLO 5: การตอบสนองตามการชี้แนะ (Manipulation)"
-                        ],
-                        assessmentMethod: "การนำเสนอโครงงานย่อย",
-                        assessmentTool: "ให้นักศึกษาสร้าง Dashboard (เช่น ใช้ Tableau, PowerBI หรือไลบรารี Python) และประเมินทักษะการนำเสนอหน้าชั้นเรียนว่าสามารถสื่อสารข้อมูลเชิงลึกให้เข้าใจง่ายหรือไม่"
-                    },
-                    {
-                        text: "แสดงออกถึงความมีระเบียบวินัย ความรับผิดชอบ และจรรยาบรรณในการจัดการข้อมูล",
-                        plos: [
-                            "PLO 6: เห็นคุณค่า (Valuing)"
-                        ],
-                        assessmentMethod: "การตรวจสอบผลงานและการสังเกต",
-                        assessmentTool: "แบบบันทึกการส่งงานตรงตามกำหนดเวลา และการปฏิบัติตามกฎระเบียบการใช้ห้องปฏิบัติการ"
-                    },
-                    {
-                        text: "ปฏิบัติงานร่วมกับผู้อื่นในการวิเคราะห์ข้อมูลขนาดใหญ่ พร้อมทั้งรับฟังความคิดเห็นของสมาชิกในกลุ่ม",
-                        plos: [
-                            "PLO 7: ตอบสนอง (Responding)"
-                        ],
-                        assessmentMethod: "การประเมินเพื่อนร่วมกลุ่ม",
-                        assessmentTool: "แบบประเมินพฤติกรรมการมีส่วนร่วมในการแบ่งหน้าที่และการรับฟังความคิดเห็นระหว่างการทำโครงงานย่อยในห้องปฏิบัติการ"
-                    }
-                ]
-            },
-            {
                 id: "31-405-014-407",
                 code: "31-405-014-407",
                 nameTH: "การบริหารความเสี่ยงองค์กรและการควบคุมภายใน",
@@ -2765,42 +2626,84 @@
         let selectedCourseId = COURSES_DATA[0].id;
         let isPLOPanelOpen = false;
 
+        // DOM Elements
         const mainContent = document.getElementById('mainContent');
         const ploSidebarContent = document.getElementById('ploSidebarContent');
+        
+        // Panel Elements
         const ploDetailPanel = document.getElementById('ploDetailPanel');
+        const panelPLOTitle = document.getElementById('panelPLOTitle');
+        const panelPLOText = document.getElementById('panelPLOText');
 
+        // Functions
         function selectCourse(id) {
             selectedCourseId = id;
             renderMainContent();
-            closePLOPanel();
+            closePLOPanel(); // ปิด panel ถ้ามีการเปลี่ยนวิชา
         }
 
+        // จัดการ Sliding Panel (เลื่อนจากซ้าย)
         function togglePLOPanel(ploKey) {
-            if (isPLOPanelOpen && document.getElementById('panelPLOTitle').innerText === ploKey) {
+            // ถ้าคลิกตัวเดิมที่เปิดอยู่ ให้ปิด
+            if (isPLOPanelOpen && panelPLOTitle.innerText === ploKey) {
                 closePLOPanel();
                 return;
             }
-            document.getElementById('panelPLOTitle').innerText = ploKey;
-            document.getElementById('panelPLOText').innerText = PLO_DATA[ploKey];
+
+            panelPLOTitle.innerText = ploKey;
+            panelPLOText.innerText = PLO_DATA[ploKey];
+            
+            // เปิด Panel
             ploDetailPanel.classList.remove('-translate-x-full');
             isPLOPanelOpen = true;
+
+            // ปรับไฮไลท์ที่กล่องรายการทางซ้าย
+            document.querySelectorAll('.plo-card').forEach(card => {
+                if(card.dataset.plo === ploKey) {
+                    card.classList.add('bg-indigo-50', 'border-indigo-400');
+                    card.classList.remove('bg-white', 'border-slate-200');
+                } else {
+                    card.classList.remove('bg-indigo-50', 'border-indigo-400');
+                    card.classList.add('bg-white', 'border-slate-200');
+                }
+            });
         }
 
         function closePLOPanel() {
+            // ซ่อน Panel
             ploDetailPanel.classList.add('-translate-x-full');
             isPLOPanelOpen = false;
+            
+            // เอาไฮไลท์ออก
+            document.querySelectorAll('.plo-card').forEach(card => {
+                card.classList.remove('bg-indigo-50', 'border-indigo-400');
+                card.classList.add('bg-white', 'border-slate-200');
+            });
         }
+
+        // Event Listener สำหรับตรวจจับการคลิกพื้นที่อื่นเพื่อปิด Panel
+        document.addEventListener('click', (event) => {
+            if (!isPLOPanelOpen) return;
+
+            // ตรวจสอบว่าจุดที่คลิกอยู่ภายนอก Panel และไม่ได้คลิกที่ตัวเลือก PLO (plo-card)
+            const isClickInsidePanel = ploDetailPanel.contains(event.target);
+            const isClickOnPLOCard = event.target.closest('.plo-card');
+
+            if (!isClickInsidePanel && !isClickOnPLOCard) {
+                closePLOPanel();
+            }
+        });
 
         function renderPLOSidebar() {
             let html = '';
             for (const [ploKey, text] of Object.entries(PLO_DATA)) {
                 html += `
-                    <div onclick="togglePLOPanel('${ploKey}')" class="plo-card flex-shrink-0 w-64 lg:w-full bg-white p-4 rounded-xl border border-slate-200 shadow-sm transition-all hover:border-indigo-400 cursor-pointer">
+                    <div data-plo="${ploKey}" onclick="togglePLOPanel('${ploKey}')" class="plo-card bg-white p-4 rounded-xl border border-slate-200 shadow-sm transition-all hover:border-indigo-400 hover:shadow-md cursor-pointer group">
                         <div class="flex justify-between items-center mb-1">
-                            <strong class="text-indigo-800 text-base lg:text-lg font-black">${ploKey}</strong>
-                            <i class="ph-bold ph-caret-right text-indigo-300"></i>
+                            <strong class="text-indigo-800 text-lg font-black">${ploKey}</strong>
+                            <i class="ph-bold ph-caret-right text-indigo-300 group-hover:text-indigo-500 transition-colors"></i>
                         </div>
-                        <p class="text-slate-500 text-xs mt-1 line-clamp-2 leading-relaxed">${text}</p>
+                        <p class="text-slate-500 text-sm mt-1 line-clamp-2 leading-relaxed">${text}</p>
                     </div>
                 `;
             }
@@ -2809,106 +2712,161 @@
 
         function renderMainContent() {
             const course = COURSES_DATA.find(c => c.id === selectedCourseId);
+
             if (!course) return;
 
             const creditsMain = course.credits.split('(')[0];
             const creditsDetail = course.credits.includes('(') ? course.credits.substring(course.credits.indexOf('(')) : '';
             
             let prerequisiteHtml = course.prerequisite !== "-" 
-                ? `<span class="text-rose-700 font-bold bg-rose-50 px-3 py-1 rounded-md border border-rose-200 text-sm md:text-base">${course.prerequisite}</span>`
-                : `<span class="text-slate-500 font-medium text-sm md:text-base">ไม่มี</span>`;
+                ? `<span class="text-rose-700 font-bold bg-rose-50 px-3 py-1 rounded-md border border-rose-200 text-base">${course.prerequisite}</span>`
+                : `<span class="text-slate-500 font-medium text-base">ไม่มี (None)</span>`;
 
+            // ส่วนของ Dropdown เลือกรายวิชา
             let selectOptionsHtml = COURSES_DATA.map(c => 
                 `<option value="${c.id}" ${c.id === selectedCourseId ? 'selected' : ''}>${c.code} - ${c.nameTH}</option>`
             ).join('');
 
-            let closHtml = course.clos.map((clo, index) => {
-                let plosBadges = clo.plos.map(ploText => {
-                    const isAffective = ploText.includes('เห็นคุณค่า') || ploText.includes('ตอบสนอง');
-                    const badgeBg = isAffective ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-blue-100 text-blue-800 border-blue-300';
-                    return `<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] md:text-xs font-black border ${badgeBg} mr-1 mb-1">${ploText}</span>`;
-                }).join('');
-
-                return `
-                    <tr class="hover:bg-slate-50 transition-colors border-b border-slate-200">
-                        <td data-label="ลำดับ" class="px-5 py-5 font-black text-slate-400 text-center align-top text-xl">${index + 1}</td>
-                        <td data-label="ผลลัพธ์การเรียนรู้ (CLO)" class="px-5 py-5 text-slate-800 align-top leading-relaxed text-base md:text-lg font-medium">${clo.text}</td>
-                        <td data-label="PLOs ที่สอดคล้อง" class="px-5 py-5 align-top">${plosBadges}</td>
-                        <td data-label="การประเมิน" class="px-5 py-5 align-top">
-                            <div class="text-xs font-bold text-indigo-600 uppercase tracking-tighter">Method: ${clo.assessmentMethod}</div>
-                            <div class="text-sm text-slate-600 mt-1">${clo.assessmentTool}</div>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-
-            mainContent.innerHTML = `
-                <div class="max-w-6xl mx-auto space-y-6 pb-12">
-                    <!-- Dropdown -->
-                    <div class="relative max-w-xl">
-                        <label class="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1 block">เลือกรายวิชา</label>
-                        <select onchange="selectCourse(this.value)" class="bg-white border border-slate-300 text-slate-800 text-base font-bold rounded-xl focus:ring-2 focus:ring-indigo-500 block w-full p-3 appearance-none shadow-sm cursor-pointer">
-                            ${selectOptionsHtml}
-                        </select>
-                    </div>
-
-                    <!-- Course Title -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 md:p-8">
-                        <div class="flex flex-col md:flex-row justify-between gap-4">
-                            <div>
-                                <span class="inline-block px-3 py-1 bg-indigo-100 text-indigo-800 rounded text-xs font-black tracking-widest font-mono mb-2 border border-indigo-200 uppercase">${course.code}</span>
-                                <h2 class="text-xl md:text-3xl font-black text-slate-800 mb-1">${course.nameTH}</h2>
-                                <h3 class="text-sm md:text-lg text-slate-500 font-serif italic">${course.nameEN}</h3>
+            let dropdownHtml = `
+                <div class="mb-6 z-10 relative max-w-xl">
+                    <div class="flex flex-col">
+                        <label class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1.5 ml-1">เลือกรายวิชาเพื่อดูรายละเอียด</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none">
+                                <i class="ph-fill ph-book-open text-indigo-500 text-xl"></i>
                             </div>
-                            <div class="flex items-center space-x-3 bg-slate-50 p-3 rounded-xl border border-slate-100 self-start md:self-auto">
-                                <div class="text-3xl md:text-4xl font-black text-indigo-900">${creditsMain}</div>
-                                <div class="text-[10px] md:text-xs font-bold text-slate-400 uppercase leading-none">Credits<br><span class="text-slate-500">${creditsDetail}</span></div>
+                            <select onchange="selectCourse(this.value)" class="bg-white border border-slate-300 text-slate-800 text-base md:text-lg font-bold rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-11 p-3 appearance-none cursor-pointer shadow-sm transition-shadow hover:shadow">
+                                ${selectOptionsHtml}
+                            </select>
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                <i class="ph-bold ph-caret-down text-slate-400"></i>
                             </div>
-                        </div>
-                        <div class="mt-6 pt-4 border-t border-slate-100 text-sm md:text-base">
-                            <span class="font-bold text-slate-700 mr-2">วิชาบังคับก่อน:</span> ${prerequisiteHtml}
-                        </div>
-                    </div>
-
-                    <!-- Description -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div class="p-4 md:p-6 space-y-4">
-                            <div>
-                                <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center"><i class="ph-bold ph-translate mr-1"></i> ภาษาไทย</h4>
-                                <p class="text-slate-700 leading-relaxed text-sm md:text-base">${course.descriptionTH}</p>
-                            </div>
-                            <div class="pt-4 border-t border-slate-50">
-                                <h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center"><i class="ph-bold ph-translate mr-1"></i> English</h4>
-                                <p class="text-slate-500 leading-relaxed text-sm md:text-base italic">${course.descriptionEN}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CLO Table -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                        <div class="bg-indigo-600 px-6 py-4 text-white">
-                            <h4 class="font-black text-lg flex items-center"><i class="ph-fill ph-target mr-2"></i> ผลลัพธ์การเรียนรู้ระดับรายวิชา (CLOs)</h4>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left responsive-table">
-                                <thead class="bg-slate-50 border-b border-slate-200">
-                                    <tr>
-                                        <th class="px-5 py-4 font-bold text-slate-500 text-xs uppercase w-16 text-center">No.</th>
-                                        <th class="px-5 py-4 font-bold text-slate-500 text-xs uppercase">CLO Description</th>
-                                        <th class="px-5 py-4 font-bold text-slate-500 text-xs uppercase w-48">Mapped PLOs</th>
-                                        <th class="px-5 py-4 font-bold text-slate-500 text-xs uppercase w-64">Assessment</th>
-                                    </tr>
-                                </thead>
-                                <tbody>${closHtml}</tbody>
-                            </table>
                         </div>
                     </div>
                 </div>
             `;
+
+            let closHtml = '';
+            course.clos.forEach((clo, index) => {
+                let plosHtml = '';
+                clo.plos.forEach(ploText => {
+                    const isAffective = ploText.includes('เห็นคุณค่า') || ploText.includes('ตอบสนอง');
+                    const badgeBg = isAffective ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-blue-100 text-blue-800 border-blue-300';
+
+                    plosHtml += `
+                        <div class="inline-block mr-2 mb-2">
+                            <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-sm font-black shadow-sm border ${badgeBg}">
+                                ${ploText}
+                            </span>
+                        </div>
+                    `;
+                });
+
+                closHtml += `
+                    <tr class="hover:bg-slate-50 transition-colors border-b border-slate-200">
+                        <td class="px-5 py-5 font-black text-slate-400 text-center align-top text-xl">${index + 1}</td>
+                        <td class="px-5 py-5 text-slate-800 align-top leading-relaxed text-lg font-medium">${clo.text}</td>
+                        <td class="px-5 py-5 align-top w-1/4">
+                            <div class="flex flex-wrap">${plosHtml}</div>
+                        </td>
+                        <td class="px-5 py-5 align-top w-1/3">
+                            <div class="bg-white rounded-xl p-4 border border-slate-200 shadow-sm">
+                                <div class="flex items-start mb-3">
+                                    <i class="ph-fill ph-check-circle text-emerald-500 mr-3 mt-1 text-2xl flex-shrink-0"></i>
+                                    <div>
+                                        <span class="font-bold text-slate-500 text-xs uppercase tracking-widest block mb-1">Method</span>
+                                        <span class="text-slate-800 text-base font-bold">${clo.assessmentMethod}</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <i class="ph-fill ph-medal text-amber-500 mr-3 mt-1 text-2xl flex-shrink-0"></i>
+                                    <div>
+                                        <span class="font-bold text-slate-500 text-xs uppercase tracking-widest block mb-1">Tool</span>
+                                        <span class="text-slate-700 leading-relaxed text-sm font-medium">${clo.assessmentTool}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            let contentHtml = `
+                <div class="max-w-6xl mx-auto space-y-6 pb-12">
+                    
+                    ${dropdownHtml}
+
+                    <!-- Course Title Card -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 md:p-8">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <span class="inline-block px-4 py-1.5 bg-indigo-100 text-indigo-800 rounded-md text-sm md:text-base font-black tracking-widest font-mono mb-4 border border-indigo-200">
+                                    ${course.code}
+                                </span>
+                                <h2 class="text-2xl md:text-4xl font-black text-slate-800 mb-2">${course.nameTH}</h2>
+                                <h3 class="text-lg md:text-2xl text-slate-500 font-serif italic">${course.nameEN}</h3>
+                            </div>
+                            <div class="text-right bg-slate-50 p-4 rounded-xl border border-slate-100 flex-shrink-0 ml-4">
+                                <div class="text-4xl md:text-5xl font-black text-indigo-900">${creditsMain}</div>
+                                <div class="text-base md:text-lg font-bold text-slate-500 tracking-widest mt-1">${creditsDetail}</div>
+                                <div class="text-xs md:text-sm font-bold text-slate-400 uppercase mt-2 tracking-wider">Credits</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 pt-6 border-t border-slate-200 flex items-center">
+                            <span class="font-bold text-slate-700 w-32 text-lg">วิชาบังคับก่อน:</span>
+                            ${prerequisiteHtml}
+                        </div>
+                    </div>
+
+                    <!-- Description Card -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+                        <div class="bg-slate-50 px-6 md:px-8 py-4 border-b border-slate-200 flex items-center space-x-3">
+                            <i class="ph-fill ph-file-text text-slate-500 text-3xl"></i>
+                            <h4 class="font-black text-slate-800 text-xl">คำอธิบายรายวิชา (Course Description)</h4>
+                        </div>
+                        <div class="p-6 md:p-8 space-y-6 text-base md:text-xl leading-relaxed text-slate-700 font-medium">
+                            <p class="text-justify indent-10"><span class="font-black text-slate-800 mr-2 bg-slate-100 px-3 py-1 rounded-lg">TH:</span>${course.descriptionTH}</p>
+                            <p class="text-justify indent-10"><span class="font-black text-slate-800 mr-2 bg-slate-100 px-3 py-1 rounded-lg">EN:</span>${course.descriptionEN}</p>
+                        </div>
+                    </div>
+
+                    <!-- CLO and Assessment Table -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mt-8">
+                        <div class="bg-indigo-50 px-6 md:px-8 py-5 border-b border-indigo-200 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <i class="ph-fill ph-target text-indigo-600 text-4xl"></i>
+                                <h4 class="font-black text-indigo-900 text-2xl md:text-3xl">ผลลัพธ์การเรียนรู้ระดับรายวิชา (CLOs)</h4>
+                            </div>
+                        </div>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left min-w-[900px]">
+                                <thead class="bg-slate-100 border-b border-slate-300">
+                                    <tr>
+                                        <th class="px-5 py-5 font-bold text-slate-600 text-sm uppercase tracking-wider w-16 text-center">No.</th>
+                                        <th class="px-5 py-5 font-bold text-slate-600 text-sm uppercase tracking-wider">Course Learning Outcome (CLO)</th>
+                                        <th class="px-5 py-5 font-bold text-slate-600 text-sm uppercase tracking-wider w-64">Mapped PLOs</th>
+                                        <th class="px-5 py-5 font-bold text-slate-600 text-sm uppercase tracking-wider w-80">การประเมินผล (Assessment)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${closHtml}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            `;
+
+            mainContent.innerHTML = contentHtml;
         }
 
+        // Initialize
         renderPLOSidebar();
         renderMainContent();
+
     </script>
 </body>
 </html>
