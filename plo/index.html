@@ -2823,6 +2823,20 @@
             isPLOPanelOpen = false;
         }
 
+        // --- ให้คัดลอกโค้ดตั้งแต่บรรทัดนี้ไปวางต่อท้าย ---
+        document.addEventListener('click', (event) => {
+            // ถ้ากล่องปิดอยู่ ให้ข้ามไป
+            if (!isPLOPanelOpen) return;
+
+            // เช็คว่าจุดที่คลิก ไม่ใช่ปุ่มเมนู PLO ด้านซ้าย (เพื่อไม่ให้มันไปตีกันตอนกดเปิด)
+            const isClickOnPLOCard = event.target.closest('.plo-card');
+
+            // ถ้าไม่ได้คลิกที่ปุ่มเปิด ให้ปิดกล่องเลย (คลิกตรงไหนของจอก็ปิด)
+            if (!isClickOnPLOCard) {
+                closePLOPanel();
+            }
+        });
+
         function renderPLOSidebar() {
             let html = '';
             for (const [ploKey, text] of Object.entries(PLO_DATA)) {
