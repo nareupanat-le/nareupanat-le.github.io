@@ -2901,9 +2901,16 @@
 
             let closHtml = course.clos.map((clo, index) => {
                 let plosBadges = clo.plos.map(ploText => {
+                    // กำหนดสี และเพิ่ม hover (เปลี่ยนสีตอนเอาเมาส์ชี้) ให้ดูรู้ว่ากดได้
                     const isAffective = ploText.includes('เห็นคุณค่า') || ploText.includes('ตอบสนอง');
-                    const badgeBg = isAffective ? 'bg-emerald-100 text-emerald-800 border-emerald-300' : 'bg-blue-100 text-blue-800 border-blue-300';
-                    return `<span class="inline-flex items-center px-2 py-1 rounded-md text-[10px] md:text-xs font-black border ${badgeBg} mr-1 mb-1">${ploText}</span>`;
+                    const badgeBg = isAffective ? 'bg-emerald-100 text-emerald-800 border-emerald-300 hover:bg-emerald-200' : 'bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200';
+                    
+                    // ดึงข้อความ "PLO X" ออกมาจาก text เพื่อส่งให้ฟังก์ชัน togglePLOPanel
+                    let ploMatch = ploText.match(/(PLO\s*\d+)/i);
+                    let ploKey = ploMatch ? ploMatch[1].toUpperCase().replace(/\s+/g, ' ') : '';
+
+                    // เพิ่ม onclick และ cursor-pointer
+                    return `<span onclick="togglePLOPanel('${ploKey}')" class="inline-flex items-center px-2 py-1 rounded-md text-[10px] md:text-xs font-black border ${badgeBg} mr-1 mb-1 cursor-pointer transition-colors shadow-sm">${ploText}</span>`;
                 }).join('');
 
                 return `
