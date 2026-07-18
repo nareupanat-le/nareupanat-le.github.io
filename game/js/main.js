@@ -7,6 +7,11 @@ let slotsData = [];
 let tilesData = {};
 let selectedTileId = null;
 
+// Turn-based state
+let turnHistory = [];
+let previousBoardState = [];
+let turnCount = 1;
+
 // DOM Elements
 const lblCase = document.getElementById('lbl-case');
 const btnRandomize = document.getElementById('btn-randomize');
@@ -18,6 +23,11 @@ const btnLoad = document.getElementById('btn-load');
 const btnToggleSol = document.getElementById('btn-toggle-sol');
 const btnGenerate = document.getElementById('btn-generate');
 const btnCopy = document.getElementById('btn-copy');
+
+const btnRecordTurn = document.getElementById('btn-record-turn');
+const btnGenerateLog = document.getElementById('btn-generate-log');
+const btnCopyLog = document.getElementById('btn-copy-log');
+const logOutput = document.getElementById('log-output');
 
 const boardPanel = document.getElementById('board-panel');
 const cellsSol = document.getElementById('cells-sol');
@@ -110,6 +120,8 @@ function loadGameBoard() {
     slotsData = [];
     tilesData = {};
     selectedTileId = null;
+    turnHistory = [];
+    turnCount = 1;
     
     const gammaRaw = entryGamma.value.trim().split(" ");
     const deltaRaw = entryDelta.value.trim().split(" ");
@@ -204,6 +216,9 @@ function loadGameBoard() {
             cellsTiles.appendChild(blockWrap);
         });
     }
+    
+    // Initialize previous state after rendering
+    previousBoardState = slotsData.map(s => s.filledBy);
 }
 
 function createTile(char, sub, idx, parent = cellsTiles) {
@@ -457,6 +472,79 @@ btnCopy.addEventListener('click', () => {
     const oldTxt = btnCopy.innerText;
     btnCopy.innerText = '✅ Copied!';
     setTimeout(() => btnCopy.innerText = oldTxt, 2000);
+});
+
+btnRecordTurn.addEventListener('click', () => {
+    let actions = [];
+    let currentBoardState = slotsData.map(s => s.filledBy);
+    
+    for (let i = 0; i < slotsData.length; i++) {
+        let prev = previousBoardState[i];
+        let curr = currentBoardState[i];
+        
+        if (curr && curr !== prev) {
+            let t = tilesData[curr];
+            actions.push(`Placed tile ${t.char}_${t.sub} in slot index ${i}`);
+        } else if (!curr && prev) {
+            let t = tilesData[prev];
+            actions.push(`Removed tile ${t.char}_${t.sub} from slot index ${i}`);
+        }
+    }
+    
+    if (actions.length === 0) {
+        alert("No moves made in this turn!");
+        return;
+    }
+    
+    turnHistory.push(`Turn ${turnCount}:\n  - ` + actions.join('\n  - '));
+    turnCount++;
+    previousBoardState = currentBoardState;
+    
+    const originalText = btnRecordTurn.innerText;
+    btnRecordTurn.innerText = "✅ Recorded!";
+    setTimeout(() => { btnRecordTurn.innerText = originalText; }, 1000);
+});
+
+btnGenerateLog.addEventListener('click', () => {
+    if (turnHistory.length === 0) {
+        alert("No turns recorded yet!");
+        return;
+    }
+    
+    let summary = `GAME SUMMARY\n`;
+    summary += `====================\n`;
+    summary += `Initial Parameters:\n`;
+    summary += `a1 = ${entryA1.value}\n`;
+    summary += `a2 = ${entryA2.value}\n`;
+    summary += `gamma = ${entryGamma.value}\n`;
+    summary += `delta = ${entryDelta.value}\n`;
+    summary += `====================\n\n`;
+    
+    summary += turnHistory.join('\n\n') + '\n\n';
+    
+    summary += `====================\n`;
+    let uCells = [];
+    for (let i = 0; i < slotsData.length; i++) {
+        let slot = slotsData[i];
+        if (slot.filledBy) {
+            let t = tilesData[slot.filledBy];
+            uCells.push(`${t.char}_${t.sub}`);
+        } else {
+            uCells.push("epsilon");
+        }
+    }
+    summary += `Final u = ${uCells.join(" ")}\n`;
+    
+    outputPanel.style.display = 'block';
+    logOutput.value = summary;
+});
+
+btnCopyLog.addEventListener('click', () => {
+    logOutput.select();
+    document.execCommand('copy');
+    const oldTxt = btnCopyLog.innerText;
+    btnCopyLog.innerText = '✅ Copied!';
+    setTimeout(() => btnCopyLog.innerText = oldTxt, 2000);
 });
 
 // Initialize with a game
