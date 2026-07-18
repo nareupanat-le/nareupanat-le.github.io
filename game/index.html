@@ -16,9 +16,11 @@
     <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
 </head>
 <body>
-
-    <h1>LaTeX Game for Main Theorem</h1>
-
+    <button id="btn-show-rules" title="How to Play (The γ Express)" style="position: absolute; top: 20px; right: 20px; background: rgba(17, 138, 178, 0.1); color: var(--primary); border: 1px solid rgba(17, 138, 178, 0.3); padding: 8px 15px; font-size: 0.9rem; border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.2s; z-index: 100; backdrop-filter: blur(4px);">
+        🚂 How to Play
+    </button>
+    
+    <h1>LaTeX Game of the Main Theorem</h1>
     <div class="glass-panel">
         <div class="controls-grid">
             <div class="input-group">
@@ -32,20 +34,20 @@
             
             <div class="input-group">
                 <label>α1:</label>
-                <input type="text" id="entry-a1">
+                <input type="text" id="entry-a1" readonly>
             </div>
             <div class="input-group">
                 <label>α2:</label>
-                <input type="text" id="entry-a2">
+                <input type="text" id="entry-a2" readonly>
             </div>
             
             <div class="input-group">
                 <label>γ (Space separated):</label>
-                <input type="text" id="entry-gamma">
+                <input type="text" id="entry-gamma" readonly>
             </div>
             <div class="input-group">
                 <label>δ (Space separated):</label>
-                <input type="text" id="entry-delta">
+                <input type="text" id="entry-delta" readonly>
             </div>
         </div>
         
@@ -75,7 +77,7 @@
             </div>
             <div class="row" id="row-tiles" style="margin-top: 20px;">
                 <div class="row-label">Tiles (δ)</div>
-                <div class="cells" id="cells-tiles" style="display: flex; gap: 30px;"></div>
+                <div class="cells" id="cells-tiles" style="display: flex; gap: 10px;"></div>
             </div>
         </div>
         
@@ -107,7 +109,86 @@
     <script src="js/strategies/base_case.js"></script>
     <script src="js/strategies/case_00xx.js"></script>
     <script src="js/strategies/case_0100.js"></script>
-    <script src="js/strategies/case_0110.js"></script>
     <script src="js/main.js"></script>
+    <!-- Rules Modal -->
+    <div id="rules-modal" class="modal-overlay">
+        <div class="modal-content train-theme-content">
+            <button class="modal-close" id="btn-close-rules">&times;</button>
+            <h1>🚂 ขบวนรถไฟสาย $\gamma$ (กรณี 0,1,0,0)</h1>
+            <p>เพื่อให้การเล่นเกมนี้สนุกและเห็นภาพชัดเจนขึ้น เรามาจินตนาการว่ากระดาน $\gamma$ คือ <strong>"ขบวนรถไฟขบวนยาว"</strong> ที่กำลังวิ่งอยู่ โดยมีกฎเกณฑ์และเป้าหมายที่ชัดเจนดังนี้ครับ</p>
+            
+            <h2>🎯 เป้าหมายของเกม</h2>
+            <p>เป้าหมายสูงสุดของเราคือการสร้างขบวนรถไฟจำลองที่ชื่อว่า $\delta$ ขึ้นมา แล้วนำไปจอดเทียบท่า (ทาบทับ) กับขบวนรถไฟหลัก $\gamma$ ให้สอดคล้องกับกฎ $\leq_C$ อย่างสมบูรณ์แบบ</p>
+            <p>ในการสร้าง $\delta$ เราต้องทำตามเงื่อนไขการ "ยุบตู้ขบวน" ดังนี้:</p>
+            <ul>
+                <li>ตู้ขบวนธรรมดาที่มีแต่กลุ่มคน ($1^k$) จะถูกยุบรวมให้เหลือตัวแทนแค่ $1$</li>
+                <li>ตู้ขบวนพิเศษ $\alpha_1$ (หรือบางกรณีคือ $\alpha_2$) ก็จะถูกยุบให้เหลือแค่ $1$ เช่นกัน</li>
+                <li>จากนั้นเราต้องจับ $\delta$ ที่ถูกยุบแล้วนี้ ไปวางลงบน $\gamma$ ให้ได้ โดยมีข้อห้ามเด็ดขาดคือ: <strong>ห้ามปล่อยให้มีช่องว่างอากาศ ($\varepsilon$) เกิดขึ้นตามหลัง 1 เด็ดขาด</strong></li>
+            </ul>
+
+            <h2>🛠️ 1. การสร้าง $\delta$ ให้พร้อมเล่น</h2>
+            <p>ในกรณี (0,1,0,0) นี้ เราจะประกอบขบวนรถไฟจำลอง $\delta$ โดย:</p>
+            <ul>
+                <li><strong>พนักงานประจำตู้ (0):</strong> ถ้าเจอ 0 ให้ดึงมาใส่ $\delta$ ตามปกติ</li>
+                <li><strong>ตู้ตู้นอนพิเศษ ($\alpha_2$):</strong> ถ้าเจอบล็อก $\alpha_2$ ให้ยกตู้มาใส่ $\delta$ ทั้งก้อนเหมือนเดิม</li>
+                <li><strong>ตู้เสบียงขนาดใหญ่ ($\alpha_1$):</strong> ถ้าเจอบล็อก $\alpha_1$ เราจะ <strong>ทำลายตู้เสบียงนี้ทิ้ง</strong> แล้วให้เหลือตัวแทนออกมาเป็นผู้โดยสาร VIP แค่ $1$ คน (หมาก $\delta$ จะไม่มี $\alpha_1$ อยู่เลย)</li>
+            </ul>
+
+            <h2>🛤️ 2. กฎการ Move หมาก (กลไกการทำงานของขบวนรถ)</h2>
+            <p>เมื่อเราประกอบขบวน $\delta$ เสร็จแล้ว ก็ถึงเวลาปล่อยขบวนรถไปเทียบท่า $\gamma$ โดยใช้กฎ 3 ข้อ:</p>
+
+            <div class="train-rule rule-1">
+                <h3>กฎข้อที่ 1: "พนักงาน (0) วิ่งประกบ VIP (1) เสมอ" (Dynamic Shifting)</h3>
+                <p>ผู้โดยสาร VIP (1) เป็นคนที่ห้ามอยู่ตัวคนเดียวเด็ดขาด! ทันทีที่ผู้โดยสาร VIP ลงไปนั่งที่นั่ง พนักงานประจำตู้ (0) ตัวถัดไปจะต้อง <strong>ยอมทิ้งที่นั่งเดิมของตัวเอง แล้ววิ่งตะบึงไปประกบหลัง VIP ทันที</strong> เพื่อไม่ให้เกิดช่องว่างอากาศ ($\varepsilon$)</p>
+                <p>ความสุดยอดคือ... แม้แต่พนักงานที่ยืนเฝ้าหน้าประตูตู้นอน $\alpha_2$ (ซึ่งคือเลข 0 ตัวหน้าสุด) ก็ยอม <strong>"ฉีกร่าง"</strong> เปิดประตูวิ่งออกไปประกบ VIP ที่ตู้อื่น เพื่อทำภารกิจนี้ให้สำเร็จ!</p>
+            </div>
+
+            <div class="train-rule rule-2">
+                <h3>กฎข้อที่ 2: "VIP (1) เดินเข้าที่นั่งตามตั๋วเดิม" (Forward Mapping)</h3>
+                <p>หากมีผู้โดยสาร VIP (1) หลายคนเดินตามกันมา และในกลุ่มนั้นมีคนที่อพยพมาจาก "ตู้เสบียง $\alpha_1$"</p>
+                <p>เกมจะให้เกียรติผู้โดยสารจากตู้เสบียง $\alpha_1$ ตู้ที่อยู่ท้ายขบวนสุด โดยผู้โดยสาร VIP ทั้งกลุ่มจะค่อยๆ เดินเรียงหน้าเข้าไปนั่งตาม <strong>"หมายเลขที่นั่งเดิม (Local index)"</strong> ที่พวกเขาเคยนั่งตอนที่ยังอยู่ในตู้เสบียงนั้น</p>
+            </div>
+
+            <div class="train-rule rule-3">
+                <h3>กฎข้อที่ 3: "VIP (1) ยอมเดินถอยหลังสู้ตายเมื่อสุดทาง" (Backwards Mapping)</h3>
+                <p>จากกฎข้อ 2 ปกติ VIP จะเดินหน้าหาที่นั่งเสมอ <strong>ยกเว้นกรณีฉุกเฉินเดียว</strong> คือเมื่อคิวของ VIP ดันไปตกอยู่ <strong>"ตู้สุดท้ายของขบวนรถไฟพอดี"</strong></p>
+                <p>ถ้าปล่อยให้เดินหน้าต่อไป พวกเขาจะไปไม่ถึงท้ายขบวน และจะเกิดช่องว่างอากาศ ($\varepsilon$) ที่ท้ายขบวน! ในนาทีวิกฤตนี้ VIP จึงต้องเปลี่ยนแผนเป็น <strong>"วิ่งถอยหลัง"</strong> โดยเริ่มจากเบาะหลังสุดของขบวนรถไฟกลับมา เพื่ออุดรอยรั่วที่ท้ายขบวนให้สนิทนั่นเองครับ</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const btnShow = document.getElementById('btn-show-rules');
+            const btnClose = document.getElementById('btn-close-rules');
+            const modal = document.getElementById('rules-modal');
+
+            if (btnShow && btnClose && modal) {
+                // Add hover effect via JS since it's an inline style button, or just use css class.
+                btnShow.addEventListener('mouseover', () => {
+                    btnShow.style.transform = 'translateY(-2px)';
+                    btnShow.style.boxShadow = '0 6px 20px rgba(6, 214, 160, 0.6)';
+                });
+                btnShow.addEventListener('mouseout', () => {
+                    btnShow.style.transform = 'none';
+                    btnShow.style.boxShadow = '0 4px 15px rgba(6, 214, 160, 0.4)';
+                });
+
+                btnShow.addEventListener('click', () => {
+                    modal.classList.add('active');
+                });
+                
+                btnClose.addEventListener('click', () => {
+                    modal.classList.remove('active');
+                });
+
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        modal.classList.remove('active');
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 </html>
