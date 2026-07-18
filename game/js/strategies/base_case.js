@@ -3,7 +3,7 @@ class BaseStrategy {
         throw new Error("Subclass must implement generateDelta");
     }
     
-    calculateSolution(gammaRaw, deltaRaw) {
+    calculateSolution(gammaRaw, deltaRaw, a1, a2) {
         throw new Error("Subclass must implement calculateSolution");
     }
     

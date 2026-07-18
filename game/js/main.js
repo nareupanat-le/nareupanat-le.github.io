@@ -126,14 +126,20 @@ function loadGameBoard() {
     selectedTileId = null;
     turnHistory = [];
     turnCount = 1;
+    btnRecordTurn.innerText = `✅ Record Turn (${turnCount})`;
     
     const gammaRaw = entryGamma.value.trim().split(" ");
     const deltaRaw = entryDelta.value.trim().split(" ");
     
+    if (gammaRaw.length !== deltaRaw.length) {
+        alert("Gamma (γ) and Delta (δ) must have the same number of blocks (separated by spaces)!");
+        return;
+    }
+    
     const [lm1, rm1] = currentCase.replace(/[()]/g, '').split(', ').map(Number);
     const is00xx = (lm1 === 0 && rm1 === 0);
     
-    const uSolution = currentStrategy.calculateSolution(gammaRaw, deltaRaw);
+    const uSolution = currentStrategy.calculateSolution(gammaRaw, deltaRaw, entryA1.value.trim(), entryA2.value.trim());
     
     let globalIdx = 0;
     
@@ -504,9 +510,8 @@ btnRecordTurn.addEventListener('click', () => {
     turnCount++;
     previousBoardState = currentBoardState;
     
-    const originalText = btnRecordTurn.innerText;
     btnRecordTurn.innerText = "✅ Recorded!";
-    setTimeout(() => { btnRecordTurn.innerText = originalText; }, 1000);
+    setTimeout(() => { btnRecordTurn.innerText = `✅ Record Turn (${turnCount})`; }, 1000);
 });
 
 btnGenerateLog.addEventListener('click', () => {

@@ -9,7 +9,7 @@ class Strategy_0100 extends BaseStrategy {
         return dList.join(" ");
     }
     
-    calculateSolution(gammaRaw, deltaRaw) {
+    calculateSolution(gammaRaw, deltaRaw, a1, a2) {
         const m = gammaRaw.length;
         const L = gammaRaw.reduce((sum, g) => sum + g.length, 0);
         const D = deltaRaw.reduce((sum, d) => sum + d.length, 0);
@@ -45,6 +45,7 @@ class Strategy_0100 extends BaseStrategy {
         }
 
         let qJ = Array(D).fill(0);
+        let hJ = Array(D).fill(0);
         for (let j = 0; j < D; j++) {
             let b = bJ[j];
             if (isOneBlock[b - 1]) {
@@ -53,8 +54,19 @@ class Strategy_0100 extends BaseStrategy {
                     k++;
                 }
                 qJ[j] = k - 1;
+                
+                let h = 0;
+                for (let t = b; t <= qJ[j]; t++) {
+                    if (gammaRaw[t - 1] === a1) {
+                        h = t;
+                    }
+                }
+                hJ[j] = h;
             }
         }
+        
+        let pPrev = -1;
+        let yPrev = null;
         
         for (let j = 0; j < D; j++) {
             let b = bJ[j];
@@ -62,27 +74,25 @@ class Strategy_0100 extends BaseStrategy {
             let yJ = dB[j - IArr[b]];
             let p;
             
-            if (dB === '1') {
+            if (j > 0 && yPrev === '1') {
+                p = pPrev + 1;
+            } else if (dB === '1') {
                 let q = qJ[j];
+                let h = hJ[j];
                 if (q === m) {
                     p = RArr[m] - m + b;
+                } else if (h > 0) {
+                    p = LArr[h] + b - 1;
                 } else {
-                    let idealP = LArr[q] + b - 1;
-                    let maxP = RArr[q] - q + b;
-                    p = Math.min(idealP, maxP);
+                    p = LArr[b];
                 }
             } else {
-                if (j === IArr[b]) {
-                    if (b > 1 && isOneBlock[b - 2]) {
-                        p = Math.min(LArr[b - 1] + b - 1, LArr[b]);
-                    } else {
-                        p = LArr[b];
-                    }
-                } else {
-                    p = RArr[b] - SArr[b] + j;
-                }
+                p = LArr[b] + j - IArr[b];
             }
+            
             uSol[p] = { char: yJ, sub: String(b) };
+            pPrev = p;
+            yPrev = yJ;
         }
         return uSol;
     }

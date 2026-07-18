@@ -3,7 +3,7 @@ class Strategy_00xx extends BaseStrategy {
         return a1.split("").join(" ");
     }
     
-    calculateSolution(gammaRaw, deltaRaw) {
+    calculateSolution(gammaRaw, deltaRaw, a1, a2) {
         const m = gammaRaw.length;
         const totalL = gammaRaw.reduce((sum, g) => sum + g.length, 0);
         let uSol = Array(totalL).fill(null);
