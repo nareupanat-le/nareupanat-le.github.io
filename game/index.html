@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaTeX Game Project - Web Edition</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- MathJax for Live Preview -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+
+    <h1>LaTeX Game: Theorem 16</h1>
+
+    <div class="glass-panel">
+        <div class="controls-grid">
+            <div class="input-group">
+                <label>Current Case:</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <strong id="lbl-case" style="font-size: 1.2rem; color: var(--accent);">(0, 1, 0, 0)</strong>
+                    <button id="btn-randomize" class="btn-warning" style="padding: 5px 10px; font-size: 0.9rem;">🎲 Randomize Game</button>
+                </div>
+            </div>
+            <div class="input-group"></div>
+            
+            <div class="input-group">
+                <label>α1:</label>
+                <input type="text" id="entry-a1" readonly>
+            </div>
+            <div class="input-group">
+                <label>α2:</label>
+                <input type="text" id="entry-a2" readonly>
+            </div>
+            
+            <div class="input-group">
+                <label>γ (Space separated):</label>
+                <input type="text" id="entry-gamma" readonly>
+            </div>
+            <div class="input-group">
+                <label>δ (Space separated):</label>
+                <input type="text" id="entry-delta" readonly>
+            </div>
+        </div>
+        
+        <div class="btn-group">
+            <button id="btn-load" class="btn-secondary">🎮 Load Game Board</button>
+            <button id="btn-toggle-sol" class="btn-warning">👁️ Show Solution</button>
+        </div>
+    </div>
+
+    <div class="glass-panel" id="board-panel" style="display: none;">
+        <p style="text-align: center; opacity: 0.8; font-size: 0.9rem; margin-top: 0;">
+            <em>Tip: Drag and drop tiles into the slots, or click a tile to select it, then click an empty slot to place it!</em>
+        </p>
+        
+        <div class="game-board" id="game-board">
+            <div class="row" id="row-sol">
+                <div class="row-label">Solution (u)</div>
+                <div class="cells" id="cells-sol" style="display: flex; gap: 15px;"></div>
+            </div>
+            <div class="row" id="row-gamma">
+                <div class="row-label">Gamma (γ)</div>
+                <div class="cells" id="cells-gamma" style="display: flex; gap: 15px;"></div>
+            </div>
+            <div class="row" id="row-slots">
+                <div class="row-label">Drop Zone</div>
+                <div class="cells" id="cells-slots" style="display: flex; gap: 15px;"></div>
+            </div>
+            <div class="row" id="row-tiles" style="margin-top: 20px;">
+                <div class="row-label">Tiles (δ)</div>
+                <div class="cells" id="cells-tiles" style="display: flex; gap: 10px;"></div>
+            </div>
+        </div>
+        
+        <div class="btn-group" style="margin-top: 20px;">
+            <button id="btn-generate" class="btn-primary">🚀 Generate LaTeX</button>
+        </div>
+    </div>
+
+    <div class="glass-panel output-container" id="output-panel" style="display: none;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <label style="margin: 0; font-size: 1.1rem; color: var(--primary);">LaTeX Output</label>
+            <button id="btn-copy" class="btn-accent" style="padding: 5px 10px; font-size: 0.9rem;">📋 Copy Source</button>
+        </div>
+        <textarea id="latex-output" class="latex-output" readonly></textarea>
+        
+        <h3 style="margin-top: 20px; color: var(--primary);">Live Preview</h3>
+        <div id="mathjax-preview"></div>
+    </div>
+
+    <script src="js/math_utils.js"></script>
+    <script src="js/strategies/base_case.js"></script>
+    <script src="js/strategies/case_00xx.js"></script>
+    <script src="js/strategies/case_0100.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
