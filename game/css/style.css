@@ -274,6 +274,11 @@ button:active {
     display: none !important;
 }
 
+.solution-cell.hidden {
+    display: flex !important;
+    visibility: hidden !important;
+}
+
 .output-container {
     margin-top: 20px;
 }
