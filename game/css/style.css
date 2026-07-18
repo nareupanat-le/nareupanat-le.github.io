@@ -274,6 +274,10 @@ button:active {
     display: none !important;
 }
 
+.invisible {
+    visibility: hidden;
+}
+
 .output-container {
     margin-top: 20px;
 }

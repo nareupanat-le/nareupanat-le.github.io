@@ -157,7 +157,10 @@ function loadGameBoard() {
             
             // Solution
             let solCell = document.createElement('div');
-            solCell.className = `solution-cell sol-${currentIdx} hidden`;
+            solCell.className = `solution-cell sol-${currentIdx} ${isSolutionVisible ? '' : 'invisible'}`;
+            if (!isSolutionVisible && false) {
+                // We keep it invisible but it's handled by CSS
+            }
             if (solData) {
                 solCell.innerHTML = `${solData.char}<span style="font-size:0.7rem; vertical-align:sub">${solData.sub}</span>`;
             } else {
@@ -329,8 +332,8 @@ function placeTileInSlot(tileId, slotIdx) {
 btnToggleSol.addEventListener('click', () => {
     isSolutionVisible = !isSolutionVisible;
     document.querySelectorAll('.solution-cell').forEach(cell => {
-        if (isSolutionVisible) cell.classList.remove('hidden');
-        else cell.classList.add('hidden');
+        if (isSolutionVisible) cell.classList.remove('invisible');
+        else cell.classList.add('invisible');
     });
     btnToggleSol.innerText = isSolutionVisible ? '🙈 Hide Solution' : '👁️ Show Solution';
 });
