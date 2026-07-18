@@ -42,6 +42,7 @@ const mathjaxPreview = document.getElementById('mathjax-preview');
 function getStrategy(lm1, rm1, caseVal) {
     if (lm1 === 0 && rm1 === 0) return new Strategy_00xx();
     if (caseVal === "(0, 1, 0, 0)") return new Strategy_0100();
+    if (caseVal === "(0, 1, 1, 0)") return new Strategy_0110();
     return new StrategyFuture();
 }
 
@@ -53,7 +54,7 @@ function generateIncomparable() {
     isSolutionVisible = false;
     btnToggleSol.innerText = '👁️ Show Solution';
     
-    const cases = ["(0, 0, 0, 0)", "(0, 0, 0, 1)", "(0, 0, 1, 0)", "(0, 0, 1, 1)", "(0, 1, 0, 0)"];
+    const cases = ["(0, 0, 0, 0)", "(0, 0, 0, 1)", "(0, 0, 1, 0)", "(0, 0, 1, 1)", "(0, 1, 0, 0)", "(0, 1, 1, 0)"];
     currentCase = cases[Math.floor(Math.random() * cases.length)];
     lblCase.innerText = currentCase;
     
@@ -122,6 +123,7 @@ function loadGameBoard() {
     selectedTileId = null;
     turnHistory = [];
     turnCount = 1;
+    btnRecordTurn.innerText = `✅ Record Turn (Turn ${turnCount})`;
     
     const gammaRaw = entryGamma.value.trim().split(" ");
     const deltaRaw = entryDelta.value.trim().split(" ");
@@ -503,7 +505,7 @@ btnRecordTurn.addEventListener('click', () => {
     turnCount++;
     previousBoardState = currentBoardState;
     
-    const originalText = btnRecordTurn.innerText;
+    const originalText = `✅ Record Turn (Turn ${turnCount})`;
     btnRecordTurn.innerText = "✅ Recorded!";
     setTimeout(() => { btnRecordTurn.innerText = originalText; }, 1000);
 });
