@@ -206,21 +206,15 @@ function loadGameBoard() {
     
     // Render Tiles
     let tileIdx = 0;
-    if (is00xx) {
-        deltaRaw.forEach((char, i) => {
-            createTile(char, i + 1, tileIdx++);
-        });
-    } else {
-        deltaRaw.forEach((block, i) => {
-            let blockWrap = document.createElement('div');
-            blockWrap.style.display = 'flex';
-            blockWrap.style.gap = '2px';
-            for (let j = 0; j < block.length; j++) {
-                createTile(block[j], i + 1, tileIdx++, blockWrap);
-            }
-            cellsTiles.appendChild(blockWrap);
-        });
-    }
+    deltaRaw.forEach((block, i) => {
+        let blockWrap = document.createElement('div');
+        blockWrap.style.display = 'flex';
+        blockWrap.style.gap = '2px';
+        for (let j = 0; j < block.length; j++) {
+            createTile(block[j], i + 1, tileIdx++, blockWrap);
+        }
+        cellsTiles.appendChild(blockWrap);
+    });
     
     // Initialize previous state after rendering
     previousBoardState = slotsData.map(s => s.filledBy);
