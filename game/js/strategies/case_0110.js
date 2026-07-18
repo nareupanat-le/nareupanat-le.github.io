@@ -1,4 +1,16 @@
-class Strategy_0110 extends GameStrategy {
+class Strategy_0110 extends BaseStrategy {
+    generateDelta(m, c, a1, a2) {
+        // Fallback delta generation based on the basic replacing rules
+        let d1 = [];
+        for (let i = 0; i < m; i++) {
+            if (c[i] === a1) d1.push(a1);
+            else if (c[i] === a2) d1.push(a2); // Usually replacing alpha2 with alpha2
+            else if (c[i] === '0') d1.push('0');
+            else d1.push('1');
+        }
+        return d1.join(" ");
+    }
+
     generateSolution(alpha1, alpha2, gammaRaw) {
         // No solution known yet. User will figure it out by playing.
         return null;
