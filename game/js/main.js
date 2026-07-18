@@ -42,7 +42,6 @@ const mathjaxPreview = document.getElementById('mathjax-preview');
 function getStrategy(lm1, rm1, caseVal) {
     if (lm1 === 0 && rm1 === 0) return new Strategy_00xx();
     if (caseVal === "(0, 1, 0, 0)") return new Strategy_0100();
-    if (caseVal === "(0, 1, 1, 0)") return new Strategy_0110();
     return new StrategyFuture();
 }
 
@@ -54,7 +53,7 @@ function generateIncomparable() {
     isSolutionVisible = false;
     btnToggleSol.innerText = '👁️ Show Solution';
     
-    const cases = ["(0, 0, 0, 0)", "(0, 0, 0, 1)", "(0, 0, 1, 0)", "(0, 0, 1, 1)", "(0, 1, 0, 0)", "(0, 1, 1, 0)"];
+    const cases = ["(0, 0, 0, 0)", "(0, 0, 0, 1)", "(0, 0, 1, 0)", "(0, 0, 1, 1)", "(0, 1, 0, 0)"];
     currentCase = cases[Math.floor(Math.random() * cases.length)];
     lblCase.innerText = currentCase;
     
@@ -113,6 +112,10 @@ function loadGameBoard() {
     boardPanel.style.display = 'block';
     outputPanel.style.display = 'none';
     
+    // Always hide solution by default when loading a new board
+    isSolutionVisible = false;
+    btnToggleSol.innerText = '👁️ Show Solution';
+    
     cellsSol.innerHTML = '';
     cellsGamma.innerHTML = '';
     cellsSlots.innerHTML = '';
@@ -123,7 +126,6 @@ function loadGameBoard() {
     selectedTileId = null;
     turnHistory = [];
     turnCount = 1;
-    btnRecordTurn.innerText = `✅ Record Turn (Turn ${turnCount})`;
     
     const gammaRaw = entryGamma.value.trim().split(" ");
     const deltaRaw = entryDelta.value.trim().split(" ");
@@ -159,10 +161,7 @@ function loadGameBoard() {
             
             // Solution
             let solCell = document.createElement('div');
-            solCell.className = `solution-cell sol-${currentIdx} ${isSolutionVisible ? '' : 'invisible'}`;
-            if (!isSolutionVisible && false) {
-                // We keep it invisible but it's handled by CSS
-            }
+            solCell.className = `solution-cell sol-${currentIdx} hidden`;
             if (solData) {
                 solCell.innerHTML = `${solData.char}<span style="font-size:0.7rem; vertical-align:sub">${solData.sub}</span>`;
             } else {
@@ -206,15 +205,21 @@ function loadGameBoard() {
     
     // Render Tiles
     let tileIdx = 0;
-    deltaRaw.forEach((block, i) => {
-        let blockWrap = document.createElement('div');
-        blockWrap.style.display = 'flex';
-        blockWrap.style.gap = '2px';
-        for (let j = 0; j < block.length; j++) {
-            createTile(block[j], i + 1, tileIdx++, blockWrap);
-        }
-        cellsTiles.appendChild(blockWrap);
-    });
+    if (is00xx) {
+        deltaRaw.forEach((char, i) => {
+            createTile(char, i + 1, tileIdx++);
+        });
+    } else {
+        deltaRaw.forEach((block, i) => {
+            let blockWrap = document.createElement('div');
+            blockWrap.style.display = 'flex';
+            blockWrap.style.gap = '2px';
+            for (let j = 0; j < block.length; j++) {
+                createTile(block[j], i + 1, tileIdx++, blockWrap);
+            }
+            cellsTiles.appendChild(blockWrap);
+        });
+    }
     
     // Initialize previous state after rendering
     previousBoardState = slotsData.map(s => s.filledBy);
@@ -328,8 +333,8 @@ function placeTileInSlot(tileId, slotIdx) {
 btnToggleSol.addEventListener('click', () => {
     isSolutionVisible = !isSolutionVisible;
     document.querySelectorAll('.solution-cell').forEach(cell => {
-        if (isSolutionVisible) cell.classList.remove('invisible');
-        else cell.classList.add('invisible');
+        if (isSolutionVisible) cell.classList.remove('hidden');
+        else cell.classList.add('hidden');
     });
     btnToggleSol.innerText = isSolutionVisible ? '🙈 Hide Solution' : '👁️ Show Solution';
 });
@@ -499,7 +504,7 @@ btnRecordTurn.addEventListener('click', () => {
     turnCount++;
     previousBoardState = currentBoardState;
     
-    const originalText = `✅ Record Turn (Turn ${turnCount})`;
+    const originalText = btnRecordTurn.innerText;
     btnRecordTurn.innerText = "✅ Recorded!";
     setTimeout(() => { btnRecordTurn.innerText = originalText; }, 1000);
 });
