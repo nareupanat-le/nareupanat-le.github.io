@@ -66,6 +66,7 @@ class GameController {
     getStrategy(lm1, rm1, caseVal) {
         if (lm1 === 0 && rm1 === 0) return new Strategy_00xx();
         if (caseVal === "(0, 1, 0, 0)") return new Strategy_0100();
+        if (caseVal === "(0, 1, 1, 0)") return new Strategy_0110();
         return new StrategyFuture();
     }
 
@@ -75,7 +76,7 @@ class GameController {
         this.state.isSolutionVisible = false;
         this.uiRenderer.updateSolutionVisibility();
         
-        const cases = ["(0, 0, 0, 0)", "(0, 0, 0, 1)", "(0, 0, 1, 0)", "(0, 0, 1, 1)", "(0, 1, 0, 0)"];
+        const cases = ["(0, 0, 0, 0)", "(0, 0, 0, 1)", "(0, 0, 1, 0)", "(0, 0, 1, 1)", "(0, 1, 0, 0)", "(0, 1, 1, 0)"];
         this.state.currentCase = cases[Math.floor(Math.random() * cases.length)];
         this.lblCase.innerText = this.state.currentCase;
         
