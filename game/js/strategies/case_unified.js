@@ -101,6 +101,15 @@ class Strategy_Unified extends BaseStrategy {
         // Populate uSol
         let y = " " + d.join(""); // 1-indexed string
         
+        // NEW: Backwards Mapping (Right Shift) for the tail
+        let H = L - PJ[D];
+        if (H > 0) {
+            let z = y.lastIndexOf('0'); // index of the last 0 in delta
+            for (let j = z + 1; j <= D; j++) {
+                PJ[j] += H;
+            }
+        }
+        
         for (let j = 1; j <= D; j++) {
             let p = PJ[j];
             let b = bJ[j];
