@@ -109,6 +109,12 @@
     <script src="js/strategies/base_case.js"></script>
     <script src="js/strategies/case_00xx.js"></script>
     <script src="js/strategies/case_0100.js"></script>
+    <script src="js/core/GameState.js"></script>
+    <script src="js/view/BoardRenderer.js"></script>
+    <script src="js/view/UIRenderer.js"></script>
+    <script src="js/view/LaTeXRenderer.js"></script>
+    <script src="js/controller/DragDropController.js"></script>
+    <script src="js/controller/GameController.js"></script>
     <script src="js/main.js"></script>
     <!-- Rules Modal -->
     <div id="rules-modal" class="modal-overlay">
@@ -157,38 +163,6 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const btnShow = document.getElementById('btn-show-rules');
-            const btnClose = document.getElementById('btn-close-rules');
-            const modal = document.getElementById('rules-modal');
 
-            if (btnShow && btnClose && modal) {
-                // Add hover effect via JS since it's an inline style button, or just use css class.
-                btnShow.addEventListener('mouseover', () => {
-                    btnShow.style.transform = 'translateY(-2px)';
-                    btnShow.style.boxShadow = '0 6px 20px rgba(6, 214, 160, 0.6)';
-                });
-                btnShow.addEventListener('mouseout', () => {
-                    btnShow.style.transform = 'none';
-                    btnShow.style.boxShadow = '0 4px 15px rgba(6, 214, 160, 0.4)';
-                });
-
-                btnShow.addEventListener('click', () => {
-                    modal.classList.add('active');
-                });
-                
-                btnClose.addEventListener('click', () => {
-                    modal.classList.remove('active');
-                });
-
-                modal.addEventListener('click', (e) => {
-                    if (e.target === modal) {
-                        modal.classList.remove('active');
-                    }
-                });
-            }
-        });
-    </script>
 </body>
 </html>
