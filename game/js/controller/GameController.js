@@ -64,10 +64,8 @@ class GameController {
     }
 
     getStrategy(lm1, rm1, caseVal) {
-        if (lm1 === 0 && rm1 === 0) return new Strategy_00xx();
-        if (caseVal === "(0, 1, 0, 0)") return new Strategy_0100();
-        if (caseVal === "(0, 1, 1, 0)") return new Strategy_0110();
-        return new StrategyFuture();
+        // Thanks to the Grand Unified Theorem, we use a single strategy for ALL 16 cases!
+        return new Strategy_Unified();
     }
 
     generateIncomparable() {
@@ -76,7 +74,16 @@ class GameController {
         this.state.isSolutionVisible = false;
         this.uiRenderer.updateSolutionVisibility();
         
-        const cases = ["(0, 0, 0, 0)", "(0, 0, 0, 1)", "(0, 0, 1, 0)", "(0, 0, 1, 1)", "(0, 1, 0, 0)", "(0, 1, 1, 0)"];
+        const cases = [];
+        for (let a = 0; a <= 1; a++) {
+            for (let b = 0; b <= 1; b++) {
+                for (let c = 0; c <= 1; c++) {
+                    for (let d = 0; d <= 1; d++) {
+                        cases.push(`(${a}, ${b}, ${c}, ${d})`);
+                    }
+                }
+            }
+        }
         this.state.currentCase = cases[Math.floor(Math.random() * cases.length)];
         this.lblCase.innerText = this.state.currentCase;
         

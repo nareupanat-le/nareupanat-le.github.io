@@ -107,9 +107,7 @@
 
     <script src="js/math_utils.js"></script>
     <script src="js/strategies/base_case.js"></script>
-    <script src="js/strategies/case_00xx.js"></script>
-    <script src="js/strategies/case_0100.js"></script>
-    <script src="js/strategies/case_0110.js"></script>
+    <script src="js/strategies/case_unified.js"></script>
     <script src="js/core/GameState.js"></script>
     <script src="js/view/BoardRenderer.js"></script>
     <script src="js/view/UIRenderer.js"></script>
@@ -121,24 +119,24 @@
     <div id="rules-modal" class="modal-overlay">
         <div class="modal-content train-theme-content">
             <button class="modal-close" id="btn-close-rules">&times;</button>
-            <h1>🚂 ขบวนรถไฟสาย $\gamma$ (กรณี 0,1,0,0)</h1>
-            <p>เพื่อให้การเล่นเกมนี้สนุกและเห็นภาพชัดเจนขึ้น เรามาจินตนาการว่ากระดาน $\gamma$ คือ <strong>"ขบวนรถไฟขบวนยาว"</strong> ที่กำลังวิ่งอยู่ โดยมีกฎเกณฑ์และเป้าหมายที่ชัดเจนดังนี้ครับ</p>
+            <h1>🚂 ขบวนรถไฟสาย $\gamma$ (The Grand Unified Theorem)</h1>
+            <p>เพื่อให้การเล่นเกมนี้สนุกและเห็นภาพชัดเจนขึ้น เรามาจินตนาการว่ากระดาน $\gamma$ คือ <strong>"ขบวนรถไฟขบวนยาว"</strong> ที่กำลังวิ่งอยู่ โดยมีกฎเกณฑ์และเป้าหมายที่ชัดเจนดังนี้ครับ (และข่าวดีคือ มันใช้ได้กับทั้ง 16 กรณี!)</p>
             
             <h2>🎯 เป้าหมายของเกม</h2>
             <p>เป้าหมายสูงสุดของเราคือการสร้างขบวนรถไฟจำลองที่ชื่อว่า $\delta$ ขึ้นมา แล้วนำไปจอดเทียบท่า (ทาบทับ) กับขบวนรถไฟหลัก $\gamma$ ให้สอดคล้องกับกฎ $\leq_C$ อย่างสมบูรณ์แบบ</p>
             <p>ในการสร้าง $\delta$ เราต้องทำตามเงื่อนไขการ "ยุบตู้ขบวน" ดังนี้:</p>
             <ul>
                 <li>ตู้ขบวนธรรมดาที่มีแต่กลุ่มคน ($1^k$) จะถูกยุบรวมให้เหลือตัวแทนแค่ $1$</li>
-                <li>ตู้ขบวนพิเศษ $\alpha_1$ (หรือบางกรณีคือ $\alpha_2$) ก็จะถูกยุบให้เหลือแค่ $1$ เช่นกัน</li>
+                <li>ตู้ขบวนพิเศษ $\alpha_1, \alpha_2$ จะไม่ถูกยุบ และคงสภาพเดิมไว้</li>
                 <li>จากนั้นเราต้องจับ $\delta$ ที่ถูกยุบแล้วนี้ ไปวางลงบน $\gamma$ ให้ได้ โดยมีข้อห้ามเด็ดขาดคือ: <strong>ห้ามปล่อยให้มีช่องว่างอากาศ ($\varepsilon$) เกิดขึ้นตามหลัง 1 เด็ดขาด</strong></li>
             </ul>
 
             <h2>🛠️ 1. การสร้าง $\delta$ ให้พร้อมเล่น</h2>
-            <p>ในกรณี (0,1,0,0) นี้ เราจะประกอบขบวนรถไฟจำลอง $\delta$ โดย:</p>
+            <p>ด้วยพลังของ The Grand Unified Theorem เราจะประกอบขบวนรถไฟจำลอง $\delta$ โดย:</p>
             <ul>
                 <li><strong>พนักงานประจำตู้ (0):</strong> ถ้าเจอ 0 ให้ดึงมาใส่ $\delta$ ตามปกติ</li>
-                <li><strong>ตู้ตู้นอนพิเศษ ($\alpha_2$):</strong> ถ้าเจอบล็อก $\alpha_2$ ให้ยกตู้มาใส่ $\delta$ ทั้งก้อนเหมือนเดิม</li>
-                <li><strong>ตู้เสบียงขนาดใหญ่ ($\alpha_1$):</strong> ถ้าเจอบล็อก $\alpha_1$ เราจะ <strong>ทำลายตู้เสบียงนี้ทิ้ง</strong> แล้วให้เหลือตัวแทนออกมาเป็นผู้โดยสาร VIP แค่ $1$ คน (หมาก $\delta$ จะไม่มี $\alpha_1$ อยู่เลย)</li>
+                <li><strong>ตู้พิเศษ ($\alpha_1, \alpha_2$):</strong> ถ้าเจอบล็อกเหล่านี้ ให้ยกตู้มาใส่ $\delta$ ทั้งก้อนเหมือนเดิม</li>
+                <li><strong>ตู้ผู้โดยสารล้วน ($1^k$):</strong> ให้ยุบเหลือผู้โดยสารแค่ $1$ คน</li>
             </ul>
 
             <h2>🛤️ 2. กฎการ Move หมาก (กลไกการทำงานของขบวนรถ)</h2>
