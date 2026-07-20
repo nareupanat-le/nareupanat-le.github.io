@@ -1,10 +1,14 @@
-function generateFullWord(lm, rm, minLen = 3, maxLen = 8) {
-    const coreLen = Math.floor(Math.random() * (Math.max(0, maxLen - 2) - Math.max(0, minLen - 2) + 1)) + Math.max(0, minLen - 2);
-    let core = "";
-    for (let i = 0; i < coreLen; i++) {
-        core += Math.random() < 0.5 ? "1" : "0";
+function generateFullWord(minLen = 3, maxLen = 8) {
+    const len = Math.floor(Math.random() * (Math.max(3, maxLen) - Math.max(3, minLen) + 1)) + Math.max(3, minLen);
+    let word = "";
+    for (let i = 0; i < len; i++) {
+        word += Math.random() < 0.5 ? "1" : "0";
     }
-    return String(lm) + core + String(rm);
+    if (!word.includes('0')) {
+        const zeroIndex = Math.floor(Math.random() * len);
+        word = word.substring(0, zeroIndex) + '0' + word.substring(zeroIndex + 1);
+    }
+    return word;
 }
 
 function checkLE(d, g) {

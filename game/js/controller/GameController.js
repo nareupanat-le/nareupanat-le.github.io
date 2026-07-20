@@ -5,8 +5,6 @@ class GameController {
         this.uiRenderer = uiRenderer;
         this.latexRenderer = latexRenderer;
         this.dragDropController = dragDropController;
-
-        this.lblCase = document.getElementById('lbl-case');
         this.entryA1 = document.getElementById('entry-a1');
         this.entryA2 = document.getElementById('entry-a2');
         this.entryGamma = document.getElementById('entry-gamma');
@@ -63,39 +61,20 @@ class GameController {
         setTimeout(() => btn.innerText = oldTxt, 2000);
     }
 
-    getStrategy(lm1, rm1, caseVal) {
-        // Thanks to the Grand Unified Theorem, we use a single strategy for ALL 16 cases!
-        return new Strategy_Unified();
-    }
-
     generateIncomparable() {
         this.boardRenderer.boardPanel.style.display = 'none';
         this.boardRenderer.outputPanel.style.display = 'none';
         this.state.isSolutionVisible = false;
         this.uiRenderer.updateSolutionVisibility();
         
-        const cases = [];
-        for (let a = 0; a <= 1; a++) {
-            for (let b = 0; b <= 1; b++) {
-                for (let c = 0; c <= 1; c++) {
-                    for (let d = 0; d <= 1; d++) {
-                        cases.push(`(${a}, ${b}, ${c}, ${d})`);
-                    }
-                }
-            }
-        }
-        this.state.currentCase = cases[Math.floor(Math.random() * cases.length)];
-        this.lblCase.innerText = this.state.currentCase;
-        
-        const [lm1, rm1, lm2, rm2] = this.state.currentCase.replace(/[()]/g, '').split(', ').map(Number);
-        this.state.currentStrategy = this.getStrategy(lm1, rm1, this.state.currentCase);
+        this.state.currentStrategy = new Strategy_Unified();
         
         let a1, a2, attempts = 0;
         while (true) {
             attempts++;
             let extend = Math.floor(attempts / 50);
-            a1 = generateFullWord(lm1, rm1, 4, 12 + extend);
-            a2 = generateFullWord(lm2, rm2, 3, 5 + extend);
+            a1 = generateFullWord(4, 12 + extend);
+            a2 = generateFullWord(3, 5 + extend);
             if (a1.split('1').length - 1 < 2) continue;
             if (!a1.includes('0') || !a2.includes('0') || !a2.includes('1')) continue;
             if (!checkLE(a1, a2) && !checkLE(a2, a1) && a1 !== a2) break;
