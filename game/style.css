@@ -206,3 +206,31 @@ header p {
     color: #f87171;
     border: 1px solid rgba(239, 68, 68, 0.3);
 }
+
+/* Mobile Responsiveness */
+@media (max-width: 600px) {
+    body {
+        padding: 1rem;
+    }
+    
+    h1 {
+        font-size: 1.8rem;
+    }
+    
+    .inputs {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .actions {
+        flex-direction: column;
+    }
+    
+    .btn {
+        width: 100%;
+    }
+    
+    .glass-panel {
+        padding: 1.5rem;
+    }
+}
