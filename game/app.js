@@ -1,0 +1,280 @@
+// Mathematical Logic Engine
+
+function is_reduction(alpha, beta) {
+    let m = alpha.length;
+    let n = beta.length;
+    if (m > n) return false;
+    
+    let memo = {};
+    function check(i, j) {
+        let key = `${i},${j}`;
+        if (memo[key] !== undefined) return memo[key];
+        
+        if (i === m) {
+            if (j < n && alpha[m-1] === '1') return false;
+            return true;
+        }
+        if (j === n) return false;
+        if (i === 0 && j > 0) return false;
+        
+        let can_place = false;
+        if (alpha[i] === '1' && beta[j] === '1') can_place = true;
+        if (alpha[i] === '0') can_place = true;
+        
+        let res = false;
+        if (can_place) {
+            res = check(i + 1, j + 1);
+        }
+        if (!res && i > 0 && alpha[i-1] !== '1') {
+            res = check(i, j + 1);
+        }
+        memo[key] = res;
+        return res;
+    }
+    return check(0, 0);
+}
+
+function generate_combinations(arrays) {
+    if (arrays.length === 0) return [[]];
+    let first = arrays[0];
+    let rest = generate_combinations(arrays.slice(1));
+    let result = [];
+    for (let x of first) {
+        for (let r of rest) {
+            result.push([x, ...r]);
+        }
+    }
+    return result;
+}
+
+function rep_r(alpha, Y) {
+    let options = [];
+    for (let char of alpha) {
+        if (char === '1') {
+            options.push(['1', ...Y]);
+        } else {
+            options.push(['0']);
+        }
+    }
+    let combos = generate_combinations(options);
+    let result = new Set();
+    for (let combo of combos) {
+        result.add(combo.join(''));
+    }
+    return Array.from(result);
+}
+
+function rep_r_set(X, Y) {
+    let result = new Set();
+    for (let alpha of X) {
+        for (let res of rep_r(alpha, Y)) {
+            result.add(res);
+        }
+    }
+    return Array.from(result);
+}
+
+function get_min(set_X) {
+    let min_set = [];
+    for (let x of set_X) {
+        let is_min = true;
+        for (let y of set_X) {
+            if (x === y) continue;
+            if (is_reduction(y, x)) {
+                is_min = false;
+                break;
+            }
+        }
+        if (is_min) {
+            min_set.push(x);
+        }
+    }
+    return min_set;
+}
+
+function omega_eval(alpha, Lambda) {
+    let options = [];
+    for (let char of alpha) {
+        if (char === '1') {
+            options.push(Lambda);
+        } else {
+            options.push(['0']);
+        }
+    }
+    let combos = generate_combinations(options);
+    let result = new Set();
+    for (let combo of combos) {
+        result.add(combo.join(''));
+    }
+    return Array.from(result);
+}
+
+function check_set_le(set_A, set_B) {
+    // For every gamma in set_A, exists omega in set_B s.t. omega <= gamma
+    for (let gamma of set_A) {
+        let found = false;
+        for (let w of set_B) {
+            if (is_reduction(w, gamma)) {
+                found = true;
+                break;
+            }
+        }
+        if (!found) return false;
+    }
+    return true;
+}
+
+function isValidWord(w) {
+    return w.includes('0') && w.includes('1');
+}
+
+function generate_random_F(min_len, max_len) {
+    while (true) {
+        let len = Math.floor(Math.random() * (max_len - min_len + 1)) + min_len;
+        let str = '';
+        for (let i = 0; i < len; i++) {
+            str += Math.random() < 0.5 ? '0' : '1';
+        }
+        if (isValidWord(str)) return str;
+    }
+}
+
+// UI Interaction
+
+document.getElementById('btn-random').addEventListener('click', () => {
+    let alpha1, alpha2;
+    while (true) {
+        alpha1 = generate_random_F(3, 5);
+        alpha2 = generate_random_F(3, 5);
+        if (!is_reduction(alpha1, alpha2) && !is_reduction(alpha2, alpha1)) {
+            break;
+        }
+    }
+    document.getElementById('alpha1').value = alpha1;
+    document.getElementById('alpha2').value = alpha2;
+});
+
+document.getElementById('btn-process').addEventListener('click', () => {
+    let alpha1 = document.getElementById('alpha1').value.trim();
+    let alpha2 = document.getElementById('alpha2').value.trim();
+    let errorMsg = document.getElementById('error-msg');
+    let resultsSection = document.getElementById('results');
+
+    errorMsg.innerText = '';
+    
+    if (!alpha1 || !alpha2) {
+        errorMsg.innerText = 'Please enter both \u03B1\u2081 and \u03B1\u2082.';
+        return;
+    }
+    if (!isValidWord(alpha1) || !isValidWord(alpha2)) {
+        errorMsg.innerText = 'Both words must contain at least one 0 and one 1 (Full Words).';
+        return;
+    }
+
+    if (is_reduction(alpha1, alpha2) || is_reduction(alpha2, alpha1)) {
+        errorMsg.innerText = '\u03B1\u2081 and \u03B1\u2082 must be incomparable under \u2264.';
+        return;
+    }
+
+    // Process sets
+    let Gamma = [alpha1, alpha2];
+    
+    let l_gamma = Math.max(alpha1.length, alpha2.length) - 1;
+    let M_curr = [...Gamma];
+    let M_prev = [];
+    
+    try {
+        let iteration = 0;
+        while (true) {
+            iteration++;
+            let Y = rep_r_set(Gamma, M_curr);
+            let union_set = new Set([...M_curr, ...Y]);
+            
+            M_prev = M_curr;
+            M_curr = get_min(Array.from(union_set));
+            
+            if (M_curr.length === M_prev.length) {
+                let same = true;
+                for (let w of M_curr) {
+                    if (!M_prev.includes(w)) {
+                        same = false;
+                        break;
+                    }
+                }
+                if (same) {
+                    break; // Fixed point reached!
+                }
+            }
+            
+            // Safety limit to avoid infinite loops in worst-case scenarios
+            if (iteration > 20) {
+                throw new Error("Reached maximum iterations (20). The minimal set did not stabilize.");
+            }
+        }
+    } catch (e) {
+        errorMsg.innerText = e.message;
+        errorMsg.style.display = 'block';
+        return;
+    }
+    
+    let E = M_curr.filter(gamma => !is_reduction(alpha1, gamma) && !is_reduction(alpha2, gamma));
+
+    let LambdaSet = new Set([...Gamma, ...E]);
+    for (let l = 1; l <= l_gamma; l++) {
+        LambdaSet.add('1'.repeat(l));
+    }
+    let Lambda = Array.from(LambdaSet);
+
+    let x_expansion = Lambda.map(w => w.replace(/1/g, 'a').replace(/0/g, 'e')).join(' \\vee ');
+
+    // Render Math
+    let e_str = E.length > 0 ? `\\{ ${E.join(', ')} \\}` : '\\emptyset';
+    let sentence = `Then, we have \\[E = ${e_str}\\] and \\[x = ${x_expansion}.\\]`;
+    document.getElementById('sentence-E-x').innerHTML = sentence;
+
+    // Evaluate xx <= x
+    let xx = new Set();
+    for (let w1 of Lambda) {
+        for (let w2 of Lambda) {
+            xx.add(w1 + w2);
+        }
+    }
+    let xx_array = Array.from(xx);
+    let is_xx_le_x = check_set_le(xx_array, Lambda);
+    let res_xx = document.getElementById('result-xx');
+    res_xx.innerText = is_xx_le_x ? 'True (x is subidempotent)' : 'False';
+    res_xx.className = 'badge ' + is_xx_le_x;
+
+    // Evaluate alpha1(x) <= x
+    let omega1 = omega_eval(alpha1, Lambda);
+    let is_alpha1_le_x = check_set_le(omega1, Lambda);
+    let res_a1 = document.getElementById('result-alpha1');
+    res_a1.innerText = is_alpha1_le_x ? 'True (\u03B1\u2081 is an ideal element)' : 'False';
+    res_a1.className = 'badge ' + is_alpha1_le_x;
+
+    // Evaluate alpha2(x) <= x
+    let omega2 = omega_eval(alpha2, Lambda);
+    let is_alpha2_le_x = check_set_le(omega2, Lambda);
+    let res_a2 = document.getElementById('result-alpha2');
+    res_a2.innerText = is_alpha2_le_x ? 'True (\u03B1\u2082 is an ideal element)' : 'False';
+    res_a2.className = 'badge ' + is_alpha2_le_x;
+
+    resultsSection.classList.remove('hidden');
+
+    if (window.MathJax) {
+        MathJax.typesetPromise();
+    }
+});
+
+// Add Enter key support
+document.getElementById('alpha1').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        document.getElementById('btn-process').click();
+    }
+});
+
+document.getElementById('alpha2').addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        document.getElementById('btn-process').click();
+    }
+});

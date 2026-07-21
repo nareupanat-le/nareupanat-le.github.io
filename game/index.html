@@ -3,165 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LaTeX Game Project - Web Edition</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <!-- MathJax for Live Preview -->
-    <script>
-        MathJax = {
-            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-            svg: { fontCache: 'global' }
-        };
-    </script>
-    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <title>Algebraic Reduction Evaluator</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
-    <button id="btn-show-rules" title="How to Play (The γ Express)" style="position: absolute; top: 20px; right: 20px; background: rgba(17, 138, 178, 0.1); color: var(--primary); border: 1px solid rgba(17, 138, 178, 0.3); padding: 8px 15px; font-size: 0.9rem; border-radius: 20px; cursor: pointer; font-weight: bold; transition: all 0.2s; z-index: 100; backdrop-filter: blur(4px);">
-        🚂 How to Play
-    </button>
-    
-    <h1>LaTeX Game for Main Theorem</h1>
-    <div class="glass-panel">
-        <div class="controls-grid">
-            <div class="input-group">
-                <label>Mode:</label>
-                <div style="display: flex; gap: 10px; align-items: center;">
-                    <strong style="font-size: 1.2rem; color: var(--accent);">Grand Unified Theorem</strong>
-                    <button id="btn-randomize" class="btn-warning" style="padding: 5px 10px; font-size: 0.9rem;">🎲 Randomize Game</button>
+    <div class="container">
+        <header>
+            <div class="glow-orb"></div>
+            <h1>Algebraic Reduction Evaluator</h1>
+            <p>Mathematical proof evaluation engine for full words under the reduction relation.</p>
+        </header>
+
+        <section class="input-card glass-panel">
+            <div class="inputs">
+                <div class="input-group">
+                    <label for="alpha1">\(\alpha_1\)</label>
+                    <input type="text" id="alpha1" value="010" placeholder="e.g. 010" tabindex="1">
+                </div>
+                <div class="input-group">
+                    <label for="alpha2">\(\alpha_2\)</label>
+                    <input type="text" id="alpha2" value="101" placeholder="e.g. 101" tabindex="2">
                 </div>
             </div>
-            <div class="input-group"></div>
-            
-            <div class="input-group">
-                <label>α1:</label>
-                <input type="text" id="entry-a1">
+            <div class="actions">
+                <button id="btn-random" class="btn btn-secondary">Random Incomparable Pair</button>
+                <button id="btn-process" class="btn btn-primary" tabindex="3">Evaluate</button>
             </div>
-            <div class="input-group">
-                <label>α2:</label>
-                <input type="text" id="entry-a2">
+            <div id="error-msg" class="error-msg"></div>
+        </section>
+
+        <section id="results" class="results-container hidden">
+            <div class="result-card glass-panel">
+                <h2>Generated Sets</h2>
+                <div class="math-content" id="sentence-E-x"></div>
             </div>
-            
-            <div class="input-group">
-                <label>γ (Space separated):</label>
-                <input type="text" id="entry-gamma">
+
+            <div class="result-card glass-panel">
+                <h2>Subidempotent Check</h2>
+                <div class="math-content">Is \(x\) a subidempotent of \(\mathbf{S}\)? (Check if \(xx \leq x\))</div>
+                <div id="result-xx" class="badge"></div>
             </div>
-            <div class="input-group">
-                <label>δ (Space separated):</label>
-                <input type="text" id="entry-delta">
+
+            <div class="result-card glass-panel">
+                <h2>Ideal Element Evaluation</h2>
+                <div class="math-content">Check if \(\overline{\alpha_1}(x) \leq x\)</div>
+                <div id="result-alpha1" class="badge"></div>
+                <div class="math-content">Check if \(\overline{\alpha_2}(x) \leq x\)</div>
+                <div id="result-alpha2" class="badge"></div>
             </div>
-        </div>
-        
-        <div class="btn-group">
-            <button id="btn-load" class="btn-secondary">🎮 Load Game Board</button>
-            <button id="btn-toggle-sol" class="btn-warning">👁️ Show Solution</button>
-        </div>
+        </section>
     </div>
-
-    <div class="glass-panel" id="board-panel" style="display: none;">
-        <p style="text-align: center; opacity: 0.8; font-size: 0.9rem; margin-top: 0;">
-            <em>Tip: Drag and drop tiles into the slots, or click a tile to select it, then click an empty slot to place it!</em>
-        </p>
-        
-        <div class="game-board" id="game-board">
-            <div class="row" id="row-sol">
-                <div class="row-label">Solution (u)</div>
-                <div class="cells" id="cells-sol" style="display: flex; gap: 15px;"></div>
-            </div>
-            <div class="row" id="row-gamma">
-                <div class="row-label">Gamma (γ)</div>
-                <div class="cells" id="cells-gamma" style="display: flex; gap: 15px;"></div>
-            </div>
-            <div class="row" id="row-slots">
-                <div class="row-label">Drop Zone</div>
-                <div class="cells" id="cells-slots" style="display: flex; gap: 15px;"></div>
-            </div>
-            <div class="row" id="row-tiles" style="margin-top: 20px;">
-                <div class="row-label">Tiles (δ)</div>
-                <div class="cells" id="cells-tiles" style="display: flex; gap: 10px;"></div>
-            </div>
-        </div>
-        
-        <div class="btn-group" style="margin-top: 20px;">
-            <button id="btn-record-turn" class="btn-secondary" style="background-color: #27ae60; color: white;">✅ Record Turn (1)</button>
-            <button id="btn-generate-log" class="btn-secondary" style="background-color: #f39c12; color: white;">📝 Generate Log Summary</button>
-            <button id="btn-generate" class="btn-primary">🚀 Generate LaTeX</button>
-        </div>
-    </div>
-
-    <div class="glass-panel output-container" id="output-panel" style="display: none;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <label style="margin: 0; font-size: 1.1rem; color: var(--primary);">Turn-based Log Summary</label>
-            <button id="btn-copy-log" class="btn-accent" style="padding: 5px 10px; font-size: 0.9rem;">📋 Copy Log</button>
-        </div>
-        <textarea id="log-output" class="latex-output" readonly style="margin-bottom: 20px; min-height: 150px; background-color: #fff9e6;"></textarea>
-        
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <label style="margin: 0; font-size: 1.1rem; color: var(--primary);">LaTeX Output</label>
-            <button id="btn-copy" class="btn-accent" style="padding: 5px 10px; font-size: 0.9rem;">📋 Copy Source</button>
-        </div>
-        <textarea id="latex-output" class="latex-output" readonly></textarea>
-        
-        <h3 style="margin-top: 20px; color: var(--primary);">Live Preview</h3>
-        <div id="mathjax-preview"></div>
-    </div>
-
-    <script src="js/math_utils.js"></script>
-    <script src="js/strategies/base_case.js"></script>
-    <script src="js/strategies/case_unified.js"></script>
-    <script src="js/core/GameState.js"></script>
-    <script src="js/view/BoardRenderer.js"></script>
-    <script src="js/view/UIRenderer.js"></script>
-    <script src="js/view/LaTeXRenderer.js"></script>
-    <script src="js/controller/DragDropController.js"></script>
-    <script src="js/controller/GameController.js"></script>
-    <script src="js/main.js"></script>
-    <!-- Rules Modal -->
-    <div id="rules-modal" class="modal-overlay">
-        <div class="modal-content train-theme-content">
-            <button class="modal-close" id="btn-close-rules">&times;</button>
-            <h1>🚂 ขบวนรถไฟสาย $\gamma$ (The Grand Unified Theorem)</h1>
-            <p>เพื่อให้การเล่นเกมนี้สนุกและเห็นภาพชัดเจนขึ้น เรามาจินตนาการว่ากระดาน $\gamma$ คือ <strong>"ขบวนรถไฟขบวนยาว"</strong> ที่กำลังวิ่งอยู่ โดยมีกฎเกณฑ์และเป้าหมายที่ชัดเจนดังนี้ครับ (และข่าวดีคือ มันใช้ได้กับทั้ง 16 กรณี!)</p>
-            
-            <h2>🎯 เป้าหมายของเกม</h2>
-            <p>เป้าหมายสูงสุดของเราคือการสร้างขบวนรถไฟจำลองที่ชื่อว่า $\delta$ ขึ้นมา แล้วนำไปจอดเทียบท่า (ทาบทับ) กับขบวนรถไฟหลัก $\gamma$ ให้สอดคล้องกับกฎ $\leq_C$ อย่างสมบูรณ์แบบ</p>
-            <p>ในการสร้าง $\delta$ เราต้องทำตามเงื่อนไขการ "ยุบตู้ขบวน" ดังนี้:</p>
-            <ul>
-                <li>ตู้ขบวนธรรมดาที่มีแต่กลุ่มคน ($1^k$) จะถูกยุบรวมให้เหลือตัวแทนแค่ $1$</li>
-                <li>ตู้ขบวนพิเศษ $\alpha_1, \alpha_2$ จะไม่ถูกยุบ และคงสภาพเดิมไว้</li>
-                <li>จากนั้นเราต้องจับ $\delta$ ที่ถูกยุบแล้วนี้ ไปวางลงบน $\gamma$ ให้ได้ โดยมีข้อห้ามเด็ดขาดคือ: <strong>ห้ามปล่อยให้มีช่องว่างอากาศ ($\varepsilon$) เกิดขึ้นตามหลัง 1 เด็ดขาด</strong></li>
-            </ul>
-
-            <h2>🛠️ 1. การสร้าง $\delta$ ให้พร้อมเล่น</h2>
-            <p>ด้วยพลังของ The Grand Unified Theorem เราจะประกอบขบวนรถไฟจำลอง $\delta$ โดย:</p>
-            <ul>
-                <li><strong>พนักงานประจำตู้ (0):</strong> ถ้าเจอ 0 ให้ดึงมาใส่ $\delta$ ตามปกติ</li>
-                <li><strong>ตู้พิเศษ ($\alpha_1, \alpha_2$):</strong> ถ้าเจอบล็อกเหล่านี้ ให้ยกตู้มาใส่ $\delta$ ทั้งก้อนเหมือนเดิม</li>
-                <li><strong>ตู้ผู้โดยสารล้วน ($1^k$):</strong> ให้ยุบเหลือผู้โดยสารแค่ $1$ คน</li>
-            </ul>
-
-            <h2>🛤️ 2. กฎการ Move หมาก (กลไกการทำงานของขบวนรถ)</h2>
-            <p>เมื่อเราประกอบขบวน $\delta$ เสร็จแล้ว ก็ถึงเวลาปล่อยขบวนรถไปเทียบท่า $\gamma$ โดยใช้กฎ 3 ข้อ:</p>
-
-            <div class="train-rule rule-1">
-                <h3>กฎข้อที่ 1: "พนักงาน (0) วิ่งประกบ VIP (1) เสมอ" (Dynamic Shifting)</h3>
-                <p>ผู้โดยสาร VIP (1) เป็นคนที่ห้ามอยู่ตัวคนเดียวเด็ดขาด! ทันทีที่ผู้โดยสาร VIP ลงไปนั่งที่นั่ง พนักงานประจำตู้ (0) ตัวถัดไปจะต้อง <strong>ยอมทิ้งที่นั่งเดิมของตัวเอง แล้ววิ่งตะบึงไปประกบหลัง VIP ทันที</strong> เพื่อไม่ให้เกิดช่องว่างอากาศ ($\varepsilon$)</p>
-                <p>ความสุดยอดคือ... แม้แต่พนักงานที่ยืนเฝ้าหน้าประตูตู้นอน $\alpha_2$ (ซึ่งคือเลข 0 ตัวหน้าสุด) ก็ยอม <strong>"ฉีกร่าง"</strong> เปิดประตูวิ่งออกไปประกบ VIP ที่ตู้อื่น เพื่อทำภารกิจนี้ให้สำเร็จ!</p>
-            </div>
-
-            <div class="train-rule rule-2">
-                <h3>กฎข้อที่ 2: "VIP (1) เดินเข้าที่นั่งตามตั๋วเดิม" (Forward Mapping)</h3>
-                <p>หากมีผู้โดยสาร VIP (1) หลายคนเดินตามกันมา และในกลุ่มนั้นมีคนที่อพยพมาจาก "ตู้เสบียง $\alpha_1$"</p>
-                <p>เกมจะให้เกียรติผู้โดยสารจากตู้เสบียง $\alpha_1$ ตู้ที่อยู่ท้ายขบวนสุด โดยผู้โดยสาร VIP ทั้งกลุ่มจะค่อยๆ เดินเรียงหน้าเข้าไปนั่งตาม <strong>"หมายเลขที่นั่งเดิม (Local index)"</strong> ที่พวกเขาเคยนั่งตอนที่ยังอยู่ในตู้เสบียงนั้น</p>
-            </div>
-
-            <div class="train-rule rule-3">
-                <h3>กฎข้อที่ 3: "VIP (1) ยอมเดินถอยหลังสู้ตายเมื่อสุดทาง" (Backwards Mapping)</h3>
-                <p>จากกฎข้อ 2 ปกติ VIP จะเดินหน้าหาที่นั่งเสมอ <strong>ยกเว้นกรณีฉุกเฉินเดียว</strong> คือเมื่อคิวของ VIP ดันไปตกอยู่ <strong>"ตู้สุดท้ายของขบวนรถไฟพอดี"</strong></p>
-                <p>ถ้าปล่อยให้เดินหน้าต่อไป พวกเขาจะไปไม่ถึงท้ายขบวน และจะเกิดช่องว่างอากาศ ($\varepsilon$) ที่ท้ายขบวน! ในนาทีวิกฤตนี้ VIP จึงต้องเปลี่ยนแผนเป็น <strong>"วิ่งถอยหลัง"</strong> โดยเริ่มจากเบาะหลังสุดของขบวนรถไฟกลับมา เพื่ออุดรอยรั่วที่ท้ายขบวนให้สนิทนั่นเองครับ</p>
-            </div>
-        </div>
-    </div>
-
-
+    <script src="app.js"></script>
 </body>
 </html>
