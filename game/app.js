@@ -179,8 +179,17 @@ document.getElementById('btn-process').addEventListener('click', () => {
     // Process sets
     let Gamma = [alpha1, alpha2];
     
+    // Add irreducible concatenations C
+    let C = [];
+    if (!is_reduction(alpha1, alpha1 + alpha2) && !is_reduction(alpha2, alpha1 + alpha2)) {
+        C.push(alpha1 + alpha2);
+    }
+    if (!is_reduction(alpha1, alpha2 + alpha1) && !is_reduction(alpha2, alpha2 + alpha1)) {
+        C.push(alpha2 + alpha1);
+    }
+    
     let l_gamma = Math.max(alpha1.length, alpha2.length) - 1;
-    let M_curr = [...Gamma];
+    let M_curr = [...Gamma, ...C];
     let M_prev = [];
     
     try {
