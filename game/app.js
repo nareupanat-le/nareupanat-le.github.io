@@ -6,32 +6,41 @@ function is_reduction(alpha, beta) {
     if (m > n) return false;
     
     let memo = {};
-    function check(i, j) {
-        let key = `${i},${j}`;
+    function check(a_idx, b_idx, last_u_char) {
+        let key = `${a_idx},${b_idx},${last_u_char}`;
         if (memo[key] !== undefined) return memo[key];
         
-        if (i === m) {
-            if (j < n && alpha[m-1] === '1') return false;
-            return true;
+        if (b_idx === n) {
+            return a_idx === m;
         }
-        if (j === n) return false;
-        if (i === 0 && j > 0) return false;
-        
-        let can_place = false;
-        if (alpha[i] === '1' && beta[j] === '1') can_place = true;
-        if (alpha[i] === '0') can_place = true;
         
         let res = false;
-        if (can_place) {
-            res = check(i + 1, j + 1);
+        
+        // Option 1: assign u[b_idx] = alpha[a_idx]
+        if (a_idx < m) {
+            let u_char = alpha[a_idx];
+            let b_char = beta[b_idx];
+            let can_place = false;
+            if (u_char === '0') can_place = true;
+            else if (u_char === '1' && b_char === '1') can_place = true;
+            
+            if (can_place) {
+                res = res || check(a_idx + 1, b_idx + 1, u_char);
+            }
         }
-        if (!res && i > 0 && alpha[i-1] !== '1') {
-            res = check(i, j + 1);
+        
+        // Option 2: assign u[b_idx] = epsilon ('e')
+        // Rule: u_1 != e (so b_idx > 0)
+        // Rule: if u_i = e, then u_{i-1} != '1'. So last_u_char != '1'
+        if (!res && b_idx > 0 && last_u_char !== '1') {
+            res = res || check(a_idx, b_idx + 1, 'e');
         }
+        
         memo[key] = res;
         return res;
     }
-    return check(0, 0);
+    
+    return check(0, 0, null);
 }
 
 function generate_combinations(arrays) {
@@ -47,7 +56,7 @@ function generate_combinations(arrays) {
     return result;
 }
 
-function rep_r(alpha, Y) {
+function rep_r(alpha, Y, M_curr) {
     let options = [];
     for (let char of alpha) {
         if (char === '1') {
@@ -56,18 +65,43 @@ function rep_r(alpha, Y) {
             options.push(['0']);
         }
     }
-    let combos = generate_combinations(options);
+    
+    // Generate combinations iteratively and prune early if possible
+    let current_combos = [""];
+    for (let i = 0; i < options.length; i++) {
+        let next_combos = [];
+        for (let prefix of current_combos) {
+            for (let opt of options[i]) {
+                next_combos.push(prefix + opt);
+                if (next_combos.length > 100000) {
+                    throw new Error("Combinatorial Explosion Warning: The set E is growing too large (exceeded 100,000 combinations for a single word). Aborting to prevent the browser from freezing.");
+                }
+            }
+        }
+        current_combos = next_combos;
+    }
+    
     let result = new Set();
-    for (let combo of combos) {
-        result.add(combo.join(''));
+    for (let combo of current_combos) {
+        let word = combo;
+        let is_minimal = true;
+        for (let m of M_curr) {
+            if (m !== word && is_reduction(m, word)) {
+                is_minimal = false;
+                break;
+            }
+        }
+        if (is_minimal) {
+            result.add(word);
+        }
     }
     return Array.from(result);
 }
 
-function rep_r_set(X, Y) {
+function rep_r_set(X, Y, M_curr) {
     let result = new Set();
     for (let alpha of X) {
-        for (let res of rep_r(alpha, Y)) {
+        for (let res of rep_r(alpha, Y, M_curr)) {
             result.add(res);
         }
     }
@@ -194,9 +228,10 @@ document.getElementById('btn-process').addEventListener('click', () => {
     
     try {
         let iteration = 0;
+        let max_iterations = 20;
         while (true) {
             iteration++;
-            let Y = rep_r_set(Gamma, M_curr);
+            let Y = rep_r_set(M_curr, M_curr, M_curr);
             let union_set = new Set([...M_curr, ...Y]);
             
             M_prev = M_curr;
