@@ -186,6 +186,7 @@ document.getElementById('btn-random').addEventListener('click', () => {
     }
     document.getElementById('alpha1').value = alpha1;
     document.getElementById('alpha2').value = alpha2;
+    document.getElementById('btn-process').click();
 });
 
 document.getElementById('btn-process').addEventListener('click', () => {
