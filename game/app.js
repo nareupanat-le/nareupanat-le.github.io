@@ -277,33 +277,6 @@ document.getElementById('btn-process').addEventListener('click', () => {
     let sentence = `Then, we have \\[E \\setminus \\Gamma = ${e_str}\\] and \\[x = ${x_expansion}.\\]`;
     document.getElementById('sentence-E-x').innerHTML = sentence;
 
-    // Evaluate xx <= x
-    let xx = new Set();
-    for (let w1 of Lambda) {
-        for (let w2 of Lambda) {
-            xx.add(w1 + w2);
-        }
-    }
-    let xx_array = Array.from(xx);
-    let is_xx_le_x = check_set_le(xx_array, Lambda);
-    let res_xx = document.getElementById('result-xx');
-    res_xx.innerText = is_xx_le_x ? 'True (x is subidempotent)' : 'False';
-    res_xx.className = 'badge ' + is_xx_le_x;
-
-    // Evaluate alpha1(x) <= x
-    let omega1 = omega_eval(alpha1, Lambda);
-    let is_alpha1_le_x = check_set_le(omega1, Lambda);
-    let res_a1 = document.getElementById('result-alpha1');
-    res_a1.innerText = is_alpha1_le_x ? 'True (\u03B1\u2081 is an ideal element)' : 'False';
-    res_a1.className = 'badge ' + is_alpha1_le_x;
-
-    // Evaluate alpha2(x) <= x
-    let omega2 = omega_eval(alpha2, Lambda);
-    let is_alpha2_le_x = check_set_le(omega2, Lambda);
-    let res_a2 = document.getElementById('result-alpha2');
-    res_a2.innerText = is_alpha2_le_x ? 'True (\u03B1\u2082 is an ideal element)' : 'False';
-    res_a2.className = 'badge ' + is_alpha2_le_x;
-
     resultsSection.classList.remove('hidden');
 
     if (window.MathJax) {
