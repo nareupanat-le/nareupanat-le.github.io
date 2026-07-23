@@ -261,9 +261,10 @@ document.getElementById('btn-process').addEventListener('click', () => {
         return;
     }
     
-    let E = M_curr.filter(gamma => !is_reduction(alpha1, gamma) && !is_reduction(alpha2, gamma));
+    let E = M_curr; // Mathematically E includes Gamma
+    let E_minus_Gamma = E.filter(gamma => !is_reduction(alpha1, gamma) && !is_reduction(alpha2, gamma));
 
-    let LambdaSet = new Set([...Gamma, ...E]);
+    let LambdaSet = new Set([...E]); // E already includes Gamma
     for (let l = 1; l <= l_gamma; l++) {
         LambdaSet.add('1'.repeat(l));
     }
@@ -272,8 +273,8 @@ document.getElementById('btn-process').addEventListener('click', () => {
     let x_expansion = Lambda.map(w => w.replace(/1/g, 'a').replace(/0/g, 'e')).join(' \\vee ');
 
     // Render Math
-    let e_str = E.length > 0 ? `\\{ ${E.join(', ')} \\}` : '\\emptyset';
-    let sentence = `Then, we have \\[E = ${e_str}\\] and \\[x = ${x_expansion}.\\]`;
+    let e_str = E_minus_Gamma.length > 0 ? `\\{ ${E_minus_Gamma.join(', ')} \\}` : '\\emptyset';
+    let sentence = `Then, we have \\[E \\setminus \\Gamma = ${e_str}\\] and \\[x = ${x_expansion}.\\]`;
     document.getElementById('sentence-E-x').innerHTML = sentence;
 
     // Evaluate xx <= x
