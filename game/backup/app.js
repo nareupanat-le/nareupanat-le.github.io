@@ -328,19 +328,10 @@ function shuffle_array(arr) {
 }
 
 function generate_incomparable_pool(count) {
-    // Randomize length range for each click to guarantee fresh, diverse word sets!
-    let min_len = 3 + Math.floor(Math.random() * 4); // 3 to 6
-    let max_len = min_len + 1 + Math.floor(Math.random() * 2); // min_len+1 to min_len+2
-    
-    let all_words = generate_all_full_words(min_len, max_len);
-    all_words = shuffle_array(all_words);
-    
-    // 50% chance to prioritize longer words first to avoid short words killing the pool
-    if (Math.random() < 0.5) {
-        all_words.sort((a, b) => b.length - a.length);
-    }
-    
+    // Generate all full words of length 3 to 7 starting with '0' and shuffle
+    let all_words = shuffle_array(generate_all_full_words(3, 7));
     let pool = [];
+    
     for (let w of all_words) {
         let is_incomp = true;
         for (let existing of pool) {
@@ -354,44 +345,14 @@ function generate_incomparable_pool(count) {
             if (pool.length === count) break;
         }
     }
-    // If we didn't find enough words in that narrow range, supplement from wider range (3 to 8)
-    if (pool.length < count) {
-        let backup_words = shuffle_array(generate_all_full_words(3, 8));
-        for (let w of backup_words) {
-            let is_incomp = true;
-            for (let existing of pool) {
-                if (is_reduction(w, existing) || is_reduction(existing, w)) {
-                    is_incomp = false;
-                    break;
-                }
-            }
-            if (is_incomp) {
-                pool.push(w);
-                if (pool.length === count) break;
-            }
-        }
-    }
     return pool;
 }
 
 // 3. UI Dynamics and Event Handlers
 let blocksContainer = document.getElementById('blocks-container');
 let blockCount = 0;
-let current_P = [];
-let current_E = [];
-let current_formula_summands = [];
 
-// MathJax rendering queue to prevent overlapping promise freezes and scope rendering to target elements
-let typesetQueue = Promise.resolve();
-function safeTypeset(elements = null) {
-    if (!window.MathJax) return;
-    typesetQueue = typesetQueue.then(() => {
-        let targets = elements ? (Array.isArray(elements) ? elements : [elements]) : null;
-        return targets ? MathJax.typesetPromise(targets) : MathJax.typesetPromise();
-    }).catch(err => console.warn('MathJax error:', err));
-}
-
-function addBlockRow(initialWords = '', skipTypeset = false) {
+function addBlockRow(initialWords = '') {
     blockCount++;
     let row = document.createElement('div');
     row.className = 'block-row';
@@ -438,17 +399,17 @@ function addBlockRow(initialWords = '', skipTypeset = false) {
         }
     });
     
-    if (!skipTypeset) safeTypeset([row]);
+    if (window.MathJax) MathJax.typesetPromise();
 }
 
-function reindexBlocks(skipTypeset = false) {
+function reindexBlocks() {
     let rows = blocksContainer.querySelectorAll('.block-row');
     blockCount = 0;
     rows.forEach(row => {
         blockCount++;
         row.querySelector('.block-label').innerHTML = `\\(\\Gamma_{${blockCount}}\\):`;
     });
-    if (!skipTypeset) safeTypeset([blocksContainer]);
+    if (window.MathJax) MathJax.typesetPromise();
 }
 
 function randomizeBlocks(num_blocks) {
@@ -479,7 +440,7 @@ function randomizeBlocks(num_blocks) {
             }
         }
         if (words.length === 0 && pool.length > 0) words.push(pool[0]); // safety fallback
-        addBlockRow(words.join(', '), true); // Pass true to skip intermediate typesetting during loop
+        addBlockRow(words.join(', '));
     }
     
     // Immediately trigger computation
@@ -496,75 +457,6 @@ document.querySelectorAll('.btn-random').forEach(btn => {
 
 document.getElementById('btn-add-block').addEventListener('click', () => {
     addBlockRow('');
-});
-
-document.getElementById('btn-hunt-concat').addEventListener('click', () => {
-    let found = false;
-    for (let attempt = 0; attempt < 50; attempt++) {
-        let num_blocks = Math.random() < 0.5 ? 2 : 3;
-        let pool = generate_incomparable_pool(num_blocks * 2);
-        let P_test = [];
-        for (let i = 0; i < num_blocks; i++) {
-            P_test.push([pool[2*i], pool[2*i+1]]);
-        }
-        try {
-            let E_test = compute_stabilizer_family(P_test);
-            if (E_test.some(s => s.origin_type === 'concatenation')) {
-                blocksContainer.innerHTML = '';
-                blockCount = 0;
-                for (let b of P_test) {
-                    addBlockRow(b.join(', '), true);
-                }
-                document.getElementById('btn-compute').click();
-                found = true;
-                break;
-            }
-        } catch (e) {}
-    }
-    if (!found) {
-        // Guaranteed concatenation example fallback
-        blocksContainer.innerHTML = '';
-        blockCount = 0;
-        addBlockRow('1101001, 0001011', true);
-        addBlockRow('0001011, 1000100', true);
-        document.getElementById('btn-compute').click();
-    }
-});
-
-document.getElementById('btn-hunt-overlap').addEventListener('click', () => {
-    blocksContainer.innerHTML = '';
-    blockCount = 0;
-    let prefixes = ['01', '10', '110', '001'];
-    let suffixes = ['10', '01', '11', '00'];
-    let num_blocks = Math.random() < 0.5 ? 2 : 3;
-    for (let i = 0; i < num_blocks; i++) {
-        let w1 = prefixes[Math.floor(Math.random()*prefixes.length)] + suffixes[Math.floor(Math.random()*suffixes.length)];
-        let w2 = prefixes[Math.floor(Math.random()*prefixes.length)] + suffixes[Math.floor(Math.random()*suffixes.length)];
-        if (w1 === w2) w2 += '1';
-        addBlockRow(`${w1}, ${w2}`, true);
-    }
-    document.getElementById('btn-compute').click();
-});
-
-document.getElementById('btn-export-latex').addEventListener('click', (e) => {
-    if (!current_P.length || !current_E.length) return;
-    let P_latex = current_P.map((b, i) => `\\Gamma_${i+1} = \\{ ${b.join(', ')} \\}`).join(',\\quad ');
-    let E_latex = current_E.map((set, idx) => {
-        let originNote = set.origin_label ? ` & (\\text{from } ${set.origin_label})` : '';
-        return `    S_${idx+1} &= \\{ ${set.join(', ')} \\}${originNote}`;
-    }).join(' \\\\\\ \n');
-    let formula_latex = `\\langle a \\rangle_{\\mathcal{P}} = ${current_formula_summands.join(' \\vee ')}`;
-    
-    let fullLatex = `\\begin{example}\nLet $\\mathcal{P} = \\{ \\Gamma_1, \\dots, \\Gamma_{${current_P.length}} \\}$ be a partition assignment with:\n\\[ ${P_latex} \\]\nBy Theorem 5.3 and Higman's Lemma, the WQO stabilizer family $\\mathbb{E} = \\min_{\\ll} \\mathbb{R}(\\mathcal{P})$ converges to:\n\\begin{align*}\n${E_latex}\n\\end{align*}\nThe principal generator formula simplifies to:\n\\[ ${formula_latex} \\]\n\\end{example}`;
-    
-    navigator.clipboard.writeText(fullLatex);
-    let oldBtnText = e.currentTarget.innerHTML;
-    e.currentTarget.innerHTML = '✅ Copied LaTeX to Clipboard!';
-    e.currentTarget.style.borderColor = '#10b981';
-    setTimeout(() => { 
-        e.currentTarget.innerHTML = oldBtnText; 
-        e.currentTarget.style.borderColor = 'rgba(147,51,234,0.4)';
-    }, 2000);
 });
 
 // Initialize with random 2 incomparable blocks on load
@@ -602,8 +494,6 @@ document.getElementById('btn-compute').addEventListener('click', () => {
         
         // Compute E
         let E = compute_stabilizer_family(P);
-        current_P = P;
-        current_E = E;
         
         // Render Summary
         document.getElementById('result-summary').innerHTML = `
@@ -639,88 +529,6 @@ document.getElementById('btn-compute').addEventListener('click', () => {
             });
         });
         
-        // Render Lineage Tree
-        let treeHtml = E.map((set, idx) => {
-            let label = `S_{${idx+1}}`;
-            let color = 'var(--accent-cyan)';
-            let typeName = 'Initial Block';
-            let arrow = ` <-- \\(\\Gamma_{${idx+1}}\\)`;
-            if (set.origin_type === 'concatenation') {
-                color = '#c084fc';
-                typeName = 'Concatenation';
-                arrow = ` <-- \\(${set.origin_label}\\)`;
-            } else if (set.origin_type === 'replacement') {
-                color = 'var(--accent-pink)';
-                typeName = 'Replacement';
-                arrow = ` <-- \\(${set.origin_label}\\)`;
-            }
-            return `<div style="padding: 8px 14px; background: rgba(255,255,255,0.03); border-left: 4px solid ${color}; border-radius: 8px; margin-bottom: 8px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                <strong style="color:${color}; font-size:1.05em;">\\(${label}\\)</strong> <span style="font-size:0.85em; opacity:0.8; background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">[${typeName}]</span> <span style="color:#cbd5e1;">${arrow}</span> <span style="margin-left:auto; font-size:0.85em; color:var(--text-muted);">(step k=${set.step_k || 1})</span>
-            </div>`;
-        }).join('');
-        document.getElementById('result-lineage-tree').innerHTML = treeHtml;
-
-        // Render Rare Phenomenon Radar
-        let rareBox = document.getElementById('rare-radar-box');
-        let rareIcon = document.getElementById('rare-radar-icon');
-        let rareTitle = document.getElementById('rare-radar-title');
-        let rareText = document.getElementById('rare-radar-text');
-        let rareBadge = document.getElementById('rare-radar-badge');
-        
-        let concatCount = E.filter(s => s.origin_type === 'concatenation').length;
-        let replaceCount = E.filter(s => s.origin_type === 'replacement').length;
-        let maxK = Math.max(...E.map(s => s.step_k || 1));
-        
-        let rareReasons = [];
-        if (maxK >= 3) {
-            rareReasons.push(`Deep survival hierarchy reached (Step k=${maxK}).`);
-        }
-        if (concatCount >= 1) {
-            rareReasons.push(`Surviving Concatenation Set detected (${concatCount} set${concatCount>1?'s':''}).`);
-        }
-        if (replaceCount >= 1) {
-            rareReasons.push(`Surviving Replacement Set detected (${replaceCount} set${replaceCount>1?'s':''}).`);
-        }
-        if (E.length >= P.length + 2) {
-            rareReasons.push(`High combinatorial expansion (|E| = ${E.length} vs |P| = ${P.length}).`);
-        }
-        
-        if (rareReasons.length > 0) {
-            rareText.innerText = rareReasons.join(' ');
-            rareBox.classList.remove('hidden');
-            
-            // Switch themes: Gold if Replacement is present, Silver if only Concatenation is present
-            if (replaceCount > 0) {
-                // GOLD THEME (Gold Trophy)
-                rareBox.style.border = '1px solid #fbbf24';
-                rareBox.style.background = 'linear-gradient(135deg, rgba(251,191,36,0.15) 0%, rgba(245,158,11,0.05) 100%)';
-                rareBox.style.boxShadow = '0 0 25px rgba(251,191,36,0.2)';
-                rareIcon.innerText = '🏆';
-                rareTitle.style.color = '#fbbf24';
-                rareTitle.innerText = 'Rare Mathematical Phenomenon Detected!';
-                rareText.style.color = '#fde68a';
-                rareBadge.style.background = 'rgba(251,191,36,0.2)';
-                rareBadge.style.borderColor = '#fbbf24';
-                rareBadge.style.color = '#fbbf24';
-                rareBadge.innerText = 'WQO Gold Radar';
-            } else {
-                // SILVER THEME (Silver Medal) - Only Concatenation found without Replacement
-                rareBox.style.border = '1px solid #94a3b8';
-                rareBox.style.background = 'linear-gradient(135deg, rgba(203,213,225,0.15) 0%, rgba(148,163,184,0.05) 100%)';
-                rareBox.style.boxShadow = '0 0 25px rgba(203,213,225,0.2)';
-                rareIcon.innerText = '🥈';
-                rareTitle.style.color = '#e2e8f0';
-                rareTitle.innerText = 'Surviving Concatenation Structure Detected!';
-                rareText.style.color = '#cbd5e1';
-                rareBadge.style.background = 'rgba(203,213,225,0.2)';
-                rareBadge.style.borderColor = '#cbd5e1';
-                rareBadge.style.color = '#cbd5e1';
-                rareBadge.innerText = 'WQO Silver Radar';
-            }
-        } else {
-            rareBox.classList.add('hidden');
-        }
-
         // Render Valuations
         let val_items = E.map((set, idx) => {
             let vals = set.map(w => word_valuation_latex(w));
@@ -748,18 +556,17 @@ document.getElementById('btn-compute').addEventListener('click', () => {
                 unique_summands.push(sum);
             }
         }
-        current_formula_summands = unique_summands;
         
         let formula_str = `\\langle a \\rangle_{\\mathcal{P}} = ${unique_summands.join(' \\vee ')}`;
         document.getElementById('result-formula').innerHTML = `\\[ ${formula_str} \\]`;
         
         resultsSection.classList.remove('hidden');
-        safeTypeset([resultsSection, blocksContainer]);
+        if (window.MathJax) MathJax.typesetPromise();
         
     } catch (err) {
         errorMsg.innerText = err.message;
         errorMsg.style.display = 'block';
         resultsSection.classList.add('hidden');
-        safeTypeset([errorMsg, blocksContainer]);
+        if (window.MathJax) MathJax.typesetPromise();
     }
 });

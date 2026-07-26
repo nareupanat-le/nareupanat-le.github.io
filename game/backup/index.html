@@ -26,11 +26,6 @@
                 <button class="btn-preset btn-random" data-random="3">🎲 Random 3 Blocks</button>
                 <button class="btn-preset btn-random" data-random="4">🎲 Random 4 Blocks</button>
             </div>
-            <div class="presets-container" style="margin-top: 10px;">
-                <span class="preset-label" style="color: var(--accent-cyan);">🎯 Condition Hunters:</span>
-                <button id="btn-hunt-concat" class="btn-preset" style="border-color: #c084fc; color: #c084fc;">🎯 Hunt Concatenation Set</button>
-                <button id="btn-hunt-overlap" class="btn-preset" style="border-color: var(--accent-cyan); color: var(--accent-cyan);">🧬 High Overlap Generator</button>
-            </div>
 
             <div id="blocks-container" class="blocks-container">
                 <!-- Dynamic block inputs go here -->
@@ -44,23 +39,6 @@
         </section>
 
         <section id="results" class="results-container hidden">
-            <div id="rare-radar-box" class="card glass-panel hidden" style="border: 1px solid #fbbf24; background: linear-gradient(135deg, rgba(251,191,36,0.15) 0%, rgba(245,158,11,0.05) 100%); margin-bottom: 24px; box-shadow: 0 0 25px rgba(251,191,36,0.2); transition: all 0.3s ease;">
-                <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <span id="rare-radar-icon" style="font-size: 2rem;">🏆</span>
-                        <div>
-                            <h3 id="rare-radar-title" style="color: #fbbf24; margin: 0; font-size: 1.2rem;">Rare Mathematical Phenomenon Detected!</h3>
-                            <p id="rare-radar-text" style="color: #fde68a; margin: 4px 0 0 0; font-size: 0.95rem;"></p>
-                        </div>
-                    </div>
-                    <span id="rare-radar-badge" style="background: rgba(251,191,36,0.2); border: 1px solid #fbbf24; color: #fbbf24; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">WQO Research Radar</span>
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
-                <button id="btn-export-latex" class="btn btn-secondary" style="background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(147,51,234,0.2)); border: 1px solid rgba(147,51,234,0.4); color: #e9d5ff; font-weight: 600;">📄 One-Click Copy LaTeX for Paper</button>
-            </div>
-
             <div class="card glass-panel result-card">
                 <div class="step-header">
                     <span class="step-num">Step 1</span>
@@ -76,12 +54,6 @@
                 </div>
                 <p class="desc-text">By Higman's Lemma, full words under \(\leq\) form a well-quasi-ordering. Iterative replacements \(\operatorname{rep}(X, Y)\) and concatenations filtered under the set reduction order \(\ll\) converge to a finite set of minimal replacement sets:</p>
                 <div id="result-stabilizer" class="math-content"></div>
-                <div style="margin-top: 24px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 16px;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                        <h4 style="margin: 0; color: #e2e8f0; font-size: 1rem; display: flex; align-items: center; gap: 8px;">🌳 Lineage Dependency Tree <span style="font-size:0.8em; color:#94a3b8; font-weight:normal;">(Visual Evolution of \(\mathbb{E}\))</span></h4>
-                    </div>
-                    <div id="result-lineage-tree" style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; overflow-x: auto; font-family: monospace; font-size: 0.9rem; line-height: 1.8;"></div>
-                </div>
             </div>
 
             <div class="card glass-panel result-card">
