@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
@@ -81,10 +82,33 @@
                     <div id="filter-log-container" class="hidden" style="margin-top: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 16px; overflow-x: auto; max-height: 400px; font-size: 0.85rem; line-height: 1.6;"></div>
                 </div>
                 <div style="margin-top: 24px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 16px;">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                        <h4 style="margin: 0; color: #e2e8f0; font-size: 1rem; display: flex; align-items: center; gap: 8px;">🌳 Lineage Dependency Tree <span style="font-size:0.8em; color:#94a3b8; font-weight:normal;">(Visual Evolution of \(\mathbb{E}\))</span></h4>
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 12px;">
+                        <h4 style="margin: 0; color: #e2e8f0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+                            🌌 Interactive WQO Hasse Diagram & Lineage Network
+                        </h4>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button id="btn-graph-lineage" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; background: rgba(192,132,252,0.25); border: 1px solid #c084fc; color: #f3e8ff; box-shadow: 0 0 10px rgba(192,132,252,0.3);">🧬 Lineage Evolution</button>
+                            <button id="btn-graph-wqo" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1;">⚡ WQO Reduction Order (<<)</button>
+                            <button id="btn-graph-absorbed" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1;" title="Toggle visibility of non-minimal absorbed sets">👻 Show Absorbed Sets</button>
+                            <button id="btn-graph-fit" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 8px;" title="Reset Zoom and Center Graph">🎯 Center</button>
+                        </div>
                     </div>
-                    <div id="result-lineage-tree" style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px; overflow-x: auto; font-family: monospace; font-size: 0.9rem; line-height: 1.8;"></div>
+                    <p style="color: #94a3b8; font-size: 0.85rem; margin-bottom: 12px; line-height: 1.5;">
+                        👉 <strong>Interactive Graph Instructions:</strong> Click any node to inspect set elements and WQO properties in the side panel. Drag nodes, or zoom and pan the canvas. Switch modes to explore genealogical generation vs. algebraic set reduction order \(\ll\).
+                    </p>
+                    <div class="graph-grid-container" style="display: grid; grid-template-columns: 1fr 340px; gap: 16px; align-items: start;">
+                        <div id="network-graph-container" style="height: 480px; background: rgba(5, 10, 20, 0.6); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.8);">
+                            <!-- vis-network canvas mounts here -->
+                        </div>
+                        <div id="node-inspector-panel" style="background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(147, 51, 234, 0.35); border-radius: 12px; padding: 16px; height: 480px; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.4); display: flex; flex-direction: column;">
+                            <div style="text-align: center; color: #64748b; margin: auto;">
+                                <div style="font-size: 2.8rem; margin-bottom: 12px; opacity: 0.7;">👆</div>
+                                <h5 style="margin: 0 0 8px 0; color: #94a3b8; font-size: 1rem;">No Node Selected</h5>
+                                <p style="margin: 0; font-size: 0.85rem; line-height: 1.5;">Click a block or set in the graph to inspect its word elements, origin formula, and WQO minimality relationships.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="result-lineage-tree" class="hidden" style="display: none;"></div>
                 </div>
             </div>
 

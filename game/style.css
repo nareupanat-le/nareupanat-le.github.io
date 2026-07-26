@@ -541,3 +541,48 @@ h2 {
         font-size: 0.88rem;
     }
 }
+
+/* Interactive Graph Custom Styling */
+.graph-grid-container {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 16px;
+    align-items: start;
+}
+
+@media (max-width: 950px) {
+    .graph-grid-container {
+        grid-template-columns: 1fr;
+    }
+    #node-inspector-panel {
+        height: auto !important;
+        max-height: 400px;
+    }
+}
+
+#btn-graph-lineage.active-mode, #btn-graph-wqo.active-mode {
+    background: rgba(147, 51, 234, 0.4) !important;
+    border-color: #e9d5ff !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.6) !important;
+    font-weight: 600;
+}
+
+#btn-graph-absorbed.active-mode {
+    background: rgba(239, 68, 68, 0.3) !important;
+    border-color: #fca5a5 !important;
+    color: #ffffff !important;
+    box-shadow: 0 0 15px rgba(239, 68, 68, 0.5) !important;
+}
+
+.inspector-word-tag {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.85rem;
+    margin: 3px;
+    color: #e2e8f0;
+}

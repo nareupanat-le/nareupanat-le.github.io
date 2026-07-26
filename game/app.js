@@ -204,13 +204,17 @@ function compute_stabilizer_family(P) {
         P[0].step_k = 1;
         P[0].origin_type = 'initial';
         P[0].origin_label = '\\Gamma_1';
+        P[0].node_id = 'G1';
+        P[0].parent_ids = [];
         current_checked_log.push({
             label: '\\Gamma_1',
             type: 'Initial Block',
             words: P[0],
             step_k: 1,
             survived: true,
-            absorbed_by: 'None'
+            absorbed_by: 'None',
+            node_id: 'G1',
+            parent_ids: []
         });
         return [...P];
     }
@@ -221,6 +225,8 @@ function compute_stabilizer_family(P) {
         block.step_k = 1;
         block.origin_type = 'initial';
         block.origin_label = `\\Gamma_{${i+1}}`;
+        block.node_id = `G${i+1}`;
+        block.parent_ids = [];
         all_words_in_P.push(...block);
         current_checked_log.push({
             label: `\\Gamma_{${i+1}}`,
@@ -228,7 +234,9 @@ function compute_stabilizer_family(P) {
             words: block,
             step_k: 1,
             survived: true,
-            absorbed_by: 'None'
+            absorbed_by: 'None',
+            node_id: `G${i+1}`,
+            parent_ids: []
         });
     }
     
@@ -253,13 +261,17 @@ function compute_stabilizer_family(P) {
                 }
             }
             if (C_ij.length > 0) {
+                C_ij.node_id = `C_${i+1}_${j+1}`;
+                C_ij.parent_ids = [`G${i+1}`, `G${j+1}`];
                 current_checked_log.push({
                     label: `\\Gamma_{${i+1}} \\cdot \\Gamma_{${j+1}}`,
                     type: 'Concatenation',
                     words: C_ij,
                     step_k: 1,
                     survived: !reducer_label,
-                    absorbed_by: reducer_label || 'None'
+                    absorbed_by: reducer_label || 'None',
+                    node_id: C_ij.node_id,
+                    parent_ids: C_ij.parent_ids
                 });
             }
             if (!reducer_label && C_ij.length > 0) {
@@ -297,7 +309,9 @@ function compute_stabilizer_family(P) {
                 if (Z.length > 0) {
                     Z.step_k = iteration + 1;
                     Z.origin_type = 'replacement';
-                    Z.origin_label = `\\operatorname{rep}(S_{${i+1}}, S_{${j+1}})`;
+                    Z.origin_label = `\\operatorname{rep}(${current_collection[i].origin_label || 'S_{' + (i+1) + '}'}, ${current_collection[j].origin_label || 'S_{' + (j+1) + '}'})`;
+                    Z.node_id = `R_${i+1}_${j+1}_it${iteration}`;
+                    Z.parent_ids = [current_collection[i].node_id || `S${i+1}`, current_collection[j].node_id || `S${j+1}`];
                     new_sets.push(Z);
                 }
             }
@@ -331,7 +345,9 @@ function compute_stabilizer_family(P) {
                 words: Z,
                 step_k: iteration + 1,
                 survived: survived,
-                absorbed_by: reducer_label || 'another minimal set in \\(\\mathbb{E}\\)'
+                absorbed_by: reducer_label || 'another minimal set in \\(\\mathbb{E}\\)',
+                node_id: Z.node_id,
+                parent_ids: Z.parent_ids
             });
         }
         
@@ -822,7 +838,13 @@ document.getElementById('btn-compute').addEventListener('click', () => {
                 <strong style="color:${color}; font-size:1.05em;">\\(${label}\\)</strong> <span style="font-size:0.85em; opacity:0.8; background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">[${typeName}]</span> <span style="color:#cbd5e1;">${arrow}</span> <span style="margin-left:auto; font-size:0.85em; color:var(--text-muted);">(step k=${set.step_k || 1})</span>
             </div>`;
         }).join('');
-        document.getElementById('result-lineage-tree').innerHTML = treeHtml;
+        let lineageEl = document.getElementById('result-lineage-tree');
+        if (lineageEl) lineageEl.innerHTML = treeHtml;
+        
+        lastComputedP = P;
+        lastComputedE = E;
+        lastCheckedLog = current_checked_log;
+        renderInteractiveGraph(currentGraphMode);
 
         // Render Rare Phenomenon Radar
         let rareBox = document.getElementById('rare-radar-box');
@@ -926,4 +948,349 @@ document.getElementById('btn-compute').addEventListener('click', () => {
         resultsSection.classList.add('hidden');
         safeTypeset([errorMsg, blocksContainer]);
     }
+});
+
+// ==========================================
+// Interactive WQO Hasse Diagram & Lineage Network Renderer
+// ==========================================
+let networkInstance = null;
+let currentGraphMode = 'lineage';
+let showAbsorbedNodes = false;
+let lastComputedP = [];
+let lastComputedE = [];
+let lastCheckedLog = [];
+
+function inspectNode(node) {
+    let panel = document.getElementById('node-inspector-panel');
+    if (!panel || !node) return;
+    
+    let E = lastComputedE;
+    let reduces = [];
+    let reducedBy = [];
+    
+    if (node.words && Array.isArray(node.words)) {
+        for (let idx = 0; idx < E.length; idx++) {
+            let s = E[idx];
+            if (s.join(',') !== node.words.join(',')) {
+                if (set_ll(node.words, s)) reduces.push(`S_{${idx+1}}`);
+                if (set_ll(s, node.words)) reducedBy.push(`S_{${idx+1}}`);
+            }
+        }
+    }
+    
+    let statusHtml = node.survived ? 
+        '<span style="color:#4ade80; font-weight:600; font-size:0.88rem;">✅ Minimal Stabilizer Element (Survives in \\(\\mathbb{E}\\))</span>' : 
+        `<span style="color:#f87171; font-weight:600; font-size:0.88rem;">❌ Absorbed by \\(${node.absorbed_by || 'E'}\\) under \\(\\ll\\)</span>`;
+
+    let wordTags = (node.words || []).map(w => `<span class="inspector-word-tag">${w}</span>`).join('');
+    
+    panel.innerHTML = `
+        <div style="border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 12px; margin-bottom: 12px;">
+            <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#c084fc; background:rgba(192,132,252,0.15); border: 1px solid rgba(192,132,252,0.4); padding:3px 8px; border-radius:6px; font-weight:600;">${node.set_type}</span>
+            <h3 style="margin: 10px 0 6px 0; color: #f8fafc; font-size: 1.35rem;">\\(${node.display_label}\\)</h3>
+            <div style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.5;">Origin: \\(${node.origin_label || 'User Defined'}\\)</div>
+            <div style="margin-top: 8px;">${statusHtml}</div>
+        </div>
+        <div style="flex-grow: 1;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:0.9rem; color:#cbd5e1; font-weight:600;">Word Elements (${(node.words || []).length}):</span>
+                <button onclick="navigator.clipboard.writeText('${(node.words || []).join(', ')}'); this.innerText='Copied!'; setTimeout(()=>this.innerText='📋 Copy Words', 1500);" style="background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color:#e2e8f0; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.75rem;">📋 Copy Words</button>
+            </div>
+            <div style="max-height: 180px; overflow-y: auto; background: rgba(0,0,0,0.35); padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+                ${wordTags}
+            </div>
+        </div>
+        <div style="margin-top: 14px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 12px; font-size:0.88rem; color:#94a3b8; line-height: 1.6;">
+            <div>⚡ <strong>Reduces (\\(\\ll\\)):</strong> ${reduces.length > 0 ? `\\(${reduces.join(', ')}\\)` : 'None'}</div>
+            <div style="margin-top:4px;">🛡️ <strong>Reduced by (\\(\\gg\\)):</strong> ${reducedBy.length > 0 ? `\\(${reducedBy.join(', ')}\\)` : 'None (Minimal Source)'}</div>
+        </div>
+    `;
+    safeTypeset([panel]);
+}
+
+function renderInteractiveGraph(mode) {
+    currentGraphMode = mode || 'lineage';
+    let container = document.getElementById('network-graph-container');
+    if (!container) return;
+    
+    // Update active button states
+    let btnLin = document.getElementById('btn-graph-lineage');
+    let btnWqo = document.getElementById('btn-graph-wqo');
+    let btnAbs = document.getElementById('btn-graph-absorbed');
+    if (btnLin) btnLin.classList.toggle('active-mode', currentGraphMode === 'lineage');
+    if (btnWqo) btnWqo.classList.toggle('active-mode', currentGraphMode === 'wqo');
+    if (btnAbs) btnAbs.classList.toggle('active-mode', showAbsorbedNodes);
+    
+    if (typeof vis === 'undefined' || !vis.Network) {
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: #f87171;">⚠️ Graph visualization library (vis-network) is loading or unavailable. Please check internet connection for CDN.</div>';
+        return;
+    }
+    
+    let P = lastComputedP;
+    let E = lastComputedE;
+    let log = lastCheckedLog;
+    if (!P || !E || P.length === 0) return;
+    
+    let nodeMap = {};
+    let edges = [];
+    
+    // 1. Add Initial Blocks P
+    for (let i = 0; i < P.length; i++) {
+        let block = P[i];
+        let nId = block.node_id || `G${i+1}`;
+        let sIdx = E.findIndex(s => s.join(',') === block.join(','));
+        if (sIdx !== -1) {
+            nodeMap[nId] = {
+                id: nId,
+                label: `Γ${i+1} ≡ S${sIdx+1}\n[Minimal Block]`,
+                title: `Initial Block Γ${i+1} (Survives as S${sIdx+1})\nWords: ${block.join(', ')}`,
+                color: { background: '#0284c7', border: '#38bdf8', highlight: { background: '#0369a1', border: '#7dd3fc' } },
+                font: { color: '#ffffff', face: 'Outfit', size: 15, bold: true },
+                shape: 'box', margin: 12,
+                shadow: { enabled: true, color: 'rgba(56, 189, 248, 0.5)', size: 12 },
+                set_type: 'Initial Block ≡ Minimal Set',
+                display_label: `\\Gamma_{${i+1}} \\equiv S_{${sIdx+1}}`,
+                origin_label: `\\Gamma_{${i+1}}`,
+                survived: true,
+                words: block,
+                step_k: block.step_k || 1,
+                parent_ids: []
+            };
+        } else {
+            let absorbedBy = 'another set in E';
+            let logItem = log.find(item => item.words && item.words.join(',') === block.join(','));
+            if (logItem && logItem.absorbed_by) absorbedBy = logItem.absorbed_by;
+            nodeMap[nId] = {
+                id: nId,
+                label: `Γ${i+1}\n[Absorbed]`,
+                title: `Initial Block Γ${i+1} (Absorbed by ${absorbedBy})\nWords: ${block.join(', ')}`,
+                color: { background: '#334155', border: '#64748b', highlight: { background: '#475569', border: '#94a3b8' } },
+                font: { color: '#cbd5e1', face: 'Outfit', size: 13 },
+                shape: 'box', margin: 10,
+                shapeProperties: { borderDashes: [5, 5] },
+                set_type: 'Initial Block (Absorbed)',
+                display_label: `\\Gamma_{${i+1}}`,
+                origin_label: `\\Gamma_{${i+1}}`,
+                survived: false,
+                absorbed_by: absorbedBy,
+                words: block,
+                step_k: block.step_k || 1,
+                parent_ids: []
+            };
+        }
+    }
+    
+    // 2. Add Surviving Minimal Sets E
+    for (let j = 0; j < E.length; j++) {
+        let set = E[j];
+        if (set.origin_type === 'initial') continue; // already added as G(i+1)
+        let nId = set.node_id || `S${j+1}`;
+        if (!nodeMap[nId]) {
+            let isRep = set.origin_type === 'replacement';
+            let bg = isRep ? '#b45309' : '#6b21a8';
+            let border = isRep ? '#fbbf24' : '#c084fc';
+            let hlBg = isRep ? '#d97706' : '#7e22ce';
+            let hlBorder = isRep ? '#fde68a' : '#e9d5ff';
+            let shadowCol = isRep ? 'rgba(251, 191, 36, 0.5)' : 'rgba(192, 132, 252, 0.5)';
+            
+            nodeMap[nId] = {
+                id: nId,
+                label: `S${j+1}\n${isRep ? '[Replacement]' : '[Concatenation]'}`,
+                title: `Stabilizer Set S${j+1}\nOrigin: ${set.origin_label || ''}\nWords: ${set.join(', ')}`,
+                color: { background: bg, border: border, highlight: { background: hlBg, border: hlBorder } },
+                font: { color: '#ffffff', face: 'Outfit', size: 15, bold: true },
+                shape: 'box', margin: 12,
+                shadow: { enabled: true, color: shadowCol, size: 12 },
+                set_type: isRep ? 'Surviving Replacement Set' : 'Surviving Concatenation Set',
+                display_label: `S_{${j+1}}`,
+                origin_label: set.origin_label || '',
+                survived: true,
+                words: set,
+                step_k: set.step_k || 1,
+                parent_ids: set.parent_ids || []
+            };
+        }
+    }
+    
+    // 3. Optionally add Absorbed Candidates
+    if (showAbsorbedNodes) {
+        for (let item of log) {
+            if (!item.survived && item.node_id && !nodeMap[item.node_id]) {
+                nodeMap[item.node_id] = {
+                    id: item.node_id,
+                    label: `[Absorbed]\n${item.type}`,
+                    title: `Absorbed Candidate (${item.type})\nOrigin: ${item.label}\nAbsorbed by: ${item.absorbed_by}\nWords: ${(item.words||[]).join(', ')}`,
+                    color: { background: '#1e293b', border: '#475569', highlight: { background: '#334155', border: '#64748b' } },
+                    font: { color: '#94a3b8', face: 'Outfit', size: 12 },
+                    shape: 'box', margin: 8,
+                    shapeProperties: { borderDashes: [4, 4] },
+                    set_type: `Absorbed Candidate (${item.type})`,
+                    display_label: item.label || 'Candidate',
+                    origin_label: item.label || '',
+                    survived: false,
+                    absorbed_by: item.absorbed_by || 'E',
+                    words: item.words || [],
+                    step_k: item.step_k || 1,
+                    parent_ids: item.parent_ids || []
+                };
+            }
+        }
+    }
+    
+    let nodesArray = Object.values(nodeMap);
+    
+    // 4. Build Edges based on Mode
+    if (currentGraphMode === 'lineage') {
+        for (let node of nodesArray) {
+            if (node.parent_ids && node.parent_ids.length > 0) {
+                for (let pId of node.parent_ids) {
+                    if (nodeMap[pId]) {
+                        let isRep = node.set_type.includes('Replacement');
+                        let isCat = node.set_type.includes('Concatenation');
+                        edges.push({
+                            from: pId,
+                            to: node.id,
+                            label: isRep ? 'rep' : (isCat ? 'cat' : 'gen'),
+                            font: { align: 'middle', size: 11, color: '#cbd5e1', background: 'rgba(15,23,42,0.85)', strokeWidth: 0 },
+                            color: { color: isRep ? '#fbbf24' : (isCat ? '#c084fc' : '#38bdf8'), highlight: '#ffffff' },
+                            arrows: { to: { enabled: true, scaleFactor: 1.1 } },
+                            smooth: { type: 'cubicBezier', forceDirection: 'vertical', roundness: 0.35 },
+                            width: 2
+                        });
+                    }
+                }
+            }
+            if (!node.survived && node.absorbed_by && node.words) {
+                let targetId = null;
+                for (let tId in nodeMap) {
+                    if (tId !== node.id && nodeMap[tId].survived && set_ll(nodeMap[tId].words, node.words)) {
+                        targetId = tId;
+                        break;
+                    }
+                }
+                if (targetId) {
+                    edges.push({
+                        from: node.id,
+                        to: targetId,
+                        label: '<< absorbed by',
+                        font: { align: 'middle', size: 10, color: '#f87171', background: 'rgba(15,23,42,0.85)', strokeWidth: 0 },
+                        color: { color: '#ef4444', highlight: '#f87171' },
+                        arrows: { to: { enabled: true, scaleFactor: 1.0 } },
+                        dashes: [5, 5],
+                        width: 1.5
+                    });
+                }
+            }
+        }
+    } else if (currentGraphMode === 'wqo') {
+        for (let i = 0; i < nodesArray.length; i++) {
+            for (let j = 0; j < nodesArray.length; j++) {
+                if (i === j) continue;
+                let A = nodesArray[i];
+                let B = nodesArray[j];
+                if (set_ll(A.words, B.words)) {
+                    if (set_ll(B.words, A.words) && A.id > B.id) continue;
+                    
+                    let isDirectCover = true;
+                    for (let k = 0; k < nodesArray.length; k++) {
+                        if (k === i || k === j) continue;
+                        let C = nodesArray[k];
+                        if (set_ll(A.words, C.words) && set_ll(C.words, B.words)) {
+                            if (!set_ll(C.words, A.words) && !set_ll(B.words, C.words)) {
+                                isDirectCover = false;
+                                break;
+                            }
+                        }
+                    }
+                    if (isDirectCover) {
+                        edges.push({
+                            from: A.id,
+                            to: B.id,
+                            label: '<< reduces',
+                            font: { align: 'middle', size: 11, color: '#a5f3fc', background: 'rgba(15,23,42,0.85)', strokeWidth: 0 },
+                            color: { color: '#06b6d4', highlight: '#22d3ee' },
+                            arrows: { to: { enabled: true, scaleFactor: 1.2 } },
+                            width: 2.5,
+                            dashes: true
+                        });
+                    }
+                }
+            }
+        }
+    }
+    
+    let data = {
+        nodes: new vis.DataSet(nodesArray),
+        edges: new vis.DataSet(edges)
+    };
+    
+    let options = {
+        layout: {
+            hierarchical: {
+                enabled: currentGraphMode === 'lineage',
+                direction: 'UD',
+                sortMethod: 'directed',
+                levelSeparation: 120,
+                nodeSpacing: 170
+            }
+        },
+        physics: {
+            enabled: currentGraphMode !== 'lineage',
+            barnesHut: {
+                gravitationalConstant: -5000,
+                centralGravity: 0.35,
+                springLength: 160,
+                springConstant: 0.04
+            },
+            stabilization: { iterations: 150 }
+        },
+        interaction: {
+            hover: true,
+            tooltipDelay: 150,
+            zoomView: true,
+            dragView: true,
+            navigationButtons: false
+        }
+    };
+    
+    if (networkInstance) {
+        networkInstance.destroy();
+    }
+    
+    networkInstance = new vis.Network(container, data, options);
+    
+    let defaultInspectNode = nodesArray.find(n => n.set_type.includes('Replacement')) || 
+                             nodesArray.find(n => n.set_type.includes('Concatenation')) || 
+                             nodesArray[0];
+    if (defaultInspectNode) {
+        inspectNode(defaultInspectNode);
+        networkInstance.selectNodes([defaultInspectNode.id]);
+    }
+    
+    networkInstance.on("selectNode", function (params) {
+        if (params.nodes && params.nodes.length > 0) {
+            let nId = params.nodes[0];
+            if (nodeMap[nId]) {
+                inspectNode(nodeMap[nId]);
+            }
+        }
+    });
+}
+
+// Attach UI Event Listeners for Interactive Graph
+document.addEventListener('DOMContentLoaded', () => {
+    let btnLin = document.getElementById('btn-graph-lineage');
+    let btnWqo = document.getElementById('btn-graph-wqo');
+    let btnAbs = document.getElementById('btn-graph-absorbed');
+    let btnFit = document.getElementById('btn-graph-fit');
+    
+    if (btnLin) btnLin.addEventListener('click', () => renderInteractiveGraph('lineage'));
+    if (btnWqo) btnWqo.addEventListener('click', () => renderInteractiveGraph('wqo'));
+    if (btnAbs) btnAbs.addEventListener('click', () => {
+        showAbsorbedNodes = !showAbsorbedNodes;
+        renderInteractiveGraph(currentGraphMode);
+    });
+    if (btnFit) btnFit.addEventListener('click', () => {
+        if (networkInstance) networkInstance.fit({ animation: { duration: 500, easingFunction: 'easeInOutQuad' } });
+    });
 });
