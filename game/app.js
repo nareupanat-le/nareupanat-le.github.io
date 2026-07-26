@@ -93,6 +93,26 @@ function set_ll(set_A, set_B) {
     return true;
 }
 
+// Check if a collection of blocks forms a valid partition assignment of a strict antichain of F (Paper Definition / Section 5)
+function is_valid_partition_antichain(blocks) {
+    let all_words = [];
+    for (let b of blocks) {
+        for (let w of b) {
+            all_words.push(w);
+        }
+    }
+    let unique_set = new Set(all_words);
+    if (unique_set.size !== all_words.length) return false;
+    for (let i = 0; i < all_words.length; i++) {
+        for (let j = 0; j < all_words.length; j++) {
+            if (i !== j) {
+                if (is_reduction(all_words[i], all_words[j])) return false;
+            }
+        }
+    }
+    return true;
+}
+
 // Get minimal sets under << from a collection of sets
 function get_minimal_sets(collection_of_sets) {
     let unique_sets = [];
@@ -455,34 +475,43 @@ function randomizeBlocks(num_blocks) {
     blocksContainer.innerHTML = '';
     blockCount = 0;
     
-    // Determine how many words each block gets (1 or 2 words randomly)
-    let block_sizes = [];
-    let total_words = 0;
-    for (let i = 0; i < num_blocks; i++) {
-        // For 1 block, let's give 2 words; for more blocks, 1 or 2 words randomly
-        let size = (num_blocks === 1) ? 2 : (Math.random() < 0.35 ? 2 : 1);
-        block_sizes.push(size);
-        total_words += size;
-    }
-    
-    // Generate antichain pool of total_words instantly
-    let pool = generate_incomparable_pool(total_words);
-    
-    let word_idx = 0;
-    for (let i = 0; i < num_blocks; i++) {
-        let size = block_sizes[i];
-        let words = [];
-        for (let j = 0; j < size; j++) {
-            if (word_idx < pool.length) {
-                words.push(pool[word_idx]);
-                word_idx++;
-            }
+    let best_blocks = null;
+    for (let attempt = 0; attempt < 50; attempt++) {
+        let block_sizes = [];
+        let total_words = 0;
+        for (let i = 0; i < num_blocks; i++) {
+            let size = (num_blocks === 1) ? 2 : (Math.random() < 0.35 ? 2 : 1);
+            block_sizes.push(size);
+            total_words += size;
         }
-        if (words.length === 0 && pool.length > 0) words.push(pool[0]); // safety fallback
-        addBlockRow(words.join(', '), true); // Pass true to skip intermediate typesetting during loop
+        let pool = generate_incomparable_pool(total_words * 2);
+        let word_idx = 0;
+        let blocks = [];
+        for (let i = 0; i < num_blocks; i++) {
+            let size = block_sizes[i];
+            let words = [];
+            for (let j = 0; j < size; j++) {
+                if (word_idx < pool.length) {
+                    words.push(pool[word_idx]);
+                    word_idx++;
+                }
+            }
+            if (words.length === 0 && pool.length > 0) words.push(pool[0]);
+            blocks.push(words);
+        }
+        if (is_valid_partition_antichain(blocks)) {
+            best_blocks = blocks;
+            break;
+        }
+        if (!best_blocks) best_blocks = blocks;
     }
     
-    // Immediately trigger computation
+    for (let b of best_blocks) {
+        addBlockRow(b.join(', '), true);
+    }
+    
+    reindexBlocks(true);
+    safeTypeset([blocksContainer]);
     document.getElementById('btn-compute').click();
 }
 
@@ -507,6 +536,7 @@ document.getElementById('btn-hunt-concat').addEventListener('click', () => {
         for (let i = 0; i < num_blocks; i++) {
             P_test.push([pool[2*i], pool[2*i+1]]);
         }
+        if (!is_valid_partition_antichain(P_test)) continue;
         try {
             let E_test = compute_stabilizer_family(P_test);
             if (E_test.some(s => s.origin_type === 'concatenation')) {
@@ -515,6 +545,7 @@ document.getElementById('btn-hunt-concat').addEventListener('click', () => {
                 for (let b of P_test) {
                     addBlockRow(b.join(', '), true);
                 }
+                reindexBlocks(true);
                 document.getElementById('btn-compute').click();
                 found = true;
                 break;
@@ -522,28 +553,43 @@ document.getElementById('btn-hunt-concat').addEventListener('click', () => {
         } catch (e) {}
     }
     if (!found) {
-        // Guaranteed concatenation example fallback
         blocksContainer.innerHTML = '';
         blockCount = 0;
         addBlockRow('1101001, 0001011', true);
         addBlockRow('0001011, 1000100', true);
+        reindexBlocks(true);
         document.getElementById('btn-compute').click();
     }
 });
 
-document.getElementById('btn-hunt-overlap').addEventListener('click', () => {
-    blocksContainer.innerHTML = '';
-    blockCount = 0;
-    let prefixes = ['01', '10', '110', '001'];
-    let suffixes = ['10', '01', '11', '00'];
-    let num_blocks = Math.random() < 0.5 ? 2 : 3;
-    for (let i = 0; i < num_blocks; i++) {
-        let w1 = prefixes[Math.floor(Math.random()*prefixes.length)] + suffixes[Math.floor(Math.random()*suffixes.length)];
-        let w2 = prefixes[Math.floor(Math.random()*prefixes.length)] + suffixes[Math.floor(Math.random()*suffixes.length)];
-        if (w1 === w2) w2 += '1';
-        addBlockRow(`${w1}, ${w2}`, true);
+document.getElementById('btn-hunt-replace').addEventListener('click', () => {
+    let found = false;
+    for (let attempt = 0; attempt < 100; attempt++) {
+        let num_blocks = Math.random() < 0.5 ? 2 : 3;
+        let pool = generate_incomparable_pool(num_blocks * 2);
+        let P_test = [];
+        for (let i = 0; i < num_blocks; i++) {
+            P_test.push([pool[2*i], pool[2*i+1]]);
+        }
+        if (!is_valid_partition_antichain(P_test)) continue;
+        try {
+            let E_test = compute_stabilizer_family(P_test);
+            if (E_test.some(s => s.origin_type === 'replacement')) {
+                blocksContainer.innerHTML = '';
+                blockCount = 0;
+                for (let b of P_test) {
+                    addBlockRow(b.join(', '), true);
+                }
+                reindexBlocks(true);
+                document.getElementById('btn-compute').click();
+                found = true;
+                break;
+            }
+        } catch (e) {}
     }
-    document.getElementById('btn-compute').click();
+    if (!found) {
+        randomizeBlocks(2);
+    }
 });
 
 document.getElementById('btn-export-latex').addEventListener('click', (e) => {
@@ -597,6 +643,26 @@ document.getElementById('btn-compute').addEventListener('click', () => {
             }
             P.push(Array.from(new Set(words)));
         });
+        
+        // Validate strict antichain property of F across all blocks (Paper Definition / Section 5)
+        let all_words_test = [];
+        for (let i = 0; i < P.length; i++) {
+            for (let w of P[i]) {
+                all_words_test.push({ word: w, block_idx: i + 1 });
+            }
+        }
+        for (let i = 0; i < all_words_test.length; i++) {
+            for (let j = 0; j < all_words_test.length; j++) {
+                if (i !== j) {
+                    if (all_words_test[i].word === all_words_test[j].word) {
+                        throw new Error(`Contradiction of Partition Definition: Word "${all_words_test[i].word}" appears in multiple blocks (\\(\\Gamma_{${all_words_test[i].block_idx}}\\) and \\(\\Gamma_{${all_words_test[j].block_idx}}\\)). A partition assignment must consist of disjoint blocks!`);
+                    }
+                    if (is_reduction(all_words_test[i].word, all_words_test[j].word)) {
+                        throw new Error(`Contradiction of Antichain Definition: The union of all words across blocks is NOT an antichain of \\(\\mathbf{F}\\)! Word "${all_words_test[i].word}" (in \\(\\Gamma_{${all_words_test[i].block_idx}}\\)) reduces "${all_words_test[j].word}" (in \\(\\Gamma_{${all_words_test[j].block_idx}}\\)) under \\(\\leq\\) (remember that \\(0 \\leq_C 1\\)). According to the paper, \\(\\mathcal{P}\\) must be a partition assignment of a strict antichain of \\(\\mathbf{F}\\).`);
+                    }
+                }
+            }
+        }
         
         let l_gamma = Math.max(...all_words_flat.map(w => w.length)) - 1;
         
