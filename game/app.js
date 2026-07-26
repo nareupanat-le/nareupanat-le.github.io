@@ -172,11 +172,13 @@ function compute_stabilizer_family(P) {
     // 1. Theoretical Optimization: For a single block P = {Gamma_1}, no cross-block interaction exists.
     // Thus R(P) = P and E = min_ll R(P) is simply P itself! No calculation needed!
     if (P.length === 1) {
+        P[0].step_k = 1;
         return [...P];
     }
 
     let all_words_in_P = [];
     for (let block of P) {
+        block.step_k = 1;
         all_words_in_P.push(...block);
     }
     
@@ -201,6 +203,7 @@ function compute_stabilizer_family(P) {
                 }
             }
             if (!is_bounded && C_ij.length > 0) {
+                C_ij.step_k = 1;
                 current_collection.push(C_ij);
             }
         }
@@ -229,6 +232,7 @@ function compute_stabilizer_family(P) {
 
                 let Z = rep_set(X, Y);
                 if (Z.length > 0) {
+                    Z.step_k = iteration + 1;
                     new_sets.push(Z);
                 }
             }
@@ -343,11 +347,38 @@ function addBlockRow(initialWords = '') {
     let row = document.createElement('div');
     row.className = 'block-row';
     row.innerHTML = `
-        <span class="block-label">\(\\Gamma_{${blockCount}}\):</span>
+        <span class="block-label">\\(\\Gamma_{${blockCount}}\\):</span>
         <input type="text" class="block-input" value="${initialWords}" placeholder="e.g. 01, 0110 (comma-separated words)">
+        <button class="btn-copy-block" title="Copy words in this block" style="background:rgba(59, 130, 246, 0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;flex-shrink:0;">📋</button>
         <button class="btn-remove-block" title="Remove Block">&times;</button>
     `;
     blocksContainer.appendChild(row);
+    
+    let inputField = row.querySelector('.block-input');
+    
+    // Auto-select all text when focused so Cmd+C copies immediately
+    inputField.addEventListener('focus', () => {
+        inputField.select();
+    });
+    
+    // Support Cmd+C / Ctrl+C even if no text is highlighted
+    inputField.addEventListener('keydown', (e) => {
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'c') {
+            if (inputField.selectionStart === inputField.selectionEnd) {
+                navigator.clipboard.writeText(inputField.value);
+                let origBg = inputField.style.backgroundColor;
+                inputField.style.backgroundColor = 'rgba(16, 185, 129, 0.2)';
+                setTimeout(() => { inputField.style.backgroundColor = origBg; }, 300);
+            }
+        }
+    });
+    
+    let copyBtn = row.querySelector('.btn-copy-block');
+    copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText(inputField.value);
+        copyBtn.innerHTML = '✅';
+        setTimeout(() => { copyBtn.innerHTML = '📋'; }, 1000);
+    });
     
     row.querySelector('.btn-remove-block').addEventListener('click', () => {
         if (blocksContainer.children.length > 1) {
@@ -406,19 +437,6 @@ function randomizeBlocks(num_blocks) {
     document.getElementById('btn-compute').click();
 }
 
-function loadBenchmarkPreset(presetName) {
-    blocksContainer.innerHTML = '';
-    blockCount = 0;
-    if (presetName === 'section5_vee' || presetName === 'section5') {
-        addBlockRow('10');
-        addBlockRow('01');
-    } else if (presetName === 'section5_le') {
-        addBlockRow('10');
-        addBlockRow('01, 0110');
-    }
-    document.getElementById('btn-compute').click();
-}
-
 // Attach event listeners safely using currentTarget
 document.querySelectorAll('.btn-random').forEach(btn => {
     btn.addEventListener('click', (e) => {
@@ -427,18 +445,12 @@ document.querySelectorAll('.btn-random').forEach(btn => {
     });
 });
 
-document.querySelectorAll('.btn-benchmark').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        loadBenchmarkPreset(e.currentTarget.getAttribute('data-preset'));
-    });
-});
-
 document.getElementById('btn-add-block').addEventListener('click', () => {
     addBlockRow('');
 });
 
-// Initialize with Section 5 benchmark example on load
-loadBenchmarkPreset('section5_le');
+// Initialize with random 2 incomparable blocks on load
+randomizeBlocks(2);
 
 document.getElementById('btn-compute').addEventListener('click', () => {
     let errorMsg = document.getElementById('error-msg');
@@ -483,9 +495,20 @@ document.getElementById('btn-compute').addEventListener('click', () => {
         let e_items = E.map((set, idx) => {
             let is_initial = P.some(pb => pb.sort().join(',') === [...set].sort().join(','));
             let badge = is_initial ? `<span style="color:var(--accent-cyan);font-size:0.85em;">[Initial Block]</span>` : `<span style="color:var(--accent-pink);font-weight:700;font-size:0.85em;">[Surviving Replacement Set]</span>`;
-            return `<li>\\(S_${idx+1} = \\{ ${set.join(', ')} \\}\\) ${badge}</li>`;
+            let copySetBtn = `<button class="btn-copy-set" data-words="${set.join(', ')}" title="Copy words in S_${idx+1}" style="background:rgba(236, 72, 153, 0.15);border:1px solid rgba(236, 72, 153, 0.3);color:#f472b6;padding:2px 8px;border-radius:6px;font-size:0.8rem;cursor:pointer;margin-left:8px;">📋 Copy Words</button>`;
+            let step_k_val = set.step_k || 1;
+            return `<li style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;gap:8px;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:8px;"><div>\\(S_${idx+1} = \\{ ${set.join(', ')} \\}\\) ${badge} ${copySetBtn}</div><div style="color:var(--text-muted);font-weight:600;font-size:0.95em;font-family:monospace;margin-left:auto;">(k=${step_k_val})</div></li>`;
         }).join('');
-        document.getElementById('result-stabilizer').innerHTML = `<ul style="list-style-type:none;padding-left:0;line-height:2;">${e_items}</ul>`;
+        document.getElementById('result-stabilizer').innerHTML = `<ul style="list-style-type:none;padding-left:0;line-height:1.8;margin:0;">${e_items}</ul>`;
+        
+        document.querySelectorAll('.btn-copy-set').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                navigator.clipboard.writeText(e.currentTarget.getAttribute('data-words'));
+                let oldText = e.currentTarget.innerHTML;
+                e.currentTarget.innerHTML = '✅ Copied!';
+                setTimeout(() => { e.currentTarget.innerHTML = oldText; }, 1000);
+            });
+        });
         
         // Render Valuations
         let val_items = E.map((set, idx) => {
