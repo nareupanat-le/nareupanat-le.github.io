@@ -12,38 +12,46 @@ function is_reduction(alpha, beta) {
     let m = alpha.length;
     let n = beta.length;
     if (m > n) {
+        if (reduction_cache.size > 50000) reduction_cache.clear();
         reduction_cache.set(cache_key, false);
         return false;
     }
     
-    let memo = {};
-    function check(a_idx, b_idx, last_u_char) {
-        let key = `${a_idx},${b_idx},${last_u_char}`;
-        if (memo[key] !== undefined) return memo[key];
+    // Fast integer-indexed memo array instead of object/string keys
+    // Size: (m + 1) * (n + 1) * 3. Types: 0 = null/'e', 1 = '0', 2 = '1'
+    let memo = new Int8Array((m + 1) * (n + 1) * 3);
+    memo.fill(-1);
+    
+    function check(a_idx, b_idx, last_type) {
+        let key = (a_idx * (n + 1) + b_idx) * 3 + last_type;
+        if (memo[key] !== -1) return memo[key] === 1;
         
         if (b_idx === n) {
-            return a_idx === m;
+            let res = (a_idx === m);
+            memo[key] = res ? 1 : 0;
+            return res;
         }
         
         let res = false;
-        
         // Option 1: match character under <=_C (exact match OR alpha[a_idx]==='0' and beta[b_idx]==='1' since 0 <=_C 1)
         if (a_idx < m && (alpha[a_idx] === beta[b_idx] || (alpha[a_idx] === '0' && beta[b_idx] === '1'))) {
-            res = res || check(a_idx + 1, b_idx + 1, alpha[a_idx]);
+            let next_type = (alpha[a_idx] === '1') ? 2 : 1;
+            res = res || check(a_idx + 1, b_idx + 1, next_type);
         }
         
         // Option 2: assign u[b_idx] = epsilon ('e')
         // Rule 1: b_idx > 0 (first tuple element cannot be epsilon)
-        // Rule 2: last_u_char !== '1' (epsilon cannot follow '1')
-        if (!res && b_idx > 0 && last_u_char !== '1') {
-            res = res || check(a_idx, b_idx + 1, 'e');
+        // Rule 2: last_type !== 2 (epsilon cannot follow '1')
+        if (!res && b_idx > 0 && last_type !== 2) {
+            res = res || check(a_idx, b_idx + 1, 0);
         }
         
-        memo[key] = res;
+        memo[key] = res ? 1 : 0;
         return res;
     }
     
-    let result = check(0, 0, null);
+    let result = check(0, 0, 0);
+    if (reduction_cache.size > 50000) reduction_cache.clear();
     reduction_cache.set(cache_key, result);
     return result;
 }
@@ -188,6 +196,7 @@ function rep_set(X, Y) {
 // Compute WQO Stabilizer Family E = min_ll R(P)
 function compute_stabilizer_family(P) {
     reduction_cache.clear();
+    current_checked_log = [];
 
     // 1. Theoretical Optimization: For a single block P = {Gamma_1}, no cross-block interaction exists.
     // Thus R(P) = P and E = min_ll R(P) is simply P itself! No calculation needed!
@@ -195,6 +204,14 @@ function compute_stabilizer_family(P) {
         P[0].step_k = 1;
         P[0].origin_type = 'initial';
         P[0].origin_label = '\\Gamma_1';
+        current_checked_log.push({
+            label: '\\Gamma_1',
+            type: 'Initial Block',
+            words: P[0],
+            step_k: 1,
+            survived: true,
+            absorbed_by: 'None'
+        });
         return [...P];
     }
 
@@ -205,6 +222,14 @@ function compute_stabilizer_family(P) {
         block.origin_type = 'initial';
         block.origin_label = `\\Gamma_{${i+1}}`;
         all_words_in_P.push(...block);
+        current_checked_log.push({
+            label: `\\Gamma_{${i+1}}`,
+            type: 'Initial Block',
+            words: block,
+            step_k: 1,
+            survived: true,
+            absorbed_by: 'None'
+        });
     }
     
     let current_collection = [...P];
@@ -220,14 +245,24 @@ function compute_stabilizer_family(P) {
                 }
             }
             let C_ij = Array.from(new Set(concats)).sort();
-            let is_bounded = false;
+            let reducer_label = null;
             for (let k = 0; k < P.length; k++) {
                 if (set_ll(P[k], C_ij)) {
-                    is_bounded = true;
+                    reducer_label = `\\Gamma_{${k+1}}`;
                     break;
                 }
             }
-            if (!is_bounded && C_ij.length > 0) {
+            if (C_ij.length > 0) {
+                current_checked_log.push({
+                    label: `\\Gamma_{${i+1}} \\cdot \\Gamma_{${j+1}}`,
+                    type: 'Concatenation',
+                    words: C_ij,
+                    step_k: 1,
+                    survived: !reducer_label,
+                    absorbed_by: reducer_label || 'None'
+                });
+            }
+            if (!reducer_label && C_ij.length > 0) {
                 C_ij.step_k = 1;
                 C_ij.origin_type = 'concatenation';
                 C_ij.origin_label = `\\Gamma_{${i+1}} \\cdot \\Gamma_{${j+1}}`;
@@ -278,6 +313,27 @@ function compute_stabilizer_family(P) {
         
         let candidate_collection = [...current_collection, ...new_sets];
         let min_candidate = get_minimal_sets(candidate_collection);
+        
+        for (let Z of new_sets) {
+            let survived = min_candidate.some(ms => ms.join(',') === Z.join(','));
+            let reducer_label = null;
+            if (!survived) {
+                for (let ms_idx = 0; ms_idx < min_candidate.length; ms_idx++) {
+                    if (set_ll(min_candidate[ms_idx], Z)) {
+                        reducer_label = min_candidate[ms_idx].origin_label || `S_{${ms_idx+1}}`;
+                        break;
+                    }
+                }
+            }
+            current_checked_log.push({
+                label: Z.origin_label,
+                type: 'Replacement',
+                words: Z,
+                step_k: iteration + 1,
+                survived: survived,
+                absorbed_by: reducer_label || 'another minimal set in \\(\\mathbb{E}\\)'
+            });
+        }
         
         if (min_candidate.length === current_collection.length) {
             let same = true;
@@ -348,36 +404,22 @@ function shuffle_array(arr) {
 }
 
 function generate_incomparable_pool(count) {
-    // Randomize length range for each click to guarantee fresh, diverse word sets!
-    let min_len = 3 + Math.floor(Math.random() * 4); // 3 to 6
-    let max_len = min_len + 1 + Math.floor(Math.random() * 2); // min_len+1 to min_len+2
-    
-    let all_words = generate_all_full_words(min_len, max_len);
-    all_words = shuffle_array(all_words);
-    
-    // 50% chance to prioritize longer words first to avoid short words killing the pool
-    if (Math.random() < 0.5) {
-        all_words.sort((a, b) => b.length - a.length);
-    }
-    
-    let pool = [];
-    for (let w of all_words) {
-        let is_incomp = true;
-        for (let existing of pool) {
-            if (is_reduction(w, existing) || is_reduction(existing, w)) {
-                is_incomp = false;
-                break;
-            }
-        }
-        if (is_incomp) {
-            pool.push(w);
-            if (pool.length === count) break;
-        }
-    }
-    // If we didn't find enough words in that narrow range, supplement from wider range (3 to 8)
-    if (pool.length < count) {
-        let backup_words = shuffle_array(generate_all_full_words(3, 8));
-        for (let w of backup_words) {
+    // Attempt 1: Try diverse length ranges (lengths 4 to 7) with sparse ones (1 or 2 ones)
+    // Why sparse ones? As deduced from the reduction relation definition (Rule 2: epsilon cannot follow '1'),
+    // words with sparse ones prevent combinatorial blowup in rep(X,Y) while ensuring clean antichain properties!
+    for (let attempt = 0; attempt < 50; attempt++) {
+        let min_len = 4 + Math.floor(Math.random() * 2); // 4 or 5
+        let max_len = min_len + 2; // up to 7
+        
+        let all_words = generate_all_full_words(min_len, max_len).filter(w => {
+            let ones = 0;
+            for (let char of w) if (char === '1') ones++;
+            return ones >= 1 && ones <= 2;
+        });
+        all_words = shuffle_array(all_words);
+        
+        let pool = [];
+        for (let w of all_words) {
             let is_incomp = true;
             for (let existing of pool) {
                 if (is_reduction(w, existing) || is_reduction(existing, w)) {
@@ -387,11 +429,24 @@ function generate_incomparable_pool(count) {
             }
             if (is_incomp) {
                 pool.push(w);
-                if (pool.length === count) break;
+                if (pool.length === count) return pool; // Guaranteed strict antichain of exact size!
             }
         }
     }
-    return pool;
+    
+    // Bulletproof Fallback: Same-length antichain with sparse ones (1 or 2 ones)!
+    // Theorem: Distinct binary words of the same length L with exact same number of 1s (M ones)
+    // form a guaranteed strict antichain, while sparse ones prevent exponential combinatorial blowup in rep(X,Y)!
+    let L = Math.max(6, count);
+    let M = (count <= 6) ? 1 : 2;
+    let all_L_words = generate_all_full_words(L, L).filter(w => {
+        let ones = 0;
+        for (let char of w) if (char === '1') ones++;
+        return ones === M;
+    });
+    
+    all_L_words = shuffle_array(all_L_words);
+    return all_L_words.slice(0, count);
 }
 
 // 3. UI Dynamics and Event Handlers
@@ -400,6 +455,7 @@ let blockCount = 0;
 let current_P = [];
 let current_E = [];
 let current_formula_summands = [];
+let current_checked_log = [];
 
 // MathJax rendering queue to prevent overlapping promise freezes and scope rendering to target elements
 let typesetQueue = Promise.resolve();
@@ -475,38 +531,27 @@ function randomizeBlocks(num_blocks) {
     blocksContainer.innerHTML = '';
     blockCount = 0;
     
-    let best_blocks = null;
-    for (let attempt = 0; attempt < 50; attempt++) {
-        let block_sizes = [];
-        let total_words = 0;
-        for (let i = 0; i < num_blocks; i++) {
-            let size = (num_blocks === 1) ? 2 : (Math.random() < 0.35 ? 2 : 1);
-            block_sizes.push(size);
-            total_words += size;
+    let block_sizes = [];
+    let total_words = 0;
+    for (let i = 0; i < num_blocks; i++) {
+        let size = (num_blocks === 1) ? 2 : (Math.random() < 0.35 ? 2 : 1);
+        block_sizes.push(size);
+        total_words += size;
+    }
+    let pool = generate_incomparable_pool(total_words);
+    let word_idx = 0;
+    let blocks = [];
+    for (let i = 0; i < num_blocks; i++) {
+        let size = block_sizes[i];
+        let words = [];
+        for (let j = 0; j < size; j++) {
+            words.push(pool[word_idx]);
+            word_idx++;
         }
-        let pool = generate_incomparable_pool(total_words * 2);
-        let word_idx = 0;
-        let blocks = [];
-        for (let i = 0; i < num_blocks; i++) {
-            let size = block_sizes[i];
-            let words = [];
-            for (let j = 0; j < size; j++) {
-                if (word_idx < pool.length) {
-                    words.push(pool[word_idx]);
-                    word_idx++;
-                }
-            }
-            if (words.length === 0 && pool.length > 0) words.push(pool[0]);
-            blocks.push(words);
-        }
-        if (is_valid_partition_antichain(blocks)) {
-            best_blocks = blocks;
-            break;
-        }
-        if (!best_blocks) best_blocks = blocks;
+        blocks.push(words);
     }
     
-    for (let b of best_blocks) {
+    for (let b of blocks) {
         addBlockRow(b.join(', '), true);
     }
     
@@ -529,8 +574,8 @@ document.getElementById('btn-add-block').addEventListener('click', () => {
 
 document.getElementById('btn-hunt-concat').addEventListener('click', () => {
     let found = false;
-    for (let attempt = 0; attempt < 50; attempt++) {
-        let num_blocks = Math.random() < 0.5 ? 2 : 3;
+    for (let attempt = 0; attempt < 300; attempt++) {
+        let num_blocks = 3;
         let pool = generate_incomparable_pool(num_blocks * 2);
         let P_test = [];
         for (let i = 0; i < num_blocks; i++) {
@@ -539,7 +584,7 @@ document.getElementById('btn-hunt-concat').addEventListener('click', () => {
         if (!is_valid_partition_antichain(P_test)) continue;
         try {
             let E_test = compute_stabilizer_family(P_test);
-            if (E_test.some(s => s.origin_type === 'concatenation')) {
+            if (E_test.length >= 5 && E_test.some(s => s.origin_type === 'replacement')) {
                 blocksContainer.innerHTML = '';
                 blockCount = 0;
                 for (let b of P_test) {
@@ -555,8 +600,9 @@ document.getElementById('btn-hunt-concat').addEventListener('click', () => {
     if (!found) {
         blocksContainer.innerHTML = '';
         blockCount = 0;
-        addBlockRow('1101001, 0001011', true);
-        addBlockRow('0001011, 1000100', true);
+        addBlockRow('0100, 1000', true);
+        addBlockRow('0010, 101', true);
+        addBlockRow('0001, 011', true);
         reindexBlocks(true);
         document.getElementById('btn-compute').click();
     }
@@ -564,7 +610,7 @@ document.getElementById('btn-hunt-concat').addEventListener('click', () => {
 
 document.getElementById('btn-hunt-replace').addEventListener('click', () => {
     let found = false;
-    for (let attempt = 0; attempt < 100; attempt++) {
+    for (let attempt = 0; attempt < 300; attempt++) {
         let num_blocks = Math.random() < 0.5 ? 2 : 3;
         let pool = generate_incomparable_pool(num_blocks * 2);
         let P_test = [];
@@ -588,7 +634,13 @@ document.getElementById('btn-hunt-replace').addEventListener('click', () => {
         } catch (e) {}
     }
     if (!found) {
-        randomizeBlocks(2);
+        blocksContainer.innerHTML = '';
+        blockCount = 0;
+        addBlockRow('0100, 1000', true);
+        addBlockRow('0010, 101', true);
+        addBlockRow('0001, 011', true);
+        reindexBlocks(true);
+        document.getElementById('btn-compute').click();
     }
 });
 
@@ -704,6 +756,52 @@ document.getElementById('btn-compute').addEventListener('click', () => {
                 setTimeout(() => { e.currentTarget.innerHTML = oldText; }, 1000);
             });
         });
+        
+        // Render WQO Minimality Filter Log
+        let logRows = current_checked_log.map((entry, idx) => {
+            let statusBadge = entry.survived 
+                ? `<span style="color:#10b981;font-weight:700;">✅ Survived</span>` 
+                : `<span style="color:#ef4444;font-weight:600;">❌ Absorbed by \\(${entry.absorbed_by}\\)</span>`;
+            let wordsPreview = entry.words.length > 5 ? entry.words.slice(0, 5).join(', ') + `, ... (+${entry.words.length - 5} more)` : entry.words.join(', ');
+            return `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                <td style="padding: 8px; font-family: monospace;">\\(${entry.label}\\)</td>
+                <td style="padding: 8px;">${entry.type}</td>
+                <td style="padding: 8px; text-align: center;">\\(k=${entry.step_k}\\)</td>
+                <td style="padding: 8px;">${statusBadge}</td>
+                <td style="padding: 8px; font-family: monospace; color: #cbd5e1; font-size: 0.8rem;">\\(\\{ ${wordsPreview} \\}\\)</td>
+            </tr>`;
+        }).join('');
+        
+        let logTableHtml = `<table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.2); color: #93c5fd;">
+                    <th style="padding: 8px;">Candidate Set</th>
+                    <th style="padding: 8px;">Type</th>
+                    <th style="padding: 8px; text-align: center;">Step</th>
+                    <th style="padding: 8px;">\\(\\min_{\\ll}\\) Evaluation Status</th>
+                    <th style="padding: 8px;">Generated Words Preview</th>
+                </tr>
+            </thead>
+            <tbody>${logRows}</tbody>
+        </table>`;
+        
+        let filterLogContainer = document.getElementById('filter-log-container');
+        if (filterLogContainer) {
+            filterLogContainer.innerHTML = logTableHtml;
+        }
+        
+        let toggleBtn = document.getElementById('btn-toggle-filter-log');
+        if (toggleBtn && filterLogContainer) {
+            toggleBtn.onclick = () => {
+                filterLogContainer.classList.toggle('hidden');
+                if (filterLogContainer.classList.contains('hidden')) {
+                    toggleBtn.innerHTML = '🔍 View WQO Minimality Filter Log (\\(\\min_{\\ll}\\) Evaluation of All Checked Candidates)';
+                } else {
+                    toggleBtn.innerHTML = '🙈 Hide WQO Minimality Filter Log';
+                }
+                safeTypeset([toggleBtn, filterLogContainer]);
+            };
+        }
         
         // Render Lineage Tree
         let treeHtml = E.map((set, idx) => {
