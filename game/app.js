@@ -173,12 +173,17 @@ function compute_stabilizer_family(P) {
     // Thus R(P) = P and E = min_ll R(P) is simply P itself! No calculation needed!
     if (P.length === 1) {
         P[0].step_k = 1;
+        P[0].origin_type = 'initial';
+        P[0].origin_label = '\\Gamma_1';
         return [...P];
     }
 
     let all_words_in_P = [];
-    for (let block of P) {
+    for (let i = 0; i < P.length; i++) {
+        let block = P[i];
         block.step_k = 1;
+        block.origin_type = 'initial';
+        block.origin_label = `\\Gamma_{${i+1}}`;
         all_words_in_P.push(...block);
     }
     
@@ -204,6 +209,8 @@ function compute_stabilizer_family(P) {
             }
             if (!is_bounded && C_ij.length > 0) {
                 C_ij.step_k = 1;
+                C_ij.origin_type = 'concatenation';
+                C_ij.origin_label = `\\Gamma_{${i+1}} \\cdot \\Gamma_{${j+1}}`;
                 current_collection.push(C_ij);
             }
         }
@@ -222,17 +229,20 @@ function compute_stabilizer_family(P) {
         }
         
         let new_sets = [];
-        for (let X of current_collection) {
+        for (let i = 0; i < current_collection.length; i++) {
+            let X = current_collection[i];
             let key_X = X.join(',');
-            for (let Y of current_collection) {
-                // NEVER replace a set with itself (X !== Y is required to prevent self-feeding loops)
-                if (X === Y) continue;
+            for (let j = 0; j < current_collection.length; j++) {
+                if (i === j) continue;
+                let Y = current_collection[j];
                 let key_Y = Y.join(',');
                 if (old_keys.has(key_X) && old_keys.has(key_Y)) continue; // Skip already-evaluated pairs!
 
                 let Z = rep_set(X, Y);
                 if (Z.length > 0) {
                     Z.step_k = iteration + 1;
+                    Z.origin_type = 'replacement';
+                    Z.origin_label = `\\operatorname{rep}(S_{${i+1}}, S_{${j+1}})`;
                     new_sets.push(Z);
                 }
             }
@@ -494,7 +504,16 @@ document.getElementById('btn-compute').addEventListener('click', () => {
         // Render Stabilizer Family
         let e_items = E.map((set, idx) => {
             let is_initial = P.some(pb => pb.sort().join(',') === [...set].sort().join(','));
-            let badge = is_initial ? `<span style="color:var(--accent-cyan);font-size:0.85em;">[Initial Block]</span>` : `<span style="color:var(--accent-pink);font-weight:700;font-size:0.85em;">[Surviving Replacement Set]</span>`;
+            let badge = '';
+            if (set.origin_type === 'initial' || is_initial) {
+                badge = `<span style="color:var(--accent-cyan);font-size:0.85em;font-weight:600;">[Initial Block]</span>`;
+            } else if (set.origin_type === 'concatenation') {
+                let origin_str = set.origin_label ? ` <span style="color:#cbd5e1;font-size:0.85em;margin-left:4px;">(from \\(${set.origin_label}\\))</span>` : '';
+                badge = `<span style="color:#c084fc;font-weight:700;font-size:0.85em;">[Surviving Concatenation Set]</span>${origin_str}`;
+            } else {
+                let origin_str = set.origin_label ? ` <span style="color:#cbd5e1;font-size:0.85em;margin-left:4px;">(from \\(${set.origin_label}\\))</span>` : '';
+                badge = `<span style="color:var(--accent-pink);font-weight:700;font-size:0.85em;">[Surviving Replacement Set]</span>${origin_str}`;
+            }
             let copySetBtn = `<button class="btn-copy-set" data-words="${set.join(', ')}" title="Copy words in S_${idx+1}" style="background:rgba(236, 72, 153, 0.15);border:1px solid rgba(236, 72, 153, 0.3);color:#f472b6;padding:2px 8px;border-radius:6px;font-size:0.8rem;cursor:pointer;margin-left:8px;">📋 Copy Words</button>`;
             let step_k_val = set.step_k || 1;
             return `<li style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;gap:8px;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:8px;"><div>\\(S_${idx+1} = \\{ ${set.join(', ')} \\}\\) ${badge} ${copySetBtn}</div><div style="color:var(--text-muted);font-weight:600;font-size:0.95em;font-family:monospace;margin-left:auto;">(k=${step_k_val})</div></li>`;
