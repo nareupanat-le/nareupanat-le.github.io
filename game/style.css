@@ -548,15 +548,79 @@ h2 {
     grid-template-columns: 1fr 340px;
     gap: 16px;
     align-items: start;
+    position: relative;
+    transition: all 0.3s ease;
 }
 
+/* Fullscreen Canvas Mode */
+.graph-grid-container.fullscreen-mode {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: 999999 !important;
+    background: rgba(10, 15, 30, 0.98) !important;
+    padding: 20px !important;
+    margin: 0 !important;
+    box-sizing: border-box !important;
+    grid-template-columns: 1fr 380px !important;
+    grid-template-rows: 100% !important;
+    gap: 20px !important;
+    backdrop-filter: blur(16px) !important;
+    overflow: hidden !important;
+}
+
+.graph-grid-container.fullscreen-mode #network-graph-container {
+    height: calc(100vh - 40px) !important;
+    border: 2px solid rgba(147, 51, 234, 0.6) !important;
+}
+
+.graph-grid-container.fullscreen-mode #node-inspector-panel {
+    height: calc(100vh - 40px) !important;
+    max-height: none !important;
+}
+
+.graph-grid-container.fullscreen-mode #btn-exit-fullscreen {
+    display: block !important;
+}
+
+/* Mobile Responsive Adjustments for Graph & Canvas */
 @media (max-width: 950px) {
     .graph-grid-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
+    }
+    #network-graph-container {
+        height: 400px !important;
     }
     #node-inspector-panel {
         height: auto !important;
-        max-height: 400px;
+        max-height: 380px !important;
+    }
+    .graph-grid-container.fullscreen-mode {
+        grid-template-columns: 1fr !important;
+        grid-template-rows: 1fr 260px !important;
+        padding: 12px !important;
+        gap: 12px !important;
+    }
+    .graph-grid-container.fullscreen-mode #network-graph-container {
+        height: 100% !important;
+    }
+    .graph-grid-container.fullscreen-mode #node-inspector-panel {
+        height: 100% !important;
+        max-height: 260px !important;
+    }
+}
+
+@media (max-width: 520px) {
+    #network-graph-container {
+        height: 350px !important;
+    }
+    .graph-grid-container.fullscreen-mode #btn-exit-fullscreen {
+        top: 10px;
+        right: 10px;
+        padding: 6px 12px;
+        font-size: 0.8rem;
     }
 }
 

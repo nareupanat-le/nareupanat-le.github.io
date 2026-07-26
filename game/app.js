@@ -1283,6 +1283,9 @@ document.addEventListener('DOMContentLoaded', () => {
     let btnWqo = document.getElementById('btn-graph-wqo');
     let btnAbs = document.getElementById('btn-graph-absorbed');
     let btnFit = document.getElementById('btn-graph-fit');
+    let btnFull = document.getElementById('btn-graph-fullscreen');
+    let btnExitFull = document.getElementById('btn-exit-fullscreen');
+    let gridContainer = document.querySelector('.graph-grid-container');
     
     if (btnLin) btnLin.addEventListener('click', () => renderInteractiveGraph('lineage'));
     if (btnWqo) btnWqo.addEventListener('click', () => renderInteractiveGraph('wqo'));
@@ -1292,5 +1295,48 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     if (btnFit) btnFit.addEventListener('click', () => {
         if (networkInstance) networkInstance.fit({ animation: { duration: 500, easingFunction: 'easeInOutQuad' } });
+    });
+    
+    function toggleFullscreenCanvas() {
+        if (!gridContainer) return;
+        let isFull = gridContainer.classList.toggle('fullscreen-mode');
+        if (btnFull) {
+            if (isFull) {
+                btnFull.innerHTML = '❌ ย่อจอ (Exit Fullscreen)';
+                btnFull.style.background = 'rgba(239, 68, 68, 0.25)';
+                btnFull.style.borderColor = '#fca5a5';
+                btnFull.style.color = '#fecaca';
+                try {
+                    if (document.documentElement.requestFullscreen) {
+                        document.documentElement.requestFullscreen();
+                    }
+                } catch(e) {}
+            } else {
+                btnFull.innerHTML = '⛶ ขยายเต็มจอ (Fullscreen Canvas)';
+                btnFull.style.background = 'rgba(59, 130, 246, 0.2)';
+                btnFull.style.borderColor = 'rgba(59, 130, 246, 0.5)';
+                btnFull.style.color = '#93c5fd';
+                try {
+                    if (document.fullscreenElement && document.exitFullscreen) {
+                        document.exitFullscreen();
+                    }
+                } catch(e) {}
+            }
+        }
+        if (networkInstance) {
+            setTimeout(() => {
+                networkInstance.redraw();
+                networkInstance.fit({ animation: { duration: 400, easingFunction: 'easeInOutQuad' } });
+            }, 300);
+        }
+    }
+    
+    if (btnFull) btnFull.addEventListener('click', toggleFullscreenCanvas);
+    if (btnExitFull) btnExitFull.addEventListener('click', toggleFullscreenCanvas);
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && gridContainer && gridContainer.classList.contains('fullscreen-mode')) {
+            toggleFullscreenCanvas();
+        }
     });
 });
