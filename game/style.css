@@ -19,6 +19,11 @@
     padding: 0;
 }
 
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
 body {
     font-family: 'Outfit', sans-serif;
     background: radial-gradient(circle at 50% 0%, var(--bg-secondary) 0%, var(--bg-primary) 80%);
@@ -379,29 +384,160 @@ h2 {
 }
 
 /* Responsive Design */
-@media (max-width: 650px) {
+@media (max-width: 768px) {
     body {
-        padding: 1.25rem 0.75rem;
+        padding: 1.5rem 1rem;
     }
 
     h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
+    }
+
+    .presets-container {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.6rem;
+        padding: 0.85rem;
+    }
+
+    .preset-label {
+        grid-column: 1 / -1;
+        margin-bottom: 0.2rem;
+    }
+
+    .btn-preset {
+        justify-content: center;
+        text-align: center;
+        padding: 0.6rem 0.5rem;
+        font-size: 0.88rem;
+    }
+
+    .btn-benchmark {
+        grid-column: 1 / -1;
+    }
+
+    .glass-panel {
+        padding: 1.5rem;
+    }
+}
+
+@media (max-width: 520px) {
+    body {
+        padding: 1rem 0.5rem;
+    }
+
+    header {
+        margin-bottom: 2rem;
+    }
+
+    h1 {
+        font-size: 1.65rem;
+    }
+
+    header p {
+        font-size: 0.92rem;
+    }
+
+    h2 {
+        font-size: 1.15rem;
+    }
+
+    .glass-panel {
+        padding: 1.15rem 0.85rem;
+        border-radius: 16px;
+    }
+
+    .presets-container {
+        grid-template-columns: 1fr 1fr;
+        gap: 0.5rem;
+        padding: 0.65rem;
+    }
+
+    .btn-preset {
+        font-size: 0.82rem;
+        padding: 0.55rem 0.4rem;
+        border-radius: 6px;
+    }
+
+    .block-row {
+        padding: 0.7rem 0.75rem;
+        gap: 0.5rem;
+        border-radius: 10px;
+    }
+
+    .block-label {
+        font-size: 0.95rem;
+        min-width: 40px;
+    }
+
+    .block-input {
+        font-size: 0.95rem;
+        min-width: 0;
+        width: 100%;
+    }
+
+    .btn-remove-block {
+        width: 30px;
+        height: 30px;
+        font-size: 1.1rem;
+        flex-shrink: 0;
     }
 
     .block-actions {
         flex-direction: column;
+        gap: 0.75rem;
     }
 
     .btn {
         width: 100%;
+        padding: 0.8rem 1rem;
+        font-size: 0.98rem;
+    }
+
+    .step-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .step-num {
+        align-self: flex-start;
+    }
+
+    .result-card h3 {
+        font-size: 1.05rem;
+    }
+
+    .math-content {
+        font-size: 1rem;
+        line-height: 1.6;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .math-formula-box {
+        padding: 1rem 0.5rem;
+        font-size: 1.05rem;
+        border-radius: 10px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+}
+
+@media (max-width: 380px) {
+    h1 {
+        font-size: 1.45rem;
     }
 
     .presets-container {
-        flex-direction: column;
-        align-items: stretch;
+        grid-template-columns: 1fr;
     }
 
-    .glass-panel {
-        padding: 1.25rem;
+    .btn-preset, .btn-benchmark {
+        grid-column: 1 / -1;
+    }
+
+    .block-input {
+        font-size: 0.88rem;
     }
 }
