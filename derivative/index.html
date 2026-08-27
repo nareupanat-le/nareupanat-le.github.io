@@ -429,21 +429,33 @@ function generateInverseTrigChain() {
     let solText = `
       <div class="solution-step">
         <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชัน $\\arctan(u)$ ร่วมกับกฎลูกโซ่</strong><br>
-        สูตร: $\\frac{d}{dx}[\\arctan(u)] = \\frac{1}{1+u^2} \\cdot \\frac{du}{dx}$
+        $$\\frac{d}{dx}[\\arctan(u)] = \\frac{1}{1+u^2} \\cdot \\frac{du}{dx}$$
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 2: กำหนด $u$ และหาอนุพันธ์ไส้ใน $\\frac{du}{dx}$</strong><br>
-        ให้ $u = ${uExpr}$<br>
-        จะได้ $\\frac{du}{dx} = \\frac{d}{dx}(${uExpr}) = ${uPrime}$
+        <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
+        กำหนดให้ $u = ${uExpr}$ จะได้ว่า
+        $$\\begin{align*}
+        \\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
+        &= ${uPrime}
+        \\end{align*}$$
+        ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
-        $$\\displaystyle f'(x) = ${derivExpr}$$
+        <strong>ขั้นที่ 3: แทนค่าในสูตรและจัดรูป</strong><br>
+        $$\\begin{align*}
+        f'(x) &= \\frac{1}{1 + (${uExpr})^2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
+        &= \\frac{1}{1 + (${uExpr})^2} \\cdot (${uPrime}) \\\\
+        &= ${derivExpr}
+        \\end{align*}$$
+        ดังนั้น $$f'(x) = ${derivExpr}$$
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$ และสมการเส้นสัมผัสที่จุด $x = ${x0}$</strong><br>
         แทนค่า $x = ${x0}$ ลงใน $f'(x)$:<br>
-        $$\\displaystyle f'(${x0}) = \\frac{${2*a}(${x0}) + ${k}}{1 + (${uExpr.replace(/x/g, `(${x0})`)})^2} = ${slopeVal}$$<br>
+        $$\\begin{align*}
+        f'(${x0}) &= \\frac{${2*a}(${x0}) + ${k}}{1 + (${uExpr.replace(/x/g, `(${x0})`)})^2} \\\\
+        &= ${slopeVal}
+        \\end{align*}$$
         พิกัดจุดสัมผัสคือ $(${x0}, f(${x0})) = (${x0}, ${y0Val})$<br>
         สมการเส้นสัมผัส: $y - ${y0Val} = ${slopeVal}(x - ${x0}) \\implies ${tangentEq}$
       </div>
@@ -471,19 +483,29 @@ function generateInverseTrigChain() {
     let solText = `
       <div class="solution-step">
         <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชัน $\\arcsin(u)$ ร่วมกับกฎลูกโซ่</strong><br>
-        สูตร: $\\frac{d}{dx}[\\arcsin(u)] = \\frac{1}{\\sqrt{1-u^2}} \\cdot \\frac{du}{dx}$
+        $$\\frac{d}{dx}[\\arcsin(u)] = \\frac{1}{\\sqrt{1-u^2}} \\cdot \\frac{du}{dx}$$
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 2: กำหนด $u$ และหา $\\frac{du}{dx}$</strong><br>
-        ให้ $u = ${uExpr} \\implies \\frac{du}{dx} = ${k}$
+        <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
+        กำหนดให้ $u = ${uExpr}$ จะได้ว่า
+        $$\\begin{align*}
+        \\frac{du}{dx} &= \\frac{d}{dx}(${uExpr}) \\\\
+        &= ${k}
+        \\end{align*}$$
+        ดังนั้น $$\\frac{du}{dx} = ${k}$$
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
-        $$\\displaystyle f'(x) = ${derivExpr}$$
+        $$\\begin{align*}
+        f'(x) &= \\frac{1}{\\sqrt{1 - (${uExpr})^2}} \\cdot \\frac{d}{dx}(${uExpr}) \\\\
+        &= \\frac{1}{\\sqrt{1 - ${k*k}x^2}} \\cdot (${k}) \\\\
+        &= ${derivExpr}
+        \\end{align*}$$
+        ดังนั้น $$f'(x) = ${derivExpr}$$
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
-        $$\\displaystyle f'(${x0}) = \\frac{${k}}{\\sqrt{1 - 0}} = ${slopeVal}$$
+        $$f'(${x0}) = \\frac{${k}}{\\sqrt{1 - 0}} = ${slopeVal}$$
       </div>
     `;
 
@@ -524,17 +546,34 @@ function generateProductRuleMixed() {
         <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละพจน์</strong><br>
-        ให้ $u = ${u} \\implies u' = ${a}$<br>
-        ให้ $v = \\arctan(${k}x) \\implies v' = \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) = \\frac{${k}}{1 + ${k*k}x^2}$
+        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
+        กำหนดให้ $u = ${u}$ จะได้ว่า
+        $$\\begin{align*}
+        u' &= \\frac{d}{dx}(${u}) \\\\
+        &= ${a}
+        \\end{align*}$$
+        ดังนั้น $$u' = ${a}$$
+        <br>
+        กำหนดให้ $v = \\arctan(${k}x)$ จะได้ว่า
+        $$\\begin{align*}
+        v' &= \\frac{d}{dx}[\\arctan(${k}x)] \\\\
+        &= \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) \\\\
+        &= \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} \\\\
+        &= \\frac{${k}}{1 + ${k*k}x^2}
+        \\end{align*}$$
+        ดังนั้น $$v' = \\frac{${k}}{1 + ${k*k}x^2}$$
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณ</strong><br>
-        $$\\displaystyle f'(x) = ${derivExpr}$$
+        <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณ $(uv)' = u'v + uv'$</strong><br>
+        $$\\begin{align*}
+        f'(x) &= (${a})\\arctan(${k}x) + (${u})\\left(\\frac{${k}}{1 + ${k*k}x^2}\\right) \\\\
+        &= ${derivExpr}
+        \\end{align*}$$
+        ดังนั้น $$f'(x) = ${derivExpr}$$
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: หาค่าความชัน $f'(${x0})$</strong><br>
-        $$\\displaystyle f'(${x0}) = ${a}\\arctan(0) + \\frac{${k}(0 + ${b})}{1 + 0} = 0 + ${b * k} = ${slopeVal}$$
+        $$f'(${x0}) = ${a}\\arctan(0) + \\frac{${k}(0 + ${b})}{1 + 0} = 0 + ${b * k} = ${slopeVal}$$
       </div>
     `;
 
@@ -568,17 +607,35 @@ function generateProductRuleMixed() {
         <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$</strong><br>
-        ให้ $u = ${u} \\implies u' = ${2*a}x + ${b}$<br>
-        ให้ $v = e^{${k}x} \\implies v' = ${k}e^{${k}x}$
+        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
+        กำหนดให้ $u = ${u}$ จะได้ว่า
+        $$\\begin{align*}
+        u' &= \\frac{d}{dx}(${u}) \\\\
+        &= ${2*a}x + ${b}
+        \\end{align*}$$
+        ดังนั้น $$u' = ${2*a}x + ${b}$$
+        <br>
+        กำหนดให้ $v = e^{${k}x}$ จะได้ว่า
+        $$\\begin{align*}
+        v' &= \\frac{d}{dx}\\left[e^{${k}x}\\right] \\\\
+        &= e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) \\\\
+        &= e^{${k}x} \\cdot ${k} \\\\
+        &= ${k}e^{${k}x}
+        \\end{align*}$$
+        ดังนั้น $$v' = ${k}e^{${k}x}$$
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่าและดึงตัวร่วม $e^{${k}x}$</strong><br>
-        $$\\displaystyle f'(x) = (${2*a}x + ${b})e^{${k}x} + (${u})(${k}e^{${k}x}) = ${derivExpr}$$
+        <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณและดึงตัวร่วม $e^{${k}x}$</strong><br>
+        $$\\begin{align*}
+        f'(x) &= (${2*a}x + ${b})e^{${k}x} + (${u})(${k}e^{${k}x}) \\\\
+        &= \\left[(${2*a}x + ${b}) + ${k}(${u})\\right]e^{${k}x} \\\\
+        &= ${derivExpr}
+        \\end{align*}$$
+        ดังนั้น $$f'(x) = ${derivExpr}$$
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$ เพื่อหาค่า $f'(${x0})$</strong><br>
-        $$\\displaystyle f'(${x0}) = (${C})e^{0} = ${slopeVal}$$
+        $$f'(${x0}) = (${C})e^{0} = ${slopeVal}$$
       </div>
     `;
 
@@ -622,17 +679,34 @@ function generateQuotientRule() {
         <strong>ขั้นที่ 1: ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$</strong>
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$</strong><br>
-        ให้ $u = \\sin(${k}x) \\implies u' = ${uPrime}$<br>
-        ให้ $v = ${v} \\implies v' = ${vPrime}$
+        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
+        กำหนดให้ $u = \\sin(${k}x)$ จะได้ว่า
+        $$\\begin{align*}
+        u' &= \\frac{d}{dx}[\\sin(${k}x)] \\\\
+        &= \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) \\\\
+        &= \\cos(${k}x) \\cdot ${k} \\\\
+        &= ${uPrime}
+        \\end{align*}$$
+        ดังนั้น $$u' = ${uPrime}$$
+        <br>
+        กำหนดให้ $v = ${v}$ จะได้ว่า
+        $$\\begin{align*}
+        v' &= \\frac{d}{dx}(${v}) \\\\
+        &= ${vPrime}
+        \\end{align*}$$
+        ดังนั้น $$v' = ${vPrime}$$
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
-        $$\\displaystyle f'(x) = ${derivExpr}$$
+        <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลหาร</strong><br>
+        $$\\begin{align*}
+        f'(x) &= \\frac{(${uPrime})(${v}) - (\\sin(${k}x))(${vPrime})}{(${v})^2} \\\\
+        &= ${derivExpr}
+        \\end{align*}$$
+        ดังนั้น $$f'(x) = ${derivExpr}$$
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
-        $$\\displaystyle f'(${x0}) = \\frac{${k}\\cos(0)(${b}) - ${a}\\sin(0)}{(${b})^2} = \\frac{${k*b}}{${b*b}} = ${slopeValLatex}$$
+        $$f'(${x0}) = \\frac{${k}\\cos(0)(${b}) - ${a}\\sin(0)}{(${b})^2} = \\frac{${k*b}}{${b*b}} = ${slopeValLatex}$$
       </div>
     `;
 
@@ -665,16 +739,33 @@ function generateQuotientRule() {
         <strong>ขั้นที่ 1: ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$</strong>
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 2: แทนค่า</strong><br>
-        $$\\displaystyle f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2}$$
+        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
+        กำหนดให้ $u = ${a === 1 ? "x" : `${a}x`} + ${b}$ จะได้ว่า
+        $$\\begin{align*}
+        u' &= \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) \\\\
+        &= ${a}
+        \\end{align*}$$
+        ดังนั้น $$u' = ${a}$$
+        <br>
+        กำหนดให้ $v = ${c === 1 ? "x" : `${c}x`} + ${d}$ จะได้ว่า
+        $$\\begin{align*}
+        v' &= \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) \\\\
+        &= ${c}
+        \\end{align*}$$
+        ดังนั้น $$v' = ${c}$$
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 3: กระจายพจน์เศษและจัดรูป</strong><br>
-        $$\\displaystyle = \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}$$
+        <strong>ขั้นที่ 3: แทนค่าและกระจายพจน์ตัวเศษ</strong><br>
+        $$\\begin{align*}
+        f'(x) &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\
+        &= \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\
+        &= ${derivExpr}
+        \\end{align*}$$
+        ดังนั้น $$f'(x) = ${derivExpr}$$
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
-        $$\\displaystyle f'(${x0}) = \\frac{${det}}{(${d})^2} = ${slopeValLatex}$$
+        $$f'(${x0}) = \\frac{${det}}{(${d})^2} = ${slopeValLatex}$$
       </div>
     `;
 
@@ -715,16 +806,26 @@ function generateMultiChainRule() {
         <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันลอการิทึม $\\frac{d}{dx}[\\ln(u)] = \\frac{1}{u} \\cdot \\frac{du}{dx}$</strong>
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 2: กำหนด $u$ และหา $\\frac{du}{dx}$</strong><br>
-        ให้ $u = ${uExpr} \\implies \\frac{du}{dx} = ${uPrime}$
+        <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
+        กำหนดให้ $u = ${uExpr}$ จะได้ว่า
+        $$\\begin{align*}
+        \\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
+        &= ${uPrime}
+        \\end{align*}$$
+        ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 3: สรุปรูปอนุพันธ์ทั่วไป</strong><br>
-        $$\\displaystyle f'(x) = ${derivExpr}$$
+        <strong>ขั้นที่ 3: แทนค่าในสูตรกฎลูกโซ่</strong><br>
+        $$\\begin{align*}
+        f'(x) &= \\frac{1}{${uExpr}} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
+        &= \\frac{1}{${uExpr}} \\cdot (${uPrime}) \\\\
+        &= ${derivExpr}
+        \\end{align*}$$
+        ดังนั้น $$f'(x) = ${derivExpr}$$
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
-        $$\\displaystyle f'(${x0}) = \\frac{${b}}{${c}} = ${slopeValLatex}$$
+        $$f'(${x0}) = \\frac{${2*a}(0) + ${b}}{${a}(0)^2 + ${b}(0) + ${c}} = \\frac{${b}}{${c}} = ${slopeValLatex}$$
       </div>
     `;
 
@@ -754,15 +855,29 @@ function generateMultiChainRule() {
     let solText = `
       <div class="solution-step">
         <strong>ขั้นที่ 1: แปลงรูปกรณฑ์เป็นเลขยกกำลังตรรกยะ</strong><br>
-        $f(x) = (${uExpr})^{1/2}$
+        $$f(x) = (${uExpr})^{1/2}$$
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 2: ใช้กฎลูกโซ่ $\\frac{d}{dx}[u^n] = n u^{n-1} \\cdot \\frac{du}{dx}$</strong><br>
-        $$\\displaystyle f'(x) = \\frac{1}{2}(${uExpr})^{-1/2} \\cdot \\frac{d}{dx}(${uExpr}) = ${derivExpr}$$
+        <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
+        กำหนดให้ $u = ${uExpr}$ จะได้ว่า
+        $$\\begin{align*}
+        \\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
+        &= ${uPrime}
+        \\end{align*}$$
+        ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
       </div>
       <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
-        $$\\displaystyle f'(${x0}) = \\frac{${b}}{2\\sqrt{${c2}}} = \\frac{${b}}{2(${c})} = ${slopeValLatex}$$
+        <strong>ขั้นที่ 3: ใช้กฎลูกโซ่ $\\frac{d}{dx}[u^n] = n u^{n-1} \\cdot \\frac{du}{dx}$ แทนค่าและจัดรูป</strong><br>
+        $$\\begin{align*}
+        f'(x) &= \\frac{1}{2}(${uExpr})^{-1/2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
+        &= \\frac{1}{2\\sqrt{${uExpr}}} \\cdot (${uPrime}) \\\\
+        &= ${derivExpr}
+        \\end{align*}$$
+        ดังนั้น $$f'(x) = ${derivExpr}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+        $$f'(${x0}) = \\frac{${2*a}(0) + ${b}}{2\\sqrt{${c2}}} = \\frac{${b}}{2(${c})} = ${slopeValLatex}$$
       </div>
     `;
 
