@@ -525,7 +525,7 @@
 </header>
 
 <main>
-  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.20:41</span></h3>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.20:46</span></h3>
   <p class="byline">คลังโจทย์แคลคูลัส 1 พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
@@ -629,7 +629,7 @@
   </div>
 
   <footer style="text-align: center; margin-top: 28px; margin-bottom: 16px; font-size: 0.85rem; color: var(--muted);">
-    Calculus 1 Practice Hub • v.2026.08.27.20:41
+    Calculus 1 Practice Hub • v.2026.08.27.20:46
   </footer>
 </main>
 
@@ -4309,12 +4309,10 @@ function setTopic(topic) {
   document.getElementById('topicTangentBtn').classList.toggle('active', topic === 'tangent_normal');
   document.getElementById('topicImplicitBtn').classList.toggle('active', topic === 'implicit');
 
-  if (currentProblem !== null) {
-    if (currentMode === 'quiz') {
-      startQuizSession();
-    } else {
-      generateRandomProblem();
-    }
+  if (currentMode === 'quiz') {
+    startQuizSession();
+  } else {
+    generateRandomProblem();
   }
 }
 
@@ -4332,15 +4330,11 @@ function setMode(mode) {
   let btnAction = document.getElementById('btnMainAction');
   if (mode === 'quiz') {
     btnAction.textContent = quizSession.active ? '➡️ ข้อถัดไป' : '▶️ เริ่มทำแบบทดสอบ 5 ข้อ';
-    if (currentProblem !== null && quizSession.active) {
-      startQuizSession();
-    }
+    startQuizSession();
   } else {
     quizSession.active = false;
     btnAction.textContent = '🎲 สุ่มโจทย์ใหม่';
-    if (currentProblem !== null) {
-      generateRandomProblem();
-    }
+    generateRandomProblem();
   }
 }
 
@@ -4349,7 +4343,9 @@ function setFilterDifficulty(diff) {
   document.querySelectorAll('.filter-pill').forEach(el => {
     el.classList.toggle('active', el.getAttribute('onclick').includes(`'${diff}'`));
   });
-  if (currentProblem !== null) {
+  if (currentMode === 'quiz') {
+    startQuizSession();
+  } else {
     generateRandomProblem();
   }
 }
@@ -4704,6 +4700,8 @@ document.addEventListener('DOMContentLoaded', function() {
   const topicParam = urlParams.get('topic');
   if (['limit', 'derivative', 'tangent_normal', 'implicit'].includes(topicParam)) {
     setTopic(topicParam);
+  } else {
+    generateRandomProblem();
   }
 });
 </script>
