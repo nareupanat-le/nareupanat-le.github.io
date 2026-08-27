@@ -57,6 +57,22 @@
       border: 1px solid rgba(122, 92, 58, 0.2);
     }
 
+    .badge-easy {
+      background: rgba(46, 125, 50, 0.1);
+      color: #2e7d32;
+      border-color: rgba(46, 125, 50, 0.3);
+    }
+    .badge-med {
+      background: rgba(230, 81, 0, 0.1);
+      color: #e65100;
+      border-color: rgba(230, 81, 0, 0.3);
+    }
+    .badge-hard {
+      background: rgba(198, 40, 40, 0.1);
+      color: #c62828;
+      border-color: rgba(198, 40, 40, 0.3);
+    }
+
     .stats {
       font-size: 0.9rem;
       color: var(--muted);
@@ -302,12 +318,15 @@
 </header>
 
 <main>
-  <h3>แบบฝึกหัดอนุพันธ์แคลคูลัส</h3>
-  <p class="byline">สุ่มโจทย์การหาอนุพันธ์ระดับมหาวิทยาลัย คละเทคนิคกฎลูกโซ่ กฎผลคูณ กฎผลหาร ฟังก์ชันตรีโกณมิติผกผัน และสมการเส้นสัมผัส</p>
+  <h3>แบบฝึกหัดอนุพันธ์แคลคูลัส (Calculus 1)</h3>
+  <p class="byline">คละโจทย์ทุกระดับตั้งแต่พื้นฐาน ปานกลาง จนถึงขั้นสูง: กฎลูกโซ่, กฎผลคูณ, กฎผลหาร, อนุพันธ์ลอการิทึม, ตรีโกณมิติผกผัน, และอนุพันธ์อันดับสอง</p>
 
   <div class="app-card">
     <div class="meta-bar">
-      <div id="topicBadge" class="badge">สถานะ: รอสุ่มโจทย์</div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <div id="topicBadge" class="badge">สถานะ: รอสุ่มโจทย์</div>
+        <div id="diffBadge" class="badge hidden">ระดับความยาก</div>
+      </div>
       <div class="stats">
         <span>ทำถูก: <strong id="scoreCorrect">0</strong> ข้อ</span>
         <span>Streak: <strong id="streakCount">0</strong> 🔥</span>
@@ -444,7 +463,8 @@ function poly2(A, B, C) {
   if (B !== 0) {
     let sign = B > 0 ? (res ? " + " : "") : (res ? " - " : "-");
     let absB = Math.abs(B);
-    res += `${sign}${absB === 1 ? "" : absB}x`;
+    let termX = absB === 1 ? "x" : `${absB}x`;
+    res += `${sign}${termX}`;
   }
   if (C !== 0) {
     let sign = C > 0 ? (res ? " + " : "") : (res ? " - " : "-");
@@ -453,466 +473,165 @@ function poly2(A, B, C) {
   return res || "0";
 }
 
-// ==========================================
-// 2. Generators สำหรับอนุพันธ์ระดับมหาวิทยาลัย
-// ==========================================
+function poly3(A, B, C, D) {
+  let res = "";
+  if (A === 1) res += "x^{3}";
+  else if (A === -1) res += "-x^{3}";
+  else if (A !== 0) res += `${A}x^{3}`;
 
-// 2.1 ตรีโกณมิติผกผัน + กฎลูกโซ่ (Inverse Trig with Chain Rule)
-function generateInverseTrigChain() {
-  let sub = Math.random();
+  if (B !== 0) {
+    let sign = B > 0 ? (res ? " + " : "") : (res ? " - " : "-");
+    let absB = Math.abs(B);
+    let termX = absB === 1 ? "x^{2}" : `${absB}x^{2}`;
+    res += `${sign}${termX}`;
+  }
+  if (C !== 0) {
+    let sign = C > 0 ? (res ? " + " : "") : (res ? " - " : "-");
+    let absC = Math.abs(C);
+    let termX = absC === 1 ? "x" : `${absC}x`;
+    res += `${sign}${termX}`;
+  }
+  if (D !== 0) {
+    let sign = D > 0 ? (res ? " + " : "") : (res ? " - " : "-");
+    res += `${sign}${Math.abs(D)}`;
+  }
+  return res || "0";
+}
+
+// =========================================================
+// 2. Generators: สลับระดับง่าย (🟢) / ปานกลาง (🟡) / ท้าทาย (🔴)
+// =========================================================
+
+// --- กลุ่มระดับง่าย (🟢 พื้นฐาน) ---
+
+// 2.1 พหุนามกำลังสาม (Cubic Polynomial)
+function genEasyPoly() {
+  let a = rand(1, 3);
+  let b = randNonZero(-3, 3);
+  let c = randNonZero(-4, 4);
+  let d = rand(-4, 4);
+  let x0 = rand(-1, 1);
+
+  let fExpr = poly3(a, b, c, d);
+  let derivExpr = poly2(3 * a, 2 * b, c);
+  let slopeVal = 3 * a * x0 * x0 + 2 * b * x0 + c;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของผลบวกและกฎเลขยกกำลัง $\\frac{d}{dx}[x^n] = n x^{n-1}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{d}{dx}\\left(${fExpr}\\right) = ${derivExpr}`,
+        `f'(x) &= \\frac{d}{dx}\\left(${fExpr}\\right) \\\\ &= ${3*a}x^2 ${2*b >= 0 ? `+ ${2*b}` : `- ${Math.abs(2*b)}`}x ${c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`} \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = ${3*a}(${x0})^2 + ${2*b}(${x0}) + (${c}) = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    category: "อนุพันธ์ของฟังก์ชันพหุนาม (Polynomial Derivative)",
+    difficulty: "easy",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 2.2 ตรีโกณมิติพื้นฐาน + กฎลูกโซ่ 1 ชั้น (Basic Trig & Chain)
+function genEasyTrig() {
+  let a = rand(2, 4);
   let k = rand(2, 4);
-  let a = rand(1, 3);
   let x0 = 0;
 
-  if (sub < 0.5) {
-    // f(x) = arctan(a*x^2 + k*x)
-    let fExpr = `\\arctan(${a === 1 ? "" : a}x^{2} + ${k === 1 ? "" : k}x)`;
-    let uExpr = `${a === 1 ? "" : a}x^{2} + ${k === 1 ? "" : k}x`;
-    let uPrime = `${2 * a}x + ${k}`;
-    let derivExpr = `\\frac{${uPrime}}{1 + (${uExpr})^{2}}`;
-    
-    let slopeVal = k;
-    let y0Val = 0;
-    let tangentEq = `y = ${slopeVal === 1 ? "x" : (slopeVal === -1 ? "-x" : `${slopeVal}x`)}`;
+  let fExpr = `${a}\\sin(${k}x)`;
+  let derivExpr = `${a * k}\\cos(${k}x)`;
+  let slopeVal = a * k;
 
-    let solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชัน $\\arctan(u)$ ร่วมกับกฎลูกโซ่</strong><br>
-        $$\\frac{d}{dx}[\\arctan(u)] = \\frac{1}{1+u^2} \\cdot \\frac{du}{dx}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
-        กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-        ${adaptiveMath(
-          `\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`,
-          `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่าในสูตรและจัดรูป</strong><br>
-        ${adaptiveMath(
-          `f'(x) = \\frac{1}{1 + (${uExpr})^2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) = \\frac{1}{1 + (${uExpr})^2} \\cdot (${uPrime}) = ${derivExpr}`,
-          `f'(x) &= \\frac{1}{1 + (${uExpr})^2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= \\frac{1}{1 + (${uExpr})^2} \\cdot (${uPrime}) \\\\ &= ${derivExpr}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$ และสมการเส้นสัมผัสที่จุด $x = ${x0}$</strong><br>
-        แทนค่า $x = ${x0}$ ลงใน $f'(x)$:<br>
-        ${adaptiveMath(
-          `f'(${x0}) = \\frac{${2*a}(${x0}) + ${k}}{1 + (${uExpr.replace(/x/g, `(${x0})`)})^2} = ${slopeVal}`,
-          `f'(${x0}) &= \\frac{${2*a}(${x0}) + ${k}}{1 + (${uExpr.replace(/x/g, `(${x0})`)})^2} \\\\ &= ${slopeVal}`
-        )}
-        พิกัดจุดสัมผัสคือ $(${x0}, f(${x0})) = (${x0}, ${y0Val})$<br>
-        สมการเส้นสัมผัส: $y - ${y0Val} = ${slopeVal}(x - ${x0}) \\implies ${tangentEq}$
-      </div>
-    `;
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันไซน์ร่วมกับกฎลูกโซ่ $\\frac{d}{dx}[\\sin(u)] = \\cos(u) \\cdot \\frac{du}{dx}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: กำหนด $u = ${k}x \\implies \\frac{du}{dx} = ${k}$</strong><br>
+      ${adaptiveMath(
+        `f'(x) = ${a} \\cdot \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) = ${a} \\cdot \\cos(${k}x) \\cdot ${k} = ${derivExpr}`,
+        `f'(x) &= ${a} \\cdot \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) \\\\ &= ${a} \\cdot \\cos(${k}x) \\cdot ${k} \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = ${a*k}\\cos(0) = ${a*k}(1) = ${slopeVal}$$
+    </div>
+  `;
 
-    return {
-      category: "ตรีโกณมิติผกผัน + กฎลูกโซ่ (Inverse Trig & Chain Rule)",
-      probLatex: `f(x) = ${fExpr}`,
-      x0: x0,
-      derivLatex: derivExpr,
-      ansLatex: `${slopeVal}`,
-      tangentLatex: tangentEq,
-      solHtml: solText,
-      exactNum: slopeVal,
-      exactDen: 1
-    };
-  } else {
-    // f(x) = arcsin(k*x)
-    let uExpr = `${k}x`;
-    let fExpr = `\\arcsin(${uExpr})`;
-    let derivExpr = `\\frac{${k}}{\\sqrt{1 - ${k*k}x^{2}}}`;
-    let slopeVal = k;
-    let tangentEq = `y = ${slopeVal === 1 ? "x" : `${slopeVal}x`}`;
-
-    let solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชัน $\\arcsin(u)$ ร่วมกับกฎลูกโซ่</strong><br>
-        $$\\frac{d}{dx}[\\arcsin(u)] = \\frac{1}{\\sqrt{1-u^2}} \\cdot \\frac{du}{dx}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
-        กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-        ${adaptiveMath(
-          `\\frac{du}{dx} = \\frac{d}{dx}(${uExpr}) = ${k}`,
-          `\\frac{du}{dx} &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${k}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
-        ${adaptiveMath(
-          `f'(x) = \\frac{1}{\\sqrt{1 - (${uExpr})^2}} \\cdot \\frac{d}{dx}(${uExpr}) = \\frac{1}{\\sqrt{1 - ${k*k}x^2}} \\cdot (${k}) = ${derivExpr}`,
-          `f'(x) &= \\frac{1}{\\sqrt{1 - (${uExpr})^2}} \\cdot \\frac{d}{dx}(${uExpr}) \\\\ &= \\frac{1}{\\sqrt{1 - ${k*k}x^2}} \\cdot (${k}) \\\\ &= ${derivExpr}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
-        $$f'(${x0}) = \\frac{${k}}{\\sqrt{1 - 0}} = ${slopeVal}$$
-      </div>
-    `;
-
-    return {
-      category: "ตรีโกณมิติผกผัน + กฎลูกโซ่ (Inverse Trig & Chain Rule)",
-      probLatex: `f(x) = ${fExpr}`,
-      x0: x0,
-      derivLatex: derivExpr,
-      ansLatex: `${slopeVal}`,
-      tangentLatex: tangentEq,
-      solHtml: solText,
-      exactNum: slopeVal,
-      exactDen: 1
-    };
-  }
+  return {
+    category: "อนุพันธ์ฟังก์ชันตรีโกณมิติพื้นฐาน (Basic Trigonometric Derivative)",
+    difficulty: "easy",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
 }
 
-// 2.2 กฎผลคูณผสมตรีโกณมิติผกผัน / เอกซ์โพเนนเชียล (Product Rule with Mixed Functions)
-function generateProductRuleMixed() {
-  let sub = Math.random();
+// 2.3 เอกซ์โพเนนเชียลพื้นฐาน (Basic Exponential)
+function genEasyExp() {
+  let a = rand(1, 3);
   let k = rand(2, 4);
-  let a = rand(1, 3);
+  let b = randNonZero(-4, 4);
   let x0 = 0;
 
-  if (sub < 0.5) {
-    // f(x) = (ax + b) * arctan(kx)
-    let b = rand(1, 4);
-    let u = (a === 1) ? `x + ${b}` : `${a}x + ${b}`;
-    let v = `\\arctan(${k}x)`;
-    let fExpr = `(${u}) ${v}`;
+  let fExpr = `${a === 1 ? "" : a}e^{${k}x} ${b > 0 ? `+ ${b}x` : `- ${Math.abs(b)}x`}`;
+  let derivExpr = `${a * k}e^{${k}x} ${b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`}`;
+  let slopeVal = a * k + b;
 
-    let derivExpr = `${a === 1 ? "" : a}\\arctan(${k}x) + \\frac{${k}(${u})}{1 + ${k*k}x^{2}}`;
-    let slopeVal = b * k;
-    let tangentEq = `y = ${slopeVal}x`;
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตร $\\frac{d}{dx}[e^{kx}] = k e^{kx}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์</strong><br>
+      ${adaptiveMath(
+        `f'(x) = ${a === 1 ? "" : `${a} \\cdot `}${k}e^{${k}x} ${b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`} = ${derivExpr}`,
+        `f'(x) &= \\frac{d}{dx}[${a === 1 ? "" : a}e^{${k}x}] + \\frac{d}{dx}[${b}x] \\\\ &= ${a*k}e^{${k}x} ${b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = ${a*k}e^0 + (${b}) = ${a*k}(1) + (${b}) = ${slopeVal}$$
+    </div>
+  `;
 
-    let solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
-        กำหนดให้ $u = ${u}$ จะได้ว่า
-        ${adaptiveMath(
-          `u' = \\frac{d}{dx}(${u}) = ${a}`,
-          `u' &= \\frac{d}{dx}(${u}) \\\\ &= ${a}`
-        )}
-        <br>
-        กำหนดให้ $v = \\arctan(${k}x)$ จะได้ว่า
-        ${adaptiveMath(
-          `v' = \\frac{d}{dx}[\\arctan(${k}x)] = \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) = \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} = \\frac{${k}}{1 + ${k*k}x^2}`,
-          `v' &= \\frac{d}{dx}[\\arctan(${k}x)] \\\\ &= \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} \\\\ &= \\frac{${k}}{1 + ${k*k}x^2}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณ $(uv)' = u'v + uv'$</strong><br>
-        ${adaptiveMath(
-          `f'(x) = (${a})\\arctan(${k}x) + (${u})\\left(\\frac{${k}}{1 + ${k*k}x^2}\\right) = ${derivExpr}`,
-          `f'(x) &= (${a})\\arctan(${k}x) + (${u})\\left(\\frac{${k}}{1 + ${k*k}x^2}\\right) \\\\ &= ${derivExpr}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: หาค่าความชัน $f'(${x0})$</strong><br>
-        $$f'(${x0}) = ${a}\\arctan(0) + \\frac{${k}(0 + ${b})}{1 + 0} = 0 + ${b * k} = ${slopeVal}$$
-      </div>
-    `;
-
-    return {
-      category: "กฎผลคูณ + ตรีโกณมิติผกผัน (Product Rule & Inverse Trig)",
-      probLatex: `f(x) = ${fExpr}`,
-      x0: x0,
-      derivLatex: derivExpr,
-      ansLatex: `${slopeVal}`,
-      tangentLatex: tangentEq,
-      solHtml: solText,
-      exactNum: slopeVal,
-      exactDen: 1
-    };
-  } else {
-    // f(x) = (ax^2 + bx) * e^(kx)
-    let b = rand(2, 5);
-    let u = `${a === 1 ? "" : a}x^{2} + ${b}x`;
-    let fExpr = `(${u}) e^{${k}x}`;
-
-    let A = k * a;
-    let B = 2 * a + k * b;
-    let C = b;
-    let polySimplified = `${A === 1 ? "" : A}x^{2} + ${B}x + ${C}`;
-    let derivExpr = `(${polySimplified}) e^{${k}x}`;
-    let slopeVal = b;
-    let tangentEq = `y = ${slopeVal}x`;
-
-    let solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
-        กำหนดให้ $u = ${u}$ จะได้ว่า
-        ${adaptiveMath(
-          `u' = \\frac{d}{dx}(${u}) = ${2*a}x + ${b}`,
-          `u' &= \\frac{d}{dx}(${u}) \\\\ &= ${2*a}x + ${b}`
-        )}
-        <br>
-        กำหนดให้ $v = e^{${k}x}$ จะได้ว่า
-        ${adaptiveMath(
-          `v' = \\frac{d}{dx}\\left[e^{${k}x}\\right] = e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) = e^{${k}x} \\cdot ${k} = ${k}e^{${k}x}`,
-          `v' &= \\frac{d}{dx}\\left[e^{${k}x}\\right] \\\\ &= e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= e^{${k}x} \\cdot ${k} \\\\ &= ${k}e^{${k}x}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณและดึงตัวร่วม $e^{${k}x}$</strong><br>
-        ${adaptiveMath(
-          `f'(x) = (${2*a}x + ${b})e^{${k}x} + (${u})(${k}e^{${k}x}) = \\left[(${2*a}x + ${b}) + ${k}(${u})\\right]e^{${k}x} = ${derivExpr}`,
-          `f'(x) &= (${2*a}x + ${b})e^{${k}x} + (${u})(${k}e^{${k}x}) \\\\ &= \\left[(${2*a}x + ${b}) + ${k}(${u})\\right]e^{${k}x} \\\\ &= ${derivExpr}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$ เพื่อหาค่า $f'(${x0})$</strong><br>
-        $$f'(${x0}) = (${C})e^{0} = ${slopeVal}$$
-      </div>
-    `;
-
-    return {
-      category: "กฎผลคูณ + เอกซ์โพเนนเชียล (Product Rule & Exponential)",
-      probLatex: `f(x) = ${fExpr}`,
-      x0: x0,
-      derivLatex: derivExpr,
-      ansLatex: `${slopeVal}`,
-      tangentLatex: tangentEq,
-      solHtml: solText,
-      exactNum: slopeVal,
-      exactDen: 1
-    };
-  }
+  return {
+    category: "อนุพันธ์ฟังก์ชันเอกซ์โพเนนเชียลพื้นฐาน (Basic Exponential Derivative)",
+    difficulty: "easy",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
 }
 
-// 2.3 กฎผลหารผสมฟังก์ชันอดิศัย (Quotient Rule with Transcendental Functions)
-function generateQuotientRule() {
-  let sub = Math.random();
-  let k = rand(2, 4);
-  let a = rand(1, 3);
-  let b = rand(1, 4);
-  let x0 = 0;
-
-  if (sub < 0.5) {
-    // f(x) = sin(kx) / (ax + b)
-    let fExpr = `\\frac{\\sin(${k}x)}{${a === 1 ? "x" : `${a}x`} + ${b}}`;
-    let u = `\\sin(${k}x)`, v = `${a === 1 ? "x" : `${a}x`} + ${b}`;
-    let uPrime = `${k}\\cos(${k}x)`, vPrime = `${a}`;
-    
-    let numDeriv = `${k}\\cos(${k}x)(${v}) - ${a}\\sin(${k}x)`;
-    let derivExpr = `\\frac{${numDeriv}}{(${v})^{2}}`;
-
-    let finalNum = k;
-    let finalDen = b;
-    let slopeValLatex = toFrac(finalNum, finalDen);
-
-    let solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$</strong>
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
-        กำหนดให้ $u = \\sin(${k}x)$ จะได้ว่า
-        ${adaptiveMath(
-          `u' = \\frac{d}{dx}[\\sin(${k}x)] = \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) = \\cos(${k}x) \\cdot ${k} = ${uPrime}`,
-          `u' &= \\frac{d}{dx}[\\sin(${k}x)] \\\\ &= \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) \\\\ &= \\cos(${k}x) \\cdot ${k} \\\\ &= ${uPrime}`
-        )}
-        <br>
-        กำหนดให้ $v = ${v}$ จะได้ว่า
-        ${adaptiveMath(
-          `v' = \\frac{d}{dx}(${v}) = ${vPrime}`,
-          `v' &= \\frac{d}{dx}(${v}) \\\\ &= ${vPrime}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลหาร</strong><br>
-        ${adaptiveMath(
-          `f'(x) = \\frac{(${uPrime})(${v}) - (\\sin(${k}x))(${vPrime})}{(${v})^2} = ${derivExpr}`,
-          `f'(x) &= \\frac{(${uPrime})(${v}) - (\\sin(${k}x))(${vPrime})}{(${v})^2} \\\\ &= ${derivExpr}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
-        $$f'(${x0}) = \\frac{${k}\\cos(0)(${b}) - ${a}\\sin(0)}{(${b})^2} = \\frac{${k*b}}{${b*b}} = ${slopeValLatex}$$
-      </div>
-    `;
-
-    return {
-      category: "กฎผลหาร + ตรีโกณมิติ (Quotient Rule & Trigonometry)",
-      probLatex: `f(x) = ${fExpr}`,
-      x0: x0,
-      derivLatex: derivExpr,
-      ansLatex: slopeValLatex,
-      solHtml: solText,
-      exactNum: finalNum,
-      exactDen: finalDen
-    };
-  } else {
-    // f(x) = (ax + b) / (cx + d)
-    let c = rand(1, 3);
-    let d = rand(1, 4);
-    while (a * d - b * c === 0) { b = rand(1, 4); }
-
-    let fExpr = `\\frac{${a === 1 ? "x" : `${a}x`} + ${b}}{${c === 1 ? "x" : `${c}x`} + ${d}}`;
-    let det = a * d - b * c;
-    let derivExpr = `\\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^{2}}`;
-
-    let finalNum = det;
-    let finalDen = d * d;
-    let slopeValLatex = toFrac(finalNum, finalDen);
-
-    let solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$</strong>
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
-        กำหนดให้ $u = ${a === 1 ? "x" : `${a}x`} + ${b}$ จะได้ว่า
-        ${adaptiveMath(
-          `u' = \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) = ${a}`,
-          `u' &= \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) \\\\ &= ${a}`
-        )}
-        <br>
-        กำหนดให้ $v = ${c === 1 ? "x" : `${c}x`} + ${d}$ จะได้ว่า
-        ${adaptiveMath(
-          `v' = \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) = ${c}`,
-          `v' &= \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) \\\\ &= ${c}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่าและกระจายพจน์ตัวเศษ</strong><br>
-        ${adaptiveMath(
-          `f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
-          `f'(x) &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
-        $$f'(${x0}) = \\frac{${det}}{(${d})^2} = ${slopeValLatex}$$
-      </div>
-    `;
-
-    return {
-      category: "กฎผลหารฟังก์ชันตรรกยะ (Quotient Rule - Rational)",
-      probLatex: `f(x) = ${fExpr}`,
-      x0: x0,
-      derivLatex: derivExpr,
-      ansLatex: slopeValLatex,
-      solHtml: solText,
-      exactNum: finalNum,
-      exactDen: finalDen
-    };
-  }
-}
-
-// 2.4 กฎลูกโซ่ซ้อนหลายชั้น (Multi-layer Chain Rule)
-function generateMultiChainRule() {
-  let sub = Math.random();
-  let a = rand(1, 3);
-  let b = rand(1, 4);
-  let x0 = 0;
-
-  if (sub < 0.5) {
-    // f(x) = ln(a*x^2 + b*x + c)
-    let c = rand(1, 4);
-    let uExpr = `${a === 1 ? "" : a}x^{2} + ${b}x + ${c}`;
-    let uPrime = `${2 * a}x + ${b}`;
-    let fExpr = `\\ln(${uExpr})`;
-    let derivExpr = `\\frac{${uPrime}}{${uExpr}}`;
-
-    let finalNum = b;
-    let finalDen = c;
-    let slopeValLatex = toFrac(finalNum, finalDen);
-
-    let solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันลอการิทึม $\\frac{d}{dx}[\\ln(u)] = \\frac{1}{u} \\cdot \\frac{du}{dx}$</strong>
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
-        กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-        ${adaptiveMath(
-          `\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`,
-          `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: แทนค่าในสูตรกฎลูกโซ่</strong><br>
-        ${adaptiveMath(
-          `f'(x) = \\frac{1}{${uExpr}} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) = \\frac{1}{${uExpr}} \\cdot (${uPrime}) = ${derivExpr}`,
-          `f'(x) &= \\frac{1}{${uExpr}} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= \\frac{1}{${uExpr}} \\cdot (${uPrime}) \\\\ &= ${derivExpr}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
-        $$f'(${x0}) = \\frac{${2*a}(0) + ${b}}{${a}(0)^2 + ${b}(0) + ${c}} = \\frac{${b}}{${c}} = ${slopeValLatex}$$
-      </div>
-    `;
-
-    return {
-      category: "กฎลูกโซ่ลอการิทึม (Chain Rule with Logarithm)",
-      probLatex: `f(x) = ${fExpr}`,
-      x0: x0,
-      derivLatex: derivExpr,
-      ansLatex: slopeValLatex,
-      solHtml: solText,
-      exactNum: finalNum,
-      exactDen: finalDen
-    };
-  } else {
-    // f(x) = sqrt(a*x^2 + b*x + c^2)
-    let c = rand(2, 4);
-    let c2 = c * c;
-    let uExpr = `${a === 1 ? "" : a}x^{2} + ${b}x + ${c2}`;
-    let fExpr = `\\sqrt{${uExpr}}`;
-    let uPrime = `${2 * a}x + ${b}`;
-    let derivExpr = `\\frac{${uPrime}}{2\\sqrt{${uExpr}}}`;
-
-    let finalNum = b;
-    let finalDen = 2 * c;
-    let slopeValLatex = toFrac(finalNum, finalDen);
-
-    let solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: แปลงรูปกรณฑ์เป็นเลขยกกำลังตรรกยะ</strong><br>
-        $$f(x) = (${uExpr})^{1/2}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
-        กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-        ${adaptiveMath(
-          `\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`,
-          `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: ใช้กฎลูกโซ่ $\\frac{d}{dx}[u^n] = n u^{n-1} \\cdot \\frac{du}{dx}$ แทนค่าและจัดรูป</strong><br>
-        ${adaptiveMath(
-          `f'(x) = \\frac{1}{2}(${uExpr})^{-1/2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) = \\frac{1}{2\\sqrt{${uExpr}}} \\cdot (${uPrime}) = ${derivExpr}`,
-          `f'(x) &= \\frac{1}{2}(${uExpr})^{-1/2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= \\frac{1}{2\\sqrt{${uExpr}}} \\cdot (${uPrime}) \\\\ &= ${derivExpr}`
-        )}
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
-        $$f'(${x0}) = \\frac{${2*a}(0) + ${b}}{2\\sqrt{${c2}}} = \\frac{${b}}{2(${c})} = ${slopeValLatex}$$
-      </div>
-    `;
-
-    return {
-      category: "กฎลูกโซ่กรณฑ์ (Chain Rule with Square Root)",
-      probLatex: `f(x) = ${fExpr}`,
-      x0: x0,
-      derivLatex: derivExpr,
-      ansLatex: slopeValLatex,
-      solHtml: solText,
-      exactNum: finalNum,
-      exactDen: finalDen
-    };
-  }
-}
-
-// 2.5 การประยุกต์สมการเส้นสัมผัสเส้นโค้ง (Tangent Line Equation)
-function generateTangentLineProblem() {
+// 2.4 สมการเส้นสัมผัสพหุนาม (Basic Tangent Line)
+function genEasyTangent() {
   let a = rand(1, 2);
   let b = randNonZero(-3, 3);
   let c = rand(-3, 3);
@@ -925,9 +644,7 @@ function generateTangentLineProblem() {
 
   let constTerm = y0 - slopeVal * x0;
   let tangentEq = `y = ${poly1(slopeVal, constTerm)}`;
-  if (slopeVal === 0) {
-    tangentEq = `y = ${constTerm}`;
-  }
+  if (slopeVal === 0) tangentEq = `y = ${constTerm}`;
 
   let bFormatted = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
   let cFormatted = c === 0 ? "" : (c > 0 ? `+ ${c}` : `- ${Math.abs(c)}`);
@@ -953,12 +670,564 @@ function generateTangentLineProblem() {
   `;
 
   return {
-    category: "สมการเส้นสัมผัสเส้นโค้ง (Tangent Line Equation)",
+    category: "สมการเส้นสัมผัสเส้นโค้ง (Tangent Line Application)",
+    difficulty: "easy",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     tangentLatex: tangentEq,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// --- กลุ่มระดับปานกลาง (🟡 ปานกลาง) ---
+
+// 2.5 กฎผลคูณ: พหุนาม × เอกซ์โพเนนเชียล (Product Rule)
+function genMedProductExp() {
+  let a = rand(1, 3);
+  let b = rand(2, 5);
+  let k = rand(2, 4);
+  let x0 = 0;
+
+  let uExpr = `${a === 1 ? "" : a}x + ${b}`;
+  let fExpr = `(${uExpr}) e^{${k}x}`;
+  let derivExpr = `(${k*a}x + ${k*b + a}) e^{${k}x}`;
+  let slopeVal = k * b + a;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
+      กำหนดให้ $u = ${uExpr}$ จะได้ว่า
+      ${adaptiveMath(`u' = \\frac{d}{dx}(${uExpr}) = ${a}`, `u' &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${a}`)}
+      <br>
+      กำหนดให้ $v = e^{${k}x}$ จะได้ว่า
+      ${adaptiveMath(`v' = \\frac{d}{dx}[e^{${k}x}] = ${k}e^{${k}x}`, `v' &= \\frac{d}{dx}[e^{${k}x}] \\\\ &= ${k}e^{${k}x}`)}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณและดึงตัวร่วม $e^{${k}x}$</strong><br>
+      ${adaptiveMath(
+        `f'(x) = (${a})e^{${k}x} + (${uExpr})(${k}e^{${k}x}) = ${derivExpr}`,
+        `f'(x) &= (${a})e^{${k}x} + (${uExpr})(${k}e^{${k}x}) \\\\ &= \\left[${a} + ${k}(${uExpr})\\right]e^{${k}x} \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = (${k*b + a})e^{0} = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    category: "กฎผลคูณพหุนามและเอกซ์โพเนนเชียล (Product Rule)",
+    difficulty: "med",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 2.6 กฎผลหารฟังก์ชันตรรกยะ (Quotient Rule: Rational)
+function genMedQuotientRational() {
+  let a = rand(1, 3);
+  let b = rand(1, 4);
+  let c = rand(1, 3);
+  let d = rand(1, 4);
+  while (a * d - b * c === 0) { b = rand(1, 4); }
+  let x0 = 0;
+
+  let fExpr = `\\frac{${a === 1 ? "x" : `${a}x`} + ${b}}{${c === 1 ? "x" : `${c}x`} + ${d}}`;
+  let det = a * d - b * c;
+  let derivExpr = `\\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^{2}}`;
+  let numAns = det;
+  let denAns = d * d;
+  let slopeValLatex = toFrac(numAns, denAns);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์</strong><br>
+      ให้ $u = ${a === 1 ? "x" : `${a}x`} + ${b} \\implies u' = ${a}$<br>
+      ให้ $v = ${c === 1 ? "x" : `${c}x`} + ${d} \\implies v' = ${c}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าและกระจายพจน์ตัวเศษ</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
+        `f'(x) &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = \\frac{${det}}{(${d})^2} = ${slopeValLatex}$$
+    </div>
+  `;
+
+  return {
+    category: "กฎผลหารฟังก์ชันตรรกยะ (Quotient Rule - Rational)",
+    difficulty: "med",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: slopeValLatex,
+    solHtml: solText,
+    exactNum: numAns,
+    exactDen: denAns
+  };
+}
+
+// 2.7 กฎลูกโซ่กรณฑ์ (Chain Rule with Radical)
+function genMedChainRadical() {
+  let a = rand(1, 3);
+  let b = rand(1, 4);
+  let c = rand(2, 4);
+  let c2 = c * c;
+  let x0 = 0;
+
+  let uExpr = `${a === 1 ? "" : a}x^{2} + ${b}x + ${c2}`;
+  let fExpr = `\\sqrt{${uExpr}}`;
+  let uPrime = `${2 * a}x + ${b}`;
+  let derivExpr = `\\frac{${uPrime}}{2\\sqrt{${uExpr}}}`;
+
+  let numAns = b;
+  let denAns = 2 * c;
+  let slopeValLatex = toFrac(numAns, denAns);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: แปลงรูปกรณฑ์เป็นเลขยกกำลังตรรกยะ $f(x) = (${uExpr})^{1/2}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: ใช้กฎลูกโซ่ $\\frac{d}{dx}[u^n] = n u^{n-1} \\cdot \\frac{du}{dx}$</strong><br>
+      กำหนดให้ $u = ${uExpr}$ จะได้ว่า
+      ${adaptiveMath(`\\frac{du}{dx} = \\frac{d}{dx}(${uExpr}) = ${uPrime}`, `\\frac{du}{dx} &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${uPrime}`)}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตรและจัดรูป</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{1}{2}(${uExpr})^{-1/2} \\cdot (${uPrime}) = ${derivExpr}`,
+        `f'(x) &= \\frac{1}{2}(${uExpr})^{-1/2} \\cdot \\frac{d}{dx}(${uExpr}) \\\\ &= \\frac{1}{2\\sqrt{${uExpr}}} \\cdot (${uPrime}) \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = \\frac{${b}}{2\\sqrt{${c2}}} = \\frac{${b}}{2(${c})} = ${slopeValLatex}$$
+    </div>
+  `;
+
+  return {
+    category: "กฎลูกโซ่ฟังก์ชันกรณฑ์ (Chain Rule with Square Root)",
+    difficulty: "med",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: slopeValLatex,
+    solHtml: solText,
+    exactNum: numAns,
+    exactDen: denAns
+  };
+}
+
+// 2.8 กฎลูกโซ่ลอการิทึม (Chain Rule with Logarithm)
+function genMedChainLog() {
+  let a = rand(1, 3);
+  let b = rand(1, 4);
+  let c = rand(1, 4);
+  let x0 = 0;
+
+  let uExpr = `${a === 1 ? "" : a}x^{2} + ${b}x + ${c}`;
+  let uPrime = `${2 * a}x + ${b}`;
+  let fExpr = `\\ln(${uExpr})`;
+  let derivExpr = `\\frac{${uPrime}}{${uExpr}}`;
+
+  let numAns = b;
+  let denAns = c;
+  let slopeValLatex = toFrac(numAns, denAns);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันลอการิทึม $\\frac{d}{dx}[\\ln(u)] = \\frac{1}{u} \\cdot \\frac{du}{dx}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: กำหนด $u = ${uExpr}$ แล้วหา $\\frac{du}{dx}$</strong><br>
+      ${adaptiveMath(`\\frac{du}{dx} = \\frac{d}{dx}(${uExpr}) = ${uPrime}`, `\\frac{du}{dx} &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${uPrime}`)}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{1}{${uExpr}} \\cdot (${uPrime}) = ${derivExpr}`,
+        `f'(x) &= \\frac{1}{${uExpr}} \\cdot \\frac{d}{dx}(${uExpr}) \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = \\frac{${b}}{${c}} = ${slopeValLatex}$$
+    </div>
+  `;
+
+  return {
+    category: "กฎลูกโซ่ฟังก์ชันลอการิทึม (Chain Rule with Logarithm)",
+    difficulty: "med",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: slopeValLatex,
+    solHtml: solText,
+    exactNum: numAns,
+    exactDen: denAns
+  };
+}
+
+// 2.9 ตรีโกณมิติผกผันพื้นฐาน (Basic Inverse Trig)
+function genMedInverseTrig() {
+  let k = rand(2, 4);
+  let x0 = 0;
+
+  let fExpr = `\\arctan(${k}x)`;
+  let derivExpr = `\\frac{${k}}{1 + ${k*k}x^{2}}`;
+  let slopeVal = k;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันอาร์กแทนเจนต์ $\\frac{d}{dx}[\\arctan(u)] = \\frac{1}{1+u^2} \\cdot \\frac{du}{dx}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: กำหนด $u = ${k}x \\implies \\frac{du}{dx} = ${k}$</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) = \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} = ${derivExpr}`,
+        `f'(x) &= \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: คำนวณค่า $f'(${x0})$</strong><br>
+      $$f'(${x0}) = \\frac{${k}}{1 + 0} = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    category: "อนุพันธ์ฟังก์ชันตรีโกณมิติผกผัน (Inverse Trigonometric Derivative)",
+    difficulty: "med",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// --- กลุ่มระดับท้าทาย (🔴 ขั้นสูง) ---
+
+// 2.10 การหาอนุพันธ์โดยใช้ลอการิทึม (Logarithmic Differentiation)
+function genHardLogDiff() {
+  let k = rand(2, 5);
+  let x0 = 1;
+  let fExpr = `x^{${k}x}`;
+  let derivExpr = `x^{${k}x} \\cdot ${k}(\\ln x + 1)`;
+  let slopeVal = k;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: เนื่องจากฟังก์ชันอยู่ในรูปฐานตัวแปรยกกำลังตัวแปร $y = x^{${k}x}$ ให้ใส่ลอการิทึมธรรมชาติ $(\\ln)$ ทั้งสองข้าง</strong><br>
+      $$\\ln y = \\ln\\left(x^{${k}x}\\right) = ${k}x \\ln x$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์เทียบกับ $x$ ทั้งสองข้างโดยใช้กฎลูกโซ่และกฎผลคูณ</strong><br>
+      ${adaptiveMath(
+        `\\frac{d}{dx}[\\ln y] = \\frac{d}{dx}[${k}x \\ln x] \\implies \\frac{1}{y}\\frac{dy}{dx} = ${k}\\ln x + ${k}x\\left(\\frac{1}{x}\\right) = ${k}(\\ln x + 1)`,
+        `\\frac{1}{y}\\frac{dy}{dx} &= \\frac{d}{dx}[${k}x \\ln x] \\\\ &= ${k}\\ln x + ${k}x \\cdot \\frac{1}{x} \\\\ &= ${k}(\\ln x + 1)`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: คูณ $y$ กลับทั้งสองข้างเพื่อหา $f'(x)$</strong><br>
+      ${adaptiveMath(
+        `f'(x) = y \\cdot ${k}(\\ln x + 1) = ${derivExpr}`,
+        `f'(x) &= y \\cdot ${k}(\\ln x + 1) \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$ ที่จุด $x = ${x0}$</strong><br>
+      $$f'(${x0}) = (${x0})^{${k}(${x0})} \\cdot ${k}(\\ln(${x0}) + 1) = 1 \\cdot ${k}(0 + 1) = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    category: "การหาอนุพันธ์โดยใช้ลอการิทึม (Logarithmic Differentiation)",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 2.11 ฟังก์ชันผสมการสั่นสะเทือนแบบหน่วง (Damped Oscillation)
+function genHardDamped() {
+  let a = rand(1, 3);
+  let b = rand(2, 4);
+  let x0 = 0;
+  let fExpr = `e^{-${a === 1 ? "" : a}x} \\sin(${b}x)`;
+  let derivExpr = `e^{-${a === 1 ? "" : a}x} \\left(${b}\\cos(${b}x) - ${a === 1 ? "" : a}\\sin(${b}x)\\right)`;
+  let slopeVal = b;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
+      กำหนดให้ $u = e^{-${a === 1 ? "" : a}x} \\implies u' = -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}$<br>
+      กำหนดให้ $v = \\sin(${b}x) \\implies v' = ${b}\\cos(${b}x)$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณและดึงตัวร่วม $e^{-${a === 1 ? "" : a}x}$</strong><br>
+      ${adaptiveMath(
+        `f'(x) = (-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x})\\sin(${b}x) + (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) = ${derivExpr}`,
+        `f'(x) &= (-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x})\\sin(${b}x) + (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
+      $$f'(${x0}) = e^{0}(${b}\\cos(0) - ${a}\\sin(0)) = 1(${b}(1) - 0) = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    category: "ฟังก์ชันผสมการสั่นสะเทือนแบบหน่วง (Damped Oscillation)",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 2.12 เอกลักษณ์ตรีโกณมิติผกผันแบบหักล้าง (Inverse Trig Identity)
+function genHardInverseTrigCancellation() {
+  let k = rand(2, 4);
+  let x0 = 0;
+  let fExpr = `x\\arcsin(${k}x) + \\sqrt{1 - ${k*k}x^{2}}`;
+  let derivExpr = `\\arcsin(${k}x)`;
+  let slopeVal = 0;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: แยกหาอนุพันธ์ทีละพจน์ $f(x) = x\\arcsin(${k}x) + \\sqrt{1 - ${k*k}x^2}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์พจน์ที่ 1 โดยใช้กฎผลคูณ</strong><br>
+      ${adaptiveMath(
+        `\\frac{d}{dx}[x\\arcsin(${k}x)] = \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`,
+        `\\frac{d}{dx}[x\\arcsin(${k}x)] &= (1)\\arcsin(${k}x) + x \\cdot \\frac{${k}}{\\sqrt{1-${k*k}x^2}} \\\\ &= \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: หาอนุพันธ์พจน์ที่ 2 โดยใช้กฎลูกโซ่</strong><br>
+      ${adaptiveMath(
+        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] = \\frac{-2(${k*k})x}{2\\sqrt{1-${k*k}x^2}} = -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`,
+        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] &= \\frac{1}{2\\sqrt{1-${k*k}x^2}} \\cdot (-${2*k*k}x) \\\\ &= -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: รวมทั้งสองพจน์เข้าด้วยกัน (พจน์เศษส่วนจะหักล้างกันพอดี)</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\left(\\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}\\right) - \\frac{${k}x}{\\sqrt{1-${k*k}x^2}} = ${derivExpr}`,
+        `f'(x) &= \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}} - \\frac{${k}x}{\\sqrt{1-${k*k}x^2}} \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 5: คำนวณค่า $f'(${x0})$</strong><br>
+      $$f'(${x0}) = \\arcsin(0) = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    category: "เอกลักษณ์ตรีโกณมิติผกผันแบบหักล้าง (Inverse Trig Identity)",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 2.13 ตรีโกณมิติผกผันของฟังก์ชันตรรกยะ (arctan((ax+b)/(cx+d)))
+function genHardArctanRational() {
+  let a = rand(1, 3);
+  let b = rand(1, 3);
+  let c = rand(1, 3);
+  let d = rand(1, 3);
+  while (a * d - b * c === 0) { b = rand(1, 4); }
+  let x0 = 0;
+
+  let uExpr = `\\frac{${a === 1 ? "x" : `${a}x`} + ${b}}{${c === 1 ? "x" : `${c}x`} + ${d}}`;
+  let fExpr = `\\arctan\\left(${uExpr}\\right)`;
+  let det = a * d - b * c;
+  let derivExpr = `\\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^{2} + (${a === 1 ? "x" : `${a}x`} + ${b})^{2}}`;
+
+  let numAns = det;
+  let denAns = d * d + b * b;
+  let slopeValLatex = toFrac(numAns, denAns);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตร $\\frac{d}{dx}[\\arctan(u)] = \\frac{1}{1+u^2} \\cdot \\frac{du}{dx}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: กำหนด $u = ${uExpr}$ แล้วหา $\\frac{du}{dx}$ ด้วยกฎผลหาร</strong><br>
+      ${adaptiveMath(
+        `\\frac{du}{dx} = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2}`,
+        `\\frac{du}{dx} &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตรและจัดรูปเศษส่วนซ้อน</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{1}{1 + \\left(${uExpr}\\right)^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
+        `f'(x) &= \\frac{1}{1 + \\left(${uExpr}\\right)^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = \\frac{${det}}{(${d})^2 + (${b})^2} = \\frac{${det}}{${denAns}} = ${slopeValLatex}$$
+    </div>
+  `;
+
+  return {
+    category: "ตรีโกณมิติผกผันของฟังก์ชันตรรกยะ (Inverse Trig of Rational)",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: slopeValLatex,
+    solHtml: solText,
+    exactNum: numAns,
+    exactDen: denAns
+  };
+}
+
+// 2.14 สมบัติลอการิทึมกับกรณฑ์และผลหาร (ln(sqrt((ax+b)/(cx+d))))
+function genHardLogNestedRadical() {
+  let a = rand(1, 3);
+  let b = rand(1, 3);
+  let c = rand(1, 3);
+  let d = rand(1, 3);
+  while (a * d - b * c === 0) { b = rand(1, 4); }
+  let x0 = 0;
+
+  let fExpr = `\\ln\\left(\\sqrt{\\frac{${a === 1 ? "x" : `${a}x`} + ${b}}{${c === 1 ? "x" : `${c}x`} + ${d}}}\\right)`;
+  let det = a * d - b * c;
+  let derivExpr = `\\frac{${det}}{2(${a === 1 ? "x" : `${a}x`} + ${b})(${c === 1 ? "x" : `${c}x`} + ${d})}`;
+
+  let numAns = det;
+  let denAns = 2 * b * d;
+  let slopeValLatex = toFrac(numAns, denAns);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สมบัติของลอการิทึม $\\ln(A/B)^{1/2} = \\frac{1}{2}(\\ln A - \\ln B)$ เพื่อแยกพจน์ก่อนหาอนุพันธ์</strong><br>
+      $$f(x) = \\frac{1}{2}\\left[\\ln(${a === 1 ? "x" : `${a}x`} + ${b}) - \\ln(${c === 1 ? "x" : `${c}x`} + ${d})\\right]$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์ได้อย่างง่ายดาย</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{1}{2}\\left[\\frac{${a}}{${a === 1 ? "x" : `${a}x`} + ${b}} - \\frac{${c}}{${c === 1 ? "x" : `${c}x`} + ${d}}\\right] = ${derivExpr}`,
+        `f'(x) &= \\frac{1}{2}\\left[\\frac{${a}}{${a === 1 ? "x" : `${a}x`} + ${b}} - \\frac{${c}}{${c === 1 ? "x" : `${c}x`} + ${d}}\\right] \\\\ &= ${derivExpr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = \\frac{${det}}{2(${b})(${d})} = \\frac{${det}}{${denAns}} = ${slopeValLatex}$$
+    </div>
+  `;
+
+  return {
+    category: "สมบัติลอการิทึมและฟังก์ชันกรณฑ์ (Logarithmic Properties & Radicals)",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: slopeValLatex,
+    solHtml: solText,
+    exactNum: numAns,
+    exactDen: denAns
+  };
+}
+
+// 2.15 การหาอนุพันธ์อันดับสอง (Second-Order Derivative f''(x))
+function genHardSecondDerivative() {
+  let a = rand(1, 3);
+  let b = rand(1, 4);
+  let k = rand(1, 3);
+  let x0 = 0;
+
+  let uExpr = `${a === 1 ? "" : a}x^{2} + ${b}x`;
+  let fExpr = `(${uExpr}) e^{-${k === 1 ? "" : k}x}`;
+
+  let slopeVal = 2 * a - 2 * k * b;
+  let deriv1Expr = `\\left(-${k*a}x^{2} + ${2*a - k*b}x + ${b}\\right) e^{-${k === 1 ? "" : k}x}`;
+  let deriv2Expr = `\\left(${k*k*a}x^{2} + (${k*k*b - 4*k*a})x + (${2*a - 2*k*b})\\right) e^{-${k === 1 ? "" : k}x}`;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: หาอนุพันธ์อันดับหนึ่ง $f'(x)$ โดยใช้กฎผลคูณ</strong><br>
+      ${adaptiveMath(
+        `f'(x) = (${2*a}x + ${b})e^{-${k === 1 ? "" : k}x} + (${uExpr})(-${k}e^{-${k === 1 ? "" : k}x}) = ${deriv1Expr}`,
+        `f'(x) &= (${2*a}x + ${b})e^{-${k === 1 ? "" : k}x} + (${uExpr})(-${k}e^{-${k === 1 ? "" : k}x}) \\\\ &= ${deriv1Expr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์อันดับสอง $f''(x) = \\frac{d}{dx}[f'(x)]$ โดยใช้กฎผลคูณอีกครั้ง</strong><br>
+      ${adaptiveMath(
+        `f''(x) = \\frac{d}{dx}\\left[(-${k*a}x^2 + ${2*a-k*b}x + ${b})e^{-${k === 1 ? "" : k}x}\\right] = ${deriv2Expr}`,
+        `f''(x) &= (-${2*k*a}x + ${2*a-k*b})e^{-${k === 1 ? "" : k}x} + (-${k*a}x^2 + ${2*a-k*b}x + ${b})(-${k}e^{-${k === 1 ? "" : k}x}) \\\\ &= ${deriv2Expr}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$ เพื่อหาค่าอนุพันธ์อันดับสอง $f''(${x0})$</strong><br>
+      $$f''(${x0}) = (${2*a - 2*k*b})e^{0} = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    category: "การหาอนุพันธ์อันดับสอง (Second-Order Derivative)",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f''",
+    derivLatex: deriv2Expr,
+    ansLatex: `${slopeVal}`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -972,33 +1241,61 @@ let currentProblem = null;
 let scoreCorrect = 0;
 let streakCount = 0;
 
+// คลังโจทย์ผสม 15 ประเภท: ง่าย (~30%), ปานกลาง (~35%), ท้าทาย (~35%)
 const generators = [
-  generateInverseTrigChain,
-  generateInverseTrigChain,
-  generateProductRuleMixed,
-  generateProductRuleMixed,
-  generateQuotientRule,
-  generateMultiChainRule,
-  generateTangentLineProblem
+  // 🟢 ง่าย
+  genEasyPoly,
+  genEasyTrig,
+  genEasyExp,
+  genEasyTangent,
+  // 🟡 ปานกลาง
+  genMedProductExp,
+  genMedQuotientRational,
+  genMedChainRadical,
+  genMedChainLog,
+  genMedInverseTrig,
+  // 🔴 ท้าทาย
+  genHardLogDiff,
+  genHardDamped,
+  genHardInverseTrigCancellation,
+  genHardArctanRational,
+  genHardLogNestedRadical,
+  genHardSecondDerivative
 ];
 
 function generateRandomProblem() {
   let gen = generators[Math.floor(Math.random() * generators.length)];
   currentProblem = gen();
 
+  const sym = currentProblem.targetSymbol || "f'";
+
+  // ป้ายแสดงระดับความยาก
+  const diffBadge = document.getElementById('diffBadge');
+  diffBadge.classList.remove('hidden', 'badge-easy', 'badge-med', 'badge-hard');
+  if (currentProblem.difficulty === 'easy') {
+    diffBadge.classList.add('badge-easy');
+    diffBadge.innerHTML = '🟢 ระดับ: พื้นฐาน';
+  } else if (currentProblem.difficulty === 'med') {
+    diffBadge.classList.add('badge-med');
+    diffBadge.innerHTML = '🟡 ระดับ: ปานกลาง';
+  } else {
+    diffBadge.classList.add('badge-hard');
+    diffBadge.innerHTML = '🔴 ระดับ: ท้าทาย';
+  }
+
   // อัปเดต UI
   document.getElementById('topicBadge').textContent = `ประเภท: ${currentProblem.category}`;
   document.getElementById('probBox').innerHTML = `
     <div style="font-size: 0.95rem; color: var(--muted); margin-bottom: 6px;">กำหนดฟังก์ชัน:</div>
     $$\\displaystyle ${currentProblem.probLatex}$$
-    <div style="font-size: 0.95rem; color: var(--muted); margin-top: 6px;">จงหาอนุพันธ์ $f'(x)$ และคำนวณค่าความชัน $f'(${currentProblem.x0})$</div>
+    <div style="font-size: 0.95rem; color: var(--muted); margin-top: 6px;">จงหาอนุพันธ์ $${sym}(x)$ และคำนวณค่าของ $${sym}(${currentProblem.x0})$</div>
   `;
 
-  document.getElementById('quizPromptLabel').innerHTML = `✍️ ทดลองคำนวณค่าของ $f'(${currentProblem.x0})$:`;
+  document.getElementById('quizPromptLabel').innerHTML = `✍️ ทดลองคำนวณค่าของ $${sym}(${currentProblem.x0})$:`;
 
   document.getElementById('ansContent').innerHTML = `
-    <strong>อนุพันธ์ $f'(x)$ ทั่วไป:</strong> $$\\displaystyle f'(x) = ${currentProblem.derivLatex}$$
-    <strong>ค่าความชันที่ $x = ${currentProblem.x0}$:</strong> $$\\displaystyle f'(${currentProblem.x0}) = ${currentProblem.ansLatex}$$
+    <strong>อนุพันธ์:</strong> $$\\displaystyle ${sym}(x) = ${currentProblem.derivLatex}$$
+    <strong>ค่าที่จุด $x = ${currentProblem.x0}$:</strong> $$\\displaystyle ${sym}(${currentProblem.x0}) = ${currentProblem.ansLatex}$$
     ${currentProblem.tangentLatex ? `<strong>สมการเส้นสัมผัสที่จุด $x = ${currentProblem.x0}$:</strong> $$\\displaystyle ${currentProblem.tangentLatex}$$` : ""}
   `;
   document.getElementById('solContent').innerHTML = currentProblem.solHtml;
@@ -1021,7 +1318,7 @@ function generateRandomProblem() {
 }
 
 function parseInputFraction(str) {
-  str = str.trim().replace(/\s+/g, '');
+  str = str.trim().replace(/\\s+/g, '');
   if (!str) return null;
   if (str.includes('/')) {
     let parts = str.split('/');
@@ -1057,6 +1354,7 @@ function checkAnswer() {
     return;
   }
 
+  const sym = currentProblem.targetSymbol || "f'";
   let exactVal = currentProblem.exactNum / currentProblem.exactDen;
   let isCorrect = Math.abs(parsed.val - exactVal) < 1e-5;
 
@@ -1071,7 +1369,7 @@ function checkAnswer() {
     feedback.innerHTML = `
       <div class="feedback-title"><span>✅</span> ถูกต้องยอดเยี่ยม!</div>
       <div style="font-size: 1.05rem; margin-top: 4px;">
-        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ตรงกับค่าจริง $\\displaystyle f'(${currentProblem.x0}) = ${currentProblem.ansLatex}$
+        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ตรงกับค่าจริง $$\\displaystyle ${sym}(${currentProblem.x0}) = ${currentProblem.ansLatex}$$
       </div>
     `;
   } else {
@@ -1083,10 +1381,10 @@ function checkAnswer() {
     feedback.innerHTML = `
       <div class="feedback-title"><span>❌</span> ยังไม่ถูกต้อง</div>
       <div style="font-size: 1.05rem; margin-top: 4px;">
-        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ยังไม่ตรงกับค่า $f'(${currentProblem.x0})$ ของโจทย์ข้อนี้
+        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ยังไม่ตรงกับค่า $${sym}(${currentProblem.x0})$ ของโจทย์ข้อนี้
       </div>
       <div style="font-size: 0.95rem; margin-top: 8px; color: #721c24;">
-        💡 คำแนะนำ: ลองตรวจสอบการหาอนุพันธ์ไส้ใน / การคูณผลคูณ หรือกดปุ่ม <strong>"ดูวิธีทำอย่างละเอียด"</strong> ด้านล่าง
+        💡 คำแนะนำ: ตรวจสอบการหาอนุพันธ์ตามเทคนิคของโจทย์ หรือกดปุ่ม <strong>"ดูวิธีทำอย่างละเอียด"</strong> ด้านล่าง
       </div>
     `;
   }
