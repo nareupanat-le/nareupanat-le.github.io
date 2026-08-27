@@ -3250,7 +3250,7 @@ function genDerivImplicitPolynomial() {
         `\\frac{d}{dx}[xy] = (1)y + x\\frac{dy}{dx} = y + x\\frac{dy}{dx}`,
         `\\frac{d}{dx}[xy] &= (1)y + x\\frac{dy}{dx} \\\\ &= y + x\\frac{dy}{dx}`
       )}
-      เมื่อคูณสัมประสิทธิ์ $-${b === 1 ? "" : b} ด้านหน้าและกระจายเข้าในวงเล็บ:
+      เมื่อคูณสัมประสิทธิ์ $-${b}$ ด้านหน้าและกระจายเข้าในวงเล็บ:
       ${adaptiveMath(
         `-${b === 1 ? "" : b}\\frac{d}{dx}[xy] = -${b === 1 ? "" : b}\\left(y + x\\frac{dy}{dx}\\right) = -${b === 1 ? "y" : `${b}y`} - ${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx}`,
         `-${b === 1 ? "" : b}\\frac{d}{dx}[xy] &= -${b === 1 ? "" : b}\\left(y + x\\frac{dy}{dx}\\right) \\\\ &= -${b === 1 ? "y" : `${b}y`} - ${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx}`
