@@ -2124,7 +2124,7 @@ function genDerivMedProductExp() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
+      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = uv' + vu'$ (หน้า ดิฟหลัง $+$ หลัง ดิฟหน้า)</strong>
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
@@ -2140,10 +2140,10 @@ function genDerivMedProductExp() {
       ดังนั้น $$v' = ${k}e^{${k}x}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณและดึงตัวร่วม $e^{${k}x}$</strong><br>
+      <strong>ขั้นที่ 3: แทนค่าในสูตร $f'(x) = uv' + vu'$ และดึงตัวร่วม $e^{${k}x}$</strong><br>
       ${adaptiveMath(
-        `f'(x) = (${a})e^{${k}x} + (${uExpr})(${k}e^{${k}x}) = \\left[${a} + ${k}(${uExpr})\\right]e^{${k}x} = ${derivExpr}`,
-        `f'(x) &= (${a})e^{${k}x} + (${uExpr})(${k}e^{${k}x}) \\\\ &= \\left[${a} + ${k}(${uExpr})\\right]e^{${k}x} \\\\ &= ${derivExpr}`
+        `f'(x) = (${uExpr})(${k}e^{${k}x}) + e^{${k}x}(${a}) = \\left[${k}(${uExpr}) + ${a}\\right]e^{${k}x} = ${derivExpr}`,
+        `f'(x) &= (${uExpr})(${k}e^{${k}x}) + e^{${k}x}(${a}) \\\\ &= \\left[${k}(${uExpr}) + ${a}\\right]e^{${k}x} \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
@@ -2163,7 +2163,7 @@ function genDerivMedProductExp() {
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
-    hintText: `กำหนด $u = ${uExpr}$ และ $v = e^{${k}x}$ แล้วใช้สูตร $(uv)' = u'v + uv'$`,
+    hintText: `กำหนด $u = ${uExpr}$ และ $v = e^{${k}x}$ แล้วใช้สูตร $(uv)' = uv' + vu'$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -2461,7 +2461,7 @@ function genDerivHardDamped() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
+      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = uv' + vu'$ (หน้า ดิฟหลัง $+$ หลัง ดิฟหน้า)</strong>
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
@@ -2480,10 +2480,10 @@ function genDerivHardDamped() {
       ดังนั้น $$v' = ${b}\\cos(${b}x)$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณและดึงตัวร่วม $e^{-${a === 1 ? "" : a}x}$</strong><br>
+      <strong>ขั้นที่ 3: แทนค่าในสูตร $f'(x) = uv' + vu'$ และดึงตัวร่วม $e^{-${a === 1 ? "" : a}x}$</strong><br>
       ${adaptiveMath(
-        `f'(x) = (-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x})\\sin(${b}x) + (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) = ${derivExpr}`,
-        `f'(x) &= (-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x})\\sin(${b}x) + (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) \\\\ &= ${derivExpr}`
+        `f'(x) = (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) + \\sin(${b}x)(-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}) = e^{-${a === 1 ? "" : a}x}\\left(${b}\\cos(${b}x) - ${a === 1 ? "" : a}\\sin(${b}x)\\right) = ${derivExpr}`,
+        `f'(x) &= (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) + \\sin(${b}x)(-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}) \\\\ &= e^{-${a === 1 ? "" : a}x}\\left(${b}\\cos(${b}x) - ${a === 1 ? "" : a}\\sin(${b}x)\\right) \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
@@ -2503,7 +2503,7 @@ function genDerivHardDamped() {
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
-    hintText: `ใช้กฎผลคูณ $(uv)' = u'v + uv'$ โดยอย่าลืมกฎลูกโซ่ในการดิฟไส้ในของทั้ง $e^{-${a}x}$ และ $\\sin(${b}x)$`,
+    hintText: `ใช้กฎผลคูณ $(uv)' = uv' + vu'$ โดยอย่าลืมกฎลูกโซ่ในการดิฟไส้ในของทั้ง $e^{-${a}x}$ และ $\\sin(${b}x)$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -2816,7 +2816,7 @@ function genDerivProductPoly() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
+      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = uv' + vu'$ (หน้า ดิฟหลัง $+$ หลัง ดิฟหน้า)</strong>
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
@@ -2824,16 +2824,16 @@ function genDerivProductPoly() {
       กำหนดให้ $v = ${vExpr}$ จะได้ว่า $v' = ${c}$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณ</strong><br>
+      <strong>ขั้นที่ 3: แทนค่าในสูตร $f'(x) = uv' + vu'$</strong><br>
       ${adaptiveMath(
-        `f'(x) = (${2*a}x)(${vExpr}) + (${uExpr})(${c}) = ${derivExpr}`,
-        `f'(x) &= (${2*a}x)(${vExpr}) + (${uExpr})(${c}) \\\\ &= ${derivExpr}`
+        `f'(x) = (${uExpr})(${c}) + (${vExpr})(${2*a}x) = ${derivExpr}`,
+        `f'(x) &= (${uExpr})(${c}) + (${vExpr})(${2*a}x) \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
-      $$f'(${x0}) = (${2*a}(1))(${c}(1) + ${d}) + (${a}(1)^2 + ${b})(${c}) = ${slopeVal}$$
+      $$f'(${x0}) = (${a}(1)^2 + ${b})(${c}) + (${c}(1) + ${d})(${2*a}(1)) = ${slopeVal}$$
     </div>
   `;
 
@@ -2847,7 +2847,7 @@ function genDerivProductPoly() {
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
-    hintText: `ใช้กฎผลคูณ $(uv)' = u'v + uv'$ โดย $u = ${uExpr}$ และ $v = ${vExpr}$`,
+    hintText: `ใช้กฎผลคูณ $(uv)' = uv' + vu'$ โดย $u = ${uExpr}$ และ $v = ${vExpr}$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -3242,18 +3242,18 @@ function genDerivImplicitPolynomial() {
       $$\\displaystyle \\frac{d}{dx}\\left(${a === 1 ? "x^2" : `${a}x^2`} - ${b === 1 ? "" : b}xy + ${c === 1 ? "y^2" : `${c}y^2`}\\right) = \\frac{d}{dx}(${d})$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์ และใช้กฎผลคูณ $(uv)' = u'v + uv'$ สำหรับพจน์ $xy$</strong><br>
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์ และใช้กฎผลคูณ $(uv)' = uv' + vu'$ (หน้า ดิฟหลัง $+$ หลัง ดิฟหน้า) สำหรับพจน์ $xy$</strong><br>
       • <em>พจน์แรก:</em>
       $$\\frac{d}{dx}\\left[${a === 1 ? "x^2" : `${a}x^2`}\\right] = ${2*a}x$$
-      • <em>พจน์กลาง:</em> ใช้กฎผลคูณสำหรับ $xy$ โดย $u = x, v = y$
+      • <em>พจน์กลาง:</em> ใช้กฎผลคูณสำหรับ $xy$ โดยให้ $u = x, v = y$ (หน้า คือ $x$, หลัง คือ $y$)
       ${adaptiveMath(
-        `\\frac{d}{dx}[xy] = (1)y + x\\frac{dy}{dx} = y + x\\frac{dy}{dx}`,
-        `\\frac{d}{dx}[xy] &= (1)y + x\\frac{dy}{dx} \\\\ &= y + x\\frac{dy}{dx}`
+        `\\frac{d}{dx}[xy] = x\\frac{dy}{dx} + y(1) = x\\frac{dy}{dx} + y`,
+        `\\frac{d}{dx}[xy] &= x\\frac{dy}{dx} + y(1) \\\\ &= x\\frac{dy}{dx} + y`
       )}
       เมื่อคูณสัมประสิทธิ์ $-${b}$ ด้านหน้าและกระจายเข้าในวงเล็บ:
       ${adaptiveMath(
-        `-${b === 1 ? "" : b}\\frac{d}{dx}[xy] = -${b === 1 ? "" : b}\\left(y + x\\frac{dy}{dx}\\right) = -${b === 1 ? "y" : `${b}y`} - ${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx}`,
-        `-${b === 1 ? "" : b}\\frac{d}{dx}[xy] &= -${b === 1 ? "" : b}\\left(y + x\\frac{dy}{dx}\\right) \\\\ &= -${b === 1 ? "y" : `${b}y`} - ${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx}`
+        `-${b === 1 ? "" : b}\\frac{d}{dx}[xy] = -${b === 1 ? "" : b}\\left(x\\frac{dy}{dx} + y\\right) = -${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx} - ${b === 1 ? "y" : `${b}y`}`,
+        `-${b === 1 ? "" : b}\\frac{d}{dx}[xy] &= -${b === 1 ? "" : b}\\left(x\\frac{dy}{dx} + y\\right) \\\\ &= -${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx} - ${b === 1 ? "y" : `${b}y`}`
       )}
       • <em>พจน์หลัง (กฎลูกโซ่):</em>
       $$\\frac{d}{dx}\\left[${c === 1 ? "y^2" : `${c}y^2`}\\right] = ${2*c}y\\frac{dy}{dx}$$
@@ -3464,7 +3464,7 @@ function genDerivMixedPolyCot() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
+      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = uv' + vu'$ (หน้า ดิฟหลัง $+$ หลัง ดิฟหน้า)</strong>
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์</strong><br>
@@ -3472,17 +3472,18 @@ function genDerivMixedPolyCot() {
       และกำหนดให้ $v = ${vExpr}$ จะได้ว่า $v' = -${k === 1 ? "" : k}\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณ</strong><br>
+      <strong>ขั้นที่ 3: แทนค่าในสูตร $f'(x) = uv' + vu'$</strong><br>
       ${adaptiveMath(
-        `f'(x) = (${2*a}x)${vExpr} - ${k === 1 ? "" : `${k}`}(${uExpr})\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)`,
-        `f'(x) &= (${2*a}x)${vExpr} - ${k === 1 ? "" : `${k}`}(${uExpr})\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)`
+        `f'(x) = (${uExpr})\\left(-${k === 1 ? "" : `${k}`}\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)\\right) + ${vExpr}(${2*a}x) = ${derivExpr}`,
+        `f'(x) &= (${uExpr})\\left(-${k === 1 ? "" : `${k}`}\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)\\right) + ${vExpr}(${2*a}x) \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
       $u(0) = ${b}, u'(0) = 0$<br>
       $v(0) = \\cot(\\pi/4) = 1, v'(0) = -${k}(\\sqrt{2})^2 = -${2*k}$<br>
-      $$f'(${x0}) = (0)(1) + (${b})(-${2*k}) = ${slopeVal}$$
+      $$f'(${x0}) = (${b})(-${2*k}) + (1)(0) = ${slopeVal}$$
     </div>
   `;
 
@@ -3496,7 +3497,7 @@ function genDerivMixedPolyCot() {
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
-    hintText: `ใช้กฎผลคูณ $(uv)' = u'v + uv'$ โดย $v = \\cot(kx+\\pi/4)$`,
+    hintText: `ใช้กฎผลคูณ $(uv)' = uv' + vu'$ โดย $v = \\cot(kx+\\pi/4)$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -3512,11 +3513,11 @@ function genDerivMixedExpArcCot() {
 
   let fExpr = `(e^{${k === 1 ? "x" : `${k}x`}} ${a > 0 ? `+ ${a}x` : `- ${Math.abs(a)}x`})\\arctan(${b === 1 ? "x" : `${b}x`})`;
   let slopeVal = b;
-  let derivExpr = `(${k === 1 ? "" : k}e^{${k === 1 ? "x" : `${k}x`}} + ${a})\\arctan(${b === 1 ? "x" : `${b}x`}) + \\frac{${b}(e^{${k === 1 ? "x" : `${k}x`}} + ${a}x)}{1 + ${b*b}x^2}`;
+  let derivExpr = `\\frac{${b}(e^{${k === 1 ? "x" : `${k}x`}} + ${a}x)}{1 + ${b*b}x^2} + (${k === 1 ? "" : k}e^{${k === 1 ? "x" : `${k}x`}} + ${a})\\arctan(${b === 1 ? "x" : `${b}x`})`;
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
+      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = uv' + vu'$ (หน้า ดิฟหลัง $+$ หลัง ดิฟหน้า)</strong>
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์</strong><br>
@@ -3524,17 +3525,18 @@ function genDerivMixedExpArcCot() {
       และกำหนดให้ $v = \\arctan(${b === 1 ? "x" : `${b}x`})$ จะได้ว่า $v' = \\frac{${b}}{1 + ${b*b}x^2}$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณ</strong><br>
+      <strong>ขั้นที่ 3: แทนค่าในสูตร $f'(x) = uv' + vu'$</strong><br>
       ${adaptiveMath(
-        `f'(x) = (${k === 1 ? "" : k}e^{${k === 1 ? "x" : `${k}x`}} + ${a})\\arctan(${b === 1 ? "x" : `${b}x`}) + \\frac{${b}(e^{${k === 1 ? "x" : `${k}x`}} + ${a}x)}{1 + ${b*b}x^2}`,
-        `f'(x) &= (${k === 1 ? "" : k}e^{${k === 1 ? "x" : `${k}x`}} + ${a})\\arctan(${b === 1 ? "x" : `${b}x`}) + \\frac{${b}(e^{${k === 1 ? "x" : `${k}x`}} + ${a}x)}{1 + ${b*b}x^2}`
+        `f'(x) = (e^{${k === 1 ? "x" : `${k}x`}} + ${a}x)\\left(\\frac{${b}}{1 + ${b*b}x^2}\\right) + \\arctan(${b === 1 ? "x" : `${b}x`})(${k === 1 ? "" : k}e^{${k === 1 ? "x" : `${k}x`}} + ${a})`,
+        `f'(x) &= (e^{${k === 1 ? "x" : `${k}x`}} + ${a}x)\\left(\\frac{${b}}{1 + ${b*b}x^2}\\right) + \\arctan(${b === 1 ? "x" : `${b}x`})(${k === 1 ? "" : k}e^{${k === 1 ? "x" : `${k}x`}} + ${a})`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
       $u(0) = e^0 + 0 = 1, u'(0) = ${k}(1) + ${a} = ${k+a}$<br>
       $v(0) = \\arctan(0) = 0, v'(0) = \\frac{${b}}{1+0} = ${b}$<br>
-      $$f'(${x0}) = (${k+a})(0) + (1)(${b}) = ${slopeVal}$$
+      $$f'(${x0}) = (1)(${b}) + (0)(${k+a}) = ${slopeVal}$$
     </div>
   `;
 
@@ -3548,7 +3550,7 @@ function genDerivMixedExpArcCot() {
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
-    hintText: `ใช้กฎผลคูณ $(uv)' = u'v + uv'$ โดยทราบว่า $\\arctan(0) = 0$`,
+    hintText: `ใช้กฎผลคูณ $(uv)' = uv' + vu'$ โดยทราบว่า $\\arctan(0) = 0$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
