@@ -554,7 +554,6 @@
     <div id="solBox" class="result-box hidden">
       <h4>📝 วิธีทำอย่างละเอียด</h4>
       <div id="solContent"></div>
-      <div id="svgGraphContainer" style="margin-top: 16px; text-align: center;"></div>
     </div>
 
     <!-- Quiz Report Card (เมื่อทำครบ 5 ข้อ) -->
@@ -723,55 +722,6 @@ function poly3(A, B, C, D) {
     res += `${sign}${Math.abs(D)}`;
   }
   return res || "0";
-}
-
-// 2D SVG Graph Renderer for Tangent Lines
-function generateSvgTangent(x0, y0, slope, title="📈 กราฟแสดงเส้นสัมผัสเส้นโค้ง ณ จุดที่กำหนด") {
-  let width = 360, height = 200;
-  let cx = 180, cy = 100;
-  let scaleX = 30, scaleY = 12;
-
-  let curvePts = [];
-  for (let px = -5; px <= 5; px += 0.5) {
-    let xVal = x0 + px * 0.4;
-    let yVal = y0 + slope * (xVal - x0) + 0.3 * Math.pow(xVal - x0, 2);
-    let svgX = cx + (xVal - x0) * scaleX;
-    let svgY = cy - (yVal - y0) * scaleY;
-    if (svgY >= 10 && svgY <= height - 10) {
-      curvePts.push(`${svgX.toFixed(1)},${svgY.toFixed(1)}`);
-    }
-  }
-
-  let xLeft = x0 - 2.2, xRight = x0 + 2.2;
-  let yLeft = y0 + slope * (xLeft - x0);
-  let yRight = y0 + slope * (xRight - x0);
-
-  let tlX1 = cx + (xLeft - x0) * scaleX;
-  let tlY1 = cy - (yLeft - y0) * scaleY;
-  let tlX2 = cx + (xRight - x0) * scaleX;
-  let tlY2 = cy - (yRight - y0) * scaleY;
-
-  return `
-    <div style="background:#fff; border:1px solid #e0d8ce; border-radius:10px; padding:12px; margin-top:14px; text-align:center;">
-      <div style="font-size:0.88rem; font-weight:600; color:var(--muted); margin-bottom:8px;">${title}</div>
-      <svg viewBox="0 0 ${width} ${height}" style="width:100%; max-width:380px; height:auto;">
-        <!-- Axes -->
-        <line x1="20" y1="${cy}" x2="${width-20}" y2="${cy}" stroke="#d0c8be" stroke-width="1.5" stroke-dasharray="3,3"/>
-        <line x1="${cx}" y1="15" x2="${cx}" y2="${height-15}" stroke="#d0c8be" stroke-width="1.5" stroke-dasharray="3,3"/>
-        <!-- Curve -->
-        <polyline points="${curvePts.join(' ')}" fill="none" stroke="#2b4c7e" stroke-width="2.5"/>
-        <!-- Tangent Line -->
-        <line x1="${tlX1.toFixed(1)}" y1="${tlY1.toFixed(1)}" x2="${tlX2.toFixed(1)}" y2="${tlY2.toFixed(1)}" stroke="#c62828" stroke-width="2" stroke-dasharray="4,4"/>
-        <!-- Point (x0, y0) -->
-        <circle cx="${cx}" cy="${cy}" r="5" fill="#c62828"/>
-        <text x="${cx + 8}" y="${cy - 8}" fill="#c62828" font-size="11" font-weight="bold">(${x0}, ${y0.toFixed(1)})</text>
-      </svg>
-      <div style="font-size:0.8rem; color:#666; margin-top:4px;">
-        <span style="color:#2b4c7e;">■</span> เส้นโค้ง $f(x)$ &nbsp;|&nbsp; 
-        <span style="color:#c62828;">- -</span> เส้นสัมผัสความชัน $m = ${slope}$
-      </div>
-    </div>
-  `;
 }
 
 // =========================================================
@@ -1799,15 +1749,6 @@ function renderProblemView(prob) {
     ${prob.tangentLatex ? `<strong>สมการเส้นสัมผัสที่จุด $x = ${prob.x0}$:</strong> $$\\displaystyle ${prob.tangentLatex}$$` : ""}
   `;
   document.getElementById('solContent').innerHTML = prob.solHtml;
-
-  // Render SVG Tangent graph if available
-  let svgContainer = document.getElementById('svgGraphContainer');
-  if (prob.y0 !== undefined) {
-    let exactSlope = prob.exactNum / prob.exactDen;
-    svgContainer.innerHTML = generateSvgTangent(prob.x0, prob.y0, exactSlope);
-  } else {
-    svgContainer.innerHTML = '';
-  }
 
   // Hint content
   document.getElementById('hintContent').textContent = prob.hintText || "ลองแยกคิดอนุพันธ์ทีละส่วนและใช้กฎลูกโซ่";
