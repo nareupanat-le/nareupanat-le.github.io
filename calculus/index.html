@@ -3162,21 +3162,26 @@ function genDerivImplicitCircle() {
       $$\\displaystyle \\frac{d}{dx}\\left(x^2 + y^2\\right) = \\frac{d}{dx}(${rad2})$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: ใช้กฎลูกโซ่สำหรับพจน์ $y^2$</strong><br>
-      จะได้ว่า
-      $$2x + 2y\frac{dy}{dx} = 0$$
-      ย้ายข้างพจน์เพื่อจัดรูปหา $\frac{dy}{dx}$
-      $$2y\frac{dy}{dx} = -2x$$
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์ และใช้กฎลูกโซ่สำหรับพจน์ $y^2$</strong><br>
+      • <em>พจน์ $x^2$:</em> $\\frac{d}{dx}[x^2] = 2x$<br>
+      • <em>พจน์ $y^2$:</em> ใช้กฎลูกโซ่ $\\frac{d}{dx}[y^2] = 2y\\frac{dy}{dx}$<br>
+      • <em>ฝั่งขวา:</em> $\\frac{d}{dx}(${rad2}) = 0$<br>
+      <br>
+      นำทุกพจน์มารวมกันจะได้สมการ:
+      $$2x + 2y\\frac{dy}{dx} = 0$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: จัดรูปหา $\frac{dy}{dx}$</strong><br>
-      $$\frac{dy}{dx} = -\frac{2x}{2y} = -\frac{x}{y}$$
-      ดังนั้น $$\frac{dy}{dx} = -\frac{x}{y}$$
+      <strong>ขั้นที่ 3: ย้ายข้างและจัดรูปหา $\\frac{dy}{dx}$</strong><br>
+      ย้ายพจน์ $2x$ ไปฝั่งขวา:
+      $$2y\\frac{dy}{dx} = -2x$$
+      หารทั้งสองข้างด้วย $2y$:
+      $$\\frac{dy}{dx} = -\\frac{2x}{2y} = -\\frac{x}{y}$$
+      ดังนั้น $$\\frac{dy}{dx} = -\\frac{x}{y}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่าพิกัด $(x, y) = (${x0}, ${y0})$</strong><br>
-      $$\left.\frac{dy}{dx}\right|_{(${x0}, ${y0})} = -\frac{${x0}}{${y0}} = ${slopeValLatex}$$
-      ดังนั้น $$\left.\frac{dy}{dx}\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
+      $$\\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = -\\frac{${x0}}{${y0}} = ${slopeValLatex}$$
+      ดังนั้น $$\\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
     </div>
   `;
 
@@ -3237,20 +3242,43 @@ function genDerivImplicitPolynomial() {
       $$\\displaystyle \\frac{d}{dx}\\left(${a === 1 ? "x^2" : `${a}x^2`} - ${b === 1 ? "" : b}xy + ${c === 1 ? "y^2" : `${c}y^2`}\\right) = \\frac{d}{dx}(${d})$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: ใช้กฎผลคูณสำหรับพจน์ $xy$</strong><br>
-      ทราบว่า $\\frac{d}{dx}[xy] = (1)y + x\\frac{dy}{dx} = y + x\\frac{dy}{dx}$<br>
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์ และใช้กฎผลคูณ $(uv)' = u'v + uv'$ สำหรับพจน์ $xy$</strong><br>
+      • <em>พจน์แรก:</em>
+      $$\\frac{d}{dx}\\left[${a === 1 ? "x^2" : `${a}x^2`}\\right] = ${2*a}x$$
+      • <em>พจน์กลาง:</em> ใช้กฎผลคูณสำหรับ $xy$ โดย $u = x, v = y$
+      ${adaptiveMath(
+        `\\frac{d}{dx}[xy] = (1)y + x\\frac{dy}{dx} = y + x\\frac{dy}{dx}`,
+        `\\frac{d}{dx}[xy] &= (1)y + x\\frac{dy}{dx} \\\\ &= y + x\\frac{dy}{dx}`
+      )}
+      เมื่อคูณสัมประสิทธิ์ $-${b === 1 ? "" : b} ด้านหน้าและกระจายเข้าในวงเล็บ:
+      ${adaptiveMath(
+        `-${b === 1 ? "" : b}\\frac{d}{dx}[xy] = -${b === 1 ? "" : b}\\left(y + x\\frac{dy}{dx}\\right) = -${b === 1 ? "y" : `${b}y`} - ${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx}`,
+        `-${b === 1 ? "" : b}\\frac{d}{dx}[xy] &= -${b === 1 ? "" : b}\\left(y + x\\frac{dy}{dx}\\right) \\\\ &= -${b === 1 ? "y" : `${b}y`} - ${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx}`
+      )}
+      • <em>พจน์หลัง (กฎลูกโซ่):</em>
+      $$\\frac{d}{dx}\\left[${c === 1 ? "y^2" : `${c}y^2`}\\right] = ${2*c}y\\frac{dy}{dx}$$
+      • <em>ฝั่งขวา:</em>
+      $$\\frac{d}{dx}(${d}) = 0$$
+      <br>
+      นำทุกพจน์มารวมกัน:
       ${adaptiveMath(
         `${2*a}x - ${b === 1 ? "" : b}\\left(y + x\\frac{dy}{dx}\\right) + ${2*c}y\\frac{dy}{dx} = 0`,
-        `${2*a}x - ${b === 1 ? "" : b}y - ${b === 1 ? "" : b}x\\frac{dy}{dx} + ${2*c}y\\frac{dy}{dx} &= 0`
+        `${2*a}x - ${b === 1 ? "" : b}\\left(y + x\\frac{dy}{dx}\\right) + ${2*c}y\\frac{dy}{dx} &= 0`
+      )}
+      กระจายวงเล็บจะได้สมการ:
+      ${adaptiveMath(
+        `${2*a}x - ${b === 1 ? "y" : `${b}y`} - ${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx} + ${2*c}y\\frac{dy}{dx} = 0`,
+        `${2*a}x - ${b === 1 ? "y" : `${b}y`} - ${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx} + ${2*c}y\\frac{dy}{dx} &= 0`
       )}
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: ย้ายข้างและดึงตัวร่วม $\\frac{dy}{dx}$</strong><br>
+      ย้ายพจน์ที่ไม่มี $\\frac{dy}{dx}$ ไปฝั่งขวา:
       ${adaptiveMath(
         `\\left(${2*c}y - ${b === 1 ? "x" : `${b}x`}\\right)\\frac{dy}{dx} = ${b === 1 ? "y" : `${b}y`} - ${2*a}x`,
         `\\left(${2*c}y - ${b === 1 ? "x" : `${b}x`}\\right)\\frac{dy}{dx} &= ${b === 1 ? "y" : `${b}y`} - ${2*a}x`
       )}
-      จะได้ว่า
+      หารด้วยสัมประสิทธิ์หน้า $\\frac{dy}{dx}$ จะได้ว่า
       $$\\frac{dy}{dx} = \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}$$
       ดังนั้น $$\\frac{dy}{dx} = \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}$$
     </div>
@@ -3545,9 +3573,12 @@ function genDerivMixedNestedTrig() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ทีละชั้นจากไส้ในสุดออกมาข้างนอก</strong><br>
-      • <em>อนุพันธ์ไส้ในสุด:</em> $\\frac{du}{dx} = \\frac{d}{dx}(${k}x) = ${k}$<br>
-      • <em>อนุพันธ์ไส้ชั้นกลาง:</em> $\\frac{dv}{du} = \\frac{d}{du}[\\arcsin(u)] = \\frac{1}{\\sqrt{1 - u^2}}$<br>
-      • <em>อนุพันธ์ฟังก์ชันนอกสุด:</em> $\\frac{dy}{dv} = \\frac{d}{dv}[\\tan(v)] = \\sec^2(v)$
+      • <em>อนุพันธ์ไส้ในสุด:</em>
+      $$\\frac{du}{dx} = \\frac{d}{dx}(${k}x) = ${k}$$
+      • <em>อนุพันธ์ไส้ชั้นกลาง:</em>
+      $$\\frac{dv}{du} = \\frac{d}{du}[\\arcsin(u)] = \\frac{1}{\\sqrt{1 - u^2}}$$
+      • <em>อนุพันธ์ฟังก์ชันนอกสุด:</em>
+      $$\\frac{dy}{dv} = \\frac{d}{dv}[\\tan(v)] = \\sec^2(v)$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: รวมด้วยกฎลูกโซ่ (Chain Rule) $\\frac{dy}{dx} = \\frac{dy}{dv} \\cdot \\frac{dv}{du} \\cdot \\frac{du}{dx}$</strong><br>
@@ -3656,10 +3687,13 @@ function genDerivMixedLogTrig() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ของไส้ใน $\\frac{du}{dx}$ ทีละชั้นจากในออกนอก</strong><br>
-      1. ดิฟไส้ในสุด: $\\frac{dw}{dx} = ${k}$<br>
-      2. ดิฟฟังก์ชันตรีโกณ: $\\frac{d}{dx}[\\tan(${k}x)] = \\sec^2(${k}x) \\cdot (${k}) = ${k}\\sec^2(${k}x)$<br>
-      3. ดิฟพจน์เอกซ์โป: $\\frac{d}{dx}\\left[e^{\\tan(${k}x)}\\right] = e^{\\tan(${k}x)} \\cdot (${k}\\sec^2(${k}x))$<br>
-      4. ดังนั้นอนุพันธ์ไส้ในทั้งหมดคือ
+      1. ดิฟไส้ในสุด:
+      $$\\frac{dw}{dx} = ${k}$$
+      2. ดิฟฟังก์ชันตรีโกณ:
+      $$\\frac{d}{dx}[\\tan(${k}x)] = \\sec^2(${k}x) \\cdot (${k}) = ${k}\\sec^2(${k}x)$$
+      3. ดิฟพจน์เอกซ์โป:
+      $$\\frac{d}{dx}\\left[e^{\\tan(${k}x)}\\right] = e^{\\tan(${k}x)} \\cdot (${k}\\sec^2(${k}x)) = ${k}e^{\\tan(${k}x)}\\sec^2(${k}x)$$
+      4. รวมเป็นอนุพันธ์ไส้ในทั้งหมด:
       $$\\frac{du}{dx} = ${k}e^{\\tan(${k}x)}\\sec^2(${k}x) + ${a}$$
     </div>
     <div class="solution-step">
