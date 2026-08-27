@@ -10,7 +10,7 @@
 \contentsline {subsection}{\numberline {1.9}Type 1.9: L'H\^opital's Rule ($0/0$ or $\infty /\infty $)}{7}{subsection.1.9}%
 \contentsline {section}{\numberline {2}Basic Derivatives \& Term-by-Term Differentiation}{9}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Type 2.1: Polynomial with Fractional and Negative Powers}{9}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Type 2.2: Basic Trigonometric Functions (Sine, Cosine, Secant, Tangent)}{10}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.2}Type 2.2: Basic Trigonometric Functions (Sine, Cosine, Secant, Tangent)}{9}{subsection.2.2}%
 \contentsline {subsection}{\numberline {2.3}Type 2.3: Natural and General Exponential Functions ($e^{kx}$ and $a^u$)}{10}{subsection.2.3}%
 \contentsline {subsection}{\numberline {2.4}Type 2.4: Sum of Inverse Trigonometric Functions}{11}{subsection.2.4}%
 \contentsline {section}{\numberline {3}Product Rule: $(uv)' = uv' + vu'$}{13}{section.3}%
