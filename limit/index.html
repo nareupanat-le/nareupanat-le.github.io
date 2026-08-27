@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>แบบฝึกหัดลิมิต — Nareupanat Lekkoksung</title>
+  <title>แบบฝึกหัดลิมิต (Calculus 1) — Nareupanat Lekkoksung</title>
   
   <!-- Site Base Stylesheet (ไม่แก้ไขไฟล์นี้) -->
   <link rel="stylesheet" href="/assets/style.css">
@@ -31,6 +31,84 @@
       padding: 28px;
       margin-bottom: 24px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Mode Navigation Tabs */
+    .mode-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(122, 92, 58, 0.15);
+    }
+
+    .mode-btn {
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid rgba(122, 92, 58, 0.25);
+      background: #faf8f5;
+      color: var(--muted);
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .mode-btn:hover {
+      background: rgba(122, 92, 58, 0.08);
+      border-color: var(--muted);
+    }
+
+    .mode-btn.active {
+      background: var(--muted);
+      color: #ffffff;
+      border-color: var(--muted);
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      font-size: 0.8rem;
+      padding: 3px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 1px solid rgba(122, 92, 58, 0.2);
+      background: #fff;
+      color: var(--fg);
+      transition: all 0.15s;
+    }
+
+    .filter-pill.active {
+      background: var(--muted);
+      color: #fff;
+      border-color: var(--muted);
+    }
+
+    /* Quiz Progress Bar */
+    .quiz-progress-wrap {
+      margin-bottom: 16px;
+      background: rgba(122, 92, 58, 0.1);
+      border-radius: 10px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .quiz-progress-bar {
+      height: 100%;
+      background: var(--muted);
+      width: 0%;
+      transition: width 0.3s ease;
     }
 
     .meta-bar {
@@ -77,7 +155,8 @@
       font-size: 0.9rem;
       color: var(--muted);
       display: flex;
-      gap: 14px;
+      align-items: center;
+      gap: 12px;
     }
 
     .prob-display {
@@ -187,6 +266,15 @@
       transform: translateY(-1px);
     }
 
+    .btn-hint {
+      background: #fdfbf7;
+      color: #9c6c21;
+      border: 1px solid #e0c89a;
+    }
+    .btn-hint:hover {
+      background: #fbf5e6;
+    }
+
     .feedback-box {
       margin-top: 16px;
       padding: 16px 20px;
@@ -261,6 +349,16 @@
       font-size: 1.05rem;
     }
 
+    .hint-box {
+      background: #fffdfa;
+      border: 1px solid #f0dfb8;
+      border-left: 4px solid #d49e35;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-top: 14px;
+      font-size: 0.95rem;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -295,12 +393,73 @@
       display: block;
     }
 
+    /* Modal / Drawer for Achievements */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: #fff;
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      padding: 26px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .achievement-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      background: #faf8f5;
+      border: 1px solid rgba(122, 92, 58, 0.15);
+    }
+
+    .achievement-item.locked {
+      opacity: 0.5;
+      filter: grayscale(1);
+    }
+
+    .achievement-icon {
+      font-size: 1.8rem;
+    }
+
+    .quiz-report-card {
+      text-align: center;
+      padding: 24px;
+      background: #faf8f5;
+      border-radius: 14px;
+      border: 2px solid var(--muted);
+      margin-top: 20px;
+    }
+
+    .grade-badge {
+      display: inline-block;
+      font-size: 3rem;
+      font-weight: 800;
+      color: #2e7d32;
+      margin: 10px 0;
+    }
+
     @media (max-width: 600px) {
       .app-card { padding: 18px; }
       .btn-group { flex-direction: column; }
       .btn { width: 100%; }
       .quiz-input-group { flex-direction: column; align-items: stretch; }
       .quiz-input { width: 100%; }
+      .mode-nav { justify-content: center; }
     }
   </style>
 </head>
@@ -322,13 +481,36 @@
   <p class="byline">คละโจทย์ลิมิตในรูปแบบไม่กำหนด ($\frac{0}{0}, \infty - \infty$) ทุกระดับ: การแยกตัวประกอบ, สังยุครากที่สอง/สาม, สังยุคซ้อน, และลิมิตตรีโกณมิติ</p>
 
   <div class="app-card">
+    <!-- Mode Navigation Tabs -->
+    <div class="mode-nav">
+      <button id="modeFreeBtn" class="mode-btn active" onclick="switchMode('free')">🎲 สุ่มอิสระ</button>
+      <button id="modeFilterBtn" class="mode-btn" onclick="switchMode('filter')">🎯 เลือกตามระดับ</button>
+      <button id="modeQuizBtn" class="mode-btn" onclick="switchMode('quiz')">⏱️ แบบทดสอบ 5 ข้อ</button>
+      <button class="mode-btn" style="margin-left: auto;" onclick="toggleStatsModal()">📊 สถิติ & ความสำเร็จ</button>
+    </div>
+
+    <!-- Filter Pills (แสดงเฉพาะเมื่ออยู่ในโหมด filter) -->
+    <div id="filterPillsRow" class="filter-pills hidden">
+      <span style="font-size: 0.85rem; font-weight: 600; color: var(--muted);">เลือกระดับ:</span>
+      <button class="filter-pill active" onclick="setFilterDifficulty('all')">ทั้งหมด</button>
+      <button class="filter-pill" onclick="setFilterDifficulty('easy')">🟢 พื้นฐาน</button>
+      <button class="filter-pill" onclick="setFilterDifficulty('med')">🟡 ปานกลาง</button>
+      <button class="filter-pill" onclick="setFilterDifficulty('hard')">🔴 ท้าทาย</button>
+    </div>
+
+    <!-- Quiz Progress Bar (แสดงเฉพาะเมื่ออยู่ในโหมด Quiz) -->
+    <div id="quizProgressWrap" class="quiz-progress-wrap hidden">
+      <div id="quizProgressBar" class="quiz-progress-bar"></div>
+    </div>
+
     <div class="meta-bar">
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
         <div id="topicBadge" class="badge">สถานะ: รอสุ่มโจทย์</div>
         <div id="diffBadge" class="badge hidden">ระดับความยาก</div>
       </div>
       <div class="stats">
-        <span>ทำถูก: <strong id="scoreCorrect">0</strong> ข้อ</span>
+        <span id="quizCounterLabel" class="hidden" style="font-weight:700; color:var(--muted);">ข้อที่ 1/5</span>
+        <span>ถูก: <strong id="scoreCorrect">0</strong> ข้อ</span>
         <span>Streak: <strong id="streakCount">0</strong> 🔥</span>
       </div>
     </div>
@@ -348,12 +530,17 @@
         <button class="btn btn-check" onclick="checkAnswer()">ตรวจคำตอบ</button>
       </div>
       <div id="feedbackBox" class="feedback-box"></div>
+      <!-- คำใบ้ (Hint) -->
+      <div id="hintBox" class="hint-box hidden">
+        <strong>💡 คำใบ้:</strong> <span id="hintContent"></span>
+      </div>
     </div>
 
     <!-- ปุ่มควบคุม -->
     <div class="btn-group">
-      <button class="btn btn-primary" onclick="generateRandomProblem()">🎲 สุ่มโจทย์ใหม่</button>
-      <button class="btn btn-secondary" onclick="toggleAnswer()">💡 ดูคำตอบ</button>
+      <button id="btnMainAction" class="btn btn-primary" onclick="generateNextProblem()">🎲 สุ่มโจทย์ใหม่</button>
+      <button class="btn btn-hint" onclick="toggleHint()">💡 ดูคำใบ้</button>
+      <button class="btn btn-secondary" onclick="toggleAnswer()">🔍 ดูคำตอบ</button>
       <button class="btn btn-secondary" onclick="toggleSolution()">📝 ดูวิธีทำอย่างละเอียด</button>
     </div>
 
@@ -367,9 +554,49 @@
     <div id="solBox" class="result-box hidden">
       <h4>📝 วิธีทำอย่างละเอียด</h4>
       <div id="solContent"></div>
+      <div id="svgGraphContainer" style="margin-top: 16px; text-align: center;"></div>
+    </div>
+
+    <!-- Quiz Report Card (เมื่อทำครบ 5 ข้อ) -->
+    <div id="quizReportCard" class="quiz-report-card hidden">
+      <h3>🎉 สรุปผลการทดสอบ</h3>
+      <div id="quizGradeBadge" class="grade-badge">A</div>
+      <p style="font-size: 1.1rem; margin: 6px 0;">คุณทำคะแนนได้ <strong id="quizScoreVal">0</strong> เต็ม 5 ข้อ (<span id="quizPercentVal">0%</span>)</p>
+      <div class="btn-group" style="margin-top: 16px;">
+        <button class="btn btn-primary" onclick="startQuizSession()">🔄 ทำแบบทดสอบชุดใหม่</button>
+        <button class="btn btn-secondary" onclick="switchMode('free')">กลับสู่โหมดฝึกฝนปกติ</button>
+      </div>
     </div>
   </div>
 </main>
+
+<!-- Modal แสดงสถิติและความสำเร็จ -->
+<div id="statsModal" class="modal-overlay hidden" onclick="if(event.target===this) toggleStatsModal()">
+  <div class="modal-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="margin:0;">📊 สถิติ & ความสำเร็จ</h3>
+      <button style="border:none; background:none; font-size:1.4rem; cursor:pointer;" onclick="toggleStatsModal()">✕</button>
+    </div>
+    
+    <div style="background:#faf8f5; border:1px solid rgba(122,92,58,0.15); border-radius:12px; padding:16px; margin-bottom:20px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:0.95rem;">
+        <div>ทำทั้งหมด: <strong id="statTotalAnswered">0</strong> ข้อ</div>
+        <div>ตอบถูก: <strong id="statTotalCorrect">0</strong> ข้อ</div>
+        <div>ความแม่นยำ: <strong id="statAccuracy">0%</strong></div>
+        <div>Streak สูงสุด: <strong id="statBestStreak">0</strong> 🔥</div>
+      </div>
+    </div>
+
+    <h4 style="margin:0 0 12px 0; color:var(--muted);">🏆 เหรียญรางวัลความสำเร็จ</h4>
+    <div id="achievementsList">
+      <!-- Generated Dynamically -->
+    </div>
+
+    <div style="text-align:right; margin-top:16px;">
+      <button class="btn btn-secondary" style="font-size:0.85rem;" onclick="resetStats()">🔄 รีเซ็ตสถิติ</button>
+    </div>
+  </div>
+</div>
 
 <footer class="site-footer">
   <p>© <span id="y"></span> Nareupanat Lekkoksung</p>
@@ -476,7 +703,7 @@ function safeRenderMath(element) {
     MathJax.typesetPromise(element ? [element] : []).then(function() {
       setTimeout(adaptMathEquations, 50);
     }).catch(function(err) {
-      console.warn('MathJax typesetting error:', err);
+      console.warn("MathJax error:", err);
     });
   }
 }
@@ -485,13 +712,55 @@ window.addEventListener('resize', function() {
   adaptMathEquations();
 });
 
+// 2D SVG Graph Renderer for Limits (แสดงจุดโปร่ง Hole and Convergence)
+function generateSvgLimit(a, L, title="📈 กราฟแสดงการลู่เข้าของลิมิต ณ จุด x = a") {
+  let width = 360, height = 200;
+  let cx = 180, cy = 100;
+  let scaleX = 30, scaleY = 14;
+
+  let curvePts = [];
+  for (let px = -5; px <= 5; px += 0.5) {
+    if (Math.abs(px) < 0.2) continue; // ข้ามจุด x = a
+    let xVal = a + px * 0.4;
+    let yVal = L + 0.8 * (xVal - a);
+    let svgX = cx + (xVal - a) * scaleX;
+    let svgY = cy - (yVal - L) * scaleY;
+    if (svgY >= 10 && svgY <= height - 10) {
+      curvePts.push(`${svgX.toFixed(1)},${svgY.toFixed(1)}`);
+    }
+  }
+
+  return `
+    <div style="background:#fff; border:1px solid #e0d8ce; border-radius:10px; padding:12px; margin-top:14px; text-align:center;">
+      <div style="font-size:0.88rem; font-weight:600; color:var(--muted); margin-bottom:8px;">${title}</div>
+      <svg viewBox="0 0 ${width} ${height}" style="width:100%; max-width:380px; height:auto;">
+        <!-- Axes -->
+        <line x1="20" y1="${cy}" x2="${width-20}" y2="${cy}" stroke="#d0c8be" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <line x1="${cx}" y1="15" x2="${cx}" y2="${height-15}" stroke="#d0c8be" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <!-- Convergence Arrows -->
+        <path d="M ${cx - 50} ${cy + 30} L ${cx - 15} ${cy + 10}" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+        <path d="M ${cx + 50} ${cy - 30} L ${cx + 15} ${cy - 10}" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
+        <!-- Curve Line -->
+        <polyline points="${curvePts.join(' ')}" fill="none" stroke="#2b4c7e" stroke-width="2.5"/>
+        <!-- Hole Point (a, L) -->
+        <circle cx="${cx}" cy="${cy}" r="6" fill="#fff" stroke="#c62828" stroke-width="2.5"/>
+        <text x="${cx + 10}" y="${cy - 8}" fill="#c62828" font-size="11" font-weight="bold">(${a}, ${L.toFixed(1)})</text>
+      </svg>
+      <div style="font-size:0.8rem; color:#666; margin-top:4px;">
+        <span style="color:#c62828;">○</span> จุดไม่นิยาม ($0/0$) &nbsp;|&nbsp; 
+        <span style="color:#2e7d32;">→</span> ลิมิตซ้าย-ขวาลู่เข้าสู่ค่า $L = ${L.toFixed(2)}$
+      </div>
+    </div>
+  `;
+}
+
 // =========================================================
 // 2. Generators: สลับระดับง่าย (🟢) / ปานกลาง (🟡) / ท้าทาย (🔴)
 // =========================================================
 
 // --- กลุ่มระดับง่าย (🟢 พื้นฐาน) ---
 
-// 2.1 แยกตัวประกอบผลต่างกำลังสองพื้นฐาน (Basic Quadratic Factoring)
+// 2.1 แยกตัวประกอบผลต่างกำลังสองพื้นฐาน
 function genEasyFactoring() {
   let a = randNonZero(-4, 4);
   let a2 = a * a;
@@ -524,14 +793,17 @@ function genEasyFactoring() {
     category: "การแยกตัวประกอบผลต่างกำลังสอง (Difference of Squares)",
     difficulty: "easy",
     probLatex: probLatex,
+    limitPt: a,
+    limitVal: finalVal,
     ansLatex: `${finalVal}`,
+    hintText: `ใช้เอกลักษณ์ $x^2 - a^2 = (x-a)(x+a)$ แล้วตัดทอนพจน์ร่วม $(x-a)$ ออก`,
     solHtml: solText,
     exactNum: finalVal,
     exactDen: 1
   };
 }
 
-// 2.2 ลิมิตตรีโกณมิติพื้นฐาน (Basic Trig Limit: sin(kx)/(mx))
+// 2.2 ลิมิตตรีโกณมิติพื้นฐาน
 function genEasyTrig() {
   let k = rand(2, 5);
   let m = rand(1, 4);
@@ -565,14 +837,17 @@ function genEasyTrig() {
     category: "ลิมิตตรีโกณมิติพื้นฐาน (Basic Trigonometric Limit)",
     difficulty: "easy",
     probLatex: probLatex,
+    limitPt: 0,
+    limitVal: k/m,
     ansLatex: finalValLatex,
+    hintText: `ใช้สมบัติ $\\lim_{u \\to 0}\\frac{\\sin u}{u} = 1$ โดยปรับมุมให้เป็น $${k}x$`,
     solHtml: solText,
     exactNum: k,
     exactDen: m
   };
 }
 
-// 2.3 ลิมิตเอกซ์โพเนนเชียลพื้นฐาน (e^(kx) - 1)/(mx)
+// 2.3 ลิมิตเอกซ์โพเนนเชียลพื้นฐาน
 function genEasyExpLimit() {
   let k = rand(2, 5);
   let m = rand(1, 4);
@@ -606,7 +881,10 @@ function genEasyExpLimit() {
     category: "ลิมิตเอกซ์โพเนนเชียลพื้นฐาน (Basic Exponential Limit)",
     difficulty: "easy",
     probLatex: probLatex,
+    limitPt: 0,
+    limitVal: k/m,
     ansLatex: finalValLatex,
+    hintText: `ใช้ลิมิตมาตรฐาน $\\lim_{u \\to 0} \\frac{e^u - 1}{u} = 1$`,
     solHtml: solText,
     exactNum: k,
     exactDen: m
@@ -615,7 +893,7 @@ function genEasyExpLimit() {
 
 // --- กลุ่มระดับปานกลาง (🟡 ปานกลาง) ---
 
-// 2.4 การแยกตัวประกอบพหุนามทั่วไป (General Quadratic Factoring)
+// 2.4 การแยกตัวประกอบพหุนามทั่วไป
 function genMedFactoring() {
   let a = rand(-3, 3);
   let termCancel = (a === 0) ? "x" : (a > 0 ? `x - ${a}` : `x + ${Math.abs(a)}`);
@@ -672,14 +950,17 @@ function genMedFactoring() {
     category: "การแยกตัวประกอบพหุนาม (Quadratic Factoring)",
     difficulty: "med",
     probLatex: probLatex,
+    limitPt: a,
+    limitVal: numVal/denVal,
     ansLatex: finalValLatex,
+    hintText: `แยกตัวประกอบทั้งเศษและส่วนเพื่อตัดพจน์ $(${termCancel})$`,
     solHtml: solText,
     exactNum: numVal,
     exactDen: denVal
   };
 }
 
-// 2.5 สังยุครากที่สองเดี่ยว (Single Square Root Conjugate)
+// 2.5 สังยุครากที่สองเดี่ยว
 function genMedSqrtConjugate() {
   let a = rand(-2, 3);
   let k = rand(1, 2);
@@ -739,14 +1020,17 @@ function genMedSqrtConjugate() {
     category: "สังยุครากที่สอง (Square Root Conjugate)",
     difficulty: "med",
     probLatex: probLatex,
+    limitPt: a,
+    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    hintText: `คูณด้วยสังยุค $(${conj})$ ทั้งเศษและส่วนเพื่อกำจัดเครื่องหมายกรณฑ์`,
     solHtml: solText,
     exactNum: finalNum,
     exactDen: finalDen
   };
 }
 
-// 2.6 สังยุครากที่สาม / ผลต่างกำลังสาม (Cube Root Conjugate)
+// 2.6 สังยุครากที่สาม
 function genMedCbrtConjugate() {
   let a = rand(-2, 2);
   let k = rand(1, 2);
@@ -809,14 +1093,17 @@ function genMedCbrtConjugate() {
     category: "สังยุครากที่สาม (Cube Root Conjugate)",
     difficulty: "med",
     probLatex: probLatex,
+    limitPt: a,
+    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    hintText: `ใช้เอกลักษณ์ $(A-B)(A^2+AB+B^2) = A^3 - B^3$`,
     solHtml: solText,
     exactNum: finalNum,
     exactDen: finalDen
   };
 }
 
-// 2.7 เศษส่วนซ้อน (Complex Fraction)
+// 2.7 เศษส่วนซ้อน
 function genMedComplexFraction() {
   let a = randNonZero(-3, 3);
   let k = rand(1, 3);
@@ -859,7 +1146,10 @@ function genMedComplexFraction() {
     category: "เศษส่วนซ้อน (Complex Fraction)",
     difficulty: "med",
     probLatex: probLatex,
+    limitPt: a,
+    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    hintText: `หา ครน. ทำตัวส่วนของเศษส่วนซ้อนข้างบนให้เท่ากันก่อนตัดพจน์ $(x-${a})$`,
     solHtml: solText,
     exactNum: finalNum,
     exactDen: finalDen
@@ -868,7 +1158,7 @@ function genMedComplexFraction() {
 
 // --- กลุ่มระดับท้าทาย (🔴 ขั้นสูง) ---
 
-// 2.8 สังยุคซ้อนทั้งเศษและส่วน (Double Conjugate Technique)
+// 2.8 สังยุคซ้อนทั้งเศษและส่วน
 function genHardDoubleConjugate() {
   let a = rand(1, 3);
   let c = rand(1, 3);
@@ -923,14 +1213,17 @@ function genHardDoubleConjugate() {
     category: "สังยุคซ้อนทั้งเศษและส่วน (Double Conjugate)",
     difficulty: "hard",
     probLatex: probLatex,
+    limitPt: 0,
+    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    hintText: `เนื่องจากติดกรณฑ์ทั้งเศษและส่วน ต้องคูณด้วยสังยุคของทั้งเศษและส่วนพร้อมกัน`,
     solHtml: solText,
     exactNum: finalNum,
     exactDen: finalDen
   };
 }
 
-// 2.9 ลิมิตตรีโกณมิติกำลังสาม ((tan(kx) - sin(kx))/x^3)
+// 2.9 ลิมิตตรีโกณมิติกำลังสาม
 function genHardTrigCube() {
   let k = rand(2, 4);
   let probLatex = `\\lim_{x \\to 0} \\frac{\\tan(${k}x) - \\sin(${k}x)}{x^3}`;
@@ -959,7 +1252,7 @@ function genHardTrigCube() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: คำนวณค่าลิมิตแต่ละส่วน</strong><br>
-      ทราบว่า $\\lim_{x \\to 0}\\frac{\\sin(${k}x)}{x} = ${k}$, $\\lim_{x \\to 0}\\frac{1-\\cos(${k}x)}{x^2} = \\frac{${k}^2}{2} = \\frac{${k*k}}{2}$ และ $\\lim_{x \\to 0}\\cos(${k}x) = 1$<br>
+      ทราบว่า $\\lim_{x \\to 0}\\frac{\\sin(${k}x)}{x} = ${k}$, $\\lim_{x \\to 0}\\frac{1-\\cos(${k}x)}{x^2} = \\frac{${k*k}}{2}$ และ $\\lim_{x \\to 0}\\cos(${k}x) = 1$<br>
       ${adaptiveMath(
         `= (${k}) \\cdot \\left(\\frac{${k*k}}{2}\\right) \\cdot 1 = ${finalValLatex}`,
         `&= (${k}) \\cdot \\left(\\frac{${k*k}}{2}\\right) \\cdot (1) \\\\ &= ${finalValLatex}`
@@ -972,14 +1265,17 @@ function genHardTrigCube() {
     category: "ลิมิตตรีโกณมิติกำลังสาม (Trigonometric Identity & Cubics)",
     difficulty: "hard",
     probLatex: probLatex,
+    limitPt: 0,
+    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    hintText: `เปลี่ยน $\\tan = \\frac{\\sin}{\\cos}$ แล้วดึงตัวร่วม $\\sin(${k}x)(1-\\cos(${k}x))$`,
     solHtml: solText,
     exactNum: finalNum,
     exactDen: finalDen
   };
 }
 
-// 2.10 ลิมิตตรีโกณมิติผสมผลคูณ ((1 - cos(kx))/(x*sin(mx)))
+// 2.10 ลิมิตตรีโกณมิติผสมผลคูณ
 function genHardTrigProduct() {
   let k = rand(2, 4);
   let m = rand(1, 4);
@@ -1016,14 +1312,17 @@ function genHardTrigProduct() {
     category: "ลิมิตตรีโกณมิติผสมผลคูณ (Trig Product Limit)",
     difficulty: "hard",
     probLatex: probLatex,
+    limitPt: 0,
+    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    hintText: `หารด้วย $x^2$ ทั้งเศษและส่วนเพื่อแยกเป็นลิมิตมาตรฐานสองชุด`,
     solHtml: solText,
     exactNum: finalNum,
     exactDen: finalDen
   };
 }
 
-// 2.11 ลิมิตอนันต์ในรูปผลต่างกรณฑ์ (Infinity Minus Infinity Conjugate)
+// 2.11 ลิมิตอนันต์ในรูปผลต่างกรณฑ์
 function genHardInfinityConjugate() {
   let a = rand(2, 6);
   let probLatex = `\\lim_{x \\to \\infty} \\left( \\sqrt{x^2 + ${a}x} - x \\right)`;
@@ -1064,7 +1363,10 @@ function genHardInfinityConjugate() {
     category: "ลิมิตอนันต์สังยุค (Limit at Infinity with Conjugate)",
     difficulty: "hard",
     probLatex: probLatex,
+    limitPt: 0,
+    limitVal: a/2,
     ansLatex: finalValLatex,
+    hintText: `คูณสังยุค $(\\sqrt{x^2+${a}x}+x)$ แล้วหารด้วย $x$ สูงสุดทั้งเศษและส่วน`,
     solHtml: solText,
     exactNum: finalNum,
     exactDen: finalDen
@@ -1107,7 +1409,10 @@ function genHardTrigPolyPoint() {
     category: "ลิมิตตรีโกณมิติผสมพหุนาม (Trig-Poly Composite Limit)",
     difficulty: "hard",
     probLatex: probLatex,
+    limitPt: a,
+    limitVal: 1/(2*a),
     ansLatex: finalValLatex,
+    hintText: `แยกตัวประกอบตัวส่วนเป็น $(x-${a})(x+${a})$ แล้วจับคู่กับ $\\sin(x-${a})$`,
     solHtml: solText,
     exactNum: finalNum,
     exactDen: finalDen
@@ -1115,13 +1420,76 @@ function genHardTrigPolyPoint() {
 }
 
 // ==========================================
-// 3. Main Application State & Controller
+// 3. Application State & Controller
 // ==========================================
 let currentProblem = null;
 let scoreCorrect = 0;
 let streakCount = 0;
 
-// คลังโจทย์ 12 ประเภท: ง่าย (~25%), ปานกลาง (~35%), ท้าทาย (~40%)
+let currentMode = 'free'; // 'free', 'filter', 'quiz'
+let filterDifficulty = 'all'; // 'all', 'easy', 'med', 'hard'
+
+// Quiz Session State
+let quizSession = {
+  active: false,
+  totalQuestions: 5,
+  currentIdx: 0,
+  score: 0,
+  questions: []
+};
+
+// Local Storage Persistent Stats
+let userStats = {
+  totalAnswered: 0,
+  totalCorrect: 0,
+  bestStreak: 0,
+  hardSolved: 0,
+  quizAceCount: 0,
+  badges: []
+};
+
+const allAchievements = [
+  { id: 'first_blood', icon: '🥇', title: 'ก้าวแรกสู่ลิมิต', desc: 'ตอบถูกข้อแรกสำเร็จ' },
+  { id: 'streak_5', icon: '🔥', title: 'ลู่เข้าไม่หยุด', desc: 'ทำ Streak ตอบถูกต่อเนื่อง 5 ข้อ' },
+  { id: 'streak_10', icon: '⚡', title: 'สู่ความเร็วแสง', desc: 'ทำ Streak ตอบถูกต่อเนื่อง 10 ข้อ' },
+  { id: 'hard_5', icon: '🧠', title: 'ปรมาจารย์ลิมิต', desc: 'ตอบถูกระดับท้าทายครบ 5 ข้อ' },
+  { id: 'quiz_ace', icon: '🏆', title: 'Quiz Ace (5/5)', desc: 'ได้คะแนนเต็มในโหมดแบบทดสอบย่อย' }
+];
+
+function loadStats() {
+  try {
+    let saved = localStorage.getItem('cal_limit_stats');
+    if (saved) userStats = Object.assign(userStats, JSON.parse(saved));
+  } catch(e) { console.warn("LocalStorage load error:", e); }
+}
+
+function saveStats() {
+  try {
+    localStorage.setItem('cal_limit_stats', JSON.stringify(userStats));
+  } catch(e) { console.warn("LocalStorage save error:", e); }
+}
+
+function checkAchievements(isCorrect) {
+  let newlyUnlocked = [];
+  if (isCorrect && userStats.totalCorrect >= 1 && !userStats.badges.includes('first_blood')) {
+    userStats.badges.push('first_blood'); newlyUnlocked.push('first_blood');
+  }
+  if (streakCount >= 5 && !userStats.badges.includes('streak_5')) {
+    userStats.badges.push('streak_5'); newlyUnlocked.push('streak_5');
+  }
+  if (streakCount >= 10 && !userStats.badges.includes('streak_10')) {
+    userStats.badges.push('streak_10'); newlyUnlocked.push('streak_10');
+  }
+  if (userStats.hardSolved >= 5 && !userStats.badges.includes('hard_5')) {
+    userStats.badges.push('hard_5'); newlyUnlocked.push('hard_5');
+  }
+  if (quizSession.score === 5 && !userStats.badges.includes('quiz_ace')) {
+    userStats.badges.push('quiz_ace'); newlyUnlocked.push('quiz_ace');
+  }
+  saveStats();
+  return newlyUnlocked;
+}
+
 const generators = [
   // 🟢 ง่าย
   genEasyFactoring,
@@ -1140,17 +1508,70 @@ const generators = [
   genHardTrigPolyPoint
 ];
 
-function generateRandomProblem() {
-  let gen = generators[Math.floor(Math.random() * generators.length)];
-  currentProblem = gen();
+function switchMode(mode) {
+  currentMode = mode;
+  document.getElementById('modeFreeBtn').classList.toggle('active', mode === 'free');
+  document.getElementById('modeFilterBtn').classList.toggle('active', mode === 'filter');
+  document.getElementById('modeQuizBtn').classList.toggle('active', mode === 'quiz');
 
-  // ป้ายแสดงระดับความยาก (Difficulty Badge)
+  document.getElementById('filterPillsRow').classList.toggle('hidden', mode !== 'filter');
+  document.getElementById('quizProgressWrap').classList.toggle('hidden', mode !== 'quiz');
+  document.getElementById('quizCounterLabel').classList.toggle('hidden', mode !== 'quiz');
+  document.getElementById('quizReportCard').classList.add('hidden');
+
+  let btnAction = document.getElementById('btnMainAction');
+  if (mode === 'quiz') {
+    startQuizSession();
+  } else {
+    quizSession.active = false;
+    btnAction.textContent = '🎲 สุ่มโจทย์ใหม่';
+    generateRandomProblem();
+  }
+}
+
+function setFilterDifficulty(diff) {
+  filterDifficulty = diff;
+  document.querySelectorAll('.filter-pill').forEach(el => {
+    el.classList.toggle('active', el.getAttribute('onclick').includes(`'${diff}'`));
+  });
+  generateRandomProblem();
+}
+
+function generateNextProblem() {
+  if (currentMode === 'quiz' && quizSession.active) {
+    if (quizSession.currentIdx < quizSession.totalQuestions - 1) {
+      quizSession.currentIdx++;
+      loadQuizQuestion(quizSession.currentIdx);
+    } else {
+      finishQuizSession();
+    }
+  } else {
+    generateRandomProblem();
+  }
+}
+
+function generateRandomProblem() {
+  let pool = generators;
+  if (currentMode === 'filter' && filterDifficulty !== 'all') {
+    pool = generators.filter(g => {
+      let testObj = g();
+      return testObj.difficulty === filterDifficulty;
+    });
+  }
+
+  let gen = pool[Math.floor(Math.random() * pool.length)];
+  currentProblem = gen();
+  renderProblemView(currentProblem);
+}
+
+function renderProblemView(prob) {
+  // ป้ายแสดงระดับความยาก
   const diffBadge = document.getElementById('diffBadge');
   diffBadge.classList.remove('hidden', 'badge-easy', 'badge-med', 'badge-hard');
-  if (currentProblem.difficulty === 'easy') {
+  if (prob.difficulty === 'easy') {
     diffBadge.classList.add('badge-easy');
     diffBadge.innerHTML = '🟢 ระดับ: พื้นฐาน';
-  } else if (currentProblem.difficulty === 'med') {
+  } else if (prob.difficulty === 'med') {
     diffBadge.classList.add('badge-med');
     diffBadge.innerHTML = '🟡 ระดับ: ปานกลาง';
   } else {
@@ -1159,16 +1580,28 @@ function generateRandomProblem() {
   }
 
   // อัปเดต UI
-  document.getElementById('topicBadge').textContent = `ประเภท: ${currentProblem.category}`;
+  document.getElementById('topicBadge').textContent = `ประเภท: ${prob.category}`;
   document.getElementById('probBox').innerHTML = `
     <div style="font-size: 0.95rem; color: var(--muted); margin-bottom: 6px;">จงหาค่าของลิมิตต่อไปนี้:</div>
-    $$\\displaystyle ${currentProblem.probLatex}$$
+    $$\\displaystyle ${prob.probLatex}$$
   `;
 
-  document.getElementById('ansContent').innerHTML = `$$\\displaystyle ${currentProblem.ansLatex}$$`;
-  document.getElementById('solContent').innerHTML = currentProblem.solHtml;
+  document.getElementById('ansContent').innerHTML = `$$\\displaystyle ${prob.ansLatex}$$`;
+  document.getElementById('solContent').innerHTML = prob.solHtml;
 
-  // รีเซ็ตสถานะกล่องแสดงผลและช่องกรอกคำตอบ
+  // Render SVG Graph if applicable
+  let svgContainer = document.getElementById('svgGraphContainer');
+  if (prob.limitPt !== undefined && prob.limitVal !== undefined) {
+    svgContainer.innerHTML = generateSvgLimit(prob.limitPt, prob.limitVal);
+  } else {
+    svgContainer.innerHTML = '';
+  }
+
+  // Hint content
+  document.getElementById('hintContent').textContent = prob.hintText || "ตรวจสอบรูปแบบไม่กำหนดแล้วลองแยกตัวประกอบหรือคูณสังยุค";
+  document.getElementById('hintBox').classList.add('hidden');
+
+  // รีเซ็ตสถานะ
   document.getElementById('ansBox').classList.add('hidden');
   document.getElementById('solBox').classList.add('hidden');
   
@@ -1184,8 +1617,61 @@ function generateRandomProblem() {
   safeRenderMath(document.getElementById('probBox'));
 }
 
+function startQuizSession() {
+  quizSession.active = true;
+  quizSession.currentIdx = 0;
+  quizSession.score = 0;
+  quizSession.questions = [];
+
+  // สุ่ม 5 ข้อ: ง่าย 1 ข้อ, ปานกลาง 2 ข้อ, ท้าทาย 2 ข้อ
+  let easyPool = generators.filter(g => g().difficulty === 'easy');
+  let medPool = generators.filter(g => g().difficulty === 'med');
+  let hardPool = generators.filter(g => g().difficulty === 'hard');
+
+  quizSession.questions.push(easyPool[Math.floor(Math.random()*easyPool.length)]());
+  quizSession.questions.push(medPool[Math.floor(Math.random()*medPool.length)]());
+  quizSession.questions.push(medPool[Math.floor(Math.random()*medPool.length)]());
+  quizSession.questions.push(hardPool[Math.floor(Math.random()*hardPool.length)]());
+  quizSession.questions.push(hardPool[Math.floor(Math.random()*hardPool.length)]());
+
+  document.getElementById('quizReportCard').classList.add('hidden');
+  loadQuizQuestion(0);
+}
+
+function loadQuizQuestion(idx) {
+  currentProblem = quizSession.questions[idx];
+  document.getElementById('quizCounterLabel').textContent = `ข้อที่ ${idx + 1}/${quizSession.totalQuestions}`;
+  document.getElementById('quizProgressBar').style.width = `${((idx + 1) / quizSession.totalQuestions) * 100}%`;
+  
+  let btnAction = document.getElementById('btnMainAction');
+  btnAction.textContent = (idx === quizSession.totalQuestions - 1) ? '🏁 ส่งคำตอบ & สรุปผล' : '➡️ ข้อถัดไป';
+
+  renderProblemView(currentProblem);
+}
+
+function finishQuizSession() {
+  quizSession.active = false;
+  document.getElementById('quizReportCard').classList.remove('hidden');
+
+  let score = quizSession.score;
+  let pct = Math.round((score / quizSession.totalQuestions) * 100);
+  document.getElementById('quizScoreVal').textContent = score;
+  document.getElementById('quizPercentVal').textContent = `${pct}%`;
+
+  let gradeBadge = document.getElementById('quizGradeBadge');
+  if (score === 5) { gradeBadge.textContent = 'A+'; gradeBadge.style.color = '#2e7d32'; }
+  else if (score === 4) { gradeBadge.textContent = 'B'; gradeBadge.style.color = '#1565c0'; }
+  else if (score >= 3) { gradeBadge.textContent = 'C'; gradeBadge.style.color = '#e65100'; }
+  else { gradeBadge.textContent = 'D'; gradeBadge.style.color = '#c62828'; }
+
+  if (score === 5) {
+    userStats.quizAceCount++;
+    checkAchievements(true);
+  }
+}
+
 function parseInputFraction(str) {
-  str = str.trim().replace(/\\s+/g, '');
+  str = str.trim().replace(/\s+/g, '');
   if (!str) return null;
   if (str.includes('/')) {
     let parts = str.split('/');
@@ -1224,9 +1710,16 @@ function checkAnswer() {
   let exactVal = currentProblem.exactNum / currentProblem.exactDen;
   let isCorrect = Math.abs(parsed.val - exactVal) < 1e-5;
 
+  userStats.totalAnswered++;
+
   if (isCorrect) {
     scoreCorrect++;
     streakCount++;
+    userStats.totalCorrect++;
+    if (streakCount > userStats.bestStreak) userStats.bestStreak = streakCount;
+    if (currentProblem.difficulty === 'hard') userStats.hardSolved++;
+    if (quizSession.active) quizSession.score++;
+
     document.getElementById('scoreCorrect').textContent = scoreCorrect;
     document.getElementById('streakCount').textContent = streakCount;
 
@@ -1255,34 +1748,66 @@ function checkAnswer() {
     `;
   }
 
+  checkAchievements(isCorrect);
   safeRenderMath(feedback);
 }
 
-function toggleAnswer() {
-  if (!currentProblem) {
-    let feedback = document.getElementById('feedbackBox');
-    feedback.className = 'feedback-box feedback-error';
-    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> ยังไม่ได้สุ่มโจทย์</div><div>กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ</div>';
-    return;
-  }
-  let box = document.getElementById('ansBox');
+function toggleHint() {
+  let box = document.getElementById('hintBox');
   box.classList.toggle('hidden');
   if (!box.classList.contains('hidden')) {
     safeRenderMath(box);
   }
 }
 
+function toggleAnswer() {
+  if (!currentProblem) return;
+  let box = document.getElementById('ansBox');
+  box.classList.toggle('hidden');
+  if (!box.classList.contains('hidden')) safeRenderMath(box);
+}
+
 function toggleSolution() {
-  if (!currentProblem) {
-    let feedback = document.getElementById('feedbackBox');
-    feedback.className = 'feedback-box feedback-error';
-    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> ยังไม่ได้สุ่มโจทย์</div><div>กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ</div>';
-    return;
-  }
+  if (!currentProblem) return;
   let box = document.getElementById('solBox');
   box.classList.toggle('hidden');
-  if (!box.classList.contains('hidden')) {
-    safeRenderMath(box);
+  if (!box.classList.contains('hidden')) safeRenderMath(box);
+}
+
+function toggleStatsModal() {
+  let modal = document.getElementById('statsModal');
+  modal.classList.toggle('hidden');
+  if (!modal.classList.contains('hidden')) {
+    document.getElementById('statTotalAnswered').textContent = userStats.totalAnswered;
+    document.getElementById('statTotalCorrect').textContent = userStats.totalCorrect;
+    let acc = userStats.totalAnswered > 0 ? Math.round((userStats.totalCorrect / userStats.totalAnswered)*100) : 0;
+    document.getElementById('statAccuracy').textContent = `${acc}%`;
+    document.getElementById('statBestStreak').textContent = userStats.bestStreak;
+
+    let list = document.getElementById('achievementsList');
+    list.innerHTML = allAchievements.map(ach => {
+      let isUnlocked = userStats.badges.includes(ach.id);
+      return `
+        <div class="achievement-item ${isUnlocked ? '' : 'locked'}">
+          <div class="achievement-icon">${ach.icon}</div>
+          <div>
+            <div style="font-weight:700; font-size:0.95rem;">${ach.title} ${isUnlocked ? '✅' : '🔒'}</div>
+            <div style="font-size:0.85rem; color:#666;">${ach.desc}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+function resetStats() {
+  if (confirm("คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตสถิติและความสำเร็จทั้งหมด?")) {
+    userStats = { totalAnswered: 0, totalCorrect: 0, bestStreak: 0, hardSolved: 0, quizAceCount: 0, badges: [] };
+    scoreCorrect = 0; streakCount = 0;
+    document.getElementById('scoreCorrect').textContent = 0;
+    document.getElementById('streakCount').textContent = 0;
+    saveStats();
+    toggleStatsModal();
   }
 }
 
@@ -1298,8 +1823,12 @@ document.getElementById('userAnsInput').addEventListener('keyup', function(e) {
   }
 });
 
-// เริ่มต้นหน้าเว็บ (ยังไม่ต้องสุ่มโจทย์จนกว่าผู้ใช้จะกดปุ่ม)
+// เริ่มต้นหน้าเว็บ
 document.addEventListener('DOMContentLoaded', function() {
+  loadStats();
+  document.getElementById('scoreCorrect').textContent = scoreCorrect;
+  document.getElementById('streakCount').textContent = streakCount;
+
   let yearSpan = document.getElementById('y');
   if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 

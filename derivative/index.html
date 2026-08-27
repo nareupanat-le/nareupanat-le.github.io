@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>แบบฝึกหัดอนุพันธ์แคลคูลัส — Nareupanat Lekkoksung</title>
+  <title>แบบฝึกหัดอนุพันธ์แคลคูลัส (Calculus 1) — Nareupanat Lekkoksung</title>
   
   <!-- Site Base Stylesheet (ไม่แก้ไขไฟล์นี้) -->
   <link rel="stylesheet" href="/assets/style.css">
@@ -31,6 +31,84 @@
       padding: 28px;
       margin-bottom: 24px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Mode Navigation Tabs */
+    .mode-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(122, 92, 58, 0.15);
+    }
+
+    .mode-btn {
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid rgba(122, 92, 58, 0.25);
+      background: #faf8f5;
+      color: var(--muted);
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .mode-btn:hover {
+      background: rgba(122, 92, 58, 0.08);
+      border-color: var(--muted);
+    }
+
+    .mode-btn.active {
+      background: var(--muted);
+      color: #ffffff;
+      border-color: var(--muted);
+    }
+
+    .filter-pills {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .filter-pill {
+      font-size: 0.8rem;
+      padding: 3px 10px;
+      border-radius: 12px;
+      cursor: pointer;
+      border: 1px solid rgba(122, 92, 58, 0.2);
+      background: #fff;
+      color: var(--fg);
+      transition: all 0.15s;
+    }
+
+    .filter-pill.active {
+      background: var(--muted);
+      color: #fff;
+      border-color: var(--muted);
+    }
+
+    /* Quiz Progress Bar */
+    .quiz-progress-wrap {
+      margin-bottom: 16px;
+      background: rgba(122, 92, 58, 0.1);
+      border-radius: 10px;
+      height: 8px;
+      overflow: hidden;
+    }
+
+    .quiz-progress-bar {
+      height: 100%;
+      background: var(--muted);
+      width: 0%;
+      transition: width 0.3s ease;
     }
 
     .meta-bar {
@@ -77,7 +155,8 @@
       font-size: 0.9rem;
       color: var(--muted);
       display: flex;
-      gap: 14px;
+      align-items: center;
+      gap: 12px;
     }
 
     .prob-display {
@@ -187,6 +266,15 @@
       transform: translateY(-1px);
     }
 
+    .btn-hint {
+      background: #fdfbf7;
+      color: #9c6c21;
+      border: 1px solid #e0c89a;
+    }
+    .btn-hint:hover {
+      background: #fbf5e6;
+    }
+
     .feedback-box {
       margin-top: 16px;
       padding: 16px 20px;
@@ -261,6 +349,16 @@
       font-size: 1.05rem;
     }
 
+    .hint-box {
+      background: #fffdfa;
+      border: 1px solid #f0dfb8;
+      border-left: 4px solid #d49e35;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin-top: 14px;
+      font-size: 0.95rem;
+    }
+
     .hidden {
       display: none !important;
     }
@@ -295,12 +393,73 @@
       display: block;
     }
 
+    /* Modal / Drawer for Achievements */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 16px;
+    }
+
+    .modal-card {
+      background: #fff;
+      border-radius: 16px;
+      max-width: 520px;
+      width: 100%;
+      padding: 26px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      max-height: 85vh;
+      overflow-y: auto;
+    }
+
+    .achievement-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      background: #faf8f5;
+      border: 1px solid rgba(122, 92, 58, 0.15);
+    }
+
+    .achievement-item.locked {
+      opacity: 0.5;
+      filter: grayscale(1);
+    }
+
+    .achievement-icon {
+      font-size: 1.8rem;
+    }
+
+    .quiz-report-card {
+      text-align: center;
+      padding: 24px;
+      background: #faf8f5;
+      border-radius: 14px;
+      border: 2px solid var(--muted);
+      margin-top: 20px;
+    }
+
+    .grade-badge {
+      display: inline-block;
+      font-size: 3rem;
+      font-weight: 800;
+      color: #2e7d32;
+      margin: 10px 0;
+    }
+
     @media (max-width: 600px) {
       .app-card { padding: 18px; }
       .btn-group { flex-direction: column; }
       .btn { width: 100%; }
       .quiz-input-group { flex-direction: column; align-items: stretch; }
       .quiz-input { width: 100%; }
+      .mode-nav { justify-content: center; }
     }
   </style>
 </head>
@@ -319,16 +478,39 @@
 
 <main>
   <h3>แบบฝึกหัดอนุพันธ์แคลคูลัส (Calculus 1)</h3>
-  <p class="byline">คละโจทย์ทุกระดับตั้งแต่พื้นฐาน ปานกลาง จนถึงขั้นสูง: กฎลูกโซ่, กฎผลคูณ, กฎผลหาร, อนุพันธ์ลอการิทึม, ตรีโกณมิติผกผัน, และอนุพันธ์อันดับสอง</p>
+  <p class="byline">คละโจทย์ทุกระดับ: พหุนาม, ตรีโกณมิติ, กฎลูกโซ่, กฎผลคูณ, กฎผลหาร, อนุพันธ์ลอการิทึม, และอนุพันธ์อันดับสอง</p>
 
   <div class="app-card">
+    <!-- Mode Navigation Tabs -->
+    <div class="mode-nav">
+      <button id="modeFreeBtn" class="mode-btn active" onclick="switchMode('free')">🎲 สุ่มอิสระ</button>
+      <button id="modeFilterBtn" class="mode-btn" onclick="switchMode('filter')">🎯 เลือกตามระดับ</button>
+      <button id="modeQuizBtn" class="mode-btn" onclick="switchMode('quiz')">⏱️ แบบทดสอบ 5 ข้อ</button>
+      <button class="mode-btn" style="margin-left: auto;" onclick="toggleStatsModal()">📊 สถิติ & ความสำเร็จ</button>
+    </div>
+
+    <!-- Filter Pills (แสดงเฉพาะเมื่ออยู่ในโหมด filter) -->
+    <div id="filterPillsRow" class="filter-pills hidden">
+      <span style="font-size: 0.85rem; font-weight: 600; color: var(--muted);">เลือกระดับ:</span>
+      <button class="filter-pill active" onclick="setFilterDifficulty('all')">ทั้งหมด</button>
+      <button class="filter-pill" onclick="setFilterDifficulty('easy')">🟢 พื้นฐาน</button>
+      <button class="filter-pill" onclick="setFilterDifficulty('med')">🟡 ปานกลาง</button>
+      <button class="filter-pill" onclick="setFilterDifficulty('hard')">🔴 ท้าทาย</button>
+    </div>
+
+    <!-- Quiz Progress Bar (แสดงเฉพาะเมื่ออยู่ในโหมด Quiz) -->
+    <div id="quizProgressWrap" class="quiz-progress-wrap hidden">
+      <div id="quizProgressBar" class="quiz-progress-bar"></div>
+    </div>
+
     <div class="meta-bar">
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
         <div id="topicBadge" class="badge">สถานะ: รอสุ่มโจทย์</div>
         <div id="diffBadge" class="badge hidden">ระดับความยาก</div>
       </div>
       <div class="stats">
-        <span>ทำถูก: <strong id="scoreCorrect">0</strong> ข้อ</span>
+        <span id="quizCounterLabel" class="hidden" style="font-weight:700; color:var(--muted);">ข้อที่ 1/5</span>
+        <span>ถูก: <strong id="scoreCorrect">0</strong> ข้อ</span>
         <span>Streak: <strong id="streakCount">0</strong> 🔥</span>
       </div>
     </div>
@@ -348,12 +530,17 @@
         <button class="btn btn-check" onclick="checkAnswer()">ตรวจคำตอบ</button>
       </div>
       <div id="feedbackBox" class="feedback-box"></div>
+      <!-- คำใบ้ (Hint) -->
+      <div id="hintBox" class="hint-box hidden">
+        <strong>💡 คำใบ้:</strong> <span id="hintContent"></span>
+      </div>
     </div>
 
     <!-- ปุ่มควบคุม -->
     <div class="btn-group">
-      <button class="btn btn-primary" onclick="generateRandomProblem()">🎲 สุ่มโจทย์ใหม่</button>
-      <button class="btn btn-secondary" onclick="toggleAnswer()">💡 ดูคำตอบ</button>
+      <button id="btnMainAction" class="btn btn-primary" onclick="generateNextProblem()">🎲 สุ่มโจทย์ใหม่</button>
+      <button class="btn btn-hint" onclick="toggleHint()">💡 ดูคำใบ้</button>
+      <button class="btn btn-secondary" onclick="toggleAnswer()">🔍 ดูคำตอบ</button>
       <button class="btn btn-secondary" onclick="toggleSolution()">📝 ดูวิธีทำอย่างละเอียด</button>
     </div>
 
@@ -367,9 +554,49 @@
     <div id="solBox" class="result-box hidden">
       <h4>📝 วิธีทำอย่างละเอียด</h4>
       <div id="solContent"></div>
+      <div id="svgGraphContainer" style="margin-top: 16px; text-align: center;"></div>
+    </div>
+
+    <!-- Quiz Report Card (เมื่อทำครบ 5 ข้อ) -->
+    <div id="quizReportCard" class="quiz-report-card hidden">
+      <h3>🎉 สรุปผลการทดสอบ</h3>
+      <div id="quizGradeBadge" class="grade-badge">A</div>
+      <p style="font-size: 1.1rem; margin: 6px 0;">คุณทำคะแนนได้ <strong id="quizScoreVal">0</strong> เต็ม 5 ข้อ (<span id="quizPercentVal">0%</span>)</p>
+      <div class="btn-group" style="margin-top: 16px;">
+        <button class="btn btn-primary" onclick="startQuizSession()">🔄 ทำแบบทดสอบชุดใหม่</button>
+        <button class="btn btn-secondary" onclick="switchMode('free')">กลับสู่โหมดฝึกฝนปกติ</button>
+      </div>
     </div>
   </div>
 </main>
+
+<!-- Modal แสดงสถิติและความสำเร็จ -->
+<div id="statsModal" class="modal-overlay hidden" onclick="if(event.target===this) toggleStatsModal()">
+  <div class="modal-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+      <h3 style="margin:0;">📊 สถิติ & ความสำเร็จ</h3>
+      <button style="border:none; background:none; font-size:1.4rem; cursor:pointer;" onclick="toggleStatsModal()">✕</button>
+    </div>
+    
+    <div style="background:#faf8f5; border:1px solid rgba(122,92,58,0.15); border-radius:12px; padding:16px; margin-bottom:20px;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:0.95rem;">
+        <div>ทำทั้งหมด: <strong id="statTotalAnswered">0</strong> ข้อ</div>
+        <div>ตอบถูก: <strong id="statTotalCorrect">0</strong> ข้อ</div>
+        <div>ความแม่นยำ: <strong id="statAccuracy">0%</strong></div>
+        <div>Streak สูงสุด: <strong id="statBestStreak">0</strong> 🔥</div>
+      </div>
+    </div>
+
+    <h4 style="margin:0 0 12px 0; color:var(--muted);">🏆 เหรียญรางวัลความสำเร็จ</h4>
+    <div id="achievementsList">
+      <!-- Generated Dynamically -->
+    </div>
+
+    <div style="text-align:right; margin-top:16px;">
+      <button class="btn btn-secondary" style="font-size:0.85rem;" onclick="resetStats()">🔄 รีเซ็ตสถิติ</button>
+    </div>
+  </div>
+</div>
 
 <footer class="site-footer">
   <p>© <span id="y"></span> Nareupanat Lekkoksung</p>
@@ -498,11 +725,58 @@ function poly3(A, B, C, D) {
   return res || "0";
 }
 
+// 2D SVG Graph Renderer for Tangent Lines
+function generateSvgTangent(x0, y0, slope, title="📈 กราฟแสดงเส้นสัมผัสเส้นโค้ง ณ จุดที่กำหนด") {
+  let width = 360, height = 200;
+  let cx = 180, cy = 100;
+  let scaleX = 30, scaleY = 12;
+
+  let curvePts = [];
+  for (let px = -5; px <= 5; px += 0.5) {
+    let xVal = x0 + px * 0.4;
+    let yVal = y0 + slope * (xVal - x0) + 0.3 * Math.pow(xVal - x0, 2);
+    let svgX = cx + (xVal - x0) * scaleX;
+    let svgY = cy - (yVal - y0) * scaleY;
+    if (svgY >= 10 && svgY <= height - 10) {
+      curvePts.push(`${svgX.toFixed(1)},${svgY.toFixed(1)}`);
+    }
+  }
+
+  let xLeft = x0 - 2.2, xRight = x0 + 2.2;
+  let yLeft = y0 + slope * (xLeft - x0);
+  let yRight = y0 + slope * (xRight - x0);
+
+  let tlX1 = cx + (xLeft - x0) * scaleX;
+  let tlY1 = cy - (yLeft - y0) * scaleY;
+  let tlX2 = cx + (xRight - x0) * scaleX;
+  let tlY2 = cy - (yRight - y0) * scaleY;
+
+  return `
+    <div style="background:#fff; border:1px solid #e0d8ce; border-radius:10px; padding:12px; margin-top:14px; text-align:center;">
+      <div style="font-size:0.88rem; font-weight:600; color:var(--muted); margin-bottom:8px;">${title}</div>
+      <svg viewBox="0 0 ${width} ${height}" style="width:100%; max-width:380px; height:auto;">
+        <!-- Axes -->
+        <line x1="20" y1="${cy}" x2="${width-20}" y2="${cy}" stroke="#d0c8be" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <line x1="${cx}" y1="15" x2="${cx}" y2="${height-15}" stroke="#d0c8be" stroke-width="1.5" stroke-dasharray="3,3"/>
+        <!-- Curve -->
+        <polyline points="${curvePts.join(' ')}" fill="none" stroke="#2b4c7e" stroke-width="2.5"/>
+        <!-- Tangent Line -->
+        <line x1="${tlX1.toFixed(1)}" y1="${tlY1.toFixed(1)}" x2="${tlX2.toFixed(1)}" y2="${tlY2.toFixed(1)}" stroke="#c62828" stroke-width="2" stroke-dasharray="4,4"/>
+        <!-- Point (x0, y0) -->
+        <circle cx="${cx}" cy="${cy}" r="5" fill="#c62828"/>
+        <text x="${cx + 8}" y="${cy - 8}" fill="#c62828" font-size="11" font-weight="bold">(${x0}, ${y0.toFixed(1)})</text>
+      </svg>
+      <div style="font-size:0.8rem; color:#666; margin-top:4px;">
+        <span style="color:#2b4c7e;">■</span> เส้นโค้ง $f(x)$ &nbsp;|&nbsp; 
+        <span style="color:#c62828;">- -</span> เส้นสัมผัสความชัน $m = ${slope}$
+      </div>
+    </div>
+  `;
+}
+
 // =========================================================
 // 2. Generators: สลับระดับง่าย (🟢) / ปานกลาง (🟡) / ท้าทาย (🔴)
 // =========================================================
-
-// --- กลุ่มระดับง่าย (🟢 พื้นฐาน) ---
 
 // 2.1 พหุนามกำลังสาม (Cubic Polynomial)
 function genEasyPoly() {
@@ -539,9 +813,11 @@ function genEasyPoly() {
     difficulty: "easy",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: a*x0**3 + b*x0**2 + c*x0 + d,
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
+    hintText: `ใช้กฎเลขยกกำลัง $\\frac{d}{dx}[x^n] = n x^{n-1}$ ดิฟทีละพจน์แล้วแทนค่า $x = ${x0}$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -565,10 +841,7 @@ function genEasyTrig() {
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
       กำหนดให้ $u = ${k}x$ จะได้ว่า
-      ${adaptiveMath(
-        `u' = \\frac{d}{dx}(${k}x) = ${k}`,
-        `u' &= \\frac{d}{dx}(${k}x) \\\\ &= ${k}`
-      )}
+      ${adaptiveMath(`u' = \\frac{d}{dx}(${k}x) = ${k}`, `u' &= \\frac{d}{dx}(${k}x) \\\\ &= ${k}`)}
       ดังนั้น $$u' = ${k}$$
     </div>
     <div class="solution-step">
@@ -590,9 +863,11 @@ function genEasyTrig() {
     difficulty: "easy",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: 0,
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
+    hintText: `ใช้สูตร $\\frac{d}{dx}[\\sin(kx)] = k\\cos(kx)$ แล้วแทนค่า $x = ${x0}$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -642,9 +917,11 @@ function genEasyExp() {
     difficulty: "easy",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: a,
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
+    hintText: `ใช้สูตร $\\frac{d}{dx}[e^{kx}] = k e^{kx}$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -697,10 +974,12 @@ function genEasyTangent() {
     difficulty: "easy",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: y0,
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     tangentLatex: tangentEq,
+    hintText: `หาความชัน $m = f'(${x0})$ โดยดิฟ $f(x)$ แล้วแทน $x = ${x0}$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -728,10 +1007,7 @@ function genMedProductExp() {
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
       กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-      ${adaptiveMath(
-        `u' = \\frac{d}{dx}(${uExpr}) = ${a}`,
-        `u' &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${a}`
-      )}
+      ${adaptiveMath(`u' = \\frac{d}{dx}(${uExpr}) = ${a}`, `u' &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${a}`)}
       ดังนั้น $$u' = ${a}$$
       <br>
       กำหนดให้ $v = e^{${k}x}$ จะได้ว่า
@@ -760,9 +1036,11 @@ function genMedProductExp() {
     difficulty: "med",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: b,
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
+    hintText: `กำหนด $u = ${uExpr}$ และ $v = e^{${k}x}$ แล้วใช้สูตร $(uv)' = u'v + uv'$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -792,24 +1070,18 @@ function genMedQuotientRational() {
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
       กำหนดให้ $u = ${a === 1 ? "x" : `${a}x`} + ${b}$ จะได้ว่า
-      ${adaptiveMath(
-        `u' = \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) = ${a}`,
-        `u' &= \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) \\\\ &= ${a}`
-      )}
+      ${adaptiveMath(`u' = \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) = ${a}`, `u' &= \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) \\\\ &= ${a}`)}
       ดังนั้น $$u' = ${a}$$
       <br>
       กำหนดให้ $v = ${c === 1 ? "x" : `${c}x`} + ${d}$ จะได้ว่า
-      ${adaptiveMath(
-        `v' = \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) = ${c}`,
-        `v' &= \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) \\\\ &= ${c}`
-      )}
+      ${adaptiveMath(`v' = \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) = ${c}`, `v' &= \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) \\\\ &= ${c}`)}
       ดังนั้น $$v' = ${c}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนค่าและกระจายพจน์ตัวเศษ</strong><br>
       ${adaptiveMath(
-        `f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
-        `f'(x) &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
+        `f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
+        `f'(x) &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
@@ -824,9 +1096,11 @@ function genMedQuotientRational() {
     difficulty: "med",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: b/d,
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: slopeValLatex,
+    hintText: `ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$`,
     solHtml: solText,
     exactNum: numAns,
     exactDen: denAns
@@ -857,10 +1131,7 @@ function genMedChainRadical() {
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
       กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-      ${adaptiveMath(
-        `\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`,
-        `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`
-      )}
+      ${adaptiveMath(`\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`, `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`)}
       ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
     </div>
     <div class="solution-step">
@@ -882,9 +1153,11 @@ function genMedChainRadical() {
     difficulty: "med",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: c,
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: slopeValLatex,
+    hintText: `แปลง $\\sqrt{u} = u^{1/2}$ แล้วดิฟโดยใช้กฎลูกโซ่ $\\frac{1}{2\\sqrt{u}} \\cdot u'$`,
     solHtml: solText,
     exactNum: numAns,
     exactDen: denAns
@@ -914,10 +1187,7 @@ function genMedChainLog() {
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
       กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-      ${adaptiveMath(
-        `\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`,
-        `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`
-      )}
+      ${adaptiveMath(`\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`, `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`)}
       ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
     </div>
     <div class="solution-step">
@@ -939,9 +1209,11 @@ function genMedChainLog() {
     difficulty: "med",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: Math.log(c),
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: slopeValLatex,
+    hintText: `ใช้สูตร $\\frac{d}{dx}[\\ln(u)] = \\frac{u'}{u}$`,
     solHtml: solText,
     exactNum: numAns,
     exactDen: denAns
@@ -964,10 +1236,7 @@ function genMedInverseTrig() {
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
       กำหนดให้ $u = ${k}x$ จะได้ว่า
-      ${adaptiveMath(
-        `\\frac{du}{dx} = \\frac{d}{dx}(${k}x) = ${k}`,
-        `\\frac{du}{dx} &= \\frac{d}{dx}(${k}x) \\\\ &= ${k}`
-      )}
+      ${adaptiveMath(`\\frac{du}{dx} = \\frac{d}{dx}(${k}x) = ${k}`, `\\frac{du}{dx} &= \\frac{d}{dx}(${k}x) \\\\ &= ${k}`)}
       ดังนั้น $$\\frac{du}{dx} = ${k}$$
     </div>
     <div class="solution-step">
@@ -989,9 +1258,11 @@ function genMedInverseTrig() {
     difficulty: "med",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: 0,
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
+    hintText: `ใช้สูตร $\\frac{d}{dx}[\\arctan(u)] = \\frac{u'}{1+u^2}$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -1041,9 +1312,11 @@ function genHardLogDiff() {
     difficulty: "hard",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: 1,
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
+    hintText: `เนื่องจากตัวแปรยกกำลังตัวแปร ให้ Take $\\ln$ ทั้งสองข้าง: $\\ln y = ${k}x \\ln x$ แล้วดิฟเทียบ $x$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -1067,15 +1340,15 @@ function genHardDamped() {
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
       กำหนดให้ $u = e^{-${a === 1 ? "" : a}x}$ จะได้ว่า
       ${adaptiveMath(
-        `u' = \\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x}\\right] = e^{-${a === 1 ? "" : a}x} \\cdot \\frac{d}{dx}(-${a === 1 ? "" : a}x) = e^{-${a === 1 ? "" : a}x} \\cdot (-${a}) = -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}`,
-        `u' &= \\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x}\\right] \\\\ &= e^{-${a === 1 ? "" : a}x} \\cdot \\frac{d}{dx}(-${a === 1 ? "" : a}x) \\\\ &= e^{-${a === 1 ? "" : a}x} \\cdot (-${a}) \\\\ &= -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}`
+        `u' = \\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x}\\right] = e^{-${a === 1 ? "" : a}x} \\cdot \\frac{d}{dx}(-${a === 1 ? "" : a}x) = -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}`,
+        `u' &= \\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x}\\right] \\\\ &= e^{-${a === 1 ? "" : a}x} \\cdot (-${a}) \\\\ &= -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}`
       )}
       ดังนั้น $$u' = -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}$$
       <br>
       กำหนดให้ $v = \\sin(${b}x)$ จะได้ว่า
       ${adaptiveMath(
-        `v' = \\frac{d}{dx}[\\sin(${b}x)] = \\cos(${b}x) \\cdot \\frac{d}{dx}(${b}x) = \\cos(${b}x) \\cdot ${b} = ${b}\\cos(${b}x)`,
-        `v' &= \\frac{d}{dx}[\\sin(${b}x)] \\\\ &= \\cos(${b}x) \\cdot \\frac{d}{dx}(${b}x) \\\\ &= \\cos(${b}x) \\cdot ${b} \\\\ &= ${b}\\cos(${b}x)`
+        `v' = \\frac{d}{dx}[\\sin(${b}x)] = \\cos(${b}x) \\cdot \\frac{d}{dx}(${b}x) = ${b}\\cos(${b}x)`,
+        `v' &= \\frac{d}{dx}[\\sin(${b}x)] \\\\ &= \\cos(${b}x) \\cdot ${b} \\\\ &= ${b}\\cos(${b}x)`
       )}
       ดังนั้น $$v' = ${b}\\cos(${b}x)$$
     </div>
@@ -1098,9 +1371,11 @@ function genHardDamped() {
     difficulty: "hard",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: 0,
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
+    hintText: `ใช้กฎผลคูณ $(uv)' = u'v + uv'$ โดยอย่าลืมกฎลูกโซ่ในการดิฟไส้ในของทั้ง $e^{-${a}x}$ และ $\\sin(${b}x)$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -1132,8 +1407,8 @@ function genHardInverseTrigCancellation() {
       <strong>ขั้นที่ 3: หาอนุพันธ์พจน์ที่ 2 โดยใช้กฎลูกโซ่</strong><br>
       กำหนดให้ $w = 1 - ${k*k}x^2$ จะได้ว่า
       ${adaptiveMath(
-        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] = \\frac{1}{2\\sqrt{1-${k*k}x^2}} \\cdot \\frac{d}{dx}(1-${k*k}x^2) = \\frac{-2(${k*k})x}{2\\sqrt{1-${k*k}x^2}} = -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`,
-        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] &= \\frac{1}{2\\sqrt{1-${k*k}x^2}} \\cdot \\frac{d}{dx}(1-${k*k}x^2) \\\\ &= \\frac{-${2*k*k}x}{2\\sqrt{1-${k*k}x^2}} \\\\ &= -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`
+        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] = \\frac{1}{2\\sqrt{1-${k*k}x^2}} \\cdot \\frac{d}{dx}(1-${k*k}x^2) = -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`,
+        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] &= \\frac{1}{2\\sqrt{1-${k*k}x^2}} \\cdot \\frac{d}{dx}(1-${k*k}x^2) \\\\ &= -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`
       )}
       ดังนั้น $$\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] = -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}$$
     </div>
@@ -1156,9 +1431,11 @@ function genHardInverseTrigCancellation() {
     difficulty: "hard",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: 1,
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
+    hintText: `ดิฟพจน์หน้าด้วยกฎผลคูณ และดิฟพจน์หลังด้วยกฎลูกโซ่ สังเกตว่าพจน์ติดรูทจะตัดกันพอดี`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -1200,7 +1477,7 @@ function genHardArctanRational() {
       <strong>ขั้นที่ 3: แทนค่าในสูตรและจัดรูปเศษส่วนซ้อน</strong><br>
       ${adaptiveMath(
         `f'(x) = \\frac{1}{1 + \\left(${uExpr}\\right)^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
-        `f'(x) &= \\frac{1}{1 + \\left(${uExpr}\\right)^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= \\frac{(${c === 1 ? "x" : `${c}x`} + ${d})^2}{(${c === 1 ? "x" : `${c}x`} + ${d})^2 + (${a === 1 ? "x" : `${a}x`} + ${b})^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
+        `f'(x) &= \\frac{1}{1 + \\left(${uExpr}\\right)^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
@@ -1215,9 +1492,11 @@ function genHardArctanRational() {
     difficulty: "hard",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: Math.atan(b/d),
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: slopeValLatex,
+    hintText: `กำหนด $u = ${uExpr}$ แล้วดิฟโดยใช้ $\\frac{1}{1+u^2} \\cdot u'$`,
     solHtml: solText,
     exactNum: numAns,
     exactDen: denAns
@@ -1273,9 +1552,11 @@ function genHardLogNestedRadical() {
     difficulty: "hard",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: 0.5 * Math.log(b/d),
     targetSymbol: "f'",
     derivLatex: derivExpr,
     ansLatex: slopeValLatex,
+    hintText: `ใช้สมบัติลอการิทึม $\\ln\\sqrt{A/B} = \\frac{1}{2}(\\ln A - \\ln B)$ แยกพจน์ก่อนดิฟจะง่ายกว่ามาก`,
     solHtml: solText,
     exactNum: numAns,
     exactDen: denAns
@@ -1326,9 +1607,11 @@ function genHardSecondDerivative() {
     difficulty: "hard",
     probLatex: `f(x) = ${fExpr}`,
     x0: x0,
+    y0: 0,
     targetSymbol: "f''",
     derivLatex: deriv2Expr,
     ansLatex: `${slopeVal}`,
+    hintText: `หา $f'(x)$ ด้วยกฎผลคูณก่อน จากนั้นนำผลลัพธ์มาดิฟต่ออีกครั้งเพื่อหา $f''(x)$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -1342,7 +1625,70 @@ let currentProblem = null;
 let scoreCorrect = 0;
 let streakCount = 0;
 
-// คลังโจทย์ผสม 15 ประเภท: ง่าย (~30%), ปานกลาง (~35%), ท้าทาย (~35%)
+let currentMode = 'free'; // 'free', 'filter', 'quiz'
+let filterDifficulty = 'all'; // 'all', 'easy', 'med', 'hard'
+
+// Quiz Session State
+let quizSession = {
+  active: false,
+  totalQuestions: 5,
+  currentIdx: 0,
+  score: 0,
+  questions: []
+};
+
+// Local Storage Persistent Stats
+let userStats = {
+  totalAnswered: 0,
+  totalCorrect: 0,
+  bestStreak: 0,
+  hardSolved: 0,
+  quizAceCount: 0,
+  badges: []
+};
+
+const allAchievements = [
+  { id: 'first_blood', icon: '🥇', title: 'ก้าวแรกสู่อนุพันธ์', desc: 'ตอบถูกข้อแรกสำเร็จ' },
+  { id: 'streak_5', icon: '🔥', title: 'ติดไฟต่อเนื่อง', desc: 'ทำ Streak ตอบถูกต่อเนื่อง 5 ข้อ' },
+  { id: 'streak_10', icon: '⚡', title: 'แรงไม่หยุด', desc: 'ทำ Streak ตอบถูกต่อเนื่อง 10 ข้อ' },
+  { id: 'hard_5', icon: '🧠', title: 'เซียนแคลคูลัส', desc: 'ตอบถูกระดับท้าทายครบ 5 ข้อ' },
+  { id: 'quiz_ace', icon: '🏆', title: 'Quiz Ace (5/5)', desc: 'ได้คะแนนเต็มในโหมดแบบทดสอบย่อย' }
+];
+
+function loadStats() {
+  try {
+    let saved = localStorage.getItem('cal_deriv_stats');
+    if (saved) userStats = Object.assign(userStats, JSON.parse(saved));
+  } catch(e) { console.warn("LocalStorage load error:", e); }
+}
+
+function saveStats() {
+  try {
+    localStorage.setItem('cal_deriv_stats', JSON.stringify(userStats));
+  } catch(e) { console.warn("LocalStorage save error:", e); }
+}
+
+function checkAchievements(isCorrect) {
+  let newlyUnlocked = [];
+  if (isCorrect && userStats.totalCorrect >= 1 && !userStats.badges.includes('first_blood')) {
+    userStats.badges.push('first_blood'); newlyUnlocked.push('first_blood');
+  }
+  if (streakCount >= 5 && !userStats.badges.includes('streak_5')) {
+    userStats.badges.push('streak_5'); newlyUnlocked.push('streak_5');
+  }
+  if (streakCount >= 10 && !userStats.badges.includes('streak_10')) {
+    userStats.badges.push('streak_10'); newlyUnlocked.push('streak_10');
+  }
+  if (userStats.hardSolved >= 5 && !userStats.badges.includes('hard_5')) {
+    userStats.badges.push('hard_5'); newlyUnlocked.push('hard_5');
+  }
+  if (quizSession.score === 5 && !userStats.badges.includes('quiz_ace')) {
+    userStats.badges.push('quiz_ace'); newlyUnlocked.push('quiz_ace');
+  }
+  saveStats();
+  return newlyUnlocked;
+}
+
 const generators = [
   // 🟢 ง่าย
   genEasyPoly,
@@ -1364,19 +1710,72 @@ const generators = [
   genHardSecondDerivative
 ];
 
-function generateRandomProblem() {
-  let gen = generators[Math.floor(Math.random() * generators.length)];
-  currentProblem = gen();
+function switchMode(mode) {
+  currentMode = mode;
+  document.getElementById('modeFreeBtn').classList.toggle('active', mode === 'free');
+  document.getElementById('modeFilterBtn').classList.toggle('active', mode === 'filter');
+  document.getElementById('modeQuizBtn').classList.toggle('active', mode === 'quiz');
 
-  const sym = currentProblem.targetSymbol || "f'";
+  document.getElementById('filterPillsRow').classList.toggle('hidden', mode !== 'filter');
+  document.getElementById('quizProgressWrap').classList.toggle('hidden', mode !== 'quiz');
+  document.getElementById('quizCounterLabel').classList.toggle('hidden', mode !== 'quiz');
+  document.getElementById('quizReportCard').classList.add('hidden');
+
+  let btnAction = document.getElementById('btnMainAction');
+  if (mode === 'quiz') {
+    startQuizSession();
+  } else {
+    quizSession.active = false;
+    btnAction.textContent = '🎲 สุ่มโจทย์ใหม่';
+    generateRandomProblem();
+  }
+}
+
+function setFilterDifficulty(diff) {
+  filterDifficulty = diff;
+  document.querySelectorAll('.filter-pill').forEach(el => {
+    el.classList.toggle('active', el.getAttribute('onclick').includes(`'${diff}'`));
+  });
+  generateRandomProblem();
+}
+
+function generateNextProblem() {
+  if (currentMode === 'quiz' && quizSession.active) {
+    if (quizSession.currentIdx < quizSession.totalQuestions - 1) {
+      quizSession.currentIdx++;
+      loadQuizQuestion(quizSession.currentIdx);
+    } else {
+      finishQuizSession();
+    }
+  } else {
+    generateRandomProblem();
+  }
+}
+
+function generateRandomProblem() {
+  let pool = generators;
+  if (currentMode === 'filter' && filterDifficulty !== 'all') {
+    pool = generators.filter(g => {
+      let testObj = g();
+      return testObj.difficulty === filterDifficulty;
+    });
+  }
+
+  let gen = pool[Math.floor(Math.random() * pool.length)];
+  currentProblem = gen();
+  renderProblemView(currentProblem);
+}
+
+function renderProblemView(prob) {
+  const sym = prob.targetSymbol || "f'";
 
   // ป้ายแสดงระดับความยาก
   const diffBadge = document.getElementById('diffBadge');
   diffBadge.classList.remove('hidden', 'badge-easy', 'badge-med', 'badge-hard');
-  if (currentProblem.difficulty === 'easy') {
+  if (prob.difficulty === 'easy') {
     diffBadge.classList.add('badge-easy');
     diffBadge.innerHTML = '🟢 ระดับ: พื้นฐาน';
-  } else if (currentProblem.difficulty === 'med') {
+  } else if (prob.difficulty === 'med') {
     diffBadge.classList.add('badge-med');
     diffBadge.innerHTML = '🟡 ระดับ: ปานกลาง';
   } else {
@@ -1385,21 +1784,34 @@ function generateRandomProblem() {
   }
 
   // อัปเดต UI
-  document.getElementById('topicBadge').textContent = `ประเภท: ${currentProblem.category}`;
+  document.getElementById('topicBadge').textContent = `ประเภท: ${prob.category}`;
   document.getElementById('probBox').innerHTML = `
     <div style="font-size: 0.95rem; color: var(--muted); margin-bottom: 6px;">กำหนดฟังก์ชัน:</div>
-    $$\\displaystyle ${currentProblem.probLatex}$$
-    <div style="font-size: 0.95rem; color: var(--muted); margin-top: 6px;">จงหาอนุพันธ์ $${sym}(x)$ และคำนวณค่าของ $${sym}(${currentProblem.x0})$</div>
+    $$\\displaystyle ${prob.probLatex}$$
+    <div style="font-size: 0.95rem; color: var(--muted); margin-top: 6px;">จงหาอนุพันธ์ $${sym}(x)$ และคำนวณค่าของ $${sym}(${prob.x0})$</div>
   `;
 
-  document.getElementById('quizPromptLabel').innerHTML = `✍️ ทดลองคำนวณค่าของ $${sym}(${currentProblem.x0})$:`;
+  document.getElementById('quizPromptLabel').innerHTML = `✍️ ทดลองคำนวณค่าของ $${sym}(${prob.x0})$:`;
 
   document.getElementById('ansContent').innerHTML = `
-    <strong>อนุพันธ์:</strong> $$\\displaystyle ${sym}(x) = ${currentProblem.derivLatex}$$
-    <strong>ค่าที่จุด $x = ${currentProblem.x0}$:</strong> $$\\displaystyle ${sym}(${currentProblem.x0}) = ${currentProblem.ansLatex}$$
-    ${currentProblem.tangentLatex ? `<strong>สมการเส้นสัมผัสที่จุด $x = ${currentProblem.x0}$:</strong> $$\\displaystyle ${currentProblem.tangentLatex}$$` : ""}
+    <strong>อนุพันธ์:</strong> $$\\displaystyle ${sym}(x) = ${prob.derivLatex}$$
+    <strong>ค่าที่จุด $x = ${prob.x0}$:</strong> $$\\displaystyle ${sym}(${prob.x0}) = ${prob.ansLatex}$$
+    ${prob.tangentLatex ? `<strong>สมการเส้นสัมผัสที่จุด $x = ${prob.x0}$:</strong> $$\\displaystyle ${prob.tangentLatex}$$` : ""}
   `;
-  document.getElementById('solContent').innerHTML = currentProblem.solHtml;
+  document.getElementById('solContent').innerHTML = prob.solHtml;
+
+  // Render SVG Tangent graph if available
+  let svgContainer = document.getElementById('svgGraphContainer');
+  if (prob.y0 !== undefined) {
+    let exactSlope = prob.exactNum / prob.exactDen;
+    svgContainer.innerHTML = generateSvgTangent(prob.x0, prob.y0, exactSlope);
+  } else {
+    svgContainer.innerHTML = '';
+  }
+
+  // Hint content
+  document.getElementById('hintContent').textContent = prob.hintText || "ลองแยกคิดอนุพันธ์ทีละส่วนและใช้กฎลูกโซ่";
+  document.getElementById('hintBox').classList.add('hidden');
 
   // รีเซ็ตสถานะ
   document.getElementById('ansBox').classList.add('hidden');
@@ -1418,8 +1830,61 @@ function generateRandomProblem() {
   safeRenderMath(document.getElementById('quizPromptLabel'));
 }
 
+function startQuizSession() {
+  quizSession.active = true;
+  quizSession.currentIdx = 0;
+  quizSession.score = 0;
+  quizSession.questions = [];
+
+  // สุ่ม 5 ข้อ: ง่าย 1 ข้อ, ปานกลาง 2 ข้อ, ท้าทาย 2 ข้อ
+  let easyPool = generators.filter(g => g().difficulty === 'easy');
+  let medPool = generators.filter(g => g().difficulty === 'med');
+  let hardPool = generators.filter(g => g().difficulty === 'hard');
+
+  quizSession.questions.push(easyPool[Math.floor(Math.random()*easyPool.length)]());
+  quizSession.questions.push(medPool[Math.floor(Math.random()*medPool.length)]());
+  quizSession.questions.push(medPool[Math.floor(Math.random()*medPool.length)]());
+  quizSession.questions.push(hardPool[Math.floor(Math.random()*hardPool.length)]());
+  quizSession.questions.push(hardPool[Math.floor(Math.random()*hardPool.length)]());
+
+  document.getElementById('quizReportCard').classList.add('hidden');
+  loadQuizQuestion(0);
+}
+
+function loadQuizQuestion(idx) {
+  currentProblem = quizSession.questions[idx];
+  document.getElementById('quizCounterLabel').textContent = `ข้อที่ ${idx + 1}/${quizSession.totalQuestions}`;
+  document.getElementById('quizProgressBar').style.width = `${((idx + 1) / quizSession.totalQuestions) * 100}%`;
+  
+  let btnAction = document.getElementById('btnMainAction');
+  btnAction.textContent = (idx === quizSession.totalQuestions - 1) ? '🏁 ส่งคำตอบ & สรุปผล' : '➡️ ข้อถัดไป';
+
+  renderProblemView(currentProblem);
+}
+
+function finishQuizSession() {
+  quizSession.active = false;
+  document.getElementById('quizReportCard').classList.remove('hidden');
+
+  let score = quizSession.score;
+  let pct = Math.round((score / quizSession.totalQuestions) * 100);
+  document.getElementById('quizScoreVal').textContent = score;
+  document.getElementById('quizPercentVal').textContent = `${pct}%`;
+
+  let gradeBadge = document.getElementById('quizGradeBadge');
+  if (score === 5) { gradeBadge.textContent = 'A+'; gradeBadge.style.color = '#2e7d32'; }
+  else if (score === 4) { gradeBadge.textContent = 'B'; gradeBadge.style.color = '#1565c0'; }
+  else if (score >= 3) { gradeBadge.textContent = 'C'; gradeBadge.style.color = '#e65100'; }
+  else { gradeBadge.textContent = 'D'; gradeBadge.style.color = '#c62828'; }
+
+  if (score === 5) {
+    userStats.quizAceCount++;
+    checkAchievements(true);
+  }
+}
+
 function parseInputFraction(str) {
-  str = str.trim().replace(/\\s+/g, '');
+  str = str.trim().replace(/\s+/g, '');
   if (!str) return null;
   if (str.includes('/')) {
     let parts = str.split('/');
@@ -1459,9 +1924,16 @@ function checkAnswer() {
   let exactVal = currentProblem.exactNum / currentProblem.exactDen;
   let isCorrect = Math.abs(parsed.val - exactVal) < 1e-5;
 
+  userStats.totalAnswered++;
+
   if (isCorrect) {
     scoreCorrect++;
     streakCount++;
+    userStats.totalCorrect++;
+    if (streakCount > userStats.bestStreak) userStats.bestStreak = streakCount;
+    if (currentProblem.difficulty === 'hard') userStats.hardSolved++;
+    if (quizSession.active) quizSession.score++;
+
     document.getElementById('scoreCorrect').textContent = scoreCorrect;
     document.getElementById('streakCount').textContent = streakCount;
 
@@ -1490,34 +1962,66 @@ function checkAnswer() {
     `;
   }
 
+  checkAchievements(isCorrect);
   safeRenderMath(feedback);
 }
 
-function toggleAnswer() {
-  if (!currentProblem) {
-    let feedback = document.getElementById('feedbackBox');
-    feedback.className = 'feedback-box feedback-error';
-    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> ยังไม่ได้สุ่มโจทย์</div><div>กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ</div>';
-    return;
-  }
-  let box = document.getElementById('ansBox');
+function toggleHint() {
+  let box = document.getElementById('hintBox');
   box.classList.toggle('hidden');
   if (!box.classList.contains('hidden')) {
     safeRenderMath(box);
   }
 }
 
+function toggleAnswer() {
+  if (!currentProblem) return;
+  let box = document.getElementById('ansBox');
+  box.classList.toggle('hidden');
+  if (!box.classList.contains('hidden')) safeRenderMath(box);
+}
+
 function toggleSolution() {
-  if (!currentProblem) {
-    let feedback = document.getElementById('feedbackBox');
-    feedback.className = 'feedback-box feedback-error';
-    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> ยังไม่ได้สุ่มโจทย์</div><div>กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ</div>';
-    return;
-  }
+  if (!currentProblem) return;
   let box = document.getElementById('solBox');
   box.classList.toggle('hidden');
-  if (!box.classList.contains('hidden')) {
-    safeRenderMath(box);
+  if (!box.classList.contains('hidden')) safeRenderMath(box);
+}
+
+function toggleStatsModal() {
+  let modal = document.getElementById('statsModal');
+  modal.classList.toggle('hidden');
+  if (!modal.classList.contains('hidden')) {
+    document.getElementById('statTotalAnswered').textContent = userStats.totalAnswered;
+    document.getElementById('statTotalCorrect').textContent = userStats.totalCorrect;
+    let acc = userStats.totalAnswered > 0 ? Math.round((userStats.totalCorrect / userStats.totalAnswered)*100) : 0;
+    document.getElementById('statAccuracy').textContent = `${acc}%`;
+    document.getElementById('statBestStreak').textContent = userStats.bestStreak;
+
+    let list = document.getElementById('achievementsList');
+    list.innerHTML = allAchievements.map(ach => {
+      let isUnlocked = userStats.badges.includes(ach.id);
+      return `
+        <div class="achievement-item ${isUnlocked ? '' : 'locked'}">
+          <div class="achievement-icon">${ach.icon}</div>
+          <div>
+            <div style="font-weight:700; font-size:0.95rem;">${ach.title} ${isUnlocked ? '✅' : '🔒'}</div>
+            <div style="font-size:0.85rem; color:#666;">${ach.desc}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+}
+
+function resetStats() {
+  if (confirm("คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตสถิติและความสำเร็จทั้งหมด?")) {
+    userStats = { totalAnswered: 0, totalCorrect: 0, bestStreak: 0, hardSolved: 0, quizAceCount: 0, badges: [] };
+    scoreCorrect = 0; streakCount = 0;
+    document.getElementById('scoreCorrect').textContent = 0;
+    document.getElementById('streakCount').textContent = 0;
+    saveStats();
+    toggleStatsModal();
   }
 }
 
@@ -1535,6 +2039,10 @@ document.getElementById('userAnsInput').addEventListener('keyup', function(e) {
 
 // เริ่มต้นหน้าเว็บ
 document.addEventListener('DOMContentLoaded', function() {
+  loadStats();
+  document.getElementById('scoreCorrect').textContent = scoreCorrect;
+  document.getElementById('streakCount').textContent = streakCount;
+
   let yearSpan = document.getElementById('y');
   if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 
