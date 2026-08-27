@@ -52,7 +52,27 @@ Evaluate the limit:
 \]
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Check the indeterminate form by direct substitution:
+	\begin{equation*}
+		\frac{2^2 - 4}{2 - 2} = \frac{0}{0} \quad (\text{Indeterminate Form}).
+	\end{equation*}
+	
+	\item [Step 2.] Factor the numerator using the difference of squares identity $a^2 - b^2 = (a - b)(a + b)$:
+	\begin{equation*}
+		x^2 - 4 = (x - 2)(x + 2).
+	\end{equation*}
+
+	\item [Step 3.] Simplify the rational function by cancelling the common non-zero factor $(x - 2)$ for $x \neq 2$:
+	\begin{equation*}
+		\frac{x^2 - 4}{x - 2} = \frac{(x - 2)(x + 2)}{x - 2} = x + 2.
+	\end{equation*}
+
+	\item [Step 4.] Evaluate the limit by direct substitution:
+	\begin{equation*}
+		\lim_{x \to 2} \frac{x^2 - 4}{x - 2} = \lim_{x \to 2} (x + 2) = 2 + 2 = 4.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 1.2: Square Root Conjugate ($0/0$)}
@@ -63,7 +83,27 @@ Evaluate the limit:
 \]
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Check the indeterminate form by direct substitution:
+	\begin{equation*}
+		\frac{\sqrt{0 + 4} - 2}{0} = \frac{2 - 2}{0} = \frac{0}{0} \quad (\text{Indeterminate Form}).
+	\end{equation*}
+	
+	\item [Step 2.] Multiply the numerator and denominator by the conjugate $(\sqrt{x + 4} + 2)$:
+	\begin{equation*}
+		\frac{\sqrt{x + 4} - 2}{x} \cdot \frac{\sqrt{x + 4} + 2}{\sqrt{x + 4} + 2} = \frac{(\sqrt{x + 4})^2 - 2^2}{x(\sqrt{x + 4} + 2)}.
+	\end{equation*}
+
+	\item [Step 3.] Simplify the expression:
+	\begin{equation*}
+		\frac{(x + 4) - 4}{x(\sqrt{x + 4} + 2)} = \frac{x}{x(\sqrt{x + 4} + 2)} = \frac{1}{\sqrt{x + 4} + 2}.
+	\end{equation*}
+
+	\item [Step 4.] Evaluate the limit by direct substitution $x = 0$:
+	\begin{equation*}
+		\lim_{x \to 0} \frac{\sqrt{x + 4} - 2}{x} = \lim_{x \to 0} \frac{1}{\sqrt{x + 4} + 2} = \frac{1}{\sqrt{0 + 4} + 2} = \frac{1}{2 + 2} = \frac{1}{4}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 1.3: Cube Root Conjugate / Difference of Cubes ($0/0$)}
@@ -74,7 +114,27 @@ Evaluate the limit:
 \]
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Check the indeterminate form by direct substitution:
+	\begin{equation*}
+		\frac{\sqrt[3]{0 + 8} - 2}{0} = \frac{2 - 2}{0} = \frac{0}{0} \quad (\text{Indeterminate Form}).
+	\end{equation*}
+	
+	\item [Step 2.] Use the identity $(a - b)(a^2 + ab + b^2) = a^3 - b^3$. Multiply numerator and denominator by $(\sqrt[3]{x + 8})^2 + 2\sqrt[3]{x + 8} + 4$:
+	\begin{equation*}
+		\frac{\sqrt[3]{x + 8} - 2}{x} \cdot \frac{(\sqrt[3]{x + 8})^2 + 2\sqrt[3]{x + 8} + 4}{(\sqrt[3]{x + 8})^2 + 2\sqrt[3]{x + 8} + 4} = \frac{(x + 8) - 8}{x\left((\sqrt[3]{x + 8})^2 + 2\sqrt[3]{x + 8} + 4\right)}.
+	\end{equation*}
+
+	\item [Step 3.] Simplify the expression:
+	\begin{equation*}
+		\frac{x}{x\left((\sqrt[3]{x + 8})^2 + 2\sqrt[3]{x + 8} + 4\right)} = \frac{1}{(\sqrt[3]{x + 8})^2 + 2\sqrt[3]{x + 8} + 4}.
+	\end{equation*}
+
+	\item [Step 4.] Evaluate the limit by direct substitution $x = 0$:
+	\begin{equation*}
+		\lim_{x \to 0} \frac{1}{(\sqrt[3]{8})^2 + 2\sqrt[3]{8} + 4} = \frac{1}{4 + 4 + 4} = \frac{1}{12}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 1.4: Complex Fraction ($0/0$)}
@@ -85,7 +145,27 @@ Evaluate the limit:
 \]
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Check the indeterminate form by direct substitution:
+	\begin{equation*}
+		\frac{\frac{1}{0 + 3} - \frac{1}{3}}{0} = \frac{0}{0} \quad (\text{Indeterminate Form}).
+	\end{equation*}
+	
+	\item [Step 2.] Combine the terms in the numerator with a common denominator $3(x + 3)$:
+	\begin{equation*}
+		\frac{1}{x + 3} - \frac{1}{3} = \frac{3 - (x + 3)}{3(x + 3)} = \frac{-x}{3(x + 3)}.
+	\end{equation*}
+
+	\item [Step 3.] Simplify the complex fraction:
+	\begin{equation*}
+		\frac{\frac{-x}{3(x + 3)}}{x} = \frac{-x}{3x(x + 3)} = -\frac{1}{3(x + 3)}.
+	\end{equation*}
+
+	\item [Step 4.] Evaluate the limit by direct substitution $x = 0$:
+	\begin{equation*}
+		\lim_{x \to 0} -\frac{1}{3(x + 3)} = -\frac{1}{3(0 + 3)} = -\frac{1}{9}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 1.5: Double Conjugate (Numerator \& Denominator)}
@@ -96,7 +176,28 @@ Evaluate the limit:
 \]
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Check the indeterminate form by direct substitution:
+	\begin{equation*}
+		\frac{\sqrt{4} - 2}{\sqrt{9} - 3} = \frac{2 - 2}{3 - 3} = \frac{0}{0} \quad (\text{Indeterminate Form}).
+	\end{equation*}
+	
+	\item [Step 2.] Multiply by both conjugates $(\sqrt{x + 4} + 2)$ and $(\sqrt{x + 9} + 3)$:
+	\begin{equation*}
+		\frac{\sqrt{x + 4} - 2}{\sqrt{x + 9} - 3} \cdot \frac{\sqrt{x + 4} + 2}{\sqrt{x + 4} + 2} \cdot \frac{\sqrt{x + 9} + 3}{\sqrt{x + 9} + 3}
+		= \frac{((x + 4) - 4)(\sqrt{x + 9} + 3)}{((x + 9) - 9)(\sqrt{x + 4} + 2)}.
+	\end{equation*}
+
+	\item [Step 3.] Simplify and cancel common factor $x$:
+	\begin{equation*}
+		\frac{x(\sqrt{x + 9} + 3)}{x(\sqrt{x + 4} + 2)} = \frac{\sqrt{x + 9} + 3}{\sqrt{x + 4} + 2}.
+	\end{equation*}
+
+	\item [Step 4.] Evaluate the limit by direct substitution $x = 0$:
+	\begin{equation*}
+		\lim_{x \to 0} \frac{\sqrt{x + 9} + 3}{\sqrt{x + 4} + 2} = \frac{\sqrt{9} + 3}{\sqrt{4} + 2} = \frac{3 + 3}{2 + 2} = \frac{6}{4} = \frac{3}{2}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 1.6: Basic Trigonometric Limits ($\frac{\sin kx}{x}$, $\frac{\tan kx}{\sin mx}$)}
@@ -107,7 +208,23 @@ Evaluate the limit:
 \]
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and standard trigonometric limits:
+	\begin{align*}
+		\lim_{u \to 0} \frac{\sin(u)}{u} &= 1 \\
+		\lim_{u \to 0} \frac{\tan(u)}{u} &= 1
+	\end{align*}
+	
+	\item [Step 2.] Multiply and divide by $3x$ and $5x$ to obtain standard limit forms:
+	\begin{equation*}
+		\frac{\tan(3x)}{\sin(5x)} = \frac{\frac{\tan(3x)}{3x} \cdot 3x}{\frac{\sin(5x)}{5x} \cdot 5x} = \frac{3}{5} \cdot \frac{\frac{\tan(3x)}{3x}}{\frac{\sin(5x)}{5x}}.
+	\end{equation*}
+
+	\item [Step 3.] Evaluate the limit as $x \to 0$:
+	\begin{equation*}
+		\lim_{x \to 0} \frac{\tan(3x)}{\sin(5x)} = \frac{3}{5} \cdot \frac{\lim_{x \to 0}\frac{\tan(3x)}{3x}}{\lim_{x \to 0}\frac{\sin(5x)}{5x}} = \frac{3}{5} \cdot \frac{1}{1} = \frac{3}{5}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 1.7: Limits at Infinity ($\infty/\infty$ \& $\infty - \infty$)}
@@ -118,7 +235,24 @@ Evaluate the limit:
 \]
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Check the indeterminate form: $\infty - \infty$.
+	
+	\item [Step 2.] Multiply and divide by the conjugate $(\sqrt{x^2 + 4x} + x)$:
+	\begin{equation*}
+		\frac{(\sqrt{x^2 + 4x} - x)(\sqrt{x^2 + 4x} + x)}{\sqrt{x^2 + 4x} + x} = \frac{(x^2 + 4x) - x^2}{\sqrt{x^2 + 4x} + x} = \frac{4x}{\sqrt{x^2 + 4x} + x}.
+	\end{equation*}
+
+	\item [Step 3.] Divide numerator and denominator by $x$ (noting $\sqrt{x^2} = x$ for $x > 0$):
+	\begin{equation*}
+		\frac{\frac{4x}{x}}{\sqrt{\frac{x^2 + 4x}{x^2}} + \frac{x}{x}} = \frac{4}{\sqrt{1 + \frac{4}{x}} + 1}.
+	\end{equation*}
+
+	\item [Step 4.] Evaluate the limit as $x \to \infty$, since $\lim_{x \to \infty} \frac{4}{x} = 0$:
+	\begin{equation*}
+		\lim_{x \to \infty} \frac{4}{\sqrt{1 + \frac{4}{x}} + 1} = \frac{4}{\sqrt{1 + 0} + 1} = \frac{4}{2} = 2.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 1.8: One-Sided Limit with Absolute Value}
@@ -129,7 +263,25 @@ Evaluate the one-sided limit:
 \]
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Apply the piecewise definition of the absolute value function:
+	\begin{equation*}
+		|x - 2| = \begin{cases} x - 2, & \text{if } x \ge 2 \\ -(x - 2), & \text{if } x < 2 \end{cases}
+	\end{equation*}
+	Since $x \to 2^-$, we have $x < 2$, which implies $|x - 2| = -(x - 2)$.
+
+	\item [Step 2.] Factor the denominator: $x^2 - 4 = (x - 2)(x + 2)$.
+	
+	\item [Step 3.] Substitute and simplify the expression for $x < 2$:
+	\begin{equation*}
+		\frac{|x - 2|}{x^2 - 4} = \frac{-(x - 2)}{(x - 2)(x + 2)} = -\frac{1}{x + 2}.
+	\end{equation*}
+
+	\item [Step 4.] Evaluate the one-sided limit:
+	\begin{equation*}
+		\lim_{x \to 2^-} \frac{|x - 2|}{x^2 - 4} = \lim_{x \to 2^-} \left(-\frac{1}{x + 2}\right) = -\frac{1}{2 + 2} = -\frac{1}{4}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 1.9: L'H\^opital's Rule ($0/0$ or $\infty/\infty$)}
@@ -140,7 +292,28 @@ Evaluate the limit using L'H\^opital's Rule:
 \]
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Verify the indeterminate form:
+	\begin{equation*}
+		\lim_{x \to 0} (e^{2x} - 1) = 1 - 1 = 0 \quad \text{and} \quad \lim_{x \to 0} \sin(3x) = 0 \implies \frac{0}{0} \quad (\text{Indeterminate Form}).
+	\end{equation*}
+	
+	\item [Step 2.] Apply L'H\^opital's Rule by differentiating numerator and denominator:
+	\begin{equation*}
+		\lim_{x \to 0} \frac{e^{2x} - 1}{\sin(3x)} = \lim_{x \to 0} \frac{\frac{d}{dx}[e^{2x} - 1]}{\frac{d}{dx}[\sin(3x)]}.
+	\end{equation*}
+
+	\item [Step 3.] Calculate the derivatives:
+	\begin{itemize}
+		\item $\frac{d}{dx}[e^{2x} - 1] = 2e^{2x}$.
+		\item $\frac{d}{dx}[\sin(3x)] = 3\cos(3x)$.
+	\end{itemize}
+
+	\item [Step 4.] Evaluate the resulting limit:
+	\begin{equation*}
+		\lim_{x \to 0} \frac{2e^{2x}}{3\cos(3x)} = \frac{2e^0}{3\cos(0)} = \frac{2(1)}{3(1)} = \frac{2}{3}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \newpage
@@ -158,34 +331,44 @@ Given $f(x) = 3x^3 + \frac{3}{x} + 5\sqrt{x}$, find $f'(x)$ and evaluate $f'(1)$
 	\item [Step 1.] Rules and formula used in this problem are:
 	\begin{align*}
 		u^n &= \frac{1}{u^{-n}} \\
-		\sqrt[n]{u^m} &= x^{\frac{m}{n}} \\
+		\sqrt[n]{u^m} &= u^{\frac{m}{n}} \\
 		[u^n]' &= n u^{n-1} u' \\
 		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
 	\end{align*}
 	
-	\item [Step 2.] Then,
+	\item [Step 2.] Apply linearity of differentiation:
 	\begin{equation}\label{eq;2.1.1}
 		f'(x) = \frac{d}{dx} \left(3x^3 + \frac{3}{x} + 5\sqrt{x}\right)
 		= 3 \frac{d}{dx} x^3 + 3 \frac{d}{dx} \frac{1}{x} + 5 \frac{d}{dx} \sqrt{x}.
 	\end{equation}
-	Consider 1st term, then
-	\begin{equation*}
-		\frac{d}{dx} x^3 = 3x^2 \frac{d}{dx}x = 3x^2(1) = 3x^2.
-	\end{equation*}
-	Consider 2nd term, then
-	\begin{equation*}
-		\frac{d}{dx} \frac{1}{x} = \frac{d}{dx} x^{-1} = (-1)x^{-2} \frac{d}{dx}x = (-1)x^{-2} (1) = -\frac{1}{x^2}.
-	\end{equation*}
-	Consider 3rd term, then
-	\begin{equation*}
-		\frac{d}{dx} \sqrt{x} = \frac{d}{dx} x^{\frac{1}{2}} = \frac{1}{2} \cdot x^{-\frac{1}{2}} \frac{d}{dx}x = \frac{1}{2} \cdot x^{-\frac{1}{2}} (1) = \frac{1}{2 x^{\frac{1}{2}}} = \frac{1}{2\sqrt{x}}.
-	\end{equation*}
-	Combine these three terms together, we obtain
+
+	\item [Step 3.] Differentiate each term separately:
+	\begin{itemize}
+		\item Consider 1st term:
+		\begin{equation*}
+			\frac{d}{dx} x^3 = 3x^2 \frac{d}{dx}x = 3x^2(1) = 3x^2.
+		\end{equation*}
+		\item Consider 2nd term:
+		\begin{equation*}
+			\frac{d}{dx} \frac{1}{x} = \frac{d}{dx} x^{-1} = (-1)x^{-2} \frac{d}{dx}x = (-1)x^{-2} (1) = -\frac{1}{x^2}.
+		\end{equation*}
+		\item Consider 3rd term:
+		\begin{equation*}
+			\frac{d}{dx} \sqrt{x} = \frac{d}{dx} x^{\frac{1}{2}} = \frac{1}{2} \cdot x^{-\frac{1}{2}} \frac{d}{dx}x = \frac{1}{2} \cdot x^{-\frac{1}{2}} (1) = \frac{1}{2 x^{\frac{1}{2}}} = \frac{1}{2\sqrt{x}}.
+		\end{equation*}
+	\end{itemize}
+
+	\item [Step 4.] Combine these three terms together, we obtain:
 	\begin{align*}
 		f'(x) &= 3 \frac{d}{dx} x^3 + 3 \frac{d}{dx} \frac{1}{x} + 5 \frac{d}{dx} \sqrt{x} \\
-		&= 3 (3x^2) + 3 (-\frac{1}{x^2}) + 5 (\frac{1}{2\sqrt{x}}) \\
-		&= 9x^2 - \frac{3}{x^2} + \frac{5}{2\sqrt{x}}
+		&= 3 (3x^2) + 3 \left(-\frac{1}{x^2}\right) + 5 \left(\frac{1}{2\sqrt{x}}\right) \\
+		&= 9x^2 - \frac{3}{x^2} + \frac{5}{2\sqrt{x}}.
 	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 1$, we obtain:
+	\begin{equation*}
+		f'(1) = 9(1)^2 - \frac{3}{(1)^2} + \frac{5}{2\sqrt{1}} = 9 - 3 + \frac{5}{2} = 6 + \frac{5}{2} = \frac{17}{2}.
+	\end{equation*}
 \end{enumerate}
 \end{solutionbox}
 
@@ -194,7 +377,45 @@ Given $f(x) = 3x^3 + \frac{3}{x} + 5\sqrt{x}$, find $f'(x)$ and evaluate $f'(1)$
 Given $f(x) = 4\sin(3x) - 2\cos(3x)$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		[\sin(u)]' &= \cos(u) u' \\
+		[\cos(u)]' &= -\sin(u) u' \\
+		[u^n]' &= n u^{n-1} u' \\
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
+	\end{align*}
+	
+	\item [Step 2.] Apply linearity of differentiation:
+	\begin{equation}\label{eq;2.2.1}
+		f'(x) = \frac{d}{dx} \left(4\sin(3x) - 2\cos(3x)\right)
+		= 4 \frac{d}{dx} \sin(3x) - 2 \frac{d}{dx} \cos(3x).
+	\end{equation}
+
+	\item [Step 3.] Differentiate each term separately:
+	\begin{itemize}
+		\item Consider 1st term:
+		\begin{equation*}
+			\frac{d}{dx} \sin(3x) = \cos(3x) \frac{d}{dx}(3x) = \cos(3x) \cdot 3 \frac{d}{dx}x = \cos(3x) \cdot 3(1) = 3\cos(3x).
+		\end{equation*}
+		\item Consider 2nd term:
+		\begin{equation*}
+			\frac{d}{dx} \cos(3x) = -\sin(3x) \frac{d}{dx}(3x) = -\sin(3x) \cdot 3 \frac{d}{dx}x = -\sin(3x) \cdot 3(1) = -3\sin(3x).
+		\end{equation*}
+	\end{itemize}
+
+	\item [Step 4.] Combine these two terms together, we obtain:
+	\begin{align*}
+		f'(x) &= 4 \frac{d}{dx} \sin(3x) - 2 \frac{d}{dx} \cos(3x) \\
+		&= 4 (3\cos(3x)) - 2 (-3\sin(3x)) \\
+		&= 12\cos(3x) + 6\sin(3x).
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 0$, since $\cos(0) = 1$ and $\sin(0) = 0$, we obtain:
+	\begin{equation*}
+		f'(0) = 12\cos(0) + 6\sin(0) = 12(1) + 6(0) = 12.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 2.3: Natural and General Exponential Functions ($e^{kx}$ and $a^u$)}
@@ -202,7 +423,47 @@ Given $f(x) = 4\sin(3x) - 2\cos(3x)$, find $f'(x)$ and evaluate $f'(0)$.
 Given $f(x) = 3^{2x+1} + 2e^{3x}$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		[a^u]' &= a^u \ln(a) u' \\
+		[e^u]' &= e^u u' \\
+		[u^n]' &= n u^{n-1} u' \\
+		[c]' &= 0 \\
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
+	\end{align*}
+	
+	\item [Step 2.] Apply linearity of differentiation:
+	\begin{equation}\label{eq;2.3.1}
+		f'(x) = \frac{d}{dx} \left(3^{2x+1} + 2e^{3x}\right)
+		= \frac{d}{dx} 3^{2x+1} + 2 \frac{d}{dx} e^{3x}.
+	\end{equation}
+
+	\item [Step 3.] Differentiate each term separately:
+	\begin{itemize}
+		\item Consider 1st term:
+		\begin{equation*}
+			\frac{d}{dx} 3^{2x+1} = 3^{2x+1} \ln(3) \frac{d}{dx}(2x + 1) = 3^{2x+1} \ln(3) \left(2\frac{d}{dx}x + \frac{d}{dx}(1)\right) = 3^{2x+1} \ln(3)(2(1) + 0) = 2\ln(3) \cdot 3^{2x+1}.
+		\end{equation*}
+		\item Consider 2nd term:
+		\begin{equation*}
+			\frac{d}{dx} e^{3x} = e^{3x} \frac{d}{dx}(3x) = e^{3x} \cdot 3 \frac{d}{dx}x = e^{3x} \cdot 3(1) = 3e^{3x}.
+		\end{equation*}
+	\end{itemize}
+
+	\item [Step 4.] Combine these two terms together, we obtain:
+	\begin{align*}
+		f'(x) &= \frac{d}{dx} 3^{2x+1} + 2 \frac{d}{dx} e^{3x} \\
+		&= 2\ln(3) \cdot 3^{2x+1} + 2(3e^{3x}) \\
+		&= 2\ln(3) \cdot 3^{2x+1} + 6e^{3x}.
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 0$, since $3^{2(0)+1} = 3^1 = 3$ and $e^{3(0)} = e^0 = 1$, we obtain:
+	\begin{align*}
+		f'(0) &= 2\ln(3) \cdot 3^1 + 6(1) \\
+		&= 6\ln(3) + 6 = 6(\ln(3) + 1).
+	\end{align*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 2.4: Sum of Inverse Trigonometric Functions}
@@ -210,7 +471,45 @@ Given $f(x) = 3^{2x+1} + 2e^{3x}$, find $f'(x)$ and evaluate $f'(0)$.
 Given $f(x) = 3\arccos(4x) + 2\operatorname{arccot}(x)$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		[\arccos(u)]' &= -\frac{1}{\sqrt{1 - u^2}} u' \\
+		[\operatorname{arccot}(u)]' &= -\frac{1}{1 + u^2} u' \\
+		[u^n]' &= n u^{n-1} u' \\
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
+	\end{align*}
+	
+	\item [Step 2.] Apply linearity of differentiation:
+	\begin{equation}\label{eq;2.4.1}
+		f'(x) = \frac{d}{dx} \left(3\arccos(4x) + 2\operatorname{arccot}(x)\right)
+		= 3 \frac{d}{dx} \arccos(4x) + 2 \frac{d}{dx} \operatorname{arccot}(x).
+	\end{equation}
+
+	\item [Step 3.] Differentiate each term separately:
+	\begin{itemize}
+		\item Consider 1st term:
+		\begin{equation*}
+			\frac{d}{dx} \arccos(4x) = -\frac{1}{\sqrt{1 - (4x)^2}} \frac{d}{dx}(4x) = -\frac{1}{\sqrt{1 - 16x^2}} \cdot 4 \frac{d}{dx}x = -\frac{1}{\sqrt{1 - 16x^2}} \cdot 4(1) = -\frac{4}{\sqrt{1 - 16x^2}}.
+		\end{equation*}
+		\item Consider 2nd term:
+		\begin{equation*}
+			\frac{d}{dx} \operatorname{arccot}(x) = -\frac{1}{1 + x^2} \frac{d}{dx}x = -\frac{1}{1 + x^2}(1) = -\frac{1}{1 + x^2}.
+		\end{equation*}
+	\end{itemize}
+
+	\item [Step 4.] Combine these two terms together, we obtain:
+	\begin{align*}
+		f'(x) &= 3 \frac{d}{dx} \arccos(4x) + 2 \frac{d}{dx} \operatorname{arccot}(x) \\
+		&= 3 \left(-\frac{4}{\sqrt{1 - 16x^2}}\right) + 2 \left(-\frac{1}{1 + x^2}\right) \\
+		&= -\frac{12}{\sqrt{1 - 16x^2}} - \frac{2}{1 + x^2}.
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 0$, we obtain:
+	\begin{equation*}
+		f'(0) = -\frac{12}{\sqrt{1 - 0}} - \frac{2}{1 + 0} = -12 - 2 = -14.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \newpage
@@ -224,7 +523,47 @@ Given $f(x) = 3\arccos(4x) + 2\operatorname{arccot}(x)$, find $f'(x)$ and evalua
 Given $f(x) = (2x + 3)e^{2x}$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		(u \cdot v)' &= u v' + v u' \\
+		[e^u]' &= e^u u' \\
+		[u^n]' &= n u^{n-1} u' \\
+		[c]' &= 0 \\
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
+	\end{align*}
+	
+	\item [Step 2.] Apply the product rule:
+	\begin{equation}\label{eq;3.1.1}
+		f'(x) = \frac{d}{dx} \left[(2x + 3)e^{2x}\right]
+		= (2x + 3)\frac{d}{dx}\left[e^{2x}\right] + e^{2x}\frac{d}{dx}\left[2x + 3\right].
+	\end{equation}
+
+	\item [Step 3.] Differentiate each factor separately:
+	\begin{itemize}
+		\item Consider the derivative of $e^{2x}$:
+		\begin{equation*}
+			\frac{d}{dx}\left[e^{2x}\right] = e^{2x}\frac{d}{dx}(2x) = e^{2x} \cdot 2\frac{d}{dx}x = e^{2x} \cdot 2(1) = 2e^{2x}.
+		\end{equation*}
+		\item Consider the derivative of $(2x + 3)$:
+		\begin{equation*}
+			\frac{d}{dx}[2x + 3] = 2\frac{d}{dx}x + \frac{d}{dx}(3) = 2(1) + 0 = 2.
+		\end{equation*}
+	\end{itemize}
+
+	\item [Step 4.] Combine these terms together, we obtain:
+	\begin{align*}
+		f'(x) &= (2x + 3)\frac{d}{dx}\left[e^{2x}\right] + e^{2x}\frac{d}{dx}\left[2x + 3\right] \\
+		&= (2x + 3)(2e^{2x}) + e^{2x}(2) \\
+		&= (4x + 6)e^{2x} + 2e^{2x} \\
+		&= (4x + 8)e^{2x}.
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 0$, since $e^{2(0)} = e^0 = 1$, we obtain:
+	\begin{equation*}
+		f'(0) = (4(0) + 8)e^0 = 8(1) = 8.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 3.2: Exponential $\times$ Trigonometric (Damped Oscillation)}
@@ -232,7 +571,47 @@ Given $f(x) = (2x + 3)e^{2x}$, find $f'(x)$ and evaluate $f'(0)$.
 Given $f(x) = e^{-2x}\cos(3x)$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		(u \cdot v)' &= u v' + v u' \\
+		[e^u]' &= e^u u' \\
+		[\cos(u)]' &= -\sin(u) u' \\
+		[u^n]' &= n u^{n-1} u' \\
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
+	\end{align*}
+	
+	\item [Step 2.] Apply the product rule:
+	\begin{equation}\label{eq;3.2.1}
+		f'(x) = \frac{d}{dx} \left[e^{-2x}\cos(3x)\right]
+		= e^{-2x}\frac{d}{dx}\left[\cos(3x)\right] + \cos(3x)\frac{d}{dx}\left[e^{-2x}\right].
+	\end{equation}
+
+	\item [Step 3.] Differentiate each factor separately:
+	\begin{itemize}
+		\item Consider the derivative of $\cos(3x)$:
+		\begin{equation*}
+			\frac{d}{dx}[\cos(3x)] = -\sin(3x)\frac{d}{dx}(3x) = -\sin(3x) \cdot 3\frac{d}{dx}x = -\sin(3x) \cdot 3(1) = -3\sin(3x).
+		\end{equation*}
+		\item Consider the derivative of $e^{-2x}$:
+		\begin{equation*}
+			\frac{d}{dx}\left[e^{-2x}\right] = e^{-2x}\frac{d}{dx}(-2x) = e^{-2x} \cdot (-2)\frac{d}{dx}x = e^{-2x} \cdot (-2)(1) = -2e^{-2x}.
+		\end{equation*}
+	\end{itemize}
+
+	\item [Step 4.] Combine these terms together, we obtain:
+	\begin{align*}
+		f'(x) &= e^{-2x}\frac{d}{dx}\left[\cos(3x)\right] + \cos(3x)\frac{d}{dx}\left[e^{-2x}\right] \\
+		&= e^{-2x}(-3\sin(3x)) + \cos(3x)(-2e^{-2x}) \\
+		&= -3e^{-2x}\sin(3x) - 2e^{-2x}\cos(3x) \\
+		&= -(3\sin(3x) + 2\cos(3x))e^{-2x}.
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 0$, since $e^0 = 1$, $\sin(0) = 0$, and $\cos(0) = 1$, we obtain:
+	\begin{equation*}
+		f'(0) = -(3(0) + 2(1))e^0 = -2(1) = -2.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 3.3: Polynomial / Exponential $\times$ Inverse Trigonometric}
@@ -240,21 +619,98 @@ Given $f(x) = e^{-2x}\cos(3x)$, find $f'(x)$ and evaluate $f'(0)$.
 Given $f(x) = (e^{3x} + 2x)\arctan(x)$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		(u \cdot v)' &= u v' + v u' \\
+		[\arctan(u)]' &= \frac{1}{1 + u^2} u' \\
+		[e^u]' &= e^u u' \\
+		[u^n]' &= n u^{n-1} u' \\
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
+	\end{align*}
+	
+	\item [Step 2.] Apply the product rule:
+	\begin{equation}\label{eq;3.3.1}
+		f'(x) = \frac{d}{dx} \left[(e^{3x} + 2x)\arctan(x)\right]
+		= (e^{3x} + 2x)\frac{d}{dx}\left[\arctan(x)\right] + \arctan(x)\frac{d}{dx}\left[e^{3x} + 2x\right].
+	\end{equation}
+
+	\item [Step 3.] Differentiate each factor separately:
+	\begin{itemize}
+		\item Consider the derivative of $\arctan(x)$:
+		\begin{equation*}
+			\frac{d}{dx}[\arctan(x)] = \frac{1}{1 + x^2}\frac{d}{dx}x = \frac{1}{1 + x^2}(1) = \frac{1}{1 + x^2}.
+		\end{equation*}
+		\item Consider the derivative of $(e^{3x} + 2x)$:
+		\begin{equation*}
+			\frac{d}{dx}[e^{3x} + 2x] = \frac{d}{dx}\left[e^{3x}\right] + 2\frac{d}{dx}x = e^{3x}\cdot 3(1) + 2(1) = 3e^{3x} + 2.
+		\end{equation*}
+	\end{itemize}
+
+	\item [Step 4.] Combine these terms together, we obtain:
+	\begin{align*}
+		f'(x) &= (e^{3x} + 2x)\frac{d}{dx}\left[\arctan(x)\right] + \arctan(x)\frac{d}{dx}\left[e^{3x} + 2x\right] \\
+		&= (e^{3x} + 2x)\left(\frac{1}{1 + x^2}\right) + \arctan(x)(3e^{3x} + 2) \\
+		&= \frac{e^{3x} + 2x}{1 + x^2} + (3e^{3x} + 2)\arctan(x).
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 0$, since $e^0 = 1$ and $\arctan(0) = 0$, we obtain:
+	\begin{equation*}
+		f'(0) = \frac{1 + 0}{1 + 0} + (3(1) + 2)\arctan(0) = 1 + 5(0) = 1.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \newpage
 % =========================================================================
 % SECTION 4: QUOTIENT RULE
 % =========================================================================
-\section{Quotient Rule: $\left(\frac{u}{v}\right)' = \frac{u'v - uv'}{v^2}$}
+\section{Quotient Rule: $\left(\frac{u}{v}\right)' = \frac{vu' - uv'}{v^2}$}
 
 \subsection{Type 4.1: Rational Polynomial Function}
 \begin{problembox}{Problem 4.1: Quotient Rule (Polynomials)}
 Given $f(x) = \frac{2x + 3}{x - 4}$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		\left(\frac{u}{v}\right)' &= \frac{vu' - uv'}{v^2} \\
+		[u^n]' &= n u^{n-1} u' \\
+		[c]' &= 0 \\
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
+	\end{align*}
+	
+	\item [Step 2.] Apply the quotient rule:
+	\begin{equation}\label{eq;4.1.1}
+		f'(x) = \frac{d}{dx} \left[\frac{2x + 3}{x - 4}\right]
+		= \frac{(x - 4)\frac{d}{dx}[2x + 3] - (2x + 3)\frac{d}{dx}[x - 4]}{(x - 4)^2}.
+	\end{equation}
+
+	\item [Step 3.] Differentiate numerator and denominator separately:
+	\begin{itemize}
+		\item Consider the derivative of the numerator:
+		\begin{equation*}
+			\frac{d}{dx}[2x + 3] = 2\frac{d}{dx}x + \frac{d}{dx}(3) = 2(1) + 0 = 2.
+		\end{equation*}
+		\item Consider the derivative of the denominator:
+		\begin{equation*}
+			\frac{d}{dx}[x - 4] = \frac{d}{dx}x - \frac{d}{dx}(4) = 1(1) - 0 = 1.
+		\end{equation*}
+	\end{itemize}
+
+	\item [Step 4.] Combine these terms together, we obtain:
+	\begin{align*}
+		f'(x) &= \frac{(x - 4)(2) - (2x + 3)(1)}{(x - 4)^2} \\
+		&= \frac{2x - 8 - 2x - 3}{(x - 4)^2} \\
+		&= -\frac{11}{(x - 4)^2}.
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 0$, we obtain:
+	\begin{equation*}
+		f'(0) = -\frac{11}{(0 - 4)^2} = -\frac{11}{16}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 4.2: Trigonometric / Radical Quotient}
@@ -262,7 +718,45 @@ Given $f(x) = \frac{2x + 3}{x - 4}$, find $f'(x)$ and evaluate $f'(0)$.
 Given $f(x) = \frac{\sin(2x)}{\sqrt{x^2 + 1}}$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		\left(\frac{u}{v}\right)' &= \frac{vu' - uv'}{v^2} \\
+		[\sin(u)]' &= \cos(u) u' \\
+		[\sqrt{u}]' &= \frac{1}{2\sqrt{u}} u' \\
+		[u^n]' &= n u^{n-1} u' \\
+		[c]' &= 0
+	\end{align*}
+	
+	\item [Step 2.] Apply the quotient rule:
+	\begin{equation}\label{eq;4.2.1}
+		f'(x) = \frac{d}{dx} \left[\frac{\sin(2x)}{\sqrt{x^2 + 1}}\right]
+		= \frac{\sqrt{x^2 + 1}\frac{d}{dx}[\sin(2x)] - \sin(2x)\frac{d}{dx}\left[\sqrt{x^2 + 1}\right]}{\left(\sqrt{x^2 + 1}\right)^2}.
+	\end{equation}
+
+	\item [Step 3.] Differentiate numerator and denominator separately:
+	\begin{itemize}
+		\item Consider the derivative of the numerator $\sin(2x)$:
+		\begin{equation*}
+			\frac{d}{dx}[\sin(2x)] = \cos(2x)\frac{d}{dx}(2x) = \cos(2x) \cdot 2(1) = 2\cos(2x).
+		\end{equation*}
+		\item Consider the derivative of the denominator $\sqrt{x^2 + 1}$:
+		\begin{equation*}
+			\frac{d}{dx}\left[\sqrt{x^2 + 1}\right] = \frac{1}{2\sqrt{x^2 + 1}}\frac{d}{dx}[x^2 + 1] = \frac{2x(1) + 0}{2\sqrt{x^2 + 1}} = \frac{x}{\sqrt{x^2 + 1}}.
+		\end{equation*}
+	\end{itemize}
+
+	\item [Step 4.] Combine these terms together, we obtain:
+	\begin{align*}
+		f'(x) &= \frac{\sqrt{x^2 + 1}(2\cos(2x)) - \sin(2x)\left(\frac{x}{\sqrt{x^2 + 1}}\right)}{x^2 + 1} \\
+		&= \frac{2(x^2 + 1)\cos(2x) - x\sin(2x)}{(x^2 + 1)^{\frac{3}{2}}}.
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 0$, since $\cos(0) = 1$ and $\sin(0) = 0$, we obtain:
+	\begin{equation*}
+		f'(0) = \frac{2(0 + 1)(1) - 0(0)}{(0 + 1)^{\frac{3}{2}}} = \frac{2}{1} = 2.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \newpage
@@ -276,7 +770,37 @@ Given $f(x) = \frac{\sin(2x)}{\sqrt{x^2 + 1}}$, find $f'(x)$ and evaluate $f'(0)
 Given $f(x) = \sqrt{2x^2 + 3x + 4}$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		[\sqrt{u}]' &= \frac{1}{2\sqrt{u}} u' \\
+		[u^n]' &= n u^{n-1} u' \\
+		[c]' &= 0 \\
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
+	\end{align*}
+	
+	\item [Step 2.] Apply the chain rule by letting $u = 2x^2 + 3x + 4$:
+	\begin{equation}\label{eq;5.1.1}
+		f'(x) = \frac{d}{dx} \left[\sqrt{2x^2 + 3x + 4}\right]
+		= \frac{1}{2\sqrt{2x^2 + 3x + 4}} \frac{d}{dx}\left[2x^2 + 3x + 4\right].
+	\end{equation}
+
+	\item [Step 3.] Differentiate the inner function:
+	\begin{equation*}
+		\frac{d}{dx}[2x^2 + 3x + 4] = 2\frac{d}{dx}[x^2] + 3\frac{d}{dx}x + \frac{d}{dx}(4) = 2(2x\cdot 1) + 3(1) + 0 = 4x + 3.
+	\end{equation*}
+
+	\item [Step 4.] Combine these terms together, we obtain:
+	\begin{align*}
+		f'(x) &= \frac{1}{2\sqrt{2x^2 + 3x + 4}} (4x + 3) \\
+		&= \frac{4x + 3}{2\sqrt{2x^2 + 3x + 4}}.
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 0$, we obtain:
+	\begin{equation*}
+		f'(0) = \frac{4(0) + 3}{2\sqrt{2(0)^2 + 3(0) + 4}} = \frac{3}{2\sqrt{4}} = \frac{3}{2(2)} = \frac{3}{4}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 5.2: Logarithmic with Polynomial Inside $\ln(u(x))$}
@@ -284,7 +808,36 @@ Given $f(x) = \sqrt{2x^2 + 3x + 4}$, find $f'(x)$ and evaluate $f'(0)$.
 Given $f(x) = \ln(x^2 + 3x + 2)$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		[\ln(u)]' &= \frac{1}{u} u' \\
+		[u^n]' &= n u^{n-1} u' \\
+		[c]' &= 0 \\
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
+	\end{align*}
+	
+	\item [Step 2.] Apply the chain rule by letting $u = x^2 + 3x + 2$:
+	\begin{equation}\label{eq;5.2.1}
+		f'(x) = \frac{d}{dx} \left[\ln(x^2 + 3x + 2)\right]
+		= \frac{1}{x^2 + 3x + 2} \frac{d}{dx}\left[x^2 + 3x + 2\right].
+	\end{equation}
+
+	\item [Step 3.] Differentiate the inner function:
+	\begin{equation*}
+		\frac{d}{dx}[x^2 + 3x + 2] = \frac{d}{dx}[x^2] + 3\frac{d}{dx}x + \frac{d}{dx}(2) = 2x(1) + 3(1) + 0 = 2x + 3.
+	\end{equation*}
+
+	\item [Step 4.] Combine these terms together, we obtain:
+	\begin{equation*}
+		f'(x) = \frac{2x + 3}{x^2 + 3x + 2}.
+	\end{equation*}
+
+	\item [Step 5.] Evaluate at $x = 0$, we obtain:
+	\begin{equation*}
+		f'(0) = \frac{2(0) + 3}{0^2 + 3(0) + 2} = \frac{3}{2}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 5.3: Trigonometric with Linear / Quadratic Inside}
@@ -292,7 +845,37 @@ Given $f(x) = \ln(x^2 + 3x + 2)$, find $f'(x)$ and evaluate $f'(0)$.
 Given $f(x) = 2\cot\left(3x + \frac{\pi}{4}\right)$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		[\cot(u)]' &= -\csc^2(u) u' \\
+		[u^n]' &= n u^{n-1} u' \\
+		[c]' &= 0 \\
+		(k \cdot g)' &= k \cdot g'
+	\end{align*}
+	
+	\item [Step 2.] Apply constant multiple and chain rule by letting $u = 3x + \frac{\pi}{4}$:
+	\begin{equation}\label{eq;5.3.1}
+		f'(x) = 2\frac{d}{dx}\left[\cot\left(3x + \frac{\pi}{4}\right)\right]
+		= 2\left(-\csc^2\left(3x + \frac{\pi}{4}\right)\frac{d}{dx}\left[3x + \frac{\pi}{4}\right]\right).
+	\end{equation}
+
+	\item [Step 3.] Differentiate the inner function:
+	\begin{equation*}
+		\frac{d}{dx}\left[3x + \frac{\pi}{4}\right] = 3\frac{d}{dx}x + \frac{d}{dx}\left(\frac{\pi}{4}\right) = 3(1) + 0 = 3.
+	\end{equation*}
+
+	\item [Step 4.] Combine these terms together, we obtain:
+	\begin{align*}
+		f'(x) &= 2\left(-\csc^2\left(3x + \frac{\pi}{4}\right) \cdot 3\right) \\
+		&= -6\csc^2\left(3x + \frac{\pi}{4}\right).
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 0$, since $\csc\left(\frac{\pi}{4}\right) = \sqrt{2}$, we obtain $\csc^2\left(\frac{\pi}{4}\right) = 2$:
+	\begin{equation*}
+		f'(0) = -6\csc^2\left(\frac{\pi}{4}\right) = -6(2) = -12.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 5.4: Inverse Trigonometric with Chain Rule}
@@ -300,7 +883,36 @@ Given $f(x) = 2\cot\left(3x + \frac{\pi}{4}\right)$, find $f'(x)$ and evaluate $
 Given $f(x) = 2\operatorname{arcsec}(3x)$, find $f'(x)$ and evaluate $f'(1)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		[\operatorname{arcsec}(u)]' &= \frac{1}{|u|\sqrt{u^2 - 1}} u' \\
+		[u^n]' &= n u^{n-1} u' \\
+		(k \cdot g)' &= k \cdot g'
+	\end{align*}
+	
+	\item [Step 2.] Apply constant multiple and chain rule by letting $u = 3x$:
+	\begin{equation}\label{eq;5.4.1}
+		f'(x) = 2\frac{d}{dx}\left[\operatorname{arcsec}(3x)\right]
+		= 2\left(\frac{1}{|3x|\sqrt{(3x)^2 - 1}}\frac{d}{dx}[3x]\right).
+	\end{equation}
+
+	\item [Step 3.] Differentiate the inner function:
+	\begin{equation*}
+		\frac{d}{dx}[3x] = 3\frac{d}{dx}x = 3(1) = 3.
+	\end{equation*}
+
+	\item [Step 4.] Combine these terms together, we obtain:
+	\begin{align*}
+		f'(x) &= 2\left(\frac{1}{|3x|\sqrt{9x^2 - 1}} \cdot 3\right) \\
+		&= \frac{6}{|3x|\sqrt{9x^2 - 1}} = \frac{2}{|x|\sqrt{9x^2 - 1}}.
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 1$, we obtain:
+	\begin{equation*}
+		f'(1) = \frac{2}{|1|\sqrt{9(1)^2 - 1}} = \frac{2}{\sqrt{8}} = \frac{2}{2\sqrt{2}} = \frac{\sqrt{2}}{2}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 5.5: Nested Composite Function ($\text{Trig}(\text{Inverse Trig}(kx))$)}
@@ -308,7 +920,35 @@ Given $f(x) = 2\operatorname{arcsec}(3x)$, find $f'(x)$ and evaluate $f'(1)$.
 Given $f(x) = \tan(\arcsin(3x))$, find $f'(x)$ and evaluate $f'(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		[\tan(u)]' &= \sec^2(u) u' \\
+		[\arcsin(u)]' &= \frac{1}{\sqrt{1 - u^2}} u' \\
+		[u^n]' &= n u^{n-1} u'
+	\end{align*}
+	
+	\item [Step 2.] Apply the chain rule from outer to inner functions:
+	\begin{equation}\label{eq;5.5.1}
+		f'(x) = \frac{d}{dx}\left[\tan(\arcsin(3x))\right]
+		= \sec^2(\arcsin(3x))\frac{d}{dx}\left[\arcsin(3x)\right].
+	\end{equation}
+
+	\item [Step 3.] Differentiate the inner function $\arcsin(3x)$:
+	\begin{equation*}
+		\frac{d}{dx}[\arcsin(3x)] = \frac{1}{\sqrt{1 - (3x)^2}}\frac{d}{dx}[3x] = \frac{1}{\sqrt{1 - 9x^2}} \cdot 3\frac{d}{dx}x = \frac{3}{\sqrt{1 - 9x^2}}.
+	\end{equation*}
+
+	\item [Step 4.] Combine these terms together, we obtain:
+	\begin{equation*}
+		f'(x) = \sec^2(\arcsin(3x))\cdot \frac{3}{\sqrt{1 - 9x^2}} = \frac{3\sec^2(\arcsin(3x))}{\sqrt{1 - 9x^2}}.
+	\end{equation*}
+
+	\item [Step 5.] Evaluate at $x = 0$, since $\arcsin(0) = 0$ and $\sec(0) = 1$, we obtain:
+	\begin{equation*}
+		f'(0) = \frac{3\sec^2(0)}{\sqrt{1 - 0}} = \frac{3(1)^2}{1} = 3.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 5.6: Logarithmic Differentiation ($y = x^{kx}$)}
@@ -316,7 +956,39 @@ Given $f(x) = \tan(\arcsin(3x))$, find $f'(x)$ and evaluate $f'(0)$.
 Given $f(x) = x^{3x}$ for $x > 0$, find $f'(x)$ and evaluate $f'(1)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and properties used in logarithmic differentiation:
+	\begin{align*}
+		\ln(u^r) &= r\ln(u) \\
+		[\ln(y)]' &= \frac{1}{y} y' \\
+		(u \cdot v)' &= u v' + v u' \\
+		[\ln(x)]' &= \frac{1}{x}
+	\end{align*}
+	
+	\item [Step 2.] Take natural logarithm of both sides and differentiate:
+	Let $y = x^{3x}$. Then $\ln(y) = 3x\ln(x)$.
+	\begin{equation}\label{eq;5.6.1}
+		\frac{d}{dx}[\ln(y)] = \frac{d}{dx}[3x\ln(x)] \implies \frac{1}{y}\frac{dy}{dx} = 3x\frac{d}{dx}[\ln(x)] + \ln(x)\frac{d}{dx}[3x].
+	\end{equation}
+
+	\item [Step 3.] Differentiate each part on the right-hand side:
+	\begin{itemize}
+		\item $3x\frac{d}{dx}[\ln(x)] = 3x\left(\frac{1}{x}\right) = 3$.
+		\item $\ln(x)\frac{d}{dx}[3x] = \ln(x)\cdot 3(1) = 3\ln(x)$.
+	\end{itemize}
+
+	\item [Step 4.] Combine and solve for $\frac{dy}{dx} = f'(x)$:
+	\begin{align*}
+		\frac{1}{y}\frac{dy}{dx} &= 3 + 3\ln(x) = 3(1 + \ln(x)) \\
+		\implies f'(x) &= y \cdot 3(1 + \ln(x)) \\
+		&= 3x^{3x}(1 + \ln(x)).
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 1$, since $\ln(1) = 0$ and $1^3 = 1$, we obtain:
+	\begin{equation*}
+		f'(1) = 3(1)^{3}(1 + \ln(1)) = 3(1)(1 + 0) = 3.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 5.7: Higher-Order Derivative ($f''(x)$)}
@@ -324,7 +996,37 @@ Given $f(x) = x^{3x}$ for $x > 0$, find $f'(x)$ and evaluate $f'(1)$.
 Given $f(x) = x^2 e^{2x}$, find $f''(x)$ and evaluate $f''(0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		(u \cdot v)' &= u v' + v u' \\
+		[e^u]' &= e^u u' \\
+		[u^n]' &= n u^{n-1} u'
+	\end{align*}
+	
+	\item [Step 2.] Find the first derivative $f'(x)$ using the product rule:
+	\begin{equation}\label{eq;5.7.1}
+		f'(x) = \frac{d}{dx}\left[x^2 e^{2x}\right] = x^2(2e^{2x}) + e^{2x}(2x) = (2x^2 + 2x)e^{2x}.
+	\end{equation}
+
+	\item [Step 3.] Apply the product rule to differentiate $f'(x)$ and find $f''(x)$:
+	\begin{equation*}
+		f''(x) = \frac{d}{dx}\left[(2x^2 + 2x)e^{2x}\right] = (2x^2 + 2x)\frac{d}{dx}\left[e^{2x}\right] + e^{2x}\frac{d}{dx}\left[2x^2 + 2x\right].
+	\end{equation*}
+	Differentiating each factor gives $\frac{d}{dx}\left[e^{2x}\right] = 2e^{2x}$ and $\frac{d}{dx}[2x^2 + 2x] = 4x + 2$.
+
+	\item [Step 4.] Combine and simplify $f''(x)$:
+	\begin{align*}
+		f''(x) &= (2x^2 + 2x)(2e^{2x}) + e^{2x}(4x + 2) \\
+		&= (4x^2 + 4x + 4x + 2)e^{2x} \\
+		&= (4x^2 + 8x + 2)e^{2x}.
+	\end{align*}
+
+	\item [Step 5.] Evaluate at $x = 0$, since $e^0 = 1$, we obtain:
+	\begin{equation*}
+		f''(0) = (4(0)^2 + 8(0) + 2)e^0 = 2(1) = 2.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \newpage
@@ -338,7 +1040,37 @@ Given $f(x) = x^2 e^{2x}$, find $f''(x)$ and evaluate $f''(0)$.
 Find $\frac{dy}{dx}$ for the equation $x^2 + y^2 = 25$ at the point $(3, 4)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		\frac{d}{dx}[x^n] &= n x^{n-1} \\
+		\frac{d}{dx}[y^n] &= n y^{n-1} \frac{dy}{dx} \\
+		\frac{d}{dx}[c] &= 0
+	\end{align*}
+	
+	\item [Step 2.] Differentiate both sides of the equation with respect to $x$:
+	\begin{equation}\label{eq;6.1.1}
+		\frac{d}{dx}\left[x^2 + y^2\right] = \frac{d}{dx}[25] \implies \frac{d}{dx}[x^2] + \frac{d}{dx}[y^2] = 0.
+	\end{equation}
+
+	\item [Step 3.] Calculate each derivative term:
+	\begin{align*}
+		\frac{d}{dx}[x^2] &= 2x\frac{dx}{dx} = 2x(1) = 2x \\
+		\frac{d}{dx}[y^2] &= 2y\frac{dy}{dx}
+	\end{align*}
+
+	\item [Step 4.] Substitute back and isolate $\frac{dy}{dx}$:
+	\begin{align*}
+		2x + 2y\frac{dy}{dx} &= 0 \\
+		2y\frac{dy}{dx} &= -2x \\
+		\frac{dy}{dx} &= -\frac{2x}{2y} = -\frac{x}{y}.
+	\end{align*}
+
+	\item [Step 5.] Substitute the given point $(x, y) = (3, 4)$:
+	\begin{equation*}
+		\left.\frac{dy}{dx}\right|_{(3, 4)} = -\frac{3}{4}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 6.2: Mixed Polynomial with $xy$ Product Term}
@@ -346,7 +1078,40 @@ Find $\frac{dy}{dx}$ for the equation $x^2 + y^2 = 25$ at the point $(3, 4)$.
 Find $\frac{dy}{dx}$ for the equation $x^3 + y^3 - 3xy = 5$ at the point $(x_0, y_0)$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		\frac{d}{dx}[u \cdot v] &= u \frac{dv}{dx} + v \frac{du}{dx} \\
+		\frac{d}{dx}[y^n] &= n y^{n-1} \frac{dy}{dx} \\
+		\frac{d}{dx}[x^n] &= n x^{n-1} \\
+		\frac{d}{dx}[c] &= 0
+	\end{align*}
+	
+	\item [Step 2.] Differentiate both sides of the equation with respect to $x$:
+	\begin{equation}\label{eq;6.2.1}
+		\frac{d}{dx}\left[x^3 + y^3 - 3xy\right] = \frac{d}{dx}[5] \implies \frac{d}{dx}[x^3] + \frac{d}{dx}[y^3] - 3\frac{d}{dx}[xy] = 0.
+	\end{equation}
+
+	\item [Step 3.] Calculate each derivative term:
+	\begin{align*}
+		\frac{d}{dx}[x^3] &= 3x^2\frac{dx}{dx} = 3x^2(1) = 3x^2 \\
+		\frac{d}{dx}[y^3] &= 3y^2\frac{dy}{dx} \\
+		\frac{d}{dx}[xy] &= x\frac{dy}{dx} + y\frac{dx}{dx} = x\frac{dy}{dx} + y(1) = x\frac{dy}{dx} + y
+	\end{align*}
+
+	\item [Step 4.] Combine and isolate $\frac{dy}{dx}$:
+	\begin{align*}
+		3x^2 + 3y^2\frac{dy}{dx} - 3\left(x\frac{dy}{dx} + y\right) &= 0 \\
+		3x^2 + 3y^2\frac{dy}{dx} - 3x\frac{dy}{dx} - 3y &= 0 \\
+		(3y^2 - 3x)\frac{dy}{dx} &= 3y - 3x^2 \\
+		\frac{dy}{dx} &= \frac{3y - 3x^2}{3y^2 - 3x} = \frac{y - x^2}{y^2 - x}.
+	\end{align*}
+
+	\item [Step 5.] Evaluate at the given point $(x_0, y_0)$, we obtain:
+	\begin{equation*}
+		\left.\frac{dy}{dx}\right|_{(x_0, y_0)} = \frac{y_0 - x_0^2}{y_0^2 - x_0}.
+	\end{equation*}
+\end{enumerate}
 \end{solutionbox}
 
 \newpage
@@ -360,7 +1125,36 @@ Find $\frac{dy}{dx}$ for the equation $x^3 + y^3 - 3xy = 5$ at the point $(x_0, 
 Find the slope of the tangent line $m_t$ and the equation of the tangent line to the curve $y = x^2 - 3x + 2$ at $x = 2$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Formulas for the tangent line:
+	\begin{align*}
+		m_t &= f'(x_0) \\
+		y - y_0 &= m_t(x - x_0)
+	\end{align*}
+	
+	\item [Step 2.] Find the derivative $f'(x)$:
+	\begin{equation}\label{eq;7.1.1}
+		f'(x) = \frac{d}{dx}\left[x^2 - 3x + 2\right] = 2x - 3.
+	\end{equation}
+
+	\item [Step 3.] Find the point of tangency $(x_0, y_0)$ by evaluating $y(2)$:
+	\begin{equation*}
+		y_0 = f(2) = (2)^2 - 3(2) + 2 = 4 - 6 + 2 = 0
+	\end{equation*}
+	implies $(x_0, y_0) = (2, 0)$.
+
+	\item [Step 4.] Find the slope of the tangent line $m_t$:
+	\begin{equation*}
+		m_t = f'(2) = 2(2) - 3 = 4 - 3 = 1.
+	\end{equation*}
+
+	\item [Step 5.] Construct the equation of the tangent line:
+	\begin{align*}
+		y - y_0 &= m_t(x - x_0) \\
+		y - 0 &= 1(x - 2) \\
+		y &= x - 2 \quad \left(\text{or } x - y - 2 = 0\right).
+	\end{align*}
+\end{enumerate}
 \end{solutionbox}
 
 \subsection{Type 7.2: Equation of the Normal Line}
@@ -368,7 +1162,37 @@ Find the slope of the tangent line $m_t$ and the equation of the tangent line to
 Find the slope of the normal line $m_n$ and the equation of the normal line to the curve $y = x^2 - 3x + 2$ at $x = 2$.
 \end{problembox}
 \begin{solutionbox}
-% [Write your step-by-step gold-standard solution here]
+\begin{enumerate}
+	\item [Step 1.] Formulas for the normal line:
+	\begin{align*}
+		m_t &= f'(x_0) \\
+		m_n &= -\frac{1}{m_t} \quad (m_t \neq 0) \\
+		y - y_0 &= m_n(x - x_0)
+	\end{align*}
+	
+	\item [Step 2.] Find the derivative $f'(x)$:
+	\begin{equation}\label{eq;7.2.1}
+		f'(x) = \frac{d}{dx}\left[x^2 - 3x + 2\right] = 2x - 3.
+	\end{equation}
+
+	\item [Step 3.] Find the point $(x_0, y_0)$ by evaluating $y(2)$:
+	\begin{equation*}
+		y_0 = f(2) = (2)^2 - 3(2) + 2 = 4 - 6 + 2 = 0
+	\end{equation*}
+	implies $(x_0, y_0) = (2, 0)$.
+
+	\item [Step 4.] Find the slope of the normal line $m_n$:
+	\begin{equation*}
+		m_t = f'(2) = 2(2) - 3 = 1 \implies m_n = -\frac{1}{m_t} = -\frac{1}{1} = -1.
+	\end{equation*}
+
+	\item [Step 5.] Construct the equation of the normal line:
+	\begin{align*}
+		y - y_0 &= m_n(x - x_0) \\
+		y - 0 &= -1(x - 2) \\
+		y &= -x + 2 \quad \left(\text{or } x + y - 2 = 0\right).
+	\end{align*}
+\end{enumerate}
 \end{solutionbox}
 
 \end{document}
