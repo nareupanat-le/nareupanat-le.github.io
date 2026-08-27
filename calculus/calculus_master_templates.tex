@@ -1,0 +1,374 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{tcolorbox}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+\tcbuselibrary{skins,breakable}
+
+\newtcolorbox{problembox}[1]{
+  colback=blue!5!white,
+  colframe=blue!75!black,
+  fonttitle=\bfseries,
+  title={#1},
+  breakable
+}
+
+\newtcolorbox{solutionbox}{
+  colback=yellow!5!white,
+  colframe=orange!75!black,
+  fonttitle=\bfseries,
+  title={Gold-Standard Solution (Write your master solution template here)},
+  breakable
+}
+
+\title{\textbf{Calculus 1 Problem Templates for Dynamic Generation}\\
+\large Master Reference Sheet for Generator Patterns}
+\author{Calculus Practice System (v.2026.01)}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\noindent\textbf{Instructions for Professor:}
+This document collects representative problem archetypes across all 7 core categories in the Calculus 1 practice hub. Please write your step-by-step gold-standard solution and LaTeX layout inside the \texttt{solutionbox} for each problem type. Once completed, the system will use your exact structure as the universal dynamic template for all randomized problem instances.
+
+\tableofcontents
+\newpage
+
+% =========================================================================
+% SECTION 1: LIMITS
+% =========================================================================
+\section{Limits of Functions}
+
+\subsection{Type 1.1: Factoring ($0/0$ Quadratic / Difference of Squares)}
+\begin{problembox}{Problem 1.1: Limit by Factoring}
+Evaluate the limit:
+\[
+\lim_{x \to 2} \frac{x^2 - 4}{x - 2}
+\]
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 1.2: Square Root Conjugate ($0/0$)}
+\begin{problembox}{Problem 1.2: Limit by Conjugate (Square Root)}
+Evaluate the limit:
+\[
+\lim_{x \to 0} \frac{\sqrt{x + 4} - 2}{x}
+\]
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 1.3: Cube Root Conjugate / Difference of Cubes ($0/0$)}
+\begin{problembox}{Problem 1.3: Limit by Cube Root Conjugate}
+Evaluate the limit:
+\[
+\lim_{x \to 0} \frac{\sqrt[3]{x + 8} - 2}{x}
+\]
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 1.4: Complex Fraction ($0/0$)}
+\begin{problembox}{Problem 1.4: Limit of Complex Fractions}
+Evaluate the limit:
+\[
+\lim_{x \to 0} \frac{\frac{1}{x + 3} - \frac{1}{3}}{x}
+\]
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 1.5: Double Conjugate (Numerator \& Denominator)}
+\begin{problembox}{Problem 1.5: Double Conjugate Limit}
+Evaluate the limit:
+\[
+\lim_{x \to 0} \frac{\sqrt{x + 4} - 2}{\sqrt{x + 9} - 3}
+\]
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 1.6: Basic Trigonometric Limits ($\frac{\sin kx}{x}$, $\frac{\tan kx}{\sin mx}$)}
+\begin{problembox}{Problem 1.6: Trigonometric Limit}
+Evaluate the limit:
+\[
+\lim_{x \to 0} \frac{\tan(3x)}{\sin(5x)}
+\]
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 1.7: Limits at Infinity ($\infty/\infty$ \& $\infty - \infty$)}
+\begin{problembox}{Problem 1.7: Limit at Infinity}
+Evaluate the limit:
+\[
+\lim_{x \to \infty} \left( \sqrt{x^2 + 4x} - x \right)
+\]
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 1.8: One-Sided Limit with Absolute Value}
+\begin{problembox}{Problem 1.8: One-Sided Limit with $|x|$}
+Evaluate the one-sided limit:
+\[
+\lim_{x \to 2^-} \frac{|x - 2|}{x^2 - 4}
+\]
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 1.9: L'H\^opital's Rule ($0/0$ or $\infty/\infty$)}
+\begin{problembox}{Problem 1.9: L'H\^opital's Rule}
+Evaluate the limit using L'H\^opital's Rule:
+\[
+\lim_{x \to 0} \frac{e^{2x} - 1}{\sin(3x)}
+\]
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\newpage
+% =========================================================================
+% SECTION 2: BASIC DERIVATIVES & TERM-BY-TERM
+% =========================================================================
+\section{Basic Derivatives \& Term-by-Term Differentiation}
+
+\subsection{Type 2.1: Polynomial with Fractional and Negative Powers}
+\begin{problembox}{Problem 2.1: Powers and Radicals}
+Given $f(x) = 3x^3 + \frac{3}{x} + 5\sqrt{x}$, find $f'(x)$ and evaluate $f'(1)$.
+\end{problembox}
+\begin{solutionbox}
+\begin{enumerate}
+	\item [Step 1.] Rules and formula used in this problem are:
+	\begin{align*}
+		u^n &= \frac{1}{u^{-n}} \\
+		\sqrt[n]{u^m} &= x^{\frac{m}{n}} \\
+		[u^n]' &= n u^{n-1} u' \\
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
+	\end{align*}
+	
+	\item [Step 2.] Then,
+	\begin{equation}\label{eq;2.1.1}
+		f'(x) = \frac{d}{dx} \left(3x^3 + \frac{3}{x} + 5\sqrt{x}\right)
+		= 3 \frac{d}{dx} x^3 + 3 \frac{d}{dx} \frac{1}{x} + 5 \frac{d}{dx} \sqrt{x}.
+	\end{equation}
+	Consider 1st term, then
+	\begin{equation*}
+		\frac{d}{dx} x^3 = 3x^2 \frac{d}{dx}x = 3x^2(1) = 3x^2.
+	\end{equation*}
+	Consider 2nd term, then
+	\begin{equation*}
+		\frac{d}{dx} \frac{1}{x} = \frac{d}{dx} x^{-1} = (-1)x^{-2} \frac{d}{dx}x = (-1)x^{-2} (1) = -\frac{1}{x^2}.
+	\end{equation*}
+	Consider 3rd term, then
+	\begin{equation*}
+		\frac{d}{dx} \sqrt{x} = \frac{d}{dx} x^{\frac{1}{2}} = \frac{1}{2} \cdot x^{-\frac{1}{2}} \frac{d}{dx}x = \frac{1}{2} \cdot x^{-\frac{1}{2}} (1) = \frac{1}{2 x^{\frac{1}{2}}} = \frac{1}{2\sqrt{x}}.
+	\end{equation*}
+	Combine these three terms together, we obtain
+	\begin{align*}
+		f'(x) &= 3 \frac{d}{dx} x^3 + 3 \frac{d}{dx} \frac{1}{x} + 5 \frac{d}{dx} \sqrt{x} \\
+		&= 3 (3x^2) + 3 (-\frac{1}{x^2}) + 5 (\frac{1}{2\sqrt{x}}) \\
+		&= 9x^2 - \frac{3}{x^2} + \frac{5}{2\sqrt{x}}
+	\end{align*}
+\end{enumerate}
+\end{solutionbox}
+
+\subsection{Type 2.2: Basic Trigonometric Functions (Sine, Cosine, Secant, Tangent)}
+\begin{problembox}{Problem 2.2: Trig Derivatives}
+Given $f(x) = 4\sin(3x) - 2\cos(3x)$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 2.3: Natural and General Exponential Functions ($e^{kx}$ and $a^u$)}
+\begin{problembox}{Problem 2.3: Exponential Derivatives}
+Given $f(x) = 3^{2x+1} + 2e^{3x}$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 2.4: Sum of Inverse Trigonometric Functions}
+\begin{problembox}{Problem 2.4: Inverse Trig Derivatives}
+Given $f(x) = 3\arccos(4x) + 2\operatorname{arccot}(x)$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\newpage
+% =========================================================================
+% SECTION 3: PRODUCT RULE
+% =========================================================================
+\section{Product Rule: $(uv)' = uv' + vu'$}
+
+\subsection{Type 3.1: Polynomial $\times$ Exponential}
+\begin{problembox}{Problem 3.1: Product Rule (Poly $\times$ Exp)}
+Given $f(x) = (2x + 3)e^{2x}$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 3.2: Exponential $\times$ Trigonometric (Damped Oscillation)}
+\begin{problembox}{Problem 3.2: Product Rule (Exp $\times$ Trig)}
+Given $f(x) = e^{-2x}\cos(3x)$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 3.3: Polynomial / Exponential $\times$ Inverse Trigonometric}
+\begin{problembox}{Problem 3.3: Product Rule with Inverse Trig}
+Given $f(x) = (e^{3x} + 2x)\arctan(x)$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\newpage
+% =========================================================================
+% SECTION 4: QUOTIENT RULE
+% =========================================================================
+\section{Quotient Rule: $\left(\frac{u}{v}\right)' = \frac{u'v - uv'}{v^2}$}
+
+\subsection{Type 4.1: Rational Polynomial Function}
+\begin{problembox}{Problem 4.1: Quotient Rule (Polynomials)}
+Given $f(x) = \frac{2x + 3}{x - 4}$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 4.2: Trigonometric / Radical Quotient}
+\begin{problembox}{Problem 4.2: Quotient Rule (Trig / Radical)}
+Given $f(x) = \frac{\sin(2x)}{\sqrt{x^2 + 1}}$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\newpage
+% =========================================================================
+% SECTION 5: CHAIN RULE \& COMPOSITE FUNCTIONS
+% =========================================================================
+\section{Chain Rule \& Composite Functions}
+
+\subsection{Type 5.1: Radical with Quadratic Inside $\sqrt{u(x)}$}
+\begin{problembox}{Problem 5.1: Chain Rule with Radical}
+Given $f(x) = \sqrt{2x^2 + 3x + 4}$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 5.2: Logarithmic with Polynomial Inside $\ln(u(x))$}
+\begin{problembox}{Problem 5.2: Chain Rule with Natural Log}
+Given $f(x) = \ln(x^2 + 3x + 2)$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 5.3: Trigonometric with Linear / Quadratic Inside}
+\begin{problembox}{Problem 5.3: Chain Rule with Cotangent}
+Given $f(x) = 2\cot\left(3x + \frac{\pi}{4}\right)$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 5.4: Inverse Trigonometric with Chain Rule}
+\begin{problembox}{Problem 5.4: Chain Rule with ArcSec}
+Given $f(x) = 2\operatorname{arcsec}(3x)$, find $f'(x)$ and evaluate $f'(1)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 5.5: Nested Composite Function ($\text{Trig}(\text{Inverse Trig}(kx))$)}
+\begin{problembox}{Problem 5.5: Nested Trig of Inverse Trig}
+Given $f(x) = \tan(\arcsin(3x))$, find $f'(x)$ and evaluate $f'(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 5.6: Logarithmic Differentiation ($y = x^{kx}$)}
+\begin{problembox}{Problem 5.6: Logarithmic Differentiation}
+Given $f(x) = x^{3x}$ for $x > 0$, find $f'(x)$ and evaluate $f'(1)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 5.7: Higher-Order Derivative ($f''(x)$)}
+\begin{problembox}{Problem 5.7: Second Derivative}
+Given $f(x) = x^2 e^{2x}$, find $f''(x)$ and evaluate $f''(0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\newpage
+% =========================================================================
+% SECTION 6: IMPLICIT DIFFERENTIATION
+% =========================================================================
+\section{Implicit Differentiation}
+
+\subsection{Type 6.1: Circle / Quadratic Relation}
+\begin{problembox}{Problem 6.1: Implicit Differentiation (Circle)}
+Find $\frac{dy}{dx}$ for the equation $x^2 + y^2 = 25$ at the point $(3, 4)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 6.2: Mixed Polynomial with $xy$ Product Term}
+\begin{problembox}{Problem 6.2: Implicit Differentiation with Product Rule}
+Find $\frac{dy}{dx}$ for the equation $x^3 + y^3 - 3xy = 5$ at the point $(x_0, y_0)$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\newpage
+% =========================================================================
+% SECTION 7: TANGENT \& NORMAL LINES
+% =========================================================================
+\section{Tangent \& Normal Lines}
+
+\subsection{Type 7.1: Equation of the Tangent Line}
+\begin{problembox}{Problem 7.1: Tangent Line Equation}
+Find the slope of the tangent line $m_t$ and the equation of the tangent line to the curve $y = x^2 - 3x + 2$ at $x = 2$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\subsection{Type 7.2: Equation of the Normal Line}
+\begin{problembox}{Problem 7.2: Normal Line Equation}
+Find the slope of the normal line $m_n$ and the equation of the normal line to the curve $y = x^2 - 3x + 2$ at $x = 2$.
+\end{problembox}
+\begin{solutionbox}
+% [Write your step-by-step gold-standard solution here]
+\end{solutionbox}
+
+\end{document}
