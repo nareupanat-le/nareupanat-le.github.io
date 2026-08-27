@@ -554,7 +554,6 @@
     <div id="solBox" class="result-box hidden">
       <h4>📝 วิธีทำอย่างละเอียด</h4>
       <div id="solContent"></div>
-      <div id="svgGraphContainer" style="margin-top: 16px; text-align: center;"></div>
     </div>
 
     <!-- Quiz Report Card (เมื่อทำครบ 5 ข้อ) -->
@@ -711,48 +710,6 @@ function safeRenderMath(element) {
 window.addEventListener('resize', function() {
   adaptMathEquations();
 });
-
-// 2D SVG Graph Renderer for Limits (แสดงจุดโปร่ง Hole and Convergence)
-function generateSvgLimit(a, L, title="📈 กราฟแสดงการลู่เข้าของลิมิต ณ จุด x = a") {
-  let width = 360, height = 200;
-  let cx = 180, cy = 100;
-  let scaleX = 30, scaleY = 14;
-
-  let curvePts = [];
-  for (let px = -5; px <= 5; px += 0.5) {
-    if (Math.abs(px) < 0.2) continue; // ข้ามจุด x = a
-    let xVal = a + px * 0.4;
-    let yVal = L + 0.8 * (xVal - a);
-    let svgX = cx + (xVal - a) * scaleX;
-    let svgY = cy - (yVal - L) * scaleY;
-    if (svgY >= 10 && svgY <= height - 10) {
-      curvePts.push(`${svgX.toFixed(1)},${svgY.toFixed(1)}`);
-    }
-  }
-
-  return `
-    <div style="background:#fff; border:1px solid #e0d8ce; border-radius:10px; padding:12px; margin-top:14px; text-align:center;">
-      <div style="font-size:0.88rem; font-weight:600; color:var(--muted); margin-bottom:8px;">${title}</div>
-      <svg viewBox="0 0 ${width} ${height}" style="width:100%; max-width:380px; height:auto;">
-        <!-- Axes -->
-        <line x1="20" y1="${cy}" x2="${width-20}" y2="${cy}" stroke="#d0c8be" stroke-width="1.5" stroke-dasharray="3,3"/>
-        <line x1="${cx}" y1="15" x2="${cx}" y2="${height-15}" stroke="#d0c8be" stroke-width="1.5" stroke-dasharray="3,3"/>
-        <!-- Convergence Arrows -->
-        <path d="M ${cx - 50} ${cy + 30} L ${cx - 15} ${cy + 10}" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
-        <path d="M ${cx + 50} ${cy - 30} L ${cx + 15} ${cy - 10}" stroke="#2e7d32" stroke-width="2" marker-end="url(#arrow)" fill="none"/>
-        <!-- Curve Line -->
-        <polyline points="${curvePts.join(' ')}" fill="none" stroke="#2b4c7e" stroke-width="2.5"/>
-        <!-- Hole Point (a, L) -->
-        <circle cx="${cx}" cy="${cy}" r="6" fill="#fff" stroke="#c62828" stroke-width="2.5"/>
-        <text x="${cx + 10}" y="${cy - 8}" fill="#c62828" font-size="11" font-weight="bold">(${a}, ${L.toFixed(1)})</text>
-      </svg>
-      <div style="font-size:0.8rem; color:#666; margin-top:4px;">
-        <span style="color:#c62828;">○</span> จุดไม่นิยาม ($0/0$) &nbsp;|&nbsp; 
-        <span style="color:#2e7d32;">→</span> ลิมิตซ้าย-ขวาลู่เข้าสู่ค่า $L = ${L.toFixed(2)}$
-      </div>
-    </div>
-  `;
-}
 
 // =========================================================
 // 2. Generators: สลับระดับง่าย (🟢) / ปานกลาง (🟡) / ท้าทาย (🔴)
@@ -1588,14 +1545,6 @@ function renderProblemView(prob) {
 
   document.getElementById('ansContent').innerHTML = `$$\\displaystyle ${prob.ansLatex}$$`;
   document.getElementById('solContent').innerHTML = prob.solHtml;
-
-  // Render SVG Graph if applicable
-  let svgContainer = document.getElementById('svgGraphContainer');
-  if (prob.limitPt !== undefined && prob.limitVal !== undefined) {
-    svgContainer.innerHTML = generateSvgLimit(prob.limitPt, prob.limitVal);
-  } else {
-    svgContainer.innerHTML = '';
-  }
 
   // Hint content
   document.getElementById('hintContent').textContent = prob.hintText || "ตรวจสอบรูปแบบไม่กำหนดแล้วลองแยกตัวประกอบหรือคูณสังยุค";
