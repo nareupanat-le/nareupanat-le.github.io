@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ระบบสุ่มโจทย์ลิมิตแคลคูลัส</title>
+    <title>โจทย์ลิมิตขั้นพื้นฐาน</title>
     <!-- MathJax สำหรับเรนเดอร์สมการ LaTeX -->
     <script>
         window.MathJax = {
@@ -110,8 +110,11 @@ function generateProblem() {
         let finalVal = toFrac(p1 * a + q1, p2 * a + q2);
         let probLatex = `\\lim_{x \\to ${a}} \\frac{${numExp}}{${denExp}}`;
 
+        let instruction = "จงหาค่าลิมิตต่อไปนี้";
+        let displayEquation = `\\begin{equation*} ${probLatex} \\end{equation*}`;
+
         currentProb = {
-            prob: `$${probLatex}$`,
+            prob: `${instruction}<br>${displayEquation}`,
             ans: `$${finalVal}$`,
             sol: `<b>วิธีทำอย่างละเอียด:</b><br>` +
                  `1. แทนค่า $x = ${a}$ จะพบว่าอยู่ในรูปแบบ $\\frac{0}{0}$<br>` +
