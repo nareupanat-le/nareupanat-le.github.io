@@ -172,25 +172,60 @@
     }
 
     .feedback-box {
-      margin-top: 12px;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 0.95rem;
+      margin-top: 16px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-size: 1.05rem;
       display: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    }
+
+    .feedback-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
     }
 
     .feedback-success {
-      background: #edf7ed;
-      color: #1e4620;
-      border: 1px solid #c8e6c9;
+      background: #e8f5e9;
+      color: #1b5e20;
+      border: 2px solid #2e7d32;
       display: block;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .feedback-error {
-      background: #fdf2f2;
-      color: #842029;
-      border: 1px solid #f5c2c7;
+      background: #ffebee;
+      color: #b71c1c;
+      border: 2px solid #c62828;
       display: block;
+      animation: shake 0.4s ease;
+    }
+
+    .input-success {
+      border: 2px solid #2e7d32 !important;
+      background: #f1f8e9 !important;
+      box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.2) !important;
+    }
+
+    .input-error {
+      border: 2px solid #c62828 !important;
+      background: #fff5f5 !important;
+      box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.2) !important;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
     }
 
     .result-box {
@@ -803,7 +838,11 @@ function generateRandomProblem() {
   // รีเซ็ตสถานะกล่องแสดงผลและช่องกรอกคำตอบ
   document.getElementById('ansBox').classList.add('hidden');
   document.getElementById('solBox').classList.add('hidden');
-  document.getElementById('userAnsInput').value = '';
+  
+  let inputEl = document.getElementById('userAnsInput');
+  inputEl.value = '';
+  inputEl.classList.remove('input-success', 'input-error');
+
   let feedback = document.getElementById('feedbackBox');
   feedback.style.display = 'none';
   feedback.className = 'feedback-box';
@@ -830,17 +869,22 @@ function parseInputFraction(str) {
 
 function checkAnswer() {
   let feedback = document.getElementById('feedbackBox');
+  let inputEl = document.getElementById('userAnsInput');
+  inputEl.classList.remove('input-success', 'input-error');
+
   if (!currentProblem) {
     feedback.className = 'feedback-box feedback-error';
-    feedback.innerHTML = '⚠️ กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> ก่อนทำแบบฝึกหัดครับ';
+    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> ยังไม่มีโจทย์</div><div>กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> ก่อนทำแบบฝึกหัดครับ</div>';
     return;
   }
-  let inputStr = document.getElementById('userAnsInput').value;
+  
+  let inputStr = inputEl.value;
   let parsed = parseInputFraction(inputStr);
 
   if (!parsed) {
+    inputEl.classList.add('input-error');
     feedback.className = 'feedback-box feedback-error';
-    feedback.innerHTML = '⚠️ กรุณากรอกคำตอบเป็นตัวเลขหรือเศษส่วน เช่น <code>1/2</code>, <code>-3</code>, <code>0</code>';
+    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> รูปแบบคำตอบไม่ถูกต้อง</div><div>กรุณากรอกเป็นตัวเลขหรือเศษส่วน เช่น <code>1/2</code>, <code>-3/4</code>, <code>5</code>, <code>0</code></div>';
     return;
   }
 
@@ -853,14 +897,29 @@ function checkAnswer() {
     document.getElementById('scoreCorrect').textContent = scoreCorrect;
     document.getElementById('streakCount').textContent = streakCount;
 
+    inputEl.classList.add('input-success');
     feedback.className = 'feedback-box feedback-success';
-    feedback.innerHTML = `🎉 <strong>ถูกต้องยอดเยี่ยม!</strong> คำตอบคือ $${currentProblem.ansLatex}$`;
+    feedback.innerHTML = `
+      <div class="feedback-title"><span>✅</span> ถูกต้องยอดเยี่ยม!</div>
+      <div style="font-size: 1.05rem; margin-top: 4px;">
+        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ตรงกับค่าลิมิตจริง $\\displaystyle ${currentProblem.ansLatex}$
+      </div>
+    `;
   } else {
     streakCount = 0;
     document.getElementById('streakCount').textContent = streakCount;
 
+    inputEl.classList.add('input-error');
     feedback.className = 'feedback-box feedback-error';
-    feedback.innerHTML = `❌ <strong>ยังไม่ถูกต้อง</strong> ลองตรวจสอบเครื่องหมายหรือการตัดทอนอีกครั้ง หรือกดปุ่ม <em>"ดูวิธีทำอย่างละเอียด"</em> ด้านล่าง`;
+    feedback.innerHTML = `
+      <div class="feedback-title"><span>❌</span> ยังไม่ถูกต้อง</div>
+      <div style="font-size: 1.05rem; margin-top: 4px;">
+        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ยังไม่ตรงกับค่าลิมิตของโจทย์ข้อนี้
+      </div>
+      <div style="font-size: 0.95rem; margin-top: 8px; color: #721c24;">
+        💡 คำแนะนำ: ลองตรวจสอบการแยกตัวประกอบ / เครื่องหมายของสังยุค หรือกดปุ่ม <strong>"ดูวิธีทำอย่างละเอียด"</strong> ด้านล่าง
+      </div>
+    `;
   }
 
   safeRenderMath(feedback);
@@ -870,7 +929,7 @@ function toggleAnswer() {
   if (!currentProblem) {
     let feedback = document.getElementById('feedbackBox');
     feedback.className = 'feedback-box feedback-error';
-    feedback.innerHTML = '⚠️ กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ';
+    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> ยังไม่ได้สุ่มโจทย์</div><div>กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ</div>';
     return;
   }
   let box = document.getElementById('ansBox');
@@ -884,7 +943,7 @@ function toggleSolution() {
   if (!currentProblem) {
     let feedback = document.getElementById('feedbackBox');
     feedback.className = 'feedback-box feedback-error';
-    feedback.innerHTML = '⚠️ กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ';
+    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> ยังไม่ได้สุ่มโจทย์</div><div>กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ</div>';
     return;
   }
   let box = document.getElementById('solBox');
@@ -893,6 +952,11 @@ function toggleSolution() {
     safeRenderMath(box);
   }
 }
+
+// ล้างกรอบ error/success เมื่อเริ่มพิมพ์ใหม่
+document.getElementById('userAnsInput').addEventListener('input', function() {
+  this.classList.remove('input-success', 'input-error');
+});
 
 // Enter Key triggers answer check
 document.getElementById('userAnsInput').addEventListener('keyup', function(e) {
