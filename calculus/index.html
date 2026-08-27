@@ -525,7 +525,7 @@
 </header>
 
 <main>
-  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.21:46</span></h3>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.21:55</span></h3>
   <p class="byline">คลังโจทย์แคลคูลัส 1 พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
@@ -629,7 +629,7 @@
   </div>
 
   <footer style="text-align: center; margin-top: 28px; margin-bottom: 16px; font-size: 0.85rem; color: var(--muted);">
-    Calculus 1 Practice Hub • v.2026.08.27.21:46
+    Calculus 1 Practice Hub • v.2026.08.27.21:55
   </footer>
 </main>
 
@@ -2154,10 +2154,10 @@ function genDerivEasyTangent() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 5: สร้างสมการเส้นสัมผัส</strong><br>
-      $$\begin{align*}
-        y - y_0 &= m_t(x - x_0) \\
+      $$\\begin{align*}
+        y - y_0 &= m_t(x - x_0) \\\\
         y ${y0 >= 0 ? `- ${y0}` : `+ ${Math.abs(y0)}`} &= ${slopeVal === 1 ? "" : (slopeVal === -1 ? "-" : slopeVal)}(x ${x0 >= 0 ? `- ${x0}` : `+ ${Math.abs(x0)}`})
-      \end{align*}$$
+      \\end{align*}$$
       ดังนั้นสมการเส้นสัมผัสคือ $$${tangentEq}$$
     </div>
   `;
@@ -3396,17 +3396,17 @@ function genDerivNormalLine() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: หาความชันของเส้นปกติ $m_n$</strong>
-      $$\begin{align*}
-        m_t &= f'(${x0}) = ${slopeTangent} \\
-        m_n &= -\frac{1}{m_t} = -\frac{1}{${slopeTangent}} = ${slopeNormalLatex}
-      \end{align*}$$
+      $$\\begin{align*}
+        m_t &= f'(${x0}) = ${slopeTangent} \\\\
+        m_n &= -\\frac{1}{m_t} = -\\frac{1}{${slopeTangent}} = ${slopeNormalLatex}
+      \\end{align*}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 5: หาสมการเส้นปกติ</strong><br>
-      $$\begin{align*}
-        y - y_0 &= m_n(x - x_0) \\
+      $$\\begin{align*}
+        y - y_0 &= m_n(x - x_0) \\\\
         ${normalEq}
-      \end{align*}$$
+      \\end{align*}$$
       ดังนั้นสมการเส้นปกติคือ $$${normalEq}$$
     </div>
   `;
@@ -3458,8 +3458,8 @@ function genDerivImplicitCircle() {
   `;
 
   let customAnsContent = `
-    <strong>อนุพันธ์โดยปริยาย:</strong> $$\displaystyle \\frac{dy}{dx} = -\\frac{x}{y}$$
-    <strong>ค่าที่จุด $(${x0}, ${y0})$:</strong> $$\displaystyle \\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
+    <strong>อนุพันธ์โดยปริยาย:</strong> $$\\displaystyle \\frac{dy}{dx} = -\\frac{x}{y}$$
+    <strong>ค่าที่จุด $(${x0}, ${y0})$:</strong> $$\\displaystyle \\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
   `;
 
   let solText = `
@@ -3548,8 +3548,8 @@ function genDerivImplicitPolynomial() {
   `;
 
   let customAnsContent = `
-    <strong>อนุพันธ์โดยปริยาย:</strong> $$\displaystyle \\frac{dy}{dx} = \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}$$
-    <strong>ค่าที่จุด $(${x0}, ${y0})$:</strong> $$\displaystyle \\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
+    <strong>อนุพันธ์โดยปริยาย:</strong> $$\\displaystyle \\frac{dy}{dx} = \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}$$
+    <strong>ค่าที่จุด $(${x0}, ${y0})$:</strong> $$\\displaystyle \\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
   `;
 
   let solText = `
