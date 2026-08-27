@@ -1,0 +1,1001 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>แบบฝึกหัดอนุพันธ์แคลคูลัส — Nareupanat Lekkoksung</title>
+  
+  <!-- Site Base Stylesheet (ไม่แก้ไขไฟล์นี้) -->
+  <link rel="stylesheet" href="/assets/style.css">
+
+  <!-- MathJax Configuration -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Derivative App Specific Styles (ใช้ Design Tokens จาก style.css) -->
+  <style>
+    .app-card {
+      background: #ffffff;
+      border: 1px solid rgba(122, 92, 58, 0.2);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+
+    .meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(122, 92, 58, 0.12);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(122, 92, 58, 0.08);
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(122, 92, 58, 0.2);
+    }
+
+    .stats {
+      font-size: 0.9rem;
+      color: var(--muted);
+      display: flex;
+      gap: 14px;
+    }
+
+    .prob-display {
+      background: #faf8f5;
+      border: 1px solid rgba(122, 92, 58, 0.15);
+      border-radius: 12px;
+      padding: 22px;
+      margin: 18px 0;
+      text-align: center;
+      font-size: 1.15rem;
+      line-height: 1.8;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .quiz-section {
+      background: #fff;
+      border: 1px dashed rgba(122, 92, 58, 0.35);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin: 20px 0;
+    }
+
+    .quiz-input-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .quiz-input {
+      flex: 1;
+      min-width: 180px;
+      padding: 10px 14px;
+      font-size: 1rem;
+      border: 1px solid rgba(122, 92, 58, 0.3);
+      border-radius: 8px;
+      outline: none;
+      font-family: inherit;
+      color: var(--fg);
+      background: #faf8f5;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .quiz-input:focus {
+      border-color: var(--muted);
+      box-shadow: 0 0 0 3px rgba(122, 92, 58, 0.15);
+      background: #fff;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0 10px;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--muted);
+      color: #ffffff;
+      border: 1px solid var(--muted);
+    }
+    .btn-primary:hover {
+      background: var(--link-hover);
+      border-color: var(--link-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--link);
+      border: 1px solid rgba(122, 92, 58, 0.35);
+    }
+    .btn-secondary:hover {
+      background: rgba(122, 92, 58, 0.08);
+      color: var(--link-hover);
+      border-color: var(--muted);
+      transform: translateY(-1px);
+    }
+
+    .btn-check {
+      background: #4a6b47;
+      color: #ffffff;
+      border: 1px solid #4a6b47;
+    }
+    .btn-check:hover {
+      background: #395436;
+      transform: translateY(-1px);
+    }
+
+    .feedback-box {
+      margin-top: 16px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      display: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+    }
+
+    .feedback-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .feedback-success {
+      background: #e8f5e9;
+      color: #1b5e20;
+      border: 2px solid #2e7d32;
+      display: block;
+      animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .feedback-error {
+      background: #ffebee;
+      color: #b71c1c;
+      border: 2px solid #c62828;
+      display: block;
+      animation: shake 0.4s ease;
+    }
+
+    .input-success {
+      border: 2px solid #2e7d32 !important;
+      background: #f1f8e9 !important;
+      box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.2) !important;
+    }
+
+    .input-error {
+      border: 2px solid #c62828 !important;
+      background: #fff5f5 !important;
+      box-shadow: 0 0 0 4px rgba(198, 40, 40, 0.2) !important;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.92); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    .result-box {
+      margin-top: 16px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #faf8f5;
+      border-left: 4px solid var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .result-box h4 {
+      margin: 0 0 10px 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .solution-step {
+      margin-bottom: 14px;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed rgba(122, 92, 58, 0.15);
+    }
+
+    .solution-step:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    @media (max-width: 600px) {
+      .app-card { padding: 18px; }
+      .btn-group { flex-direction: column; }
+      .btn { width: 100%; }
+      .quiz-input-group { flex-direction: column; align-items: stretch; }
+      .quiz-input { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<header class="site-header">
+  <a class="brand" href="/">Home</a>
+  <nav class="nav">
+    <a href="/cv.html">CV</a>
+    <a href="/publications.html">Publications</a>
+    <a href="/talks.html">Talks</a>
+    <a href="/research.html">Research Interests</a>
+    <a href="/teaching.html">Teaching</a>
+  </nav>
+</header>
+
+<main>
+  <h3>แบบฝึกหัดอนุพันธ์แคลคูลัส</h3>
+  <p class="byline">สุ่มโจทย์การหาอนุพันธ์ระดับมหาวิทยาลัย คละเทคนิคกฎลูกโซ่ กฎผลคูณ กฎผลหาร ฟังก์ชันตรีโกณมิติผกผัน และสมการเส้นสัมผัส</p>
+
+  <div class="app-card">
+    <div class="meta-bar">
+      <div id="topicBadge" class="badge">สถานะ: รอสุ่มโจทย์</div>
+      <div class="stats">
+        <span>ทำถูก: <strong id="scoreCorrect">0</strong> ข้อ</span>
+        <span>Streak: <strong id="streakCount">0</strong> 🔥</span>
+      </div>
+    </div>
+
+    <!-- พื้นที่แสดงโจทย์ -->
+    <div id="probBox" class="prob-display">
+      <span style="color: var(--muted);">กดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> ด้านล่างเพื่อเริ่มต้นทำแบบฝึกหัด</span>
+    </div>
+
+    <!-- ส่วนทดลองตอบ (Interactive Quiz) -->
+    <div class="quiz-section">
+      <label id="quizPromptLabel" for="userAnsInput" style="display:block; margin-bottom: 8px; font-weight: 600; font-size: 0.95rem;">
+        ✍️ ทดลองคำนวณค่าของ $f'(x_{0})$:
+      </label>
+      <div class="quiz-input-group">
+        <input type="text" id="userAnsInput" class="quiz-input" placeholder="เช่น 6, -3/2, 0" autocomplete="off" />
+        <button class="btn btn-check" onclick="checkAnswer()">ตรวจคำตอบ</button>
+      </div>
+      <div id="feedbackBox" class="feedback-box"></div>
+    </div>
+
+    <!-- ปุ่มควบคุม -->
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="generateRandomProblem()">🎲 สุ่มโจทย์ใหม่</button>
+      <button class="btn btn-secondary" onclick="toggleAnswer()">💡 ดูคำตอบ</button>
+      <button class="btn btn-secondary" onclick="toggleSolution()">📝 ดูวิธีทำอย่างละเอียด</button>
+    </div>
+
+    <!-- พื้นที่แสดงคำตอบ -->
+    <div id="ansBox" class="result-box hidden">
+      <h4>💡 คำตอบ</h4>
+      <div id="ansContent"></div>
+    </div>
+
+    <!-- พื้นที่แสดงวิธีทำ -->
+    <div id="solBox" class="result-box hidden">
+      <h4>📝 วิธีทำอย่างละเอียด</h4>
+      <div id="solContent"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>© <span id="y"></span> Nareupanat Lekkoksung</p>
+</footer>
+
+<script>
+// ==========================================
+// 1. Math Utility Functions (แม่นยำ 100%)
+// ==========================================
+function gcd(a, b) {
+  a = Math.abs(a); b = Math.abs(b);
+  while (b) { let t = b; b = a % b; a = t; }
+  return a || 1;
+}
+
+function toFrac(n, d) {
+  if (d === 0) return "\\text{หาค่าไม่ได้}";
+  if (n === 0) return "0";
+  if (d < 0) { n = -n; d = -d; }
+  let g = gcd(n, d);
+  n /= g; d /= g;
+  if (d === 1) return `${n}`;
+  if (n < 0) return `-\\frac{${Math.abs(n)}}{${d}}`;
+  return `\\frac{${n}}{${d}}`;
+}
+
+function rand(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function randNonZero(min, max) {
+  let val = 0;
+  while (val === 0) {
+    val = rand(min, max);
+  }
+  return val;
+}
+
+function safeRenderMath(element) {
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise(element ? [element] : []).catch(function(err) {
+      console.warn("MathJax error:", err);
+    });
+  }
+}
+
+function formatCoeff(c, isLeading = false) {
+  if (c === 0) return "";
+  if (c === 1) return isLeading ? "" : "+ ";
+  if (c === -1) return "-";
+  if (c > 0) return isLeading ? `${c}` : `+ ${c}`;
+  return isLeading ? `${c}` : `- ${Math.abs(c)}`;
+}
+
+// ==========================================
+// 2. Generators สำหรับอนุพันธ์ระดับมหาวิทยาลัย
+// ==========================================
+
+// 2.1 ตรีโกณมิติผกผัน + กฎลูกโซ่ (Inverse Trig with Chain Rule)
+function generateInverseTrigChain() {
+  let sub = Math.random();
+  let k = rand(2, 4);
+  let a = rand(1, 3);
+  let x0 = 0;
+
+  if (sub < 0.5) {
+    // f(x) = arctan(a*x^2 + k*x)
+    let fExpr = `\\arctan(${a === 1 ? "" : a}x^{2} + ${k === 1 ? "" : k}x)`;
+    let uExpr = `${a === 1 ? "" : a}x^{2} + ${k === 1 ? "" : k}x`;
+    let uPrime = `${2 * a}x + ${k}`;
+    let derivExpr = `\\frac{${uPrime}}{1 + (${uExpr})^{2}}`;
+    
+    let slopeVal = k;
+    let y0Val = 0;
+    let tangentEq = `y = ${slopeVal === 1 ? "x" : (slopeVal === -1 ? "-x" : `${slopeVal}x`)}`;
+
+    let solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชัน $\\arctan(u)$ ร่วมกับกฎลูกโซ่</strong><br>
+        สูตร: $\\frac{d}{dx}[\\arctan(u)] = \\frac{1}{1+u^2} \\cdot \\frac{du}{dx}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: กำหนด $u$ และหาอนุพันธ์ไส้ใน $\\frac{du}{dx}$</strong><br>
+        ให้ $u = ${uExpr}$<br>
+        จะได้ $\\frac{du}{dx} = \\frac{d}{dx}(${uExpr}) = ${uPrime}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+        $$\\displaystyle f'(x) = ${derivExpr}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$ และสมการเส้นสัมผัสที่จุด $x = ${x0}$</strong><br>
+        แทนค่า $x = ${x0}$ ลงใน $f'(x)$:<br>
+        $$\\displaystyle f'(${x0}) = \\frac{${2*a}(${x0}) + ${k}}{1 + (${uExpr.replace(/x/g, `(${x0})`)})^2} = ${slopeVal}$$<br>
+        พิกัดจุดสัมผัสคือ $(${x0}, f(${x0})) = (${x0}, ${y0Val})$<br>
+        สมการเส้นสัมผัส: $y - ${y0Val} = ${slopeVal}(x - ${x0}) \\implies ${tangentEq}$
+      </div>
+    `;
+
+    return {
+      category: "ตรีโกณมิติผกผัน + กฎลูกโซ่ (Inverse Trig & Chain Rule)",
+      probLatex: `f(x) = ${fExpr}`,
+      x0: x0,
+      derivLatex: derivExpr,
+      ansLatex: `${slopeVal}`,
+      tangentLatex: tangentEq,
+      solHtml: solText,
+      exactNum: slopeVal,
+      exactDen: 1
+    };
+  } else {
+    // f(x) = arcsin(k*x)
+    let uExpr = `${k}x`;
+    let fExpr = `\\arcsin(${uExpr})`;
+    let derivExpr = `\\frac{${k}}{\\sqrt{1 - ${k*k}x^{2}}}`;
+    let slopeVal = k;
+    let tangentEq = `y = ${slopeVal === 1 ? "x" : `${slopeVal}x`}`;
+
+    let solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชัน $\\arcsin(u)$ ร่วมกับกฎลูกโซ่</strong><br>
+        สูตร: $\\frac{d}{dx}[\\arcsin(u)] = \\frac{1}{\\sqrt{1-u^2}} \\cdot \\frac{du}{dx}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: กำหนด $u$ และหา $\\frac{du}{dx}$</strong><br>
+        ให้ $u = ${uExpr} \\implies \\frac{du}{dx} = ${k}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+        $$\\displaystyle f'(x) = ${derivExpr}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
+        $$\\displaystyle f'(${x0}) = \\frac{${k}}{\\sqrt{1 - 0}} = ${slopeVal}$$
+      </div>
+    `;
+
+    return {
+      category: "ตรีโกณมิติผกผัน + กฎลูกโซ่ (Inverse Trig & Chain Rule)",
+      probLatex: `f(x) = ${fExpr}`,
+      x0: x0,
+      derivLatex: derivExpr,
+      ansLatex: `${slopeVal}`,
+      tangentLatex: tangentEq,
+      solHtml: solText,
+      exactNum: slopeVal,
+      exactDen: 1
+    };
+  }
+}
+
+// 2.2 กฎผลคูณผสมตรีโกณมิติผกผัน / เอกซ์โพเนนเชียล (Product Rule with Mixed Functions)
+function generateProductRuleMixed() {
+  let sub = Math.random();
+  let k = rand(2, 4);
+  let a = rand(1, 3);
+  let x0 = 0;
+
+  if (sub < 0.5) {
+    // f(x) = (ax + b) * arctan(kx)
+    let b = rand(1, 4);
+    let u = (a === 1) ? `x + ${b}` : `${a}x + ${b}`;
+    let v = `\\arctan(${k}x)`;
+    let fExpr = `(${u}) ${v}`;
+
+    let derivExpr = `${a === 1 ? "" : a}\\arctan(${k}x) + \\frac{${k}(${u})}{1 + ${k*k}x^{2}}`;
+    let slopeVal = b * k;
+    let tangentEq = `y = ${slopeVal}x`;
+
+    let solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละพจน์</strong><br>
+        ให้ $u = ${u} \\implies u' = ${a}$<br>
+        ให้ $v = \\arctan(${k}x) \\implies v' = \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) = \\frac{${k}}{1 + ${k*k}x^2}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณ</strong><br>
+        $$\\displaystyle f'(x) = ${derivExpr}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: หาค่าความชัน $f'(${x0})$</strong><br>
+        $$\\displaystyle f'(${x0}) = ${a}\\arctan(0) + \\frac{${k}(0 + ${b})}{1 + 0} = 0 + ${b * k} = ${slopeVal}$$
+      </div>
+    `;
+
+    return {
+      category: "กฎผลคูณ + ตรีโกณมิติผกผัน (Product Rule & Inverse Trig)",
+      probLatex: `f(x) = ${fExpr}`,
+      x0: x0,
+      derivLatex: derivExpr,
+      ansLatex: `${slopeVal}`,
+      tangentLatex: tangentEq,
+      solHtml: solText,
+      exactNum: slopeVal,
+      exactDen: 1
+    };
+  } else {
+    // f(x) = (ax^2 + bx) * e^(kx)
+    let b = rand(2, 5);
+    let u = `${a === 1 ? "" : a}x^{2} + ${b}x`;
+    let fExpr = `(${u}) e^{${k}x}`;
+
+    let A = k * a;
+    let B = 2 * a + k * b;
+    let C = b;
+    let polySimplified = `${A === 1 ? "" : A}x^{2} + ${B}x + ${C}`;
+    let derivExpr = `(${polySimplified}) e^{${k}x}`;
+    let slopeVal = b;
+    let tangentEq = `y = ${slopeVal}x`;
+
+    let solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$</strong><br>
+        ให้ $u = ${u} \\implies u' = ${2*a}x + ${b}$<br>
+        ให้ $v = e^{${k}x} \\implies v' = ${k}e^{${k}x}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: แทนค่าและดึงตัวร่วม $e^{${k}x}$</strong><br>
+        $$\\displaystyle f'(x) = (${2*a}x + ${b})e^{${k}x} + (${u})(${k}e^{${k}x}) = ${derivExpr}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$ เพื่อหาค่า $f'(${x0})$</strong><br>
+        $$\\displaystyle f'(${x0}) = (${C})e^{0} = ${slopeVal}$$
+      </div>
+    `;
+
+    return {
+      category: "กฎผลคูณ + เอกซ์โพเนนเชียล (Product Rule & Exponential)",
+      probLatex: `f(x) = ${fExpr}`,
+      x0: x0,
+      derivLatex: derivExpr,
+      ansLatex: `${slopeVal}`,
+      tangentLatex: tangentEq,
+      solHtml: solText,
+      exactNum: slopeVal,
+      exactDen: 1
+    };
+  }
+}
+
+// 2.3 กฎผลหารผสมฟังก์ชันอดิศัย (Quotient Rule with Transcendental Functions)
+function generateQuotientRule() {
+  let sub = Math.random();
+  let k = rand(2, 4);
+  let a = rand(1, 3);
+  let b = rand(1, 4);
+  let x0 = 0;
+
+  if (sub < 0.5) {
+    // f(x) = sin(kx) / (ax + b)
+    let fExpr = `\\frac{\\sin(${k}x)}{${a === 1 ? "x" : `${a}x`} + ${b}}`;
+    let u = `\\sin(${k}x)`, v = `${a === 1 ? "x" : `${a}x`} + ${b}`;
+    let uPrime = `${k}\\cos(${k}x)`, vPrime = `${a}`;
+    
+    let numDeriv = `${k}\\cos(${k}x)(${v}) - ${a}\\sin(${k}x)`;
+    let derivExpr = `\\frac{${numDeriv}}{(${v})^{2}}`;
+
+    let finalNum = k;
+    let finalDen = b;
+    let slopeValLatex = toFrac(finalNum, finalDen);
+
+    let solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$</strong>
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: กำหนด $u$ และ $v$</strong><br>
+        ให้ $u = \\sin(${k}x) \\implies u' = ${uPrime}$<br>
+        ให้ $v = ${v} \\implies v' = ${vPrime}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+        $$\\displaystyle f'(x) = ${derivExpr}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
+        $$\\displaystyle f'(${x0}) = \\frac{${k}\\cos(0)(${b}) - ${a}\\sin(0)}{(${b})^2} = \\frac{${k*b}}{${b*b}} = ${slopeValLatex}$$
+      </div>
+    `;
+
+    return {
+      category: "กฎผลหาร + ตรีโกณมิติ (Quotient Rule & Trigonometry)",
+      probLatex: `f(x) = ${fExpr}`,
+      x0: x0,
+      derivLatex: derivExpr,
+      ansLatex: slopeValLatex,
+      solHtml: solText,
+      exactNum: finalNum,
+      exactDen: finalDen
+    };
+  } else {
+    // f(x) = (ax + b) / (cx + d)
+    let c = rand(1, 3);
+    let d = rand(1, 4);
+    while (a * d - b * c === 0) { b = rand(1, 4); }
+
+    let fExpr = `\\frac{${a === 1 ? "x" : `${a}x`} + ${b}}{${c === 1 ? "x" : `${c}x`} + ${d}}`;
+    let det = a * d - b * c;
+    let derivExpr = `\\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^{2}}`;
+
+    let finalNum = det;
+    let finalDen = d * d;
+    let slopeValLatex = toFrac(finalNum, finalDen);
+
+    let solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$</strong>
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: แทนค่า</strong><br>
+        $$\\displaystyle f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: กระจายพจน์เศษและจัดรูป</strong><br>
+        $$\\displaystyle = \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+        $$\\displaystyle f'(${x0}) = \\frac{${det}}{(${d})^2} = ${slopeValLatex}$$
+      </div>
+    `;
+
+    return {
+      category: "กฎผลหารฟังก์ชันตรรกยะ (Quotient Rule - Rational)",
+      probLatex: `f(x) = ${fExpr}`,
+      x0: x0,
+      derivLatex: derivExpr,
+      ansLatex: slopeValLatex,
+      solHtml: solText,
+      exactNum: finalNum,
+      exactDen: finalDen
+    };
+  }
+}
+
+// 2.4 กฎลูกโซ่ซ้อนหลายชั้น (Multi-layer Chain Rule)
+function generateMultiChainRule() {
+  let sub = Math.random();
+  let a = rand(1, 3);
+  let b = rand(1, 4);
+  let x0 = 0;
+
+  if (sub < 0.5) {
+    // f(x) = ln(a*x^2 + b*x + c)
+    let c = rand(1, 4);
+    let uExpr = `${a === 1 ? "" : a}x^{2} + ${b}x + ${c}`;
+    let uPrime = `${2 * a}x + ${b}`;
+    let fExpr = `\\ln(${uExpr})`;
+    let derivExpr = `\\frac{${uPrime}}{${uExpr}}`;
+
+    let finalNum = b;
+    let finalDen = c;
+    let slopeValLatex = toFrac(finalNum, finalDen);
+
+    let solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันลอการิทึม $\\frac{d}{dx}[\\ln(u)] = \\frac{1}{u} \\cdot \\frac{du}{dx}$</strong>
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: กำหนด $u$ และหา $\\frac{du}{dx}$</strong><br>
+        ให้ $u = ${uExpr} \\implies \\frac{du}{dx} = ${uPrime}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: สรุปรูปอนุพันธ์ทั่วไป</strong><br>
+        $$\\displaystyle f'(x) = ${derivExpr}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+        $$\\displaystyle f'(${x0}) = \\frac{${b}}{${c}} = ${slopeValLatex}$$
+      </div>
+    `;
+
+    return {
+      category: "กฎลูกโซ่ลอการิทึม (Chain Rule with Logarithm)",
+      probLatex: `f(x) = ${fExpr}`,
+      x0: x0,
+      derivLatex: derivExpr,
+      ansLatex: slopeValLatex,
+      solHtml: solText,
+      exactNum: finalNum,
+      exactDen: finalDen
+    };
+  } else {
+    // f(x) = sqrt(a*x^2 + b*x + c^2)
+    let c = rand(2, 4);
+    let c2 = c * c;
+    let uExpr = `${a === 1 ? "" : a}x^{2} + ${b}x + ${c2}`;
+    let fExpr = `\\sqrt{${uExpr}}`;
+    let uPrime = `${2 * a}x + ${b}`;
+    let derivExpr = `\\frac{${uPrime}}{2\\sqrt{${uExpr}}}`;
+
+    let finalNum = b;
+    let finalDen = 2 * c;
+    let slopeValLatex = toFrac(finalNum, finalDen);
+
+    let solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: แปลงรูปกรณฑ์เป็นเลขยกกำลังตรรกยะ</strong><br>
+        $f(x) = (${uExpr})^{1/2}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: ใช้กฎลูกโซ่ $\\frac{d}{dx}[u^n] = n u^{n-1} \\cdot \\frac{du}{dx}$</strong><br>
+        $$\\displaystyle f'(x) = \\frac{1}{2}(${uExpr})^{-1/2} \\cdot \\frac{d}{dx}(${uExpr}) = ${derivExpr}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
+        $$\\displaystyle f'(${x0}) = \\frac{${b}}{2\\sqrt{${c2}}} = \\frac{${b}}{2(${c})} = ${slopeValLatex}$$
+      </div>
+    `;
+
+    return {
+      category: "กฎลูกโซ่กรณฑ์ (Chain Rule with Square Root)",
+      probLatex: `f(x) = ${fExpr}`,
+      x0: x0,
+      derivLatex: derivExpr,
+      ansLatex: slopeValLatex,
+      solHtml: solText,
+      exactNum: finalNum,
+      exactDen: finalDen
+    };
+  }
+}
+
+// 2.5 การประยุกต์สมการเส้นสัมผัสเส้นโค้ง (Tangent Line Equation)
+function generateTangentLineProblem() {
+  let a = rand(1, 2);
+  let b = randNonZero(-3, 3);
+  let c = rand(-2, 3);
+  let x0 = rand(-2, 2);
+
+  let fExpr = `${a === 1 ? "" : a}x^{2} ${formatCoeff(b)}x ${formatCoeff(c)}`;
+  let y0 = a * x0 * x0 + b * x0 + c;
+  let slopeVal = 2 * a * x0 + b;
+  let derivExpr = `${2 * a}x ${formatCoeff(b)}`;
+
+  let constTerm = y0 - slopeVal * x0;
+  let tangentEq = `y = ${slopeVal === 1 ? "x" : (slopeVal === -1 ? "-x" : (slopeVal === 0 ? "" : `${slopeVal}x`))} ${formatCoeff(constTerm)}`.trim();
+  if (tangentEq === "y =") tangentEq = "y = 0";
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: หาอนุพันธ์ทั่วไป $f'(x)$ เพื่อหาฟังก์ชันความชัน</strong><br>
+      $$\\displaystyle f'(x) = \\frac{d}{dx}\\left(${fExpr}\\right) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาความชันของเส้นสัมผัส $m$ ที่จุด $x = ${x0}$</strong><br>
+      $$\\displaystyle m = f'(${x0}) = ${2 * a}(${x0 >= 0 ? x0 : `(${x0})`}) ${formatCoeff(b)} = ${slopeVal}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: หาพิกัดจุดสัมผัส $(x_0, y_0)$</strong><br>
+      $$\\displaystyle y_0 = f(${x0}) = ${a}(${x0})^2 ${formatCoeff(b)}(${x0}) ${formatCoeff(c)} = ${y0}$$<br>
+      ดังนั้นจุดสัมผัสคือ $(${x0}, ${y0})$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: สร้างสมการเส้นสัมผัส $y - y_0 = m(x - x_0)$</strong><br>
+      $$\\displaystyle y - (${y0}) = ${slopeVal}(x - (${x0})) \\implies ${tangentEq}$$
+    </div>
+  `;
+
+  return {
+    category: "สมการเส้นสัมผัสเส้นโค้ง (Tangent Line Equation)",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    tangentLatex: tangentEq,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// ==========================================
+// 3. Application State & Controller
+// ==========================================
+let currentProblem = null;
+let scoreCorrect = 0;
+let streakCount = 0;
+
+const generators = [
+  generateInverseTrigChain,
+  generateInverseTrigChain,
+  generateProductRuleMixed,
+  generateProductRuleMixed,
+  generateQuotientRule,
+  generateMultiChainRule,
+  generateTangentLineProblem
+];
+
+function generateRandomProblem() {
+  let gen = generators[Math.floor(Math.random() * generators.length)];
+  currentProblem = gen();
+
+  // อัปเดต UI
+  document.getElementById('topicBadge').textContent = `ประเภท: ${currentProblem.category}`;
+  document.getElementById('probBox').innerHTML = `
+    <div style="font-size: 0.95rem; color: var(--muted); margin-bottom: 6px;">กำหนดฟังก์ชัน:</div>
+    $$\\displaystyle ${currentProblem.probLatex}$$
+    <div style="font-size: 0.95rem; color: var(--muted); margin-top: 6px;">จงหาอนุพันธ์ $f'(x)$ และคำนวณค่าความชัน $f'(${currentProblem.x0})$</div>
+  `;
+
+  document.getElementById('quizPromptLabel').innerHTML = `✍️ ทดลองคำนวณค่าของ $f'(${currentProblem.x0})$:`;
+
+  document.getElementById('ansContent').innerHTML = `
+    <strong>อนุพันธ์ $f'(x)$ ทั่วไป:</strong> $$\\displaystyle f'(x) = ${currentProblem.derivLatex}$$
+    <strong>ค่าความชันที่ $x = ${currentProblem.x0}$:</strong> $$\\displaystyle f'(${currentProblem.x0}) = ${currentProblem.ansLatex}$$
+    ${currentProblem.tangentLatex ? `<strong>สมการเส้นสัมผัสที่จุด $x = ${currentProblem.x0}$:</strong> $$\\displaystyle ${currentProblem.tangentLatex}$$` : ""}
+  `;
+  document.getElementById('solContent').innerHTML = currentProblem.solHtml;
+
+  // รีเซ็ตสถานะ
+  document.getElementById('ansBox').classList.add('hidden');
+  document.getElementById('solBox').classList.add('hidden');
+  
+  let inputEl = document.getElementById('userAnsInput');
+  inputEl.value = '';
+  inputEl.classList.remove('input-success', 'input-error');
+
+  let feedback = document.getElementById('feedbackBox');
+  feedback.style.display = 'none';
+  feedback.className = 'feedback-box';
+  feedback.innerHTML = '';
+
+  safeRenderMath(document.getElementById('probBox'));
+  safeRenderMath(document.getElementById('quizPromptLabel'));
+}
+
+function parseInputFraction(str) {
+  str = str.trim().replace(/\s+/g, '');
+  if (!str) return null;
+  if (str.includes('/')) {
+    let parts = str.split('/');
+    if (parts.length !== 2) return null;
+    let n = parseFloat(parts[0]);
+    let d = parseFloat(parts[1]);
+    if (isNaN(n) || isNaN(d) || d === 0) return null;
+    return { val: n / d, num: n, den: d };
+  }
+  let v = parseFloat(str);
+  if (isNaN(v)) return null;
+  return { val: v, num: v, den: 1 };
+}
+
+function checkAnswer() {
+  let feedback = document.getElementById('feedbackBox');
+  let inputEl = document.getElementById('userAnsInput');
+  inputEl.classList.remove('input-success', 'input-error');
+
+  if (!currentProblem) {
+    feedback.className = 'feedback-box feedback-error';
+    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> ยังไม่มีโจทย์</div><div>กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> ก่อนทำแบบฝึกหัดครับ</div>';
+    return;
+  }
+  
+  let inputStr = inputEl.value;
+  let parsed = parseInputFraction(inputStr);
+
+  if (!parsed) {
+    inputEl.classList.add('input-error');
+    feedback.className = 'feedback-box feedback-error';
+    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> รูปแบบคำตอบไม่ถูกต้อง</div><div>กรุณากรอกเป็นตัวเลขหรือเศษส่วน เช่น <code>6</code>, <code>-3/2</code>, <code>0</code></div>';
+    return;
+  }
+
+  let exactVal = currentProblem.exactNum / currentProblem.exactDen;
+  let isCorrect = Math.abs(parsed.val - exactVal) < 1e-5;
+
+  if (isCorrect) {
+    scoreCorrect++;
+    streakCount++;
+    document.getElementById('scoreCorrect').textContent = scoreCorrect;
+    document.getElementById('streakCount').textContent = streakCount;
+
+    inputEl.classList.add('input-success');
+    feedback.className = 'feedback-box feedback-success';
+    feedback.innerHTML = `
+      <div class="feedback-title"><span>✅</span> ถูกต้องยอดเยี่ยม!</div>
+      <div style="font-size: 1.05rem; margin-top: 4px;">
+        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ตรงกับค่าจริง $\\displaystyle f'(${currentProblem.x0}) = ${currentProblem.ansLatex}$
+      </div>
+    `;
+  } else {
+    streakCount = 0;
+    document.getElementById('streakCount').textContent = streakCount;
+
+    inputEl.classList.add('input-error');
+    feedback.className = 'feedback-box feedback-error';
+    feedback.innerHTML = `
+      <div class="feedback-title"><span>❌</span> ยังไม่ถูกต้อง</div>
+      <div style="font-size: 1.05rem; margin-top: 4px;">
+        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ยังไม่ตรงกับค่า $f'(${currentProblem.x0})$ ของโจทย์ข้อนี้
+      </div>
+      <div style="font-size: 0.95rem; margin-top: 8px; color: #721c24;">
+        💡 คำแนะนำ: ลองตรวจสอบการหาอนุพันธ์ไส้ใน / การคูณผลคูณ หรือกดปุ่ม <strong>"ดูวิธีทำอย่างละเอียด"</strong> ด้านล่าง
+      </div>
+    `;
+  }
+
+  safeRenderMath(feedback);
+}
+
+function toggleAnswer() {
+  if (!currentProblem) {
+    let feedback = document.getElementById('feedbackBox');
+    feedback.className = 'feedback-box feedback-error';
+    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> ยังไม่ได้สุ่มโจทย์</div><div>กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ</div>';
+    return;
+  }
+  let box = document.getElementById('ansBox');
+  box.classList.toggle('hidden');
+  if (!box.classList.contains('hidden')) {
+    safeRenderMath(box);
+  }
+}
+
+function toggleSolution() {
+  if (!currentProblem) {
+    let feedback = document.getElementById('feedbackBox');
+    feedback.className = 'feedback-box feedback-error';
+    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> ยังไม่ได้สุ่มโจทย์</div><div>กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ</div>';
+    return;
+  }
+  let box = document.getElementById('solBox');
+  box.classList.toggle('hidden');
+  if (!box.classList.contains('hidden')) {
+    safeRenderMath(box);
+  }
+}
+
+// ล้างกรอบ error/success เมื่อเริ่มพิมพ์ใหม่
+document.getElementById('userAnsInput').addEventListener('input', function() {
+  this.classList.remove('input-success', 'input-error');
+});
+
+// Enter Key triggers answer check
+document.getElementById('userAnsInput').addEventListener('keyup', function(e) {
+  if (e.key === 'Enter') {
+    checkAnswer();
+  }
+});
+
+// เริ่มต้นหน้าเว็บ
+document.addEventListener('DOMContentLoaded', function() {
+  let yearSpan = document.getElementById('y');
+  if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+  // Highlight เมนูปัจจุบัน
+  var currentUrl = window.location.pathname; 
+  var navLinks = document.querySelectorAll('.nav a');
+  navLinks.forEach(function(link) {
+    var linkUrl = link.getAttribute('href');
+    if (linkUrl === currentUrl || (linkUrl === '/' && currentUrl === '/index.html')) {
+      link.classList.add('active');
+    }
+  });
+});
+</script>
+
+</body>
+</html>
