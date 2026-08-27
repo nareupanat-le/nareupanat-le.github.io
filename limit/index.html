@@ -1,268 +1,911 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แบบฝึกหัดลิมิตแคลคูลัส</title>
-    <!-- การตั้งค่า MathJax เพื่อรองรับ LaTeX และ Displaystyle -->
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    
-    <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Sarabun", "Segoe UI", Roboto, sans-serif; 
-            background-color: #f4f6f9; 
-            padding: 30px 15px; 
-            color: #333;
-        }
-        .card { 
-            background: white; 
-            max-width: 680px; 
-            margin: 0 auto; 
-            padding: 28px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06); 
-        }
-        h2 {
-            text-align: center;
-            margin-top: 0;
-            color: #1a202c;
-        }
-        .btn-group { 
-            display: flex; 
-            gap: 10px; 
-            flex-wrap: wrap; 
-            margin: 20px 0; 
-            justify-content: center; 
-        }
-        .btn { 
-            padding: 10px 18px; 
-            border: none; 
-            border-radius: 6px; 
-            font-size: 0.95rem;
-            font-weight: 600; 
-            cursor: pointer; 
-            transition: 0.2s ease; 
-            color: white; 
-        }
-        .btn-blue { background: #0066cc; }
-        .btn-green { background: #28a745; }
-        .btn-cyan { background: #17a2b8; }
-        .btn:hover { opacity: 0.88; transform: translateY(-1px); }
-        .box { 
-            margin-top: 15px; 
-            padding: 18px; 
-            border-radius: 8px; 
-            background: #f8f9fa; 
-            border-left: 4px solid #0066cc; 
-            font-size: 1.05rem; 
-            line-height: 1.8; 
-        }
-        .hidden { display: none; }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>แบบฝึกหัดลิมิตแคลคูลัส — Nareupanat Lekkoksung</title>
+  
+  <!-- Site Base Stylesheet (ไม่แก้ไขไฟล์นี้) -->
+  <link rel="stylesheet" href="/assets/style.css">
+
+  <!-- MathJax Configuration -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- Limit App Specific Styles (ใช้ Design Tokens จาก style.css) -->
+  <style>
+    .app-card {
+      background: #ffffff;
+      border: 1px solid rgba(122, 92, 58, 0.2);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+
+    .meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(122, 92, 58, 0.12);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(122, 92, 58, 0.08);
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 20px;
+      border: 1px solid rgba(122, 92, 58, 0.2);
+    }
+
+    .stats {
+      font-size: 0.9rem;
+      color: var(--muted);
+      display: flex;
+      gap: 14px;
+    }
+
+    .prob-display {
+      background: #faf8f5;
+      border: 1px solid rgba(122, 92, 58, 0.15);
+      border-radius: 12px;
+      padding: 22px;
+      margin: 18px 0;
+      text-align: center;
+      font-size: 1.15rem;
+      line-height: 1.8;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .quiz-section {
+      background: #fff;
+      border: 1px dashed rgba(122, 92, 58, 0.35);
+      border-radius: 12px;
+      padding: 18px 20px;
+      margin: 20px 0;
+    }
+
+    .quiz-input-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .quiz-input {
+      flex: 1;
+      min-width: 180px;
+      padding: 10px 14px;
+      font-size: 1rem;
+      border: 1px solid rgba(122, 92, 58, 0.3);
+      border-radius: 8px;
+      outline: none;
+      font-family: inherit;
+      color: var(--fg);
+      background: #faf8f5;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .quiz-input:focus {
+      border-color: var(--muted);
+      box-shadow: 0 0 0 3px rgba(122, 92, 58, 0.15);
+      background: #fff;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 20px 0 10px;
+      justify-content: center;
+    }
+
+    .btn {
+      padding: 9px 18px;
+      border-radius: var(--radius);
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      text-decoration: none;
+    }
+
+    .btn-primary {
+      background: var(--muted);
+      color: #ffffff;
+      border: 1px solid var(--muted);
+    }
+    .btn-primary:hover {
+      background: var(--link-hover);
+      border-color: var(--link-hover);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: #ffffff;
+      color: var(--link);
+      border: 1px solid rgba(122, 92, 58, 0.35);
+    }
+    .btn-secondary:hover {
+      background: rgba(122, 92, 58, 0.08);
+      color: var(--link-hover);
+      border-color: var(--muted);
+      transform: translateY(-1px);
+    }
+
+    .btn-check {
+      background: #4a6b47;
+      color: #ffffff;
+      border: 1px solid #4a6b47;
+    }
+    .btn-check:hover {
+      background: #395436;
+      transform: translateY(-1px);
+    }
+
+    .feedback-box {
+      margin-top: 12px;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      display: none;
+    }
+
+    .feedback-success {
+      background: #edf7ed;
+      color: #1e4620;
+      border: 1px solid #c8e6c9;
+      display: block;
+    }
+
+    .feedback-error {
+      background: #fdf2f2;
+      color: #842029;
+      border: 1px solid #f5c2c7;
+      display: block;
+    }
+
+    .result-box {
+      margin-top: 16px;
+      padding: 20px;
+      border-radius: 12px;
+      background: #faf8f5;
+      border-left: 4px solid var(--muted);
+      font-size: 1rem;
+      line-height: 1.8;
+      overflow-x: auto;
+    }
+
+    .result-box h4 {
+      margin: 0 0 10px 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .solution-step {
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed rgba(122, 92, 58, 0.15);
+    }
+
+    .solution-step:last-child {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+
+    .highlight-term {
+      color: #9c4221;
+      font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
+      .app-card { padding: 18px; }
+      .btn-group { flex-direction: column; }
+      .btn { width: 100%; }
+      .quiz-input-group { flex-direction: column; align-items: stretch; }
+      .quiz-input { width: 100%; }
+    }
+  </style>
 </head>
 <body>
 
-<div class="card">
-    <h2>แบบฝึกหัดลิมิตแบบสุ่ม (รูปแบบไม่กำหนด $\frac{0}{0}$)</h2>
-    
-    <div class="btn-group">
-        <button class="btn btn-blue" onclick="generateProblem()">1. สุ่มโจทย์ใหม่</button>
-        <button class="btn btn-green" onclick="showAnswer()">2. ดูคำตอบ</button>
-        <button class="btn btn-cyan" onclick="showSolution()">3. ดูวิธีทำอย่างละเอียด</button>
+<header class="site-header">
+  <a class="brand" href="/">Home</a>
+  <nav class="nav">
+    <a href="/cv.html">CV</a>
+    <a href="/publications.html">Publications</a>
+    <a href="/talks.html">Talks</a>
+    <a href="/research.html">Research Interests</a>
+    <a href="/teaching.html">Teaching</a>
+  </nav>
+</header>
+
+<main>
+  <h3>แบบฝึกหัดลิมิตแคลคูลัส</h3>
+  <p class="byline">สุ่มโจทย์ลิมิตในรูปแบบไม่กำหนด $\left(\frac{0}{0}\right)$ คละทุกเทคนิค พร้อมระบบตรวจคำตอบและวิธีทำอย่างละเอียด</p>
+
+  <div class="app-card">
+    <div class="meta-bar">
+      <div id="topicBadge" class="badge">ประเภท: สุ่มทุกรูปแบบ</div>
+      <div class="stats">
+        <span>ทำถูก: <strong id="scoreCorrect">0</strong> ข้อ</span>
+        <span>Streak: <strong id="streakCount">0</strong> 🔥</span>
+      </div>
     </div>
 
-    <!-- พื้นที่แสดงผล 3 จังหวะ -->
-    <div id="probBox" class="box"><em>กดปุ่ม "1. สุ่มโจทย์ใหม่" เพื่อเริ่มต้นทำแบบฝึกหัด</em></div>
-    <div id="ansBox" class="box hidden"></div>
-    <div id="solBox" class="box hidden"></div>
-</div>
+    <!-- พื้นที่แสดงโจทย์ -->
+    <div id="probBox" class="prob-display">
+      <em>กำลังเตรียมโจทย์...</em>
+    </div>
+
+    <!-- ส่วนทดลองตอบ (Interactive Quiz) -->
+    <div class="quiz-section">
+      <label for="userAnsInput" style="display:block; margin-bottom: 8px; font-weight: 600; font-size: 0.95rem;">
+        ✍️ ทดลองคำนวณและใส่คำตอบ:
+      </label>
+      <div class="quiz-input-group">
+        <input type="text" id="userAnsInput" class="quiz-input" placeholder="เช่น 1/2, -3/4, 5, 0" autocomplete="off" />
+        <button class="btn btn-check" onclick="checkAnswer()">ตรวจคำตอบ</button>
+      </div>
+      <div id="feedbackBox" class="feedback-box"></div>
+    </div>
+
+    <!-- ปุ่มควบคุม -->
+    <div class="btn-group">
+      <button class="btn btn-primary" onclick="generateRandomProblem()">🎲 สุ่มโจทย์ใหม่</button>
+      <button class="btn btn-secondary" onclick="toggleAnswer()">💡 ดูคำตอบ</button>
+      <button class="btn btn-secondary" onclick="toggleSolution()">📝 ดูวิธีทำอย่างละเอียด</button>
+    </div>
+
+    <!-- พื้นที่แสดงคำตอบ -->
+    <div id="ansBox" class="result-box hidden">
+      <h4>💡 คำตอบ</h4>
+      <div id="ansContent"></div>
+    </div>
+
+    <!-- พื้นที่แสดงวิธีทำ -->
+    <div id="solBox" class="result-box hidden">
+      <h4>📝 วิธีทำอย่างละเอียด</h4>
+      <div id="solContent"></div>
+    </div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>© <span id="y"></span> Nareupanat Lekkoksung</p>
+</footer>
 
 <script>
-let currentProb = null;
-
+// ==========================================
+// 1. Math Utility Functions (แม่นยำ 100%)
+// ==========================================
 function gcd(a, b) {
-    a = Math.abs(a); b = Math.abs(b);
-    while (b) { let t = b; b = a % b; a = t; }
-    return a;
+  a = Math.abs(a); b = Math.abs(b);
+  while (b) { let t = b; b = a % b; a = t; }
+  return a || 1;
 }
 
 function toFrac(n, d) {
-    if (d < 0) { n = -n; d = -d; }
-    let g = gcd(n, d);
-    n /= g; d /= g;
-    if (d === 1) return `${n}`;
-    return `\\frac{${n}}{${d}}`;
-}
-
-function poly1(p, q) {
-    if (p === 0) return `${q}`;
-    let termX = (p === 1) ? "x" : (p === -1 ? "-x" : `${p}x`);
-    if (q === 0) return termX;
-    return q > 0 ? `${termX} + ${q}` : `${termX} - ${Math.abs(q)}`;
-}
-
-function poly2(A, B, C) {
-    let res = "";
-    if (A === 1) res += "x^{2}";
-    else if (A === -1) res += "-x^{2}";
-    else if (A !== 0) res += `${A}x^{2}`;
-
-    if (B !== 0) {
-        let sign = B > 0 ? (res ? " + " : "") : " - ";
-        let absB = Math.abs(B);
-        res += `${sign}${absB === 1 ? "" : absB}x`;
-    }
-    if (C !== 0) {
-        let sign = C > 0 ? (res ? " + " : "") : " - ";
-        res += `${sign}${Math.abs(C)}`;
-    }
-    return res || "0";
+  if (d === 0) return "\\text{หาค่าไม่ได้}";
+  if (n === 0) return "0";
+  if (d < 0) { n = -n; d = -d; }
+  let g = gcd(n, d);
+  n /= g; d /= g;
+  if (d === 1) return `${n}`;
+  if (n < 0) return `-\\frac{${Math.abs(n)}}{${d}}`;
+  return `\\frac{${n}}{${d}}`;
 }
 
 function rand(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-function formatRoot(k, b) {
-    let termX = (k === 1) ? "x" : `${k}x`;
-    if (b === 0) return `\\sqrt{${termX}}`;
-    return b > 0 ? `\\sqrt{${termX} + ${b}}` : `\\sqrt{${termX} - ${Math.abs(b)}}`;
+function randNonZero(min, max) {
+  let val = 0;
+  while (val === 0) {
+    val = rand(min, max);
+  }
+  return val;
 }
 
-function generateProblem() {
-    let a = rand(-3, 4);
-    let termCancel = a >= 0 ? (a === 0 ? "x" : `x - ${a}`) : `x + ${Math.abs(a)}`;
-    let type = Math.random() < 0.4 ? 'factoring' : 'conjugate';
-    
-    let probLatex = "";
-    let finalVal = "";
-    let solText = "";
+function poly1(p, q) {
+  if (p === 0) return `${q}`;
+  let termX = (p === 1) ? "x" : (p === -1 ? "-x" : `${p}x`);
+  if (q === 0) return termX;
+  return q > 0 ? `${termX} + ${q}` : `${termX} - ${Math.abs(q)}`;
+}
 
-    if (type === 'factoring') {
-        let p1 = rand(1, 3), q1 = rand(-3, 3);
-        let p2 = rand(1, 3), q2 = rand(-3, 3);
-        while (p2 * a + q2 === 0) { q2 = rand(-3, 3); }
+function poly2(A, B, C) {
+  let res = "";
+  if (A === 1) res += "x^{2}";
+  else if (A === -1) res += "-x^{2}";
+  else if (A !== 0) res += `${A}x^{2}`;
 
-        let deg1 = rand(1, 2), deg2 = rand(1, 2);
-        let numExp = (deg1 === 2) ? poly2(p1, q1 - a * p1, -a * q1) : poly1(p1, -a * p1);
-        let denExp = (deg2 === 2) ? poly2(p2, q2 - a * p2, -a * q2) : poly1(p2, -a * p2);
+  if (B !== 0) {
+    let sign = B > 0 ? (res ? " + " : "") : (res ? " - " : "-");
+    let absB = Math.abs(B);
+    res += `${sign}${absB === 1 ? "" : absB}x`;
+  }
+  if (C !== 0) {
+    let sign = C > 0 ? (res ? " + " : "") : (res ? " - " : "-");
+    res += `${sign}${Math.abs(C)}`;
+  }
+  return res || "0";
+}
 
-        let numFact = (deg1 === 2) ? `(${termCancel})(${poly1(p1, q1)})` : `${p1 === 1 ? "" : p1}(${termCancel})`;
-        let denFact = (deg2 === 2) ? `(${termCancel})(${poly1(p2, q2)})` : `${p2 === 1 ? "" : p2}(${termCancel})`;
+function formatRoot2(k, b) {
+  let termX = (k === 1) ? "x" : `${k}x`;
+  if (b === 0) return `\\sqrt{${termX}}`;
+  return b > 0 ? `\\sqrt{${termX} + ${b}}` : `\\sqrt{${termX} - ${Math.abs(b)}}`;
+}
 
-        let numSimp = (deg1 === 2) ? poly1(p1, q1) : `${p1}`;
-        let denSimp = (deg2 === 2) ? poly1(p2, q2) : `${p2}`;
+function formatRoot3(k, b) {
+  let termX = (k === 1) ? "x" : `${k}x`;
+  if (b === 0) return `\\sqrt[3]{${termX}}`;
+  return b > 0 ? `\\sqrt[3]{${termX} + ${b}}` : `\\sqrt[3]{${termX} - ${Math.abs(b)}}`;
+}
 
-        finalVal = toFrac(p1 * a + q1, p2 * a + q2);
-        probLatex = `\\lim_{x \\to ${a}} \\frac{${numExp}}{${denExp}}`;
+function safeRenderMath(element) {
+  if (window.MathJax && MathJax.typesetPromise) {
+    MathJax.typesetPromise(element ? [element] : []).catch(function(err) {
+      console.warn('MathJax typesetting error:', err);
+    });
+  }
+}
 
-        solText = `<b>วิธีทำอย่างละเอียด:</b><br>` +
-                  `1. แทนค่า $x = ${a}$ จะพบว่าอยู่ในรูปแบบ $\\frac{0}{0}$<br>` +
-                  `2. แยกตัวประกอบของเศษและส่วน:<br>` +
-                  `   $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{${numFact}}{${denFact}}$$<br>` +
-                  `3. ตัดทอนพจน์ร่วม $(${termCancel})$ ออก:<br>` +
-                  `   $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numSimp}}{${denSimp}}$$<br>` +
-                  `4. แทนค่า $x = ${a}$ ในพจน์ที่เหลือ:<br>` +
-                  `   $$\\displaystyle = ${finalVal}$$`;
-    } else {
-        let k = rand(1, 3);          
-        let c = rand(1, 4);          
-        let b = c * c - k * a;       
-        let rootStr = formatRoot(k, b);
-        
-        let rootPos = Math.random() < 0.5 ? 'num' : 'den';       
-        let rootOrder = Math.random() < 0.5 ? 'rootFirst' : 'constFirst'; 
+// ==========================================
+// 2. Generators แยกตามประเภท (Indeterminate 0/0)
+// ==========================================
 
-        let rootPartExp = (rootOrder === 'rootFirst') ? `${rootStr} - ${c}` : `${c} - ${rootStr}`;
-        let conj = (rootOrder === 'rootFirst') ? `${rootStr} + ${c}` : `${c} + ${rootStr}`;
-        let factorMultiplier = (rootOrder === 'rootFirst') ? k : -k;
+// 2.1 แยกตัวประกอบ (Factoring)
+function generateFactoring() {
+  let a = rand(-3, 3);
+  let termCancel = (a === 0) ? "x" : (a > 0 ? `x - ${a}` : `x + ${Math.abs(a)}`);
+  
+  let p1 = rand(1, 2), q1 = rand(-3, 3);
+  let p2 = rand(1, 2), q2 = rand(-3, 3);
+  
+  let deg1 = rand(1, 2);
+  let deg2 = rand(1, 2);
+  
+  // ป้องกันตัวส่วนเป็น 0 ที่ x = a หลังตัดทอน
+  if (deg2 === 2) {
+    while (p2 * a + q2 === 0) { q2 = rand(-3, 3); }
+  }
 
-        let p = rand(1, 2), q = rand(-3, 3);
-        while (p * a + q === 0) { q = rand(-3, 3); }
-        let polyDeg = rand(1, 2);
-        let polyExp = (polyDeg === 2) ? poly2(p, q - a * p, -a * q) : poly1(p, -a * p);
-        let polyFact = (polyDeg === 2) ? `(${termCancel})(${poly1(p, q)})` : `${p === 1 ? "" : p}(${termCancel})`;
-        let polySimp = (polyDeg === 2) ? `(${poly1(p, q)})` : (p === 1 ? "" : `${p}`);
+  let numExp = (deg1 === 2) ? poly2(p1, q1 - a * p1, -a * q1) : poly1(p1, -a * p1);
+  let denExp = (deg2 === 2) ? poly2(p2, q2 - a * p2, -a * q2) : poly1(p2, -a * p2);
 
-        if (rootPos === 'num') {
-            probLatex = `\\lim_{x \\to ${a}} \\frac{${rootPartExp}}{${polyExp}}`;
-            let numSimpText = factorMultiplier === 1 ? `(${termCancel})` : (factorMultiplier === -1 ? `-(${termCancel})` : `${factorMultiplier}(${termCancel})`);
-            let numAfterCancel = `${factorMultiplier}`;
-            let denAfterCancel = polySimp ? `${polySimp}(${conj})` : `(${conj})`;
+  let numFact = (deg1 === 2) ? `(${termCancel})(${poly1(p1, q1)})` : `${p1 === 1 ? "" : p1}(${termCancel})`;
+  let denFact = (deg2 === 2) ? `(${termCancel})(${poly1(p2, q2)})` : `${p2 === 1 ? "" : p2}(${termCancel})`;
 
-            let polyVal = p * a + q;
-            let conjVal = 2 * c;
-            finalVal = toFrac(factorMultiplier, polyVal * conjVal);
+  let numSimp = (deg1 === 2) ? poly1(p1, q1) : `${p1}`;
+  let denSimp = (deg2 === 2) ? poly1(p2, q2) : `${p2}`;
 
-            solText = `<b>วิธีทำอย่างละเอียด:</b><br>` +
-                      `1. แทนค่า $x = ${a}$ จะพบว่าอยู่ในรูปแบบ $\\frac{0}{0}$<br>` +
-                      `2. คูณด้วยสังยุค (Conjugate) $(${conj})$ ทั้งเศษและส่วน:<br>` +
-                      `   $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{(${rootPartExp})(${conj})}{(${polyExp})(${conj})}$$<br>` +
-                      `3. จัดรูปผลต่างกำลังสองที่ตัวเศษและแยกตัวประกอบตัวส่วน:<br>` +
-                      `   $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numSimpText}}{${polyFact}(${conj})}$$<br>` +
-                      `4. ตัดทอนพจน์ร่วม $(${termCancel})$ ออก:<br>` +
-                      `   $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numAfterCancel}}{${denAfterCancel}}$$<br>` +
-                      `5. แทนค่า $x = ${a}$ ในพจน์ที่เหลือ:<br>` +
-                      `   $$\\displaystyle = ${finalVal}$$`;
-        } else {
-            probLatex = `\\lim_{x \\to ${a}} \\frac{${polyExp}}{${rootPartExp}}`;
-            let denSimpText = factorMultiplier === 1 ? `(${termCancel})` : (factorMultiplier === -1 ? `-(${termCancel})` : `${factorMultiplier}(${termCancel})`);
-            let numAfterCancel = polySimp ? `${polySimp}(${conj})` : `(${conj})`;
-            let denAfterCancel = `${factorMultiplier}`;
+  // แก้บั๊กดีกรี 1: คำนวณค่าที่แท้จริง
+  let numVal = (deg1 === 2) ? (p1 * a + q1) : p1;
+  let denVal = (deg2 === 2) ? (p2 * a + q2) : p2;
 
-            let polyVal = p * a + q;
-            let conjVal = 2 * c;
-            finalVal = toFrac(polyVal * conjVal, factorMultiplier);
+  let finalValLatex = toFrac(numVal, denVal);
+  let probLatex = `\\lim_{x \\to ${a}} \\frac{${numExp}}{${denExp}}`;
 
-            solText = `<b>วิธีทำอย่างละเอียด:</b><br>` +
-                      `1. แทนค่า $x = ${a}$ จะพบว่าอยู่ในรูปแบบ $\\frac{0}{0}$<br>` +
-                      `2. คูณด้วยสังยุค (Conjugate) $(${conj})$ ทั้งเศษและส่วน:<br>` +
-                      `   $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{(${polyExp})(${conj})}{(${rootPartExp})(${conj})}$$<br>` +
-                      `3. แยกตัวประกอบตัวเศษและจัดรูปผลต่างกำลังสองที่ตัวส่วน:<br>` +
-                      `   $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${polyFact}(${conj})}{${denSimpText}}$$<br>` +
-                      `4. ตัดทอนพจน์ร่วม $(${termCancel})$ ออก:<br>` +
-                      `   $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numAfterCancel}}{${denAfterCancel}}$$<br>` +
-                      `5. แทนค่า $x = ${a}$ ในพจน์ที่เหลือ:<br>` +
-                      `   $$\\displaystyle = ${finalVal}$$`;
-        }
-    }
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      แทนค่า $x = ${a}$ ในโจทย์ จะได้ผลลัพธ์ในรูปแบบไม่กำหนด $\\frac{0}{0}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: แยกตัวประกอบเศษและส่วน</strong><br>
+      $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{${numFact}}{${denFact}}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: ตัดทอนพจน์ร่วม $(${termCancel})$</strong><br>
+      $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numSimp}}{${denSimp}}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${a}$ เพื่อหาค่าลิมิต</strong><br>
+      $$\\displaystyle = ${finalValLatex}$$
+    </div>
+  `;
 
-    // กำหนดคำสั่งโจทย์ และจัดสมการแบบ displaystyle
-    currentProb = {
-        prob: `<b>คำสั่ง:</b> จงหาค่าของลิมิตต่อไปนี้<br>$$\\displaystyle ${probLatex}$$`,
-        ans: `$\\displaystyle ${finalVal}$`,
-        sol: solText
+  return {
+    category: "การแยกตัวประกอบ (Factoring)",
+    probLatex: probLatex,
+    ansLatex: finalValLatex,
+    solHtml: solText,
+    exactNum: numVal,
+    exactDen: denVal
+  };
+}
+
+// 2.2 สังยุครากที่สอง (Square Root Conjugate)
+function generateSqrtConjugate() {
+  let a = rand(-2, 3);
+  let k = rand(1, 2);
+  let c = rand(1, 3);
+  let b = c * c - k * a;
+  let rootStr = formatRoot2(k, b);
+  let termCancel = (a === 0) ? "x" : (a > 0 ? `x - ${a}` : `x + ${Math.abs(a)}`);
+
+  let rootPos = Math.random() < 0.5 ? 'num' : 'den';
+  let rootOrder = Math.random() < 0.5 ? 'rootFirst' : 'constFirst';
+
+  let rootPart = (rootOrder === 'rootFirst') ? `${rootStr} - ${c}` : `${c} - ${rootStr}`;
+  let conj = (rootOrder === 'rootFirst') ? `${rootStr} + ${c}` : `${c} + ${rootStr}`;
+  let factorMultiplier = (rootOrder === 'rootFirst') ? k : -k;
+
+  let p = rand(1, 2), q = rand(-2, 2);
+  let polyDeg = rand(1, 2);
+  if (polyDeg === 2) {
+    while (p * a + q === 0) { q = rand(-2, 2); }
+  }
+
+  let polyExp = (polyDeg === 2) ? poly2(p, q - a * p, -a * q) : poly1(p, -a * p);
+  let polyFact = (polyDeg === 2) ? `(${termCancel})(${poly1(p, q)})` : `${p === 1 ? "" : p}(${termCancel})`;
+  let polySimp = (polyDeg === 2) ? `(${poly1(p, q)})` : (p === 1 ? "" : `${p}`);
+
+  // แก้บั๊กดีกรี 1:
+  let polyVal = (polyDeg === 2) ? (p * a + q) : p;
+  let conjVal = 2 * c;
+
+  let probLatex = "", solText = "", finalNum = 0, finalDen = 1;
+
+  if (rootPos === 'num') {
+    probLatex = `\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}}`;
+    let numSimpText = factorMultiplier === 1 ? `(${termCancel})` : (factorMultiplier === -1 ? `-(${termCancel})` : `${factorMultiplier}(${termCancel})`);
+    let numAfterCancel = `${factorMultiplier}`;
+    let denAfterCancel = polySimp ? `${polySimp}(${conj})` : `(${conj})`;
+
+    finalNum = factorMultiplier;
+    finalDen = polyVal * conjVal;
+    let finalValLatex = toFrac(finalNum, finalDen);
+
+    solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+        แทนค่า $x = ${a}$ พบว่าอยู่ในรูปแบบ $\\frac{0}{0}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: คูณด้วยสังยุค (Conjugate) $(${conj})$ ทั้งเศษและส่วน</strong><br>
+        $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{(${rootPart})(${conj})}{(${polyExp})(${conj})}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: จัดรูปผลต่างกำลังสองที่ตัวเศษและแยกตัวประกอบตัวส่วน</strong><br>
+        $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numSimpText}}{${polyFact}(${conj})}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: ตัดทอนพจน์ร่วม $(${termCancel})$ ออก</strong><br>
+        $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numAfterCancel}}{${denAfterCancel}}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 5: แทนค่า $x = ${a}$</strong><br>
+        $$\\displaystyle = ${finalValLatex}$$
+      </div>
+    `;
+    return {
+      category: "สังยุครากที่สอง (Square Root Conjugate)",
+      probLatex: probLatex,
+      ansLatex: finalValLatex,
+      solHtml: solText,
+      exactNum: finalNum,
+      exactDen: finalDen
     };
+  } else {
+    probLatex = `\\lim_{x \\to ${a}} \\frac{${polyExp}}{${rootPart}}`;
+    let denSimpText = factorMultiplier === 1 ? `(${termCancel})` : (factorMultiplier === -1 ? `-(${termCancel})` : `${factorMultiplier}(${termCancel})`);
+    let numAfterCancel = polySimp ? `${polySimp}(${conj})` : `(${conj})`;
+    let denAfterCancel = `${factorMultiplier}`;
 
-    document.getElementById('ansBox').classList.add('hidden');
-    document.getElementById('solBox').classList.add('hidden');
-    document.getElementById('probBox').innerHTML = currentProb.prob;
-    MathJax.typesetPromise();
+    finalNum = polyVal * conjVal;
+    finalDen = factorMultiplier;
+    let finalValLatex = toFrac(finalNum, finalDen);
+
+    solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+        แทนค่า $x = ${a}$ พบว่าอยู่ในรูปแบบ $\\frac{0}{0}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: คูณด้วยสังยุค (Conjugate) $(${conj})$ ทั้งเศษและส่วน</strong><br>
+        $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{(${polyExp})(${conj})}{(${rootPart})(${conj})}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: แยกตัวประกอบตัวเศษและจัดรูปผลต่างกำลังสองที่ตัวส่วน</strong><br>
+        $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${polyFact}(${conj})}{${denSimpText}}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: ตัดทอนพจน์ร่วม $(${termCancel})$ ออก</strong><br>
+        $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numAfterCancel}}{${denAfterCancel}}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 5: แทนค่า $x = ${a}$</strong><br>
+        $$\\displaystyle = ${finalValLatex}$$
+      </div>
+    `;
+    return {
+      category: "สังยุครากที่สอง (Square Root Conjugate)",
+      probLatex: probLatex,
+      ansLatex: finalValLatex,
+      solHtml: solText,
+      exactNum: finalNum,
+      exactDen: finalDen
+    };
+  }
 }
 
-function showAnswer() {
-    if (!currentProb) return;
-    let box = document.getElementById('ansBox');
-    box.innerHTML = `<b>คำตอบ:</b> ${currentProb.ans}`;
-    box.classList.remove('hidden');
-    MathJax.typesetPromise();
+// 2.3 สังยุครากที่สาม (Cube Root Conjugate: ผลต่างกำลังสาม)
+function generateCbrtConjugate() {
+  let a = rand(-2, 2);
+  let k = rand(1, 2);
+  let c = rand(1, 2);
+  let b = c * c * c - k * a;
+  let rootStr = formatRoot3(k, b);
+  let termCancel = (a === 0) ? "x" : (a > 0 ? `x - ${a}` : `x + ${Math.abs(a)}`);
+
+  let rootPos = Math.random() < 0.5 ? 'num' : 'den';
+  let rootOrder = Math.random() < 0.5 ? 'rootFirst' : 'constFirst';
+
+  let rootPart = (rootOrder === 'rootFirst') ? `${rootStr} - ${c}` : `${c} - ${rootStr}`;
+  let factorMultiplier = (rootOrder === 'rootFirst') ? k : -k;
+
+  // ผลต่างกำลังสาม: (u - v)(u^2 + uv + v^2) = u^3 - v^3
+  let u2 = `(${rootStr})^{2}`;
+  let uv = (c === 1) ? `${rootStr}` : `${c}${rootStr}`;
+  let v2 = `${c * c}`;
+  let conj = `${u2} + ${uv} + ${v2}`;
+  let conjVal = 3 * c * c; // ที่ x = a: c^2 + c^2 + c^2 = 3c^2
+
+  let p = rand(1, 2);
+  let polyExp = (p === 1) ? termCancel : `${p}(${termCancel})`;
+  if (p === 1 && a === 0) polyExp = "x";
+  else if (p > 1 && a === 0) polyExp = `${p}x`;
+
+  let probLatex = "", solText = "", finalNum = 0, finalDen = 1;
+
+  if (rootPos === 'num') {
+    probLatex = `\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}}`;
+    finalNum = factorMultiplier;
+    finalDen = p * conjVal;
+    let finalValLatex = toFrac(finalNum, finalDen);
+
+    solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+        แทนค่า $x = ${a}$ ได้ผลลัพธ์ $\\frac{0}{0}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: ใช้เอกลักษณ์ผลต่างกำลังสาม $(A-B)(A^2+AB+B^2) = A^3 - B^3$</strong><br>
+        คูณด้วยสังยุครากที่สามทั้งเศษและส่วน:<br>
+        $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{(${rootPart})(${conj})}{(${polyExp})(${conj})}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: จัดรูปตัวเศษ</strong><br>
+        $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${factorMultiplier === 1 ? "" : (factorMultiplier === -1 ? "-" : factorMultiplier)}(${termCancel})}{(${polyExp})(${conj})}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: ตัดทอนพจน์ร่วม $(${termCancel})$ และแทนค่า $x = ${a}$</strong><br>
+        สังเกตว่าเมื่อ $x = ${a}$ พจน์สังยุคจะมีค่า $(${c})^2 + (${c})(${c}) + ${c*c} = ${conjVal}$<br>
+        $$\\displaystyle = ${finalValLatex}$$
+      </div>
+    `;
+  } else {
+    probLatex = `\\lim_{x \\to ${a}} \\frac{${polyExp}}{${rootPart}}`;
+    finalNum = p * conjVal;
+    finalDen = factorMultiplier;
+    let finalValLatex = toFrac(finalNum, finalDen);
+
+    solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+        แทนค่า $x = ${a}$ ได้ผลลัพธ์ $\\frac{0}{0}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: ใช้เอกลักษณ์ผลต่างกำลังสาม $(A-B)(A^2+AB+B^2) = A^3 - B^3$</strong><br>
+        คูณด้วยสังยุครากที่สามทั้งเศษและส่วน:<br>
+        $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{(${polyExp})(${conj})}{(${rootPart})(${conj})}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: ตัดทอนพจน์ร่วม $(${termCancel})$ และแทนค่า $x = ${a}$</strong><br>
+        $$\\displaystyle = ${finalValLatex}$$
+      </div>
+    `;
+  }
+
+  return {
+    category: "สังยุครากที่สาม (Cube Root Conjugate)",
+    probLatex: probLatex,
+    ansLatex: toFrac(finalNum, finalDen),
+    solHtml: solText,
+    exactNum: finalNum,
+    exactDen: finalDen
+  };
 }
 
-function showSolution() {
-    if (!currentProb) return;
-    let box = document.getElementById('solBox');
-    box.innerHTML = currentProb.sol;
-    box.classList.remove('hidden');
-    MathJax.typesetPromise();
+// 2.4 เศษส่วนซ้อน (Complex Fraction)
+function generateComplexFraction() {
+  let a = randNonZero(-3, 3);
+  let k = rand(1, 3);
+  let probLatex = `\\lim_{x \\to ${a}} \\frac{\\frac{${k}}{x} - \\frac{${k}}{${a}}}{x - ${a >= 0 ? a : `(${a})`}}`;
+  
+  // (k/x - k/a)/(x-a) = (k(a-x)/(ax)) / (x-a) = -k / (a * x) -> at x = a: -k / a^2
+  let finalNum = -k;
+  let finalDen = a * a;
+  let finalValLatex = toFrac(finalNum, finalDen);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      แทนค่า $x = ${a}$ จะได้ $\\frac{0}{0}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: ทำตัวส่วนของเศษส่วนซ้อนให้เท่ากัน</strong><br>
+      $$\\displaystyle \\frac{${k}}{x} - \\frac{${k}}{${a}} = \\frac{${k}(${a}) - ${k}x}{${a}x} = \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนกลับในลิมิตและตัดทอนพจน์ $(x - ${a})$</strong><br>
+      $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x(x - ${a})} = \\lim_{x \\to ${a}} \\frac{-${k}}{${a}x}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${a}$</strong><br>
+      $$\\displaystyle = \\frac{-${k}}{(${a})(${a})} = ${finalValLatex}$$
+    </div>
+  `;
+
+  return {
+    category: "เศษส่วนซ้อน (Complex Fraction)",
+    probLatex: probLatex,
+    ansLatex: finalValLatex,
+    solHtml: solText,
+    exactNum: finalNum,
+    exactDen: finalDen
+  };
 }
+
+// 2.5 ลิมิตตรีโกณมิติ (Trigonometric Limit)
+function generateTrigLimit() {
+  let sub = Math.random();
+  let k = rand(2, 5);
+  let m = rand(1, 4);
+
+  if (sub < 0.5) {
+    // lim_{x->0} sin(kx) / (mx) หรือ tan(kx) / (mx)
+    let isTan = Math.random() < 0.4;
+    let funcName = isTan ? "\\tan" : "\\sin";
+    let probLatex = `\\lim_{x \\to 0} \\frac{${funcName}(${k}x)}{${m === 1 ? "x" : `${m}x`}}`;
+    let finalValLatex = toFrac(k, m);
+
+    let solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+        เมื่อ $x \\to 0$ พบว่า $\\frac{${funcName}(0)}{0} = \\frac{0}{0}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: ใช้สมบัติลิมิตมาตรฐาน $\\lim_{\\theta \\to 0} \\frac{\\sin \\theta}{\\theta} = 1$</strong><br>
+        จัดรูปมุมให้ตรงกันโดยคูณและหารด้วย $${k}$:<br>
+        $$\\displaystyle ${probLatex} = \\lim_{x \\to 0} \\left( \\frac{${funcName}(${k}x)}{${k}x} \\cdot \\frac{${k}}{${m}} \\right)$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: หาค่าลิมิต</strong><br>
+        $$\\displaystyle = 1 \\cdot \\frac{${k}}{${m}} = ${finalValLatex}$$
+      </div>
+    `;
+
+    return {
+      category: "ลิมิตตรีโกณมิติ (Trigonometric Limit)",
+      probLatex: probLatex,
+      ansLatex: finalValLatex,
+      solHtml: solText,
+      exactNum: k,
+      exactDen: m
+    };
+  } else {
+    // lim_{x->0} (1 - cos(kx)) / (m x^2) -> k^2 / (2m)
+    let probLatex = `\\lim_{x \\to 0} \\frac{1 - \\cos(${k}x)}{${m === 1 ? "x^{2}" : `${m}x^{2}`}}`;
+    let finalNum = k * k;
+    let finalDen = 2 * m;
+    let finalValLatex = toFrac(finalNum, finalDen);
+
+    let solText = `
+      <div class="solution-step">
+        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+        เมื่อ $x \\to 0$ ได้ $\\frac{1 - \\cos(0)}{0} = \\frac{0}{0}$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 2: คูณด้วยสังยุค $(1 + \\cos(${k}x))$ ทั้งเศษและส่วน</strong><br>
+        $$\\displaystyle ${probLatex} = \\lim_{x \\to 0} \\frac{(1 - \\cos(${k}x))(1 + \\cos(${k}x))}{${m === 1 ? "x^{2}" : `${m}x^{2}`}(1 + \\cos(${k}x))}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 3: ใช้เอกลักษณ์ $1 - \\cos^2(\\theta) = \\sin^2(\\theta)$</strong><br>
+        $$\\displaystyle = \\lim_{x \\to 0} \\left( \\frac{\\sin^2(${k}x)}{x^2} \\cdot \\frac{1}{${m}(1 + \\cos(${k}x))} \\right) = \\lim_{x \\to 0} \\left( \\frac{\\sin(${k}x)}{x} \\right)^2 \\cdot \\frac{1}{${m}(1 + \\cos(${k}x))}$$
+      </div>
+      <div class="solution-step">
+        <strong>ขั้นที่ 4: แทนค่าและหาลิมิต</strong><br>
+        $$\\displaystyle = (${k})^2 \\cdot \\frac{1}{${m}(1 + 1)} = \\frac{${k*k}}{${2*m}} = ${finalValLatex}$$
+      </div>
+    `;
+
+    return {
+      category: "ลิมิตตรีโกณมิติ (Trigonometric Limit)",
+      probLatex: probLatex,
+      ansLatex: finalValLatex,
+      solHtml: solText,
+      exactNum: finalNum,
+      exactDen: finalDen
+    };
+  }
+}
+
+// ==========================================
+// 3. Main Application State & Controller
+// ==========================================
+let currentProblem = null;
+let scoreCorrect = 0;
+let streakCount = 0;
+
+const generators = [
+  generateFactoring,
+  generateFactoring,
+  generateSqrtConjugate,
+  generateSqrtConjugate,
+  generateCbrtConjugate,
+  generateComplexFraction,
+  generateTrigLimit
+];
+
+function generateRandomProblem() {
+  // สุ่มเลือก generator คละทุกเทคนิค
+  let gen = generators[Math.floor(Math.random() * generators.length)];
+  currentProblem = gen();
+
+  // อัปเดต UI
+  document.getElementById('topicBadge').textContent = `ประเภท: ${currentProblem.category}`;
+  document.getElementById('probBox').innerHTML = `
+    <div style="font-size: 0.95rem; color: var(--muted); margin-bottom: 6px;">จงหาค่าของลิมิตต่อไปนี้:</div>
+    $$\\displaystyle ${currentProblem.probLatex}$$
+  `;
+
+  document.getElementById('ansContent').innerHTML = `$$\\displaystyle ${currentProblem.ansLatex}$$`;
+  document.getElementById('solContent').innerHTML = currentProblem.solHtml;
+
+  // รีเซ็ตสถานะกล่องแสดงผลและช่องกรอกคำตอบ
+  document.getElementById('ansBox').classList.add('hidden');
+  document.getElementById('solBox').classList.add('hidden');
+  document.getElementById('userAnsInput').value = '';
+  let feedback = document.getElementById('feedbackBox');
+  feedback.style.display = 'none';
+  feedback.className = 'feedback-box';
+  feedback.innerHTML = '';
+
+  safeRenderMath(document.getElementById('probBox'));
+}
+
+function parseInputFraction(str) {
+  str = str.trim().replace(/\s+/g, '');
+  if (!str) return null;
+  if (str.includes('/')) {
+    let parts = str.split('/');
+    if (parts.length !== 2) return null;
+    let n = parseFloat(parts[0]);
+    let d = parseFloat(parts[1]);
+    if (isNaN(n) || isNaN(d) || d === 0) return null;
+    return { val: n / d, num: n, den: d };
+  }
+  let v = parseFloat(str);
+  if (isNaN(v)) return null;
+  return { val: v, num: v, den: 1 };
+}
+
+function checkAnswer() {
+  if (!currentProblem) return;
+  let inputStr = document.getElementById('userAnsInput').value;
+  let parsed = parseInputFraction(inputStr);
+  let feedback = document.getElementById('feedbackBox');
+
+  if (!parsed) {
+    feedback.className = 'feedback-box feedback-error';
+    feedback.innerHTML = '⚠️ กรุณากรอกคำตอบเป็นตัวเลขหรือเศษส่วน เช่น <code>1/2</code>, <code>-3</code>, <code>0</code>';
+    return;
+  }
+
+  let exactVal = currentProblem.exactNum / currentProblem.exactDen;
+  let isCorrect = Math.abs(parsed.val - exactVal) < 1e-5;
+
+  if (isCorrect) {
+    scoreCorrect++;
+    streakCount++;
+    document.getElementById('scoreCorrect').textContent = scoreCorrect;
+    document.getElementById('streakCount').textContent = streakCount;
+
+    feedback.className = 'feedback-box feedback-success';
+    feedback.innerHTML = `🎉 <strong>ถูกต้องยอดเยี่ยม!</strong> คำตอบคือ $${currentProblem.ansLatex}$`;
+  } else {
+    streakCount = 0;
+    document.getElementById('streakCount').textContent = streakCount;
+
+    feedback.className = 'feedback-box feedback-error';
+    feedback.innerHTML = `❌ <strong>ยังไม่ถูกต้อง</strong> ลองตรวจสอบเครื่องหมายหรือการตัดทอนอีกครั้ง หรือกดปุ่ม <em>"ดูวิธีทำอย่างละเอียด"</em> ด้านล่าง`;
+  }
+
+  safeRenderMath(feedback);
+}
+
+function toggleAnswer() {
+  if (!currentProblem) return;
+  let box = document.getElementById('ansBox');
+  box.classList.toggle('hidden');
+  if (!box.classList.contains('hidden')) {
+    safeRenderMath(box);
+  }
+}
+
+function toggleSolution() {
+  if (!currentProblem) return;
+  let box = document.getElementById('solBox');
+  box.classList.toggle('hidden');
+  if (!box.classList.contains('hidden')) {
+    safeRenderMath(box);
+  }
+}
+
+// Enter Key triggers answer check
+document.getElementById('userAnsInput').addEventListener('keyup', function(e) {
+  if (e.key === 'Enter') {
+    checkAnswer();
+  }
+});
+
+// เริ่มต้นสร้างโจทย์เมื่อโหลดหน้า
+document.addEventListener('DOMContentLoaded', function() {
+  // แสดงปีปัจจุบันที่ Footer
+  let yearSpan = document.getElementById('y');
+  if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+
+  // Highlight เมนูปัจจุบัน
+  var currentUrl = window.location.pathname; 
+  var navLinks = document.querySelectorAll('.nav a');
+  navLinks.forEach(function(link) {
+    var linkUrl = link.getAttribute('href');
+    if (linkUrl === currentUrl || (linkUrl === '/' && currentUrl === '/index.html')) {
+      link.classList.add('active');
+    }
+  });
+
+  // สุ่มโจทย์ข้อแรก
+  generateRandomProblem();
+});
 </script>
 
 </body>
