@@ -525,7 +525,7 @@
 </header>
 
 <main>
-  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.20:46</span></h3>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.20:52</span></h3>
   <p class="byline">คลังโจทย์แคลคูลัส 1 พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
@@ -629,7 +629,7 @@
   </div>
 
   <footer style="text-align: center; margin-top: 28px; margin-bottom: 16px; font-size: 0.85rem; color: var(--muted);">
-    Calculus 1 Practice Hub • v.2026.08.27.20:46
+    Calculus 1 Practice Hub • v.2026.08.27.20:52
   </footer>
 </main>
 
@@ -2903,7 +2903,6 @@ function genDerivHardSecondDerivative() {
     <div class="solution-step">
       <strong>ขั้นที่ 3: หาอนุพันธ์อันดับสอง $f''(x) = \\frac{d}{dx}[f'(x)]$ โดยใช้กฎผลคูณ</strong><br>
       ${adaptiveMath(
-{{ ... }}
         `f''(x) = \\frac{d}{dx}\\left[(-${k*a}x^2 + ${2*a-k*b}x + ${b})e^{-${k === 1 ? "" : k}x}\\right] = (-${2*k*a}x + ${2*a-k*b})e^{-${k === 1 ? "" : k}x} + (-${k*a}x^2 + ${2*a-k*b}x + ${b})(-${k === 1 ? "" : k}e^{-${k === 1 ? "" : k}x})`,
         `f''(x) &= \\frac{d}{dx}\\left[(-${k*a}x^2 + ${2*a-k*b}x + ${b})e^{-${k === 1 ? "" : k}x}\\right] \\\\ &= (-${2*k*a}x + ${2*a-k*b})e^{-${k === 1 ? "" : k}x} + (-${k*a}x^2 + ${2*a-k*b}x + ${b})(-${k === 1 ? "" : k}e^{-${k === 1 ? "" : k}x})`
       )}
