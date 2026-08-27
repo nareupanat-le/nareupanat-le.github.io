@@ -506,6 +506,8 @@
       .quiz-input { width: 100%; }
       .topic-nav { justify-content: center; }
       .sub-nav { justify-content: center; }
+      .adaptive-math .math-single { display: none !important; }
+      .adaptive-math .math-align { display: block !important; }
     }
   </style>
 </head>
@@ -765,8 +767,13 @@ function adaptiveMath(singleLatex, alignLatex) {
 }
 
 function adaptMathEquations() {
+  const isMobile = window.innerWidth <= 600;
   const blocks = document.querySelectorAll('.adaptive-math');
   blocks.forEach(block => {
+    if (isMobile) {
+      block.classList.add('use-align');
+      return;
+    }
     block.classList.remove('use-align');
     const singleEl = block.querySelector('.math-single');
     if (!singleEl) return;
@@ -1436,8 +1443,9 @@ function genLimitHardTrigPolyPoint() {
       )}
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: กำหนดตัวแปรเปลี่ยน $u = x - ${a}$ (เมื่อ $x \\to ${a} \\implies u \\to 0$)</strong><br>
-      จะได้ว่า $\\lim_{u \\to 0} \\frac{\\sin u}{u} = 1$<br>
+      <strong>ขั้นที่ 3: กำหนดตัวแปรเปลี่ยน $u = x - ${a}$</strong><br>
+      เมื่อ $x \\to ${a}$ จะได้ว่า $u \\to 0$<br>
+      จากลิมิตมาตรฐาน ทราบว่า $\\lim_{u \\to 0} \\frac{\\sin u}{u} = 1$<br>
       ${adaptiveMath(
         `= (1) \\cdot \\frac{1}{(${a}) + (${a})} = \\frac{1}{${2*a}} = ${finalValLatex}`,
         `&= (1) \\cdot \\frac{1}{(${a}) + (${a})} \\\\ &= \\frac{1}{${2*a}} = ${finalValLatex}`
@@ -1479,7 +1487,7 @@ function genLimitAbsOneSided() {
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 2: พิจารณาทิศทางของลิมิต $x \\to ${a}^{${signDir}}$</strong><br>
-        เมื่อ $x \\to ${a}^{${signDir}}$ จะได้ว่า ${isRight ? `${term} > 0 \\implies |${term}| = ${term}` : `${term} < 0 \\implies |${term}| = -(${term})`}
+        เมื่อ $x \\to ${a}^{${signDir}}$ จะได้ว่า ${isRight ? `${term} > 0$ ดังนั้น $|${term}| = ${term}` : `${term} < 0$ ดังนั้น $|${term}| = -(${term})`}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 3: แทนค่าและคำนวณลิมิต</strong><br>
@@ -1663,7 +1671,7 @@ function genLimitInfinityRadicalRatio() {
   let solText = `
     <div class="solution-step">
       <strong>ขั้นที่ 1: ระวังเครื่องหมายเมื่อ $x \\to -\\infty$</strong><br>
-      เนื่องจาก $x < 0$ ดังนั้น $\\sqrt{x^2} = |x| = -x \\implies x = -\\sqrt{x^2}$
+      เนื่องจาก $x < 0$ ดังนั้น $\\sqrt{x^2} = |x| = -x$ จึงได้ว่า $x = -\\sqrt{x^2}$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หารตัวเศษและตัวส่วนด้วย $x$ (สำหรับตัวส่วนนำ $x = -\\sqrt{x^2}$ เข้าไปในกรณฑ์)</strong><br>
@@ -2398,9 +2406,10 @@ function genDerivHardLogDiff() {
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์เทียบกับ $x$ ทั้งสองข้างโดยใช้กฎลูกโซ่และกฎผลคูณ</strong><br>
       จะได้ว่า
+      $$\\frac{d}{dx}[\\ln y] = \\frac{d}{dx}[${k}x \\ln x]$$
       ${adaptiveMath(
-        `\\frac{d}{dx}[\\ln y] = \\frac{d}{dx}[${k}x \\ln x] \\implies \\frac{1}{y}\\frac{dy}{dx} = ${k}\\ln x + ${k}x\\left(\\frac{1}{x}\\right) = ${k}(\\ln x + 1)`,
-        `\\frac{1}{y}\\frac{dy}{dx} &= \\frac{d}{dx}[${k}x \\ln x] \\\\ &= ${k}\\ln x + ${k}x \\cdot \\frac{1}{x} \\\\ &= ${k}(\\ln x + 1)`
+        `\\frac{1}{y}\\frac{dy}{dx} = ${k}\\ln x + ${k}x\\left(\\frac{1}{x}\\right) = ${k}(\\ln x + 1)`,
+        `\\frac{1}{y}\\frac{dy}{dx} &= ${k}\\ln x + ${k}x \\cdot \\frac{1}{x} \\\\ &= ${k}(\\ln x + 1)`
       )}
       ดังนั้น $$\\frac{1}{y}\\frac{dy}{dx} = ${k}(\\ln x + 1)$$
     </div>
@@ -2899,14 +2908,17 @@ function genDerivTrigTanChain() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้สูตร $\\frac{d}{dx}[\\tan(u)] = \\sec^2(u) \\cdot \\frac{du}{dx}$</strong>
+      <strong>ขั้นที่ 1: แยกพิจารณาฟังก์ชันจากไส้ในสุดออกมาข้างนอก</strong><br>
+      • <em>ฟังก์ชันไส้ใน:</em> กำหนดให้ $u = ${uExpr}$<br>
+      • <em>ฟังก์ชันนอกสุด:</em> $y = ${a === 1 ? "" : a}\\tan(u)$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: กำหนด $u = ${uExpr}$ แล้วหาอนุพันธ์ไส้ใน</strong><br>
-      $$\\frac{du}{dx} = \\frac{d}{dx}(${uExpr}) = ${2*k}x + ${b}$$
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน $\\frac{du}{dx}$</strong><br>
+      $$\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${2*k}x + ${b}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+      <strong>ขั้นที่ 3: ใช้กฎลูกโซ่ $\\frac{dy}{dx} = \\frac{dy}{du} \\cdot \\frac{du}{dx}$</strong><br>
+      ทราบว่า $\\frac{d}{du}[${a === 1 ? "" : a}\\tan(u)] = ${a === 1 ? "" : a}\\sec^2(u)$<br>
       ${adaptiveMath(
         `f'(x) = ${a === 1 ? "" : a}\\sec^2(${uExpr}) \\cdot (${2*k}x + ${b}) = ${derivExpr}`,
         `f'(x) &= ${a === 1 ? "" : a}\\sec^2(${uExpr}) \\cdot \\frac{d}{dx}(${uExpr}) \\\\ &= ${derivExpr}`
@@ -2914,7 +2926,10 @@ function genDerivTrigTanChain() {
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$ ทีละชั้นจากในออกนอก</strong><br>
+      • เมื่อ $x = ${x0}$ จะได้ค่าไส้ใน $u(0) = 0$<br>
+      • ค่าอนุพันธ์ไส้ใน $u'(0) = ${2*k}(0) + ${b} = ${b}$<br>
+      • ฟังก์ชันนอกสุด $\\sec^2(0) = 1$<br>
       $$f'(${x0}) = ${a === 1 ? "" : `${a} \\cdot `}(${b})\\sec^2(0) = ${slopeVal}$$
     </div>
   `;
@@ -3142,19 +3157,20 @@ function genDerivImplicitCircle() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: ใช้กฎลูกโซ่สำหรับพจน์ $y^2$</strong><br>
-      ${adaptiveMath(
-        `2x + 2y\\frac{dy}{dx} = 0 \\implies 2y\\frac{dy}{dx} = -2x`,
-        `2x + 2y\\frac{dy}{dx} &= 0 \\\\ 2y\\frac{dy}{dx} &= -2x`
-      )}
+      จะได้ว่า
+      $$2x + 2y\frac{dy}{dx} = 0$$
+      ย้ายข้างพจน์เพื่อจัดรูปหา $\frac{dy}{dx}$
+      $$2y\frac{dy}{dx} = -2x$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: จัดรูปหา $\\frac{dy}{dx}$</strong><br>
-      $$\\displaystyle \\frac{dy}{dx} = -\\frac{2x}{2y} = -\\frac{x}{y}$$
+      <strong>ขั้นที่ 3: จัดรูปหา $\frac{dy}{dx}$</strong><br>
+      $$\frac{dy}{dx} = -\frac{2x}{2y} = -\frac{x}{y}$$
+      ดังนั้น $$\frac{dy}{dx} = -\frac{x}{y}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่าพิกัด $(x, y) = (${x0}, ${y0})$</strong><br>
-      $$\\displaystyle \\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = -\\frac{${x0}}{${y0}} = ${slopeValLatex}$$
-      ดังนั้น $$\\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
+      $$\left.\frac{dy}{dx}\right|_{(${x0}, ${y0})} = -\frac{${x0}}{${y0}} = ${slopeValLatex}$$
+      ดังนั้น $$\left.\frac{dy}{dx}\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
     </div>
   `;
 
@@ -3170,7 +3186,7 @@ function genDerivImplicitCircle() {
     customAnsContent: customAnsContent,
     ansLatex: slopeValLatex,
     promptText: `✍️ ทดลองคำนวณค่าของ $\\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})}$:`,
-    hintText: `ดิฟเทียบ $x$ ทั้งสองข้าง: $2x + 2y y' = 0 \\implies y' = -\\frac{x}{y}$`,
+    hintText: `ดิฟเทียบ $x$ ทั้งสองข้าง: $2x + 2y y' = 0$ จะได้ $y' = -\\frac{x}{y}$`,
     solHtml: solText,
     exactNum: slopeNum,
     exactDen: slopeDen
@@ -3223,11 +3239,14 @@ function genDerivImplicitPolynomial() {
       )}
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: ดึงตัวร่วม $\\frac{dy}{dx}$</strong><br>
+      <strong>ขั้นที่ 3: ย้ายข้างและดึงตัวร่วม $\\frac{dy}{dx}$</strong><br>
       ${adaptiveMath(
-        `\\left(${2*c}y - ${b === 1 ? "x" : `${b}x`}\\right)\\frac{dy}{dx} = ${b === 1 ? "y" : `${b}y`} - ${2*a}x \\implies \\frac{dy}{dx} = \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}`,
-        `\\frac{dy}{dx}\\left(${2*c}y - ${b === 1 ? "x" : `${b}x`}\\right) &= ${b === 1 ? "y" : `${b}y`} - ${2*a}x \\\\ \\frac{dy}{dx} &= \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}`
+        `\\left(${2*c}y - ${b === 1 ? "x" : `${b}x`}\\right)\\frac{dy}{dx} = ${b === 1 ? "y" : `${b}y`} - ${2*a}x`,
+        `\\left(${2*c}y - ${b === 1 ? "x" : `${b}x`}\\right)\\frac{dy}{dx} &= ${b === 1 ? "y" : `${b}y`} - ${2*a}x`
       )}
+      จะได้ว่า
+      $$\\frac{dy}{dx} = \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}$$
+      ดังนั้น $$\\frac{dy}{dx} = \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่าพิกัด $(x, y) = (${x0}, ${y0})$</strong><br>
@@ -3282,7 +3301,7 @@ function genDerivTrigCotCscPure() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
-      ทราบว่า $\\csc\\left(\\frac{\\pi}{4}\\right) = \\sqrt{2} \\implies \\csc^2\\left(\\frac{\\pi}{4}\\right) = 2$<br>
+      ทราบว่า $\\csc\\left(\\frac{\\pi}{4}\\right) = \\sqrt{2}$ จึงได้ $\\csc^2\\left(\\frac{\\pi}{4}\\right) = 2$<br>
       $$f'(${x0}) = -${a*k}(2) = ${slopeVal}$$
     </div>
   `;
@@ -3415,8 +3434,8 @@ function genDerivMixedPolyCot() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์</strong><br>
-      $u = ${uExpr} \\implies u' = ${2*a}x$<br>
-      $v = ${vExpr} \\implies v' = -${k === 1 ? "" : k}\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)$
+      กำหนดให้ $u = ${uExpr}$ จะได้ว่า $u' = ${2*a}x$<br>
+      และกำหนดให้ $v = ${vExpr}$ จะได้ว่า $v' = -${k === 1 ? "" : k}\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณ</strong><br>
@@ -3467,8 +3486,8 @@ function genDerivMixedExpArcCot() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์</strong><br>
-      $u = e^{${k === 1 ? "x" : `${k}x`}} + ${a}x \\implies u' = ${k === 1 ? "" : k}e^{${k === 1 ? "x" : `${k}x`}} + ${a}$<br>
-      $v = \\arctan(${b === 1 ? "x" : `${b}x`}) \\implies v' = \\frac{${b}}{1 + ${b*b}x^2}$
+      กำหนดให้ $u = e^{${k === 1 ? "x" : `${k}x`}} + ${a}x$ จะได้ว่า $u' = ${k === 1 ? "" : k}e^{${k === 1 ? "x" : `${k}x`}} + ${a}$<br>
+      และกำหนดให้ $v = \\arctan(${b === 1 ? "x" : `${b}x`})$ จะได้ว่า $v' = \\frac{${b}}{1 + ${b*b}x^2}$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณ</strong><br>
@@ -3513,23 +3532,30 @@ function genDerivMixedNestedTrig() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้กฎลูกโซ่สำหรับฟังก์ชันประกอบ $\\frac{d}{dx}[f(g(x))] = f'(g(x)) \\cdot g'(x)$</strong>
+      <strong>ขั้นที่ 1: แยกพิจารณาฟังก์ชันทีละชั้นจากไส้ในสุดออกมาข้างนอก</strong><br>
+      • <em>ไส้ในสุด:</em> กำหนดให้ $u = ${k}x$<br>
+      • <em>ไส้ชั้นกลาง:</em> กำหนดให้ $v = \\arcsin(u) = \\arcsin(${k}x)$<br>
+      • <em>ฟังก์ชันนอกสุด:</em> $y = \\tan(v)$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: กำหนด $u = \\arcsin(${k}x)$</strong><br>
-      $$\\frac{du}{dx} = \\frac{d}{dx}[\\arcsin(${k}x)] = \\frac{${k}}{\\sqrt{1 - (${k}x)^2}} = \\frac{${k}}{\\sqrt{1 - ${k*k}x^2}}$$
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละชั้นจากไส้ในสุดออกมาข้างนอก</strong><br>
+      • <em>อนุพันธ์ไส้ในสุด:</em> $\\frac{du}{dx} = \\frac{d}{dx}(${k}x) = ${k}$<br>
+      • <em>อนุพันธ์ไส้ชั้นกลาง:</em> $\\frac{dv}{du} = \\frac{d}{du}[\\arcsin(u)] = \\frac{1}{\\sqrt{1 - u^2}}$<br>
+      • <em>อนุพันธ์ฟังก์ชันนอกสุด:</em> $\\frac{dy}{dv} = \\frac{d}{dv}[\\tan(v)] = \\sec^2(v)$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: หาอนุพันธ์ฟังก์ชันนอก $\\frac{d}{du}[\\tan(u)] = \\sec^2(u)$</strong><br>
+      <strong>ขั้นที่ 3: รวมด้วยกฎลูกโซ่ (Chain Rule) $\\frac{dy}{dx} = \\frac{dy}{dv} \\cdot \\frac{dv}{du} \\cdot \\frac{du}{dx}$</strong><br>
       ${adaptiveMath(
-        `f'(x) = \\sec^2(\\arcsin(${k}x)) \\cdot \\frac{${k}}{\\sqrt{1 - ${k*k}x^2}} = ${derivExpr}`,
-        `f'(x) &= \\sec^2(\\arcsin(${k}x)) \\cdot \\frac{${k}}{\\sqrt{1 - ${k*k}x^2}} \\\\ &= ${derivExpr}`
+        `f'(x) = \\sec^2(v) \\cdot \\frac{1}{\\sqrt{1 - u^2}} \\cdot ${k} = \\sec^2(\\arcsin(${k}x)) \\cdot \\frac{${k}}{\\sqrt{1 - ${k*k}x^2}} = ${derivExpr}`,
+        `f'(x) &= \\sec^2(v) \\cdot \\frac{1}{\\sqrt{1 - u^2}} \\cdot ${k} \\\\ &= \\sec^2(\\arcsin(${k}x)) \\cdot \\frac{${k}}{\\sqrt{1 - ${k*k}x^2}} \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
-      $\\arcsin(0) = 0 \\implies \\sec^2(0) = 1$<br>
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$ ทีละชั้นจากในออกนอก</strong><br>
+      • เมื่อ $x = ${x0}$ จะได้ไส้ในสุด $u = 0$<br>
+      • ไส้ชั้นกลาง $v = \\arcsin(0) = 0$<br>
+      • ฟังก์ชันนอกสุด $\\sec^2(0) = 1$<br>
       $$f'(${x0}) = (1) \\cdot \\frac{${k}}{\\sqrt{1 - 0}} = ${slopeVal}$$
     </div>
   `;
@@ -3566,8 +3592,8 @@ function genDerivMixedQuotientTrigRadical() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์</strong><br>
-      $u = ${a}\\tan(x) \\implies u' = ${a}\\sec^2(x)$<br>
-      $v = \\sin(x) + \\cos(x) \\implies v' = \\cos(x) - \\sin(x)$
+      กำหนดให้ $u = ${a}\\tan(x)$ จะได้ว่า $u' = ${a}\\sec^2(x)$<br>
+      และกำหนดให้ $v = \\sin(x) + \\cos(x)$ จะได้ว่า $v' = \\cos(x) - \\sin(x)$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลหาร</strong><br>
@@ -3616,24 +3642,34 @@ function genDerivMixedLogTrig() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้สูตร $\\frac{d}{dx}[\\ln(u)] = \\frac{1}{u} \\cdot \\frac{du}{dx}$</strong>
+      <strong>ขั้นที่ 1: แยกพิจารณาฟังก์ชันจากไส้ในสุดออกมาข้างนอก</strong><br>
+      • <em>ไส้ในสุดของพจน์ตรีโกณ:</em> กำหนดให้ $w = ${k}x$<br>
+      • <em>ไส้ชั้นกลาง (พจน์เอกซ์โปผสมตรีโกณ):</em> $e^{\\tan(w)} = e^{\\tan(${k}x)}$<br>
+      • <em>ไส้ในทั้งหมดของลอการิทึม:</em> กำหนดให้ $u = e^{\\tan(${k}x)} + ${a}x + ${b}$<br>
+      • <em>ฟังก์ชันนอกสุด:</em> $y = \\ln(u)$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: กำหนด $u = e^{\\tan(${k}x)} + ${a}x + ${b}$ แล้วหาอนุพันธ์ไส้ใน $\\frac{du}{dx}$</strong><br>
-      $$\\frac{du}{dx} = \\frac{d}{dx}\\left(e^{\\tan(${k}x)}\\right) + ${a} = e^{\\tan(${k}x)}\\sec^2(${k}x)(${k}) + ${a} = ${k}e^{\\tan(${k}x)}\\sec^2(${k}x) + ${a}$$
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของไส้ใน $\\frac{du}{dx}$ ทีละชั้นจากในออกนอก</strong><br>
+      1. ดิฟไส้ในสุด: $\\frac{dw}{dx} = ${k}$<br>
+      2. ดิฟฟังก์ชันตรีโกณ: $\\frac{d}{dx}[\\tan(${k}x)] = \\sec^2(${k}x) \\cdot (${k}) = ${k}\\sec^2(${k}x)$<br>
+      3. ดิฟพจน์เอกซ์โป: $\\frac{d}{dx}\\left[e^{\\tan(${k}x)}\\right] = e^{\\tan(${k}x)} \\cdot (${k}\\sec^2(${k}x))$<br>
+      4. ดังนั้นอนุพันธ์ไส้ในทั้งหมดคือ
+      $$\\frac{du}{dx} = ${k}e^{\\tan(${k}x)}\\sec^2(${k}x) + ${a}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+      <strong>ขั้นที่ 3: ใช้กฎลูกโซ่สำหรับฟังก์ชันลอการิทึม $\\frac{d}{dx}[\\ln(u)] = \\frac{1}{u} \\cdot \\frac{du}{dx}$</strong><br>
       ${adaptiveMath(
-        `f'(x) = \\frac{${k}e^{\\tan(${k}x)}\\sec^2(${k}x) + ${a}}{e^{\\tan(${k}x)} + ${a}x + ${b}}`,
-        `f'(x) &= \\frac{${k}e^{\\tan(${k}x)}\\sec^2(${k}x) + ${a}}{e^{\\tan(${k}x)} + ${a}x + ${b}}`
+        `f'(x) = \\frac{1}{e^{\\tan(${k}x)} + ${a}x + ${b}} \\cdot \\left(${k}e^{\\tan(${k}x)}\\sec^2(${k}x) + ${a}\\right) = ${derivExpr}`,
+        `f'(x) &= \\frac{1}{e^{\\tan(${k}x)} + ${a}x + ${b}} \\cdot \\left(${k}e^{\\tan(${k}x)}\\sec^2(${k}x) + ${a}\\right) \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
-      $\\tan(0) = 0 \\implies e^0 = 1$ และ $\\sec(0) = 1$<br>
-      $$f'(${x0}) = \\frac{${k}(1)(1)^2 + ${a}}{1 + 0 + ${b}} = \\frac{${numVal}}{${denVal}} = ${slopeValLatex}$$
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$ ทีละชั้นจากในออกนอก</strong><br>
+      • ที่ $x = ${x0}$ จะได้ $\\tan(0) = 0$ จึงได้ $e^0 = 1$ และ $\\sec(0) = 1$<br>
+      • ค่าไส้ใน $u(0) = 1 + 0 + ${b} = ${denVal}$<br>
+      • ค่าอนุพันธ์ไส้ใน $u'(0) = ${k}(1)(1)^2 + ${a} = ${numVal}$<br>
+      $$f'(${x0}) = \\frac{${numVal}}{${denVal}} = ${slopeValLatex}$$
     </div>
   `;
 
