@@ -525,7 +525,7 @@
 </header>
 
 <main>
-  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.20:52</span></h3>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.20:58</span></h3>
   <p class="byline">คลังโจทย์แคลคูลัส 1 พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
@@ -629,7 +629,7 @@
   </div>
 
   <footer style="text-align: center; margin-top: 28px; margin-bottom: 16px; font-size: 0.85rem; color: var(--muted);">
-    Calculus 1 Practice Hub • v.2026.08.27.20:52
+    Calculus 1 Practice Hub • v.2026.08.27.20:58
   </footer>
 </main>
 
@@ -4300,6 +4300,45 @@ function checkAchievements(isCorrect) {
   saveStats();
 }
 
+function resetToPlaceholder() {
+  currentProblem = null;
+  
+  // รีเซ็ตพื้นที่แสดงโจทย์
+  let probBox = document.getElementById('probBox');
+  if (probBox) {
+    probBox.innerHTML = `
+      <div style="text-align: center; color: var(--muted); padding: 40px 0;">
+        <div style="font-size: 2.5rem; margin-bottom: 12px;">🎲</div>
+        <div style="font-size: 1.1rem; font-weight: 600; color: var(--text);">พร้อมฝึกฝนโจทย์แคลคูลัส 1 หรือยัง?</div>
+        <div style="font-size: 0.9rem; margin-top: 6px;">กดปุ่มด้านล่างเพื่อสุ่มโจทย์ใหม่ หรือเริ่มทำแบบทดสอบได้ทันที!</div>
+      </div>
+    `;
+  }
+  
+  document.getElementById('topicBadge').textContent = 'สถานะ: รอสุ่มโจทย์';
+  document.getElementById('diffBadge').classList.add('hidden');
+  
+  document.getElementById('ansBox').classList.add('hidden');
+  document.getElementById('solBox').classList.add('hidden');
+  document.getElementById('hintBox').classList.add('hidden');
+  
+  let quizPromptLabel = document.getElementById('quizPromptLabel');
+  if (quizPromptLabel) quizPromptLabel.innerHTML = "✍️ ทดลองคำนวณและใส่คำตอบ:";
+  
+  let inputEl = document.getElementById('userAnsInput');
+  if (inputEl) {
+    inputEl.value = '';
+    inputEl.classList.remove('input-success', 'input-error');
+  }
+  
+  let feedback = document.getElementById('feedbackBox');
+  if (feedback) {
+    feedback.style.display = 'none';
+    feedback.className = 'feedback-box';
+    feedback.innerHTML = '';
+  }
+}
+
 function setTopic(topic) {
   currentTopic = topic;
   document.getElementById('topicAllBtn').classList.toggle('active', topic === 'all');
@@ -4308,11 +4347,7 @@ function setTopic(topic) {
   document.getElementById('topicTangentBtn').classList.toggle('active', topic === 'tangent_normal');
   document.getElementById('topicImplicitBtn').classList.toggle('active', topic === 'implicit');
 
-  if (currentMode === 'quiz') {
-    startQuizSession();
-  } else {
-    generateRandomProblem();
-  }
+  resetToPlaceholder();
 }
 
 function setMode(mode) {
@@ -4326,15 +4361,15 @@ function setMode(mode) {
   document.getElementById('quizCounterLabel').classList.toggle('hidden', mode !== 'quiz');
   document.getElementById('quizReportCard').classList.add('hidden');
 
+  quizSession.active = false;
   let btnAction = document.getElementById('btnMainAction');
   if (mode === 'quiz') {
-    btnAction.textContent = quizSession.active ? '➡️ ข้อถัดไป' : '▶️ เริ่มทำแบบทดสอบ 5 ข้อ';
-    startQuizSession();
+    btnAction.textContent = '▶️ เริ่มทำแบบทดสอบ 5 ข้อ';
   } else {
-    quizSession.active = false;
     btnAction.textContent = '🎲 สุ่มโจทย์ใหม่';
-    generateRandomProblem();
   }
+
+  resetToPlaceholder();
 }
 
 function setFilterDifficulty(diff) {
@@ -4342,11 +4377,7 @@ function setFilterDifficulty(diff) {
   document.querySelectorAll('.filter-pill').forEach(el => {
     el.classList.toggle('active', el.getAttribute('onclick').includes(`'${diff}'`));
   });
-  if (currentMode === 'quiz') {
-    startQuizSession();
-  } else {
-    generateRandomProblem();
-  }
+  resetToPlaceholder();
 }
 
 function getActivePool() {
@@ -4694,13 +4725,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // URL Parameter check (e.g. ?topic=limit, ?topic=derivative, ?topic=tangent_normal, ?topic=implicit)
+  // URL Parameter check
   const urlParams = new URLSearchParams(window.location.search);
   const topicParam = urlParams.get('topic');
   if (['limit', 'derivative', 'tangent_normal', 'implicit'].includes(topicParam)) {
     setTopic(topicParam);
   } else {
-    generateRandomProblem();
+    resetToPlaceholder();
   }
 });
 </script>
