@@ -525,7 +525,7 @@
 </header>
 
 <main>
-  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.0.3</span></h3>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.0.4</span></h3>
   <p class="byline">คลังโจทย์แคลคูลัส 1 พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
@@ -629,7 +629,7 @@
   </div>
 
   <footer style="text-align: center; margin-top: 28px; margin-bottom: 16px; font-size: 0.85rem; color: var(--muted);">
-    Calculus 1 Practice Hub • v.2026.0.3
+    Calculus 1 Practice Hub • v.2026.0.4
   </footer>
 </main>
 
@@ -1957,24 +1957,27 @@ function genDerivEasyTrig() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันไซน์ร่วมกับกฎลูกโซ่ $\\frac{d}{dx}[\\sin(u)] = \\cos(u) \\cdot \\frac{du}{dx}$</strong>
+      <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
+      • $\\frac{d}{dx}[\\sin(u)] = \\cos(u) \\cdot \\frac{du}{dx}$<br>
+      • $\\frac{d}{dx}[kx] = k$<br>
+      • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
-      กำหนดให้ $u = ${k}x$ จะได้ว่า
-      ${adaptiveMath(`u' = \\frac{d}{dx}(${k}x) = ${k}`, `u' &= \\frac{d}{dx}(${k}x) \\\\ &= ${k}`)}
-      ดังนั้น $$u' = ${k}$$
-    </div>
-    <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+      <strong>ขั้นที่ 2: ดำเนินการหาอนุพันธ์ตามสูตรและกฎลูกโซ่</strong><br>
       ${adaptiveMath(
-        `f'(x) = ${a} \\cdot \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) = ${a} \\cdot \\cos(${k}x) \\cdot ${k} = ${derivExpr}`,
-        `f'(x) &= ${a} \\cdot \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) \\\\ &= ${a} \\cdot \\cos(${k}x) \\cdot ${k} \\\\ &= ${derivExpr}`
+        `f'(x) = \\frac{d}{dx}\\left[${a}\\sin(${k}x)\\right] = ${a}\\frac{d}{dx}[\\sin(${k}x)]`,
+        `f'(x) &= \\frac{d}{dx}\\left[${a}\\sin(${k}x)\\right] \\\\ &= ${a}\\frac{d}{dx}[\\sin(${k}x)]`
+      )}
+      ใช้สูตรอนุพันธ์ของ $\\sin(u)$ โดยให้ $u = ${k}x$:
+      ${adaptiveMath(
+        `= ${a}\\left(\\cos(${k}x) \\cdot \\frac{d}{dx}[${k}x]\\right) = ${a}(\\cos(${k}x) \\cdot ${k}) = ${derivExpr}`,
+        `&= ${a}\\left(\\cos(${k}x) \\cdot \\frac{d}{dx}[${k}x]\\right) \\\\ &= ${a}(\\cos(${k}x) \\cdot ${k}) \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
+      ทราบว่า $\\cos(0) = 1$ จึงได้
       $$f'(${x0}) = ${a*k}\\cos(0) = ${a*k}(1) = ${slopeVal}$$
     </div>
   `;
@@ -2009,24 +2012,21 @@ function genDerivEasyExp() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้สูตร $\\frac{d}{dx}[e^u] = e^u \\cdot \\frac{du}{dx}$</strong>
+      <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
+      • $\\frac{d}{dx}[e^u] = e^u \\cdot \\frac{du}{dx}$<br>
+      • $\\frac{d}{dx}[x^n] = n x^{n-1}$<br>
+      • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: หาอนุพันธ์ของพจน์เอกซ์โพเนนเชียล</strong><br>
-      กำหนดให้ $u = ${k}x$ จะได้ว่า
-      ${adaptiveMath(
-        `\\frac{d}{dx}\\left[e^{${k}x}\\right] = e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) = e^{${k}x} \\cdot ${k} = ${k}e^{${k}x}`,
-        `\\frac{d}{dx}\\left[e^{${k}x}\\right] &= e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= e^{${k}x} \\cdot ${k} \\\\ &= ${k}e^{${k}x}`
-      )}
-      ดังนั้น $$\\frac{d}{dx}\\left[e^{${k}x}\\right] = ${k}e^{${k}x}$$
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์อย่างละเอียด</strong><br>
+      • <em>พิจารณาพจน์ที่ 1 (${a === 1 ? "" : a}e^{${k}x}):</em>
+      $$\\frac{d}{dx}\\left[${a === 1 ? "" : a}e^{${k}x}\\right] = ${a === 1 ? "" : `${a}\\cdot `}\\left(e^{${k}x}\\frac{d}{dx}[${k}x]\\right) = ${a*k}e^{${k}x}$$
+      • <em>พิจารณาพจน์ที่ 2 (${b > 0 ? `${b}x` : `-${Math.abs(b)}x`}):</em>
+      $$\\frac{d}{dx}[${b}x] = ${b}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: รวมพจน์ทั้งหมดเพื่อหา $f'(x)$</strong><br>
-      ${adaptiveMath(
-        `f'(x) = ${a === 1 ? "" : `${a} \\cdot `}${k}e^{${k}x} ${b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`} = ${derivExpr}`,
-        `f'(x) &= \\frac{d}{dx}[${a === 1 ? "" : a}e^{${k}x}] + \\frac{d}{dx}[${b}x] \\\\ &= ${derivExpr}`
-      )}
-      ดังนั้น $$f'(x) = ${derivExpr}$$
+      <strong>ขั้นที่ 3: รวมผลลัพธ์ของทุกพจน์เข้าด้วยกัน</strong><br>
+      $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
@@ -2188,23 +2188,22 @@ function genDerivMedQuotientRational() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$</strong>
+      <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
+      • กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$<br>
+      • $\\frac{d}{dx}[ax + b] = a$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
       กำหนดให้ $u = ${a === 1 ? "x" : `${a}x`} + ${b}$ จะได้ว่า
-      ${adaptiveMath(`u' = \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) = ${a}`, `u' &= \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) \\\\ &= ${a}`)}
-      ดังนั้น $$u' = ${a}$$
-      <br>
+      $$u' = \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) = ${a}$$
       กำหนดให้ $v = ${c === 1 ? "x" : `${c}x`} + ${d}$ จะได้ว่า
-      ${adaptiveMath(`v' = \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) = ${c}`, `v' &= \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) \\\\ &= ${c}`)}
-      ดังนั้น $$v' = ${c}$$
+      $$v' = \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) = ${c}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าและกระจายพจน์ตัวเศษ</strong><br>
+      <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลหารและกระจายพจน์ตัวเศษ</strong><br>
       ${adaptiveMath(
-        `f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
-        `f'(x) &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
+        `f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
+        `f'(x) &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
@@ -3041,20 +3040,20 @@ function genDerivGeneralExp() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันเอกซ์โพเนนเชียลฐานทั่วไป $\\frac{d}{dx}[a^u] = a^u \\ln(a) \\cdot \\frac{du}{dx}$</strong>
+      <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
+      • $\\frac{d}{dx}[a^u] = a^u \\ln(a) \\cdot \\frac{du}{dx}$<br>
+      • $\\frac{d}{dx}[kx + b] = k$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: กำหนด $u = ${k}x + ${b}$ จะได้ว่า $\\frac{du}{dx} = ${k}$</strong>
-    </div>
-    <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+      <strong>ขั้นที่ 2: ดำเนินการหาอนุพันธ์ตามสูตรและกฎลูกโซ่</strong><br>
       ${adaptiveMath(
-        `f'(x) = ${base}^{${k}x + ${b}} \\ln(${base}) \\cdot \\frac{d}{dx}(${k}x + ${b}) = ${k}\\ln(${base}) \\cdot ${base}^{${k}x + ${b}}`,
-        `f'(x) &= ${base}^{${k}x + ${b}} \\ln(${base}) \\cdot (${k}) \\\\ &= ${k}\\ln(${base}) \\cdot ${base}^{${k}x + ${b}}`
+        `f'(x) = \\frac{d}{dx}\\left[${base}^{${k}x + ${b}}\\right] = ${base}^{${k}x + ${b}} \\ln(${base}) \\cdot \\frac{d}{dx}(${k}x + ${b}) = ${k}\\ln(${base}) \\cdot ${base}^{${k}x + ${b}}`,
+        `f'(x) &= \\frac{d}{dx}\\left[${base}^{${k}x + ${b}}\\right] \\\\ &= ${base}^{${k}x + ${b}} \\ln(${base}) \\cdot \\frac{d}{dx}(${k}x + ${b}) \\\\ &= ${k}\\ln(${base}) \\cdot ${base}^{${k}x + ${b}}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
       $$f'(${x0}) = ${k}\\ln(${base}) \\cdot ${base}^{${b}} = ${coeffVal}\\ln(${base})$$
     </div>
   `;
@@ -3346,21 +3345,21 @@ function genDerivTrigCotCscPure() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้สูตร $\\frac{d}{dx}[\\cot(u)] = -\\csc^2(u) \\cdot \\frac{du}{dx}$</strong>
+      <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
+      • $\\frac{d}{dx}[\\cot(u)] = -\\csc^2(u) \\cdot \\frac{du}{dx}$<br>
+      • $\\frac{d}{dx}\\left[kx + \\frac{\\pi}{4}\\right] = k$<br>
+      • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: กำหนด $u = ${k}x + \\frac{\\pi}{4}$ จะได้ว่า $\\frac{du}{dx} = ${k}$</strong>
-    </div>
-    <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+      <strong>ขั้นที่ 2: ดำเนินการหาอนุพันธ์ตามสูตรและกฎลูกโซ่</strong><br>
       ${adaptiveMath(
-        `f'(x) = ${a}\\left(-\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right)\\right) \\cdot (${k}) = ${derivExpr}`,
-        `f'(x) &= ${a}\\left(-\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right)\\right) \\cdot \\frac{d}{dx}\\left(${k}x + \\frac{\\pi}{4}\\right) \\\\ &= ${derivExpr}`
+        `f'(x) = \\frac{d}{dx}\\left[${a}\\cot\\left(${k}x + \\frac{\\pi}{4}\\right)\\right] = ${a}\\left(-\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right)\\frac{d}{dx}\\left(${k}x + \\frac{\\pi}{4}\\right)\\right) = ${derivExpr}`,
+        `f'(x) &= \\frac{d}{dx}\\left[${a}\\cot\\left(${k}x + \\frac{\\pi}{4}\\right)\\right] \\\\ &= ${a}\\left(-\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right)\\frac{d}{dx}\\left(${k}x + \\frac{\\pi}{4}\\right)\\right) \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
       ทราบว่า $\\csc\\left(\\frac{\\pi}{4}\\right) = \\sqrt{2}$ จึงได้ $\\csc^2\\left(\\frac{\\pi}{4}\\right) = 2$<br>
       $$f'(${x0}) = -${a*k}(2) = ${slopeVal}$$
     </div>
