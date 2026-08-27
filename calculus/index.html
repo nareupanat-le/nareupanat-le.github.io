@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>แบบฝึกหัดลิมิต (Calculus 1) — Nareupanat Lekkoksung</title>
+  <title>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Hub) — Nareupanat Lekkoksung</title>
   
   <!-- Site Base Stylesheet (ไม่แก้ไขไฟล์นี้) -->
   <link rel="stylesheet" href="/assets/style.css">
@@ -22,7 +22,7 @@
   </script>
   <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 
-  <!-- Limit App Specific Styles (ใช้ Design Tokens จาก style.css) -->
+  <!-- Calculus App Specific Styles (ใช้ Design Tokens จาก style.css) -->
   <style>
     .app-card {
       background: #ffffff;
@@ -33,21 +33,21 @@
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
     }
 
-    /* Mode Navigation Tabs */
-    .mode-nav {
+    /* Topic Navigation Bar */
+    .topic-nav {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
       padding-bottom: 14px;
-      border-bottom: 1px solid rgba(122, 92, 58, 0.15);
+      border-bottom: 2px solid rgba(122, 92, 58, 0.12);
     }
 
-    .mode-btn {
-      padding: 7px 14px;
-      border-radius: 20px;
-      font-size: 0.88rem;
-      font-weight: 600;
+    .topic-btn {
+      padding: 8px 16px;
+      border-radius: 24px;
+      font-size: 0.95rem;
+      font-weight: 700;
       cursor: pointer;
       border: 1px solid rgba(122, 92, 58, 0.25);
       background: #faf8f5;
@@ -56,12 +56,57 @@
       font-family: inherit;
       display: inline-flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
+    }
+
+    .topic-btn:hover {
+      background: rgba(122, 92, 58, 0.08);
+      border-color: var(--muted);
+    }
+
+    .topic-btn.active {
+      background: var(--muted);
+      color: #ffffff;
+      border-color: var(--muted);
+      box-shadow: 0 2px 8px rgba(122, 92, 58, 0.25);
+    }
+
+    /* Sub Navigation: Modes & Filters */
+    .sub-nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed rgba(122, 92, 58, 0.15);
+    }
+
+    .mode-group {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .mode-btn {
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid rgba(122, 92, 58, 0.2);
+      background: #fff;
+      color: var(--muted);
+      transition: all 0.15s ease;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
     }
 
     .mode-btn:hover {
-      background: rgba(122, 92, 58, 0.08);
-      border-color: var(--muted);
+      background: #faf8f5;
     }
 
     .mode-btn.active {
@@ -80,7 +125,7 @@
 
     .filter-pill {
       font-size: 0.8rem;
-      padding: 3px 10px;
+      padding: 4px 10px;
       border-radius: 12px;
       cursor: pointer;
       border: 1px solid rgba(122, 92, 58, 0.2);
@@ -393,7 +438,7 @@
       display: block;
     }
 
-    /* Modal / Drawer for Achievements */
+    /* Modal for Stats & Achievements */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; right: 0; bottom: 0;
@@ -408,7 +453,7 @@
     .modal-card {
       background: #fff;
       border-radius: 16px;
-      max-width: 520px;
+      max-width: 540px;
       width: 100%;
       padding: 26px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
@@ -459,7 +504,8 @@
       .btn { width: 100%; }
       .quiz-input-group { flex-direction: column; align-items: stretch; }
       .quiz-input { width: 100%; }
-      .mode-nav { justify-content: center; }
+      .topic-nav { justify-content: center; }
+      .sub-nav { justify-content: center; }
     }
   </style>
 </head>
@@ -477,21 +523,30 @@
 </header>
 
 <main>
-  <h3>แบบฝึกหัดลิมิต (Calculus 1)</h3>
-  <p class="byline">คละโจทย์ลิมิตในรูปแบบไม่กำหนด ($\frac{0}{0}, \infty - \infty$) ทุกระดับ: การแยกตัวประกอบ, สังยุครากที่สอง/สาม, สังยุคซ้อน, และลิมิตตรีโกณมิติ</p>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub)</h3>
+  <p class="byline">คลังโจทย์แคลคูลัส 1 ครบวงจร: ลิมิตและรูปแบบไม่กำหนด, อนุพันธ์ฟังก์ชันทุกรูปแบบ, กฎลูกโซ่, และการประยุกต์ พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
-    <!-- Mode Navigation Tabs -->
-    <div class="mode-nav">
-      <button id="modeFreeBtn" class="mode-btn active" onclick="switchMode('free')">🎲 สุ่มอิสระ</button>
-      <button id="modeFilterBtn" class="mode-btn" onclick="switchMode('filter')">🎯 เลือกตามระดับ</button>
-      <button id="modeQuizBtn" class="mode-btn" onclick="switchMode('quiz')">⏱️ แบบทดสอบ 5 ข้อ</button>
-      <button class="mode-btn" style="margin-left: auto;" onclick="toggleStatsModal()">📊 สถิติ & ความสำเร็จ</button>
+    <!-- Topic Navigation Tabs -->
+    <div class="topic-nav">
+      <button id="topicAllBtn" class="topic-btn active" onclick="setTopic('all')">🎲 ทั้งหมด (คละบทเรียน)</button>
+      <button id="topicLimitBtn" class="topic-btn" onclick="setTopic('limit')">📘 ลิมิต (Limits)</button>
+      <button id="topicDerivBtn" class="topic-btn" onclick="setTopic('derivative')">📙 อนุพันธ์ (Derivatives)</button>
+    </div>
+
+    <!-- Sub Navigation: Mode Selector & Stats Button -->
+    <div class="sub-nav">
+      <div class="mode-group">
+        <button id="modeFreeBtn" class="mode-btn active" onclick="setMode('free')">🎲 สุ่มอิสระ</button>
+        <button id="modeFilterBtn" class="mode-btn" onclick="setMode('filter')">🎯 เลือกตามระดับ</button>
+        <button id="modeQuizBtn" class="mode-btn" onclick="setMode('quiz')">⏱️ แบบทดสอบ 5 ข้อ</button>
+      </div>
+      <button class="mode-btn" style="border-color: rgba(122,92,58,0.35);" onclick="toggleStatsModal()">📊 สถิติ & เหรียญรางวัล</button>
     </div>
 
     <!-- Filter Pills (แสดงเฉพาะเมื่ออยู่ในโหมด filter) -->
     <div id="filterPillsRow" class="filter-pills hidden">
-      <span style="font-size: 0.85rem; font-weight: 600; color: var(--muted);">เลือกระดับ:</span>
+      <span style="font-size: 0.85rem; font-weight: 600; color: var(--muted);">ระดับความยาก:</span>
       <button class="filter-pill active" onclick="setFilterDifficulty('all')">ทั้งหมด</button>
       <button class="filter-pill" onclick="setFilterDifficulty('easy')">🟢 พื้นฐาน</button>
       <button class="filter-pill" onclick="setFilterDifficulty('med')">🟡 ปานกลาง</button>
@@ -503,6 +558,7 @@
       <div id="quizProgressBar" class="quiz-progress-bar"></div>
     </div>
 
+    <!-- Status & Badges Meta Bar -->
     <div class="meta-bar">
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
         <div id="topicBadge" class="badge">สถานะ: รอสุ่มโจทย์</div>
@@ -522,11 +578,11 @@
 
     <!-- ส่วนทดลองตอบ (Interactive Quiz) -->
     <div class="quiz-section">
-      <label for="userAnsInput" style="display:block; margin-bottom: 8px; font-weight: 600; font-size: 0.95rem;">
+      <label id="quizPromptLabel" for="userAnsInput" style="display:block; margin-bottom: 8px; font-weight: 600; font-size: 0.95rem;">
         ✍️ ทดลองคำนวณและใส่คำตอบ:
       </label>
       <div class="quiz-input-group">
-        <input type="text" id="userAnsInput" class="quiz-input" placeholder="เช่น 1/2, -3/4, 5, 0" autocomplete="off" />
+        <input type="text" id="userAnsInput" class="quiz-input" placeholder="เช่น 1/2, -3/4, 6, 0" autocomplete="off" />
         <button class="btn btn-check" onclick="checkAnswer()">ตรวจคำตอบ</button>
       </div>
       <div id="feedbackBox" class="feedback-box"></div>
@@ -563,7 +619,7 @@
       <p style="font-size: 1.1rem; margin: 6px 0;">คุณทำคะแนนได้ <strong id="quizScoreVal">0</strong> เต็ม 5 ข้อ (<span id="quizPercentVal">0%</span>)</p>
       <div class="btn-group" style="margin-top: 16px;">
         <button class="btn btn-primary" onclick="startQuizSession()">🔄 ทำแบบทดสอบชุดใหม่</button>
-        <button class="btn btn-secondary" onclick="switchMode('free')">กลับสู่โหมดฝึกฝนปกติ</button>
+        <button class="btn btn-secondary" onclick="setMode('free')">กลับสู่โหมดฝึกฝนปกติ</button>
       </div>
     </div>
   </div>
@@ -573,14 +629,16 @@
 <div id="statsModal" class="modal-overlay hidden" onclick="if(event.target===this) toggleStatsModal()">
   <div class="modal-card">
     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
-      <h3 style="margin:0;">📊 สถิติ & ความสำเร็จ</h3>
+      <h3 style="margin:0;">📊 สถิติ & ความสำเร็จแคลคูลัส</h3>
       <button style="border:none; background:none; font-size:1.4rem; cursor:pointer;" onclick="toggleStatsModal()">✕</button>
     </div>
     
     <div style="background:#faf8f5; border:1px solid rgba(122,92,58,0.15); border-radius:12px; padding:16px; margin-bottom:20px;">
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:0.95rem;">
         <div>ทำทั้งหมด: <strong id="statTotalAnswered">0</strong> ข้อ</div>
-        <div>ตอบถูก: <strong id="statTotalCorrect">0</strong> ข้อ</div>
+        <div>ตอบถูกรวม: <strong id="statTotalCorrect">0</strong> ข้อ</div>
+        <div>โจทย์ลิมิตผ่าน: <strong id="statLimitCorrect">0</strong> ข้อ</div>
+        <div>โจทย์อนุพันธ์ผ่าน: <strong id="statDerivCorrect">0</strong> ข้อ</div>
         <div>ความแม่นยำ: <strong id="statAccuracy">0%</strong></div>
         <div>Streak สูงสุด: <strong id="statBestStreak">0</strong> 🔥</div>
       </div>
@@ -660,6 +718,31 @@ function poly2(A, B, C) {
   return res || "0";
 }
 
+function poly3(A, B, C, D) {
+  let res = "";
+  if (A === 1) res += "x^{3}";
+  else if (A === -1) res += "-x^{3}";
+  else if (A !== 0) res += `${A}x^{3}`;
+
+  if (B !== 0) {
+    let sign = B > 0 ? (res ? " + " : "") : (res ? " - " : "-");
+    let absB = Math.abs(B);
+    let termX = absB === 1 ? "x^{2}" : `${absB}x^{2}`;
+    res += `${sign}${termX}`;
+  }
+  if (C !== 0) {
+    let sign = C > 0 ? (res ? " + " : "") : (res ? " - " : "-");
+    let absC = Math.abs(C);
+    let termX = absC === 1 ? "x" : `${absC}x`;
+    res += `${sign}${termX}`;
+  }
+  if (D !== 0) {
+    let sign = D > 0 ? (res ? " + " : "") : (res ? " - " : "-");
+    res += `${sign}${Math.abs(D)}`;
+  }
+  return res || "0";
+}
+
 function formatRoot2(k, b) {
   let termX = (k === 1) ? "x" : `${k}x`;
   if (b === 0) return `\\sqrt{${termX}}`;
@@ -712,13 +795,11 @@ window.addEventListener('resize', function() {
 });
 
 // =========================================================
-// 2. Generators: สลับระดับง่าย (🟢) / ปานกลาง (🟡) / ท้าทาย (🔴)
+// 2. คลังโจทย์ลิมิต 12 รูปแบบ (Limit Generators Suite)
 // =========================================================
 
-// --- กลุ่มระดับง่าย (🟢 พื้นฐาน) ---
-
-// 2.1 แยกตัวประกอบผลต่างกำลังสองพื้นฐาน
-function genEasyFactoring() {
+// 2.1 ลิมิตแยกตัวประกอบผลต่างกำลังสอง
+function genLimitEasyFactoring() {
   let a = randNonZero(-4, 4);
   let a2 = a * a;
   let absA = Math.abs(a);
@@ -750,12 +831,12 @@ function genEasyFactoring() {
   `;
 
   return {
-    category: "การแยกตัวประกอบผลต่างกำลังสอง (Difference of Squares)",
+    topic: "limit",
+    category: "ลิมิต: การแยกตัวประกอบผลต่างกำลังสอง",
     difficulty: "easy",
     probLatex: probLatex,
-    limitPt: a,
-    limitVal: finalVal,
     ansLatex: `${finalVal}`,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `ใช้เอกลักษณ์ $x^2 - ${a2} = (${termCancel})(${termOther})$ แล้วตัดทอนพจน์ร่วม $(${termCancel})$ ออก`,
     solHtml: solText,
     exactNum: finalVal,
@@ -764,7 +845,7 @@ function genEasyFactoring() {
 }
 
 // 2.2 ลิมิตตรีโกณมิติพื้นฐาน
-function genEasyTrig() {
+function genLimitEasyTrig() {
   let k = rand(2, 5);
   let m = rand(1, 4);
   let probLatex = `\\lim_{x \\to 0} \\frac{\\sin(${k}x)}{${m === 1 ? "x" : `${m}x`}}`;
@@ -794,12 +875,12 @@ function genEasyTrig() {
   `;
 
   return {
-    category: "ลิมิตตรีโกณมิติพื้นฐาน (Basic Trigonometric Limit)",
+    topic: "limit",
+    category: "ลิมิต: ตรีโกณมิติพื้นฐาน",
     difficulty: "easy",
     probLatex: probLatex,
-    limitPt: 0,
-    limitVal: k/m,
     ansLatex: finalValLatex,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `ใช้สมบัติ $\\lim_{u \\to 0}\\frac{\\sin u}{u} = 1$ โดยปรับมุมให้เป็น $${k}x$`,
     solHtml: solText,
     exactNum: k,
@@ -808,7 +889,7 @@ function genEasyTrig() {
 }
 
 // 2.3 ลิมิตเอกซ์โพเนนเชียลพื้นฐาน
-function genEasyExpLimit() {
+function genLimitEasyExpLimit() {
   let k = rand(2, 5);
   let m = rand(1, 4);
   let probLatex = `\\lim_{x \\to 0} \\frac{e^{${k}x} - 1}{${m === 1 ? "x" : `${m}x`}}`;
@@ -838,12 +919,12 @@ function genEasyExpLimit() {
   `;
 
   return {
-    category: "ลิมิตเอกซ์โพเนนเชียลพื้นฐาน (Basic Exponential Limit)",
+    topic: "limit",
+    category: "ลิมิต: เอกซ์โพเนนเชียลพื้นฐาน",
     difficulty: "easy",
     probLatex: probLatex,
-    limitPt: 0,
-    limitVal: k/m,
     ansLatex: finalValLatex,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `ใช้ลิมิตมาตรฐาน $\\lim_{u \\to 0} \\frac{e^u - 1}{u} = 1$`,
     solHtml: solText,
     exactNum: k,
@@ -851,10 +932,8 @@ function genEasyExpLimit() {
   };
 }
 
-// --- กลุ่มระดับปานกลาง (🟡 ปานกลาง) ---
-
 // 2.4 การแยกตัวประกอบพหุนามทั่วไป
-function genMedFactoring() {
+function genLimitMedFactoring() {
   let a = rand(-3, 3);
   let termCancel = (a === 0) ? "x" : (a > 0 ? `x - ${a}` : `x + ${Math.abs(a)}`);
   
@@ -907,12 +986,12 @@ function genMedFactoring() {
   `;
 
   return {
-    category: "การแยกตัวประกอบพหุนาม (Quadratic Factoring)",
+    topic: "limit",
+    category: "ลิมิต: การแยกตัวประกอบพหุนาม",
     difficulty: "med",
     probLatex: probLatex,
-    limitPt: a,
-    limitVal: numVal/denVal,
     ansLatex: finalValLatex,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `แยกตัวประกอบทั้งเศษและส่วนเพื่อตัดพจน์ $(${termCancel})$`,
     solHtml: solText,
     exactNum: numVal,
@@ -921,7 +1000,7 @@ function genMedFactoring() {
 }
 
 // 2.5 สังยุครากที่สองเดี่ยว
-function genMedSqrtConjugate() {
+function genLimitMedSqrtConjugate() {
   let a = rand(-2, 3);
   let k = rand(1, 2);
   let c = rand(1, 3);
@@ -977,12 +1056,12 @@ function genMedSqrtConjugate() {
   `;
 
   return {
-    category: "สังยุครากที่สอง (Square Root Conjugate)",
+    topic: "limit",
+    category: "ลิมิต: สังยุครากที่สอง",
     difficulty: "med",
     probLatex: probLatex,
-    limitPt: a,
-    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `คูณด้วยสังยุค $(${conj})$ ทั้งเศษและส่วนเพื่อกำจัดเครื่องหมายกรณฑ์`,
     solHtml: solText,
     exactNum: finalNum,
@@ -991,7 +1070,7 @@ function genMedSqrtConjugate() {
 }
 
 // 2.6 สังยุครากที่สาม
-function genMedCbrtConjugate() {
+function genLimitMedCbrtConjugate() {
   let a = rand(-2, 2);
   let k = rand(1, 2);
   let c = rand(1, 2);
@@ -1050,12 +1129,12 @@ function genMedCbrtConjugate() {
   `;
 
   return {
-    category: "สังยุครากที่สาม (Cube Root Conjugate)",
+    topic: "limit",
+    category: "ลิมิต: สังยุครากที่สาม",
     difficulty: "med",
     probLatex: probLatex,
-    limitPt: a,
-    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `ใช้เอกลักษณ์ $(A-B)(A^2+AB+B^2) = A^3 - B^3$`,
     solHtml: solText,
     exactNum: finalNum,
@@ -1064,7 +1143,7 @@ function genMedCbrtConjugate() {
 }
 
 // 2.7 เศษส่วนซ้อน
-function genMedComplexFraction() {
+function genLimitMedComplexFraction() {
   let a = randNonZero(-3, 3);
   let absA = Math.abs(a);
   let k = rand(1, 3);
@@ -1107,12 +1186,12 @@ function genMedComplexFraction() {
   `;
 
   return {
-    category: "เศษส่วนซ้อน (Complex Fraction)",
+    topic: "limit",
+    category: "ลิมิต: เศษส่วนซ้อน",
     difficulty: "med",
     probLatex: probLatex,
-    limitPt: a,
-    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `หา ครน. ทำตัวส่วนของเศษส่วนซ้อนข้างบนให้เท่ากันก่อนตัดพจน์ $(${termCancel})$`,
     solHtml: solText,
     exactNum: finalNum,
@@ -1120,10 +1199,8 @@ function genMedComplexFraction() {
   };
 }
 
-// --- กลุ่มระดับท้าทาย (🔴 ขั้นสูง) ---
-
 // 2.8 สังยุคซ้อนทั้งเศษและส่วน
-function genHardDoubleConjugate() {
+function genLimitHardDoubleConjugate() {
   let a = rand(1, 3);
   let c = rand(1, 3);
   let p = rand(1, 3);
@@ -1174,12 +1251,12 @@ function genHardDoubleConjugate() {
   `;
 
   return {
-    category: "สังยุคซ้อนทั้งเศษและส่วน (Double Conjugate)",
+    topic: "limit",
+    category: "ลิมิต: สังยุคซ้อนทั้งเศษและส่วน",
     difficulty: "hard",
     probLatex: probLatex,
-    limitPt: 0,
-    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `เนื่องจากติดกรณฑ์ทั้งเศษและส่วน ต้องคูณด้วยสังยุคของทั้งเศษและส่วนพร้อมกัน`,
     solHtml: solText,
     exactNum: finalNum,
@@ -1188,7 +1265,7 @@ function genHardDoubleConjugate() {
 }
 
 // 2.9 ลิมิตตรีโกณมิติกำลังสาม
-function genHardTrigCube() {
+function genLimitHardTrigCube() {
   let k = rand(2, 4);
   let probLatex = `\\lim_{x \\to 0} \\frac{\\tan(${k}x) - \\sin(${k}x)}{x^3}`;
   let finalNum = k * k * k;
@@ -1216,7 +1293,7 @@ function genHardTrigCube() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: คำนวณค่าลิมิตแต่ละส่วน</strong><br>
-      ทราบว่า $\\lim_{x \\to 0}\\frac{\\sin(${k}x)}{x} = ${k}$, $\\lim_{x \\to 0}\\frac{1-\\cos(${k}x)}{x^2} = \\frac{${k*k}}{2}$ และ $\\lim_{x \\to 0}\\cos(${k}x) = 1$<br>
+      ทราบว่า $\\lim_{x \\to 0}\\frac{\\sin(${k}x)}{x} = ${k}$, $\\lim_{x \\to 0}\\frac{1-\\cos(${k}x)}{x^2} = \\frac{${k}^2}{2} = \\frac{${k*k}}{2}$ และ $\\lim_{x \\to 0}\\cos(${k}x) = 1$<br>
       ${adaptiveMath(
         `= (${k}) \\cdot \\left(\\frac{${k*k}}{2}\\right) \\cdot 1 = ${finalValLatex}`,
         `&= (${k}) \\cdot \\left(\\frac{${k*k}}{2}\\right) \\cdot (1) \\\\ &= ${finalValLatex}`
@@ -1226,12 +1303,12 @@ function genHardTrigCube() {
   `;
 
   return {
-    category: "ลิมิตตรีโกณมิติกำลังสาม (Trigonometric Identity & Cubics)",
+    topic: "limit",
+    category: "ลิมิต: ตรีโกณมิติกำลังสาม",
     difficulty: "hard",
     probLatex: probLatex,
-    limitPt: 0,
-    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `เปลี่ยน $\\tan = \\frac{\\sin}{\\cos}$ แล้วดึงตัวร่วม $\\sin(${k}x)(1-\\cos(${k}x))$`,
     solHtml: solText,
     exactNum: finalNum,
@@ -1240,7 +1317,7 @@ function genHardTrigCube() {
 }
 
 // 2.10 ลิมิตตรีโกณมิติผสมผลคูณ
-function genHardTrigProduct() {
+function genLimitHardTrigProduct() {
   let k = rand(2, 4);
   let m = rand(1, 4);
   let probLatex = `\\lim_{x \\to 0} \\frac{1 - \\cos(${k}x)}{x\\sin(${m === 1 ? "x" : `${m}x`})}`;
@@ -1273,12 +1350,12 @@ function genHardTrigProduct() {
   `;
 
   return {
-    category: "ลิมิตตรีโกณมิติผสมผลคูณ (Trig Product Limit)",
+    topic: "limit",
+    category: "ลิมิต: ตรีโกณมิติผสมผลคูณ",
     difficulty: "hard",
     probLatex: probLatex,
-    limitPt: 0,
-    limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `หารด้วย $x^2$ ทั้งเศษและส่วนเพื่อแยกเป็นลิมิตมาตรฐานสองชุด`,
     solHtml: solText,
     exactNum: finalNum,
@@ -1287,7 +1364,7 @@ function genHardTrigProduct() {
 }
 
 // 2.11 ลิมิตอนันต์ในรูปผลต่างกรณฑ์
-function genHardInfinityConjugate() {
+function genLimitHardInfinityConjugate() {
   let a = rand(2, 6);
   let probLatex = `\\lim_{x \\to \\infty} \\left( \\sqrt{x^2 + ${a}x} - x \\right)`;
   let finalNum = a;
@@ -1324,12 +1401,12 @@ function genHardInfinityConjugate() {
   `;
 
   return {
-    category: "ลิมิตอนันต์สังยุค (Limit at Infinity with Conjugate)",
+    topic: "limit",
+    category: "ลิมิต: อนันต์สังยุค",
     difficulty: "hard",
     probLatex: probLatex,
-    limitPt: 0,
-    limitVal: a/2,
     ansLatex: finalValLatex,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `คูณสังยุค $(\\sqrt{x^2+${a}x}+x)$ แล้วหารด้วย $x$ สูงสุดทั้งเศษและส่วน`,
     solHtml: solText,
     exactNum: finalNum,
@@ -1338,7 +1415,7 @@ function genHardInfinityConjugate() {
 }
 
 // 2.12 ลิมิตผสมตรีโกณมิติและพหุนามที่จุด x -> a
-function genHardTrigPolyPoint() {
+function genLimitHardTrigPolyPoint() {
   let a = rand(1, 4);
   let a2 = a * a;
   let probLatex = `\\lim_{x \\to ${a}} \\frac{\\sin(x - ${a})}{x^2 - ${a2}}`;
@@ -1370,12 +1447,12 @@ function genHardTrigPolyPoint() {
   `;
 
   return {
-    category: "ลิมิตตรีโกณมิติผสมพหุนาม (Trig-Poly Composite Limit)",
+    topic: "limit",
+    category: "ลิมิต: ตรีโกณมิติผสมพหุนาม",
     difficulty: "hard",
     probLatex: probLatex,
-    limitPt: a,
-    limitVal: 1/(2*a),
     ansLatex: finalValLatex,
+    promptText: "✍️ ทดลองคำนวณและใส่ค่าลิมิต:",
     hintText: `แยกตัวประกอบตัวส่วนเป็น $(x-${a})(x+${a})$ แล้วจับคู่กับ $\\sin(x-${a})$`,
     solHtml: solText,
     exactNum: finalNum,
@@ -1383,15 +1460,871 @@ function genHardTrigPolyPoint() {
   };
 }
 
+// =========================================================
+// 3. คลังโจทย์อนุพันธ์ 15 รูปแบบ (Derivative Generators Suite)
+// =========================================================
+
+// 3.1 พหุนามกำลังสาม
+function genDerivEasyPoly() {
+  let a = rand(1, 3);
+  let b = randNonZero(-3, 3);
+  let c = randNonZero(-4, 4);
+  let d = rand(-4, 4);
+  let x0 = rand(-1, 1);
+
+  let fExpr = poly3(a, b, c, d);
+  let derivExpr = poly2(3 * a, 2 * b, c);
+  let slopeVal = 3 * a * x0 * x0 + 2 * b * x0 + c;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของผลบวกและกฎเลขยกกำลัง $\\frac{d}{dx}[x^n] = n x^{n-1}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{d}{dx}\\left(${fExpr}\\right) = ${derivExpr}`,
+        `f'(x) &= \\frac{d}{dx}\\left(${fExpr}\\right) \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = ${3*a}(${x0})^2 + ${2*b}(${x0}) + (${c}) = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: ฟังก์ชันพหุนาม",
+    difficulty: "easy",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `ใช้กฎเลขยกกำลัง $\\frac{d}{dx}[x^n] = n x^{n-1}$ ดิฟทีละพจน์แล้วแทนค่า $x = ${x0}$`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 3.2 ตรีโกณมิติพื้นฐาน + กฎลูกโซ่ 1 ชั้น
+function genDerivEasyTrig() {
+  let a = rand(2, 4);
+  let k = rand(2, 4);
+  let x0 = 0;
+
+  let fExpr = `${a}\\sin(${k}x)`;
+  let derivExpr = `${a * k}\\cos(${k}x)`;
+  let slopeVal = a * k;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันไซน์ร่วมกับกฎลูกโซ่ $\\frac{d}{dx}[\\sin(u)] = \\cos(u) \\cdot \\frac{du}{dx}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
+      กำหนดให้ $u = ${k}x$ จะได้ว่า
+      ${adaptiveMath(`u' = \\frac{d}{dx}(${k}x) = ${k}`, `u' &= \\frac{d}{dx}(${k}x) \\\\ &= ${k}`)}
+      ดังนั้น $$u' = ${k}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+      ${adaptiveMath(
+        `f'(x) = ${a} \\cdot \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) = ${a} \\cdot \\cos(${k}x) \\cdot ${k} = ${derivExpr}`,
+        `f'(x) &= ${a} \\cdot \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) \\\\ &= ${a} \\cdot \\cos(${k}x) \\cdot ${k} \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = ${a*k}\\cos(0) = ${a*k}(1) = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: ตรีโกณมิติพื้นฐาน",
+    difficulty: "easy",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `ใช้สูตร $\\frac{d}{dx}[\\sin(kx)] = k\\cos(kx)$ แล้วแทนค่า $x = ${x0}$`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 3.3 เอกซ์โพเนนเชียลพื้นฐาน
+function genDerivEasyExp() {
+  let a = rand(1, 3);
+  let k = rand(2, 4);
+  let b = randNonZero(-4, 4);
+  let x0 = 0;
+
+  let fExpr = `${a === 1 ? "" : a}e^{${k}x} ${b > 0 ? `+ ${b}x` : `- ${Math.abs(b)}x`}`;
+  let derivExpr = `${a * k}e^{${k}x} ${b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`}`;
+  let slopeVal = a * k + b;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตร $\\frac{d}{dx}[e^u] = e^u \\cdot \\frac{du}{dx}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของพจน์เอกซ์โพเนนเชียล</strong><br>
+      กำหนดให้ $u = ${k}x$ จะได้ว่า
+      ${adaptiveMath(
+        `\\frac{d}{dx}\\left[e^{${k}x}\\right] = e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) = e^{${k}x} \\cdot ${k} = ${k}e^{${k}x}`,
+        `\\frac{d}{dx}\\left[e^{${k}x}\\right] &= e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= e^{${k}x} \\cdot ${k} \\\\ &= ${k}e^{${k}x}`
+      )}
+      ดังนั้น $$\\frac{d}{dx}\\left[e^{${k}x}\\right] = ${k}e^{${k}x}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: รวมพจน์ทั้งหมดเพื่อหา $f'(x)$</strong><br>
+      ${adaptiveMath(
+        `f'(x) = ${a === 1 ? "" : `${a} \\cdot `}${k}e^{${k}x} ${b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`} = ${derivExpr}`,
+        `f'(x) &= \\frac{d}{dx}[${a === 1 ? "" : a}e^{${k}x}] + \\frac{d}{dx}[${b}x] \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = ${a*k}e^0 + (${b}) = ${a*k}(1) + (${b}) = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: เอกซ์โพเนนเชียลพื้นฐาน",
+    difficulty: "easy",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `ใช้สูตร $\\frac{d}{dx}[e^{kx}] = k e^{kx}$`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 3.4 สมการเส้นสัมผัสพหุนาม
+function genDerivEasyTangent() {
+  let a = rand(1, 2);
+  let b = randNonZero(-3, 3);
+  let c = rand(-3, 3);
+  let x0 = rand(-2, 2);
+
+  let fExpr = poly2(a, b, c);
+  let y0 = a * x0 * x0 + b * x0 + c;
+  let slopeVal = 2 * a * x0 + b;
+  let derivExpr = poly1(2 * a, b);
+
+  let constTerm = y0 - slopeVal * x0;
+  let tangentEq = `y = ${poly1(slopeVal, constTerm)}`;
+  if (slopeVal === 0) tangentEq = `y = ${constTerm}`;
+
+  let bFormatted = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+  let cFormatted = c === 0 ? "" : (c > 0 ? `+ ${c}` : `- ${Math.abs(c)}`);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: หาอนุพันธ์ทั่วไป $f'(x)$ เพื่อหาฟังก์ชันความชัน</strong><br>
+      $$\\displaystyle f'(x) = \\frac{d}{dx}\\left(${fExpr}\\right) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาความชันของเส้นสัมผัส $m$ ที่จุด $x = ${x0}$</strong><br>
+      $$\\displaystyle m = f'(${x0}) = ${2 * a}(${x0 >= 0 ? x0 : `(${x0})`}) ${bFormatted} = ${slopeVal}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: หาพิกัดจุดสัมผัส $(x_0, y_0)$</strong><br>
+      $$\\displaystyle y_0 = f(${x0}) = ${a}(${x0})^2 ${bFormatted}(${x0}) ${cFormatted} = ${y0}$$<br>
+      ดังนั้นจุดสัมผัสคือ $(${x0}, ${y0})$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: สร้างสมการเส้นสัมผัส $y - y_0 = m(x - x_0)$</strong><br>
+      จะได้ว่า
+      $$\\displaystyle y ${y0 >= 0 ? `- ${y0}` : `+ ${Math.abs(y0)}`} = ${slopeVal === 1 ? "" : (slopeVal === -1 ? "-" : slopeVal)}(x ${x0 >= 0 ? `- ${x0}` : `+ ${Math.abs(x0)}`})$$
+      ดังนั้นสมการเส้นสัมผัสคือ $$\\displaystyle ${tangentEq}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: การประยุกต์สมการเส้นสัมผัส",
+    difficulty: "easy",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    tangentLatex: tangentEq,
+    promptText: `✍️ ทดลองคำนวณความชันเส้นสัมผัส $f'(${x0})$:`,
+    hintText: `หาความชัน $m = f'(${x0})$ โดยดิฟ $f(x)$ แล้วแทน $x = ${x0}$`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 3.5 กฎผลคูณ: พหุนาม × เอกซ์โพเนนเชียล
+function genDerivMedProductExp() {
+  let a = rand(1, 3);
+  let b = rand(2, 5);
+  let k = rand(2, 4);
+  let x0 = 0;
+
+  let uExpr = `${a === 1 ? "" : a}x + ${b}`;
+  let fExpr = `(${uExpr}) e^{${k}x}`;
+  let derivExpr = `(${k*a}x + ${k*b + a}) e^{${k}x}`;
+  let slopeVal = k * b + a;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
+      กำหนดให้ $u = ${uExpr}$ จะได้ว่า
+      ${adaptiveMath(`u' = \\frac{d}{dx}(${uExpr}) = ${a}`, `u' &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${a}`)}
+      ดังนั้น $$u' = ${a}$$
+      <br>
+      กำหนดให้ $v = e^{${k}x}$ จะได้ว่า
+      ${adaptiveMath(
+        `v' = \\frac{d}{dx}\\left[e^{${k}x}\\right] = e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) = e^{${k}x} \\cdot ${k} = ${k}e^{${k}x}`,
+        `v' &= \\frac{d}{dx}\\left[e^{${k}x}\\right] \\\\ &= e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= e^{${k}x} \\cdot ${k} \\\\ &= ${k}e^{${k}x}`
+      )}
+      ดังนั้น $$v' = ${k}e^{${k}x}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณและดึงตัวร่วม $e^{${k}x}$</strong><br>
+      ${adaptiveMath(
+        `f'(x) = (${a})e^{${k}x} + (${uExpr})(${k}e^{${k}x}) = \\left[${a} + ${k}(${uExpr})\\right]e^{${k}x} = ${derivExpr}`,
+        `f'(x) &= (${a})e^{${k}x} + (${uExpr})(${k}e^{${k}x}) \\\\ &= \\left[${a} + ${k}(${uExpr})\\right]e^{${k}x} \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = (${k*b + a})e^{0} = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: กฎผลคูณ",
+    difficulty: "med",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `กำหนด $u = ${uExpr}$ และ $v = e^{${k}x}$ แล้วใช้สูตร $(uv)' = u'v + uv'$`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 3.6 กฎผลหารฟังก์ชันตรรกยะ
+function genDerivMedQuotientRational() {
+  let a = rand(1, 3);
+  let b = rand(1, 4);
+  let c = rand(1, 3);
+  let d = rand(1, 4);
+  while (a * d - b * c === 0) { b = rand(1, 4); }
+  let x0 = 0;
+
+  let fExpr = `\\frac{${a === 1 ? "x" : `${a}x`} + ${b}}{${c === 1 ? "x" : `${c}x`} + ${d}}`;
+  let det = a * d - b * c;
+  let derivExpr = `\\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^{2}}`;
+  let numAns = det;
+  let denAns = d * d;
+  let slopeValLatex = toFrac(numAns, denAns);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
+      กำหนดให้ $u = ${a === 1 ? "x" : `${a}x`} + ${b}$ จะได้ว่า
+      ${adaptiveMath(`u' = \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) = ${a}`, `u' &= \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) \\\\ &= ${a}`)}
+      ดังนั้น $$u' = ${a}$$
+      <br>
+      กำหนดให้ $v = ${c === 1 ? "x" : `${c}x`} + ${d}$ จะได้ว่า
+      ${adaptiveMath(`v' = \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) = ${c}`, `v' &= \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) \\\\ &= ${c}`)}
+      ดังนั้น $$v' = ${c}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าและกระจายพจน์ตัวเศษ</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
+        `f'(x) &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = \\frac{${det}}{(${d})^2} = ${slopeValLatex}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: กฎผลหาร",
+    difficulty: "med",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: slopeValLatex,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$`,
+    solHtml: solText,
+    exactNum: numAns,
+    exactDen: denAns
+  };
+}
+
+// 3.7 กฎลูกโซ่กรณฑ์
+function genDerivMedChainRadical() {
+  let a = rand(1, 3);
+  let b = rand(1, 4);
+  let c = rand(2, 4);
+  let c2 = c * c;
+  let x0 = 0;
+
+  let uExpr = `${a === 1 ? "" : a}x^{2} + ${b}x + ${c2}`;
+  let fExpr = `\\sqrt{${uExpr}}`;
+  let uPrime = `${2 * a}x + ${b}`;
+  let derivExpr = `\\frac{${uPrime}}{2\\sqrt{${uExpr}}}`;
+
+  let numAns = b;
+  let denAns = 2 * c;
+  let slopeValLatex = toFrac(numAns, denAns);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: แปลงรูปกรณฑ์เป็นเลขยกกำลังตรรกยะ $f(x) = (${uExpr})^{1/2}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
+      กำหนดให้ $u = ${uExpr}$ จะได้ว่า
+      ${adaptiveMath(`\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`, `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`)}
+      ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: ใช้กฎลูกโซ่ $\\frac{d}{dx}[u^n] = n u^{n-1} \\cdot \\frac{du}{dx}$ แทนค่าและจัดรูป</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{1}{2}(${uExpr})^{-1/2} \\cdot (${uPrime}) = \\frac{1}{2\\sqrt{${uExpr}}} \\cdot (${uPrime}) = ${derivExpr}`,
+        `f'(x) &= \\frac{1}{2}(${uExpr})^{-1/2} \\cdot \\frac{d}{dx}(${uExpr}) \\\\ &= \\frac{1}{2\\sqrt{${uExpr}}} \\cdot (${uPrime}) \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = \\frac{${b}}{2\\sqrt{${c2}}} = \\frac{${b}}{2(${c})} = ${slopeValLatex}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: กฎลูกโซ่ฟังก์ชันกรณฑ์",
+    difficulty: "med",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: slopeValLatex,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `แปลง $\\sqrt{u} = u^{1/2}$ แล้วดิฟโดยใช้กฎลูกโซ่ $\\frac{1}{2\\sqrt{u}} \\cdot u'$`,
+    solHtml: solText,
+    exactNum: numAns,
+    exactDen: denAns
+  };
+}
+
+// 3.8 กฎลูกโซ่ลอการิทึม
+function genDerivMedChainLog() {
+  let a = rand(1, 3);
+  let b = rand(1, 4);
+  let c = rand(1, 4);
+  let x0 = 0;
+
+  let uExpr = `${a === 1 ? "" : a}x^{2} + ${b}x + ${c}`;
+  let uPrime = `${2 * a}x + ${b}`;
+  let fExpr = `\\ln(${uExpr})`;
+  let derivExpr = `\\frac{${uPrime}}{${uExpr}}`;
+
+  let numAns = b;
+  let denAns = c;
+  let slopeValLatex = toFrac(numAns, denAns);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันลอการิทึม $\\frac{d}{dx}[\\ln(u)] = \\frac{1}{u} \\cdot \\frac{du}{dx}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
+      กำหนดให้ $u = ${uExpr}$ จะได้ว่า
+      ${adaptiveMath(`\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`, `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`)}
+      ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{1}{${uExpr}} \\cdot (${uPrime}) = ${derivExpr}`,
+        `f'(x) &= \\frac{1}{${uExpr}} \\cdot \\frac{d}{dx}(${uExpr}) \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = \\frac{${b}}{${c}} = ${slopeValLatex}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: กฎลูกโซ่ฟังก์ชันลอการิทึม",
+    difficulty: "med",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: slopeValLatex,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `ใช้สูตร $\\frac{d}{dx}[\\ln(u)] = \\frac{u'}{u}$`,
+    solHtml: solText,
+    exactNum: numAns,
+    exactDen: denAns
+  };
+}
+
+// 3.9 ตรีโกณมิติผกผันพื้นฐาน
+function genDerivMedInverseTrig() {
+  let k = rand(2, 4);
+  let x0 = 0;
+
+  let fExpr = `\\arctan(${k}x)`;
+  let derivExpr = `\\frac{${k}}{1 + ${k*k}x^{2}}`;
+  let slopeVal = k;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันอาร์กแทนเจนต์ $\\frac{d}{dx}[\\arctan(u)] = \\frac{1}{1+u^2} \\cdot \\frac{du}{dx}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
+      กำหนดให้ $u = ${k}x$ จะได้ว่า
+      ${adaptiveMath(`\\frac{du}{dx} = \\frac{d}{dx}(${k}x) = ${k}`, `\\frac{du}{dx} &= \\frac{d}{dx}(${k}x) \\\\ &= ${k}`)}
+      ดังนั้น $$\\frac{du}{dx} = ${k}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) = \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} = ${derivExpr}`,
+        `f'(x) &= \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
+      $$f'(${x0}) = \\frac{${k}}{1 + 0} = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: ฟังก์ชันตรีโกณมิติผกผัน",
+    difficulty: "med",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `ใช้สูตร $\\frac{d}{dx}[\\arctan(u)] = \\frac{u'}{1+u^2}$`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 3.10 การหาอนุพันธ์โดยใช้ลอการิทึม
+function genDerivHardLogDiff() {
+  let k = rand(2, 5);
+  let x0 = 1;
+  let fExpr = `x^{${k}x}`;
+  let derivExpr = `x^{${k}x} \\cdot ${k}(\\ln x + 1)`;
+  let slopeVal = k;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: เนื่องจากฟังก์ชันอยู่ในรูปฐานตัวแปรยกกำลังตัวแปร $y = x^{${k}x}$ ให้ใส่ลอการิทึมธรรมชาติ $(\\ln)$ ทั้งสองข้าง</strong><br>
+      $$\\ln y = \\ln\\left(x^{${k}x}\\right) = ${k}x \\ln x$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์เทียบกับ $x$ ทั้งสองข้างโดยใช้กฎลูกโซ่และกฎผลคูณ</strong><br>
+      จะได้ว่า
+      ${adaptiveMath(
+        `\\frac{d}{dx}[\\ln y] = \\frac{d}{dx}[${k}x \\ln x] \\implies \\frac{1}{y}\\frac{dy}{dx} = ${k}\\ln x + ${k}x\\left(\\frac{1}{x}\\right) = ${k}(\\ln x + 1)`,
+        `\\frac{1}{y}\\frac{dy}{dx} &= \\frac{d}{dx}[${k}x \\ln x] \\\\ &= ${k}\\ln x + ${k}x \\cdot \\frac{1}{x} \\\\ &= ${k}(\\ln x + 1)`
+      )}
+      ดังนั้น $$\\frac{1}{y}\\frac{dy}{dx} = ${k}(\\ln x + 1)$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: คูณ $y$ กลับทั้งสองข้างเพื่อหา $f'(x)$</strong><br>
+      ${adaptiveMath(
+        `f'(x) = y \\cdot ${k}(\\ln x + 1) = ${derivExpr}`,
+        `f'(x) &= y \\cdot ${k}(\\ln x + 1) \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$ ที่จุด $x = ${x0}$</strong><br>
+      $$f'(${x0}) = (${x0})^{${k}(${x0})} \\cdot ${k}(\\ln(${x0}) + 1) = 1 \\cdot ${k}(0 + 1) = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: โดยใช้ลอการิทึม",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `เนื่องจากตัวแปรยกกำลังตัวแปร ให้ Take $\\ln$ ทั้งสองข้าง: $\\ln y = ${k}x \\ln x$ แล้วดิฟเทียบ $x$`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 3.11 ฟังก์ชันผสมการสั่นสะเทือนแบบหน่วง
+function genDerivHardDamped() {
+  let a = rand(1, 3);
+  let b = rand(2, 4);
+  let x0 = 0;
+  let fExpr = `e^{-${a === 1 ? "" : a}x} \\sin(${b}x)`;
+  let derivExpr = `e^{-${a === 1 ? "" : a}x} \\left(${b}\\cos(${b}x) - ${a === 1 ? "" : a}\\sin(${b}x)\\right)`;
+  let slopeVal = b;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้กฎผลคูณ $(uv)' = u'v + uv'$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
+      กำหนดให้ $u = e^{-${a === 1 ? "" : a}x}$ จะได้ว่า
+      ${adaptiveMath(
+        `u' = \\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x}\\right] = e^{-${a === 1 ? "" : a}x} \\cdot \\frac{d}{dx}(-${a === 1 ? "" : a}x) = -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}`,
+        `u' &= \\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x}\\right] \\\\ &= e^{-${a === 1 ? "" : a}x} \\cdot (-${a}) \\\\ &= -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}`
+      )}
+      ดังนั้น $$u' = -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}$$
+      <br>
+      กำหนดให้ $v = \\sin(${b}x)$ จะได้ว่า
+      ${adaptiveMath(
+        `v' = \\frac{d}{dx}[\\sin(${b}x)] = \\cos(${b}x) \\cdot \\frac{d}{dx}(${b}x) = ${b}\\cos(${b}x)`,
+        `v' &= \\frac{d}{dx}[\\sin(${b}x)] \\\\ &= \\cos(${b}x) \\cdot \\frac{d}{dx}(${b}x) \\\\ &= \\cos(${b}x) \\cdot ${b} \\\\ &= ${b}\\cos(${b}x)`
+      )}
+      ดังนั้น $$v' = ${b}\\cos(${b}x)$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณและดึงตัวร่วม $e^{-${a === 1 ? "" : a}x}$</strong><br>
+      ${adaptiveMath(
+        `f'(x) = (-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x})\\sin(${b}x) + (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) = ${derivExpr}`,
+        `f'(x) &= (-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x})\\sin(${b}x) + (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
+      $$f'(${x0}) = e^{0}(${b}\\cos(0) - ${a}\\sin(0)) = 1(${b}(1) - 0) = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: ฟังก์ชันผสมการสั่นสะเทือนแบบหน่วง",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `ใช้กฎผลคูณ $(uv)' = u'v + uv'$ โดยอย่าลืมกฎลูกโซ่ในการดิฟไส้ในของทั้ง $e^{-${a}x}$ และ $\\sin(${b}x)$`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 3.12 เอกลักษณ์ตรีโกณมิติผกผันแบบหักล้าง
+function genDerivHardInverseTrigCancellation() {
+  let k = rand(2, 4);
+  let x0 = 0;
+  let fExpr = `x\\arcsin(${k}x) + \\sqrt{1 - ${k*k}x^{2}}`;
+  let derivExpr = `\\arcsin(${k}x)`;
+  let slopeVal = 0;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: แยกหาอนุพันธ์ทีละพจน์ $f(x) = \\underbrace{x\\arcsin(${k}x)}_{\\text{พจน์ที่ 1}} + \\underbrace{\\sqrt{1 - ${k*k}x^2}}_{\\text{พจน์ที่ 2}}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์พจน์ที่ 1 โดยใช้กฎผลคูณ</strong><br>
+      กำหนดให้ $u = x$ และ $v = \\arcsin(${k}x)$ จะได้ว่า
+      ${adaptiveMath(
+        `\\frac{d}{dx}[x\\arcsin(${k}x)] = (1)\\arcsin(${k}x) + x \\cdot \\frac{${k}}{\\sqrt{1-${k*k}x^2}} = \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`,
+        `\\frac{d}{dx}[x\\arcsin(${k}x)] &= (1)\\arcsin(${k}x) + x \\cdot \\frac{${k}}{\\sqrt{1-${k*k}x^2}} \\\\ &= \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`
+      )}
+      ดังนั้น $$\\frac{d}{dx}[x\\arcsin(${k}x)] = \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: หาอนุพันธ์พจน์ที่ 2 โดยใช้กฎลูกโซ่</strong><br>
+      กำหนดให้ $w = 1 - ${k*k}x^2$ จะได้ว่า
+      ${adaptiveMath(
+        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] = \\frac{1}{2\\sqrt{1-${k*k}x^2}} \\cdot \\frac{d}{dx}(1-${k*k}x^2) = -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`,
+        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] &= \\frac{1}{2\\sqrt{1-${k*k}x^2}} \\cdot \\frac{d}{dx}(1-${k*k}x^2) \\\\ &= -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`
+      )}
+      ดังนั้น $$\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] = -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: รวมทั้งสองพจน์เข้าด้วยกัน (พจน์เศษส่วนจะหักล้างกันพอดี)</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\left(\\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}\\right) - \\frac{${k}x}{\\sqrt{1-${k*k}x^2}} = ${derivExpr}`,
+        `f'(x) &= \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}} - \\frac{${k}x}{\\sqrt{1-${k*k}x^2}} \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 5: คำนวณค่า $f'(${x0})$</strong><br>
+      $$f'(${x0}) = \\arcsin(0) = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: เอกลักษณ์ตรีโกณมิติผกผันแบบหักล้าง",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: `${slopeVal}`,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `ดิฟพจน์หน้าด้วยกฎผลคูณ และดิฟพจน์หลังด้วยกฎลูกโซ่ สังเกตว่าพจน์ติดรูทจะตัดกันพอดี`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
+// 3.13 ตรีโกณมิติผกผันของฟังก์ชันตรรกยะ
+function genDerivHardArctanRational() {
+  let a = rand(1, 3);
+  let b = rand(1, 3);
+  let c = rand(1, 3);
+  let d = rand(1, 3);
+  while (a * d - b * c === 0) { b = rand(1, 4); }
+  let x0 = 0;
+
+  let uExpr = `\\frac{${a === 1 ? "x" : `${a}x`} + ${b}}{${c === 1 ? "x" : `${c}x`} + ${d}}`;
+  let fExpr = `\\arctan\\left(${uExpr}\\right)`;
+  let det = a * d - b * c;
+  let derivExpr = `\\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^{2} + (${a === 1 ? "x" : `${a}x`} + ${b})^{2}}`;
+
+  let numAns = det;
+  let denAns = d * d + b * b;
+  let slopeValLatex = toFrac(numAns, denAns);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สูตร $\\frac{d}{dx}[\\arctan(u)] = \\frac{1}{1+u^2} \\cdot \\frac{du}{dx}$</strong>
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: กำหนด $u = ${uExpr}$ แล้วหา $\\frac{du}{dx}$ ด้วยกฎผลหาร</strong><br>
+      จะได้ว่า
+      ${adaptiveMath(
+        `\\frac{du}{dx} = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2}`,
+        `\\frac{du}{dx} &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2}`
+      )}
+      ดังนั้น $$\\frac{du}{dx} = \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตรและจัดรูปเศษส่วนซ้อน</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{1}{1 + \\left(${uExpr}\\right)^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
+        `f'(x) &= \\frac{1}{1 + \\left(${uExpr}\\right)^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = \\frac{${det}}{(${d})^2 + (${b})^2} = \\frac{${det}}{${denAns}} = ${slopeValLatex}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: ตรีโกณมิติผกผันของฟังก์ชันตรรกยะ",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: slopeValLatex,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `กำหนด $u = ${uExpr}$ แล้วดิฟโดยใช้ $\\frac{1}{1+u^2} \\cdot u'$`,
+    solHtml: solText,
+    exactNum: numAns,
+    exactDen: denAns
+  };
+}
+
+// 3.14 สมบัติลอการิทึมกับกรณฑ์และผลหาร
+function genDerivHardLogNestedRadical() {
+  let a = rand(1, 3);
+  let b = rand(1, 3);
+  let c = rand(1, 3);
+  let d = rand(1, 3);
+  while (a * d - b * c === 0) { b = rand(1, 4); }
+  let x0 = 0;
+
+  let fExpr = `\\ln\\left(\\sqrt{\\frac{${a === 1 ? "x" : `${a}x`} + ${b}}{${c === 1 ? "x" : `${c}x`} + ${d}}}\\right)`;
+  let det = a * d - b * c;
+  let derivExpr = `\\frac{${det}}{2(${a === 1 ? "x" : `${a}x`} + ${b})(${c === 1 ? "x" : `${c}x`} + ${d})}`;
+
+  let numAns = det;
+  let denAns = 2 * b * d;
+  let slopeValLatex = toFrac(numAns, denAns);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ใช้สมบัติของลอการิทึม $\\ln(A/B)^{1/2} = \\frac{1}{2}(\\ln A - \\ln B)$ เพื่อแยกพจน์ก่อนหาอนุพันธ์</strong><br>
+      $$f(x) = \\frac{1}{2}\\left[\\ln(${a === 1 ? "x" : `${a}x`} + ${b}) - \\ln(${c === 1 ? "x" : `${c}x`} + ${d})\\right]$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์</strong><br>
+      จะได้ว่า
+      ${adaptiveMath(
+        `f'(x) = \\frac{1}{2}\\left[\\frac{${a}}{${a === 1 ? "x" : `${a}x`} + ${b}} - \\frac{${c}}{${c === 1 ? "x" : `${c}x`} + ${d}}\\right]`,
+        `f'(x) &= \\frac{1}{2}\\left[\\frac{${a}}{${a === 1 ? "x" : `${a}x`} + ${b}} - \\frac{${c}}{${c === 1 ? "x" : `${c}x`} + ${d}}\\right]`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: ทำส่วนให้เท่ากันและรวมพจน์</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{${a}(${c === 1 ? "x" : `${c}x`} + ${d}) - ${c}(${a === 1 ? "x" : `${a}x`} + ${b})}{2(${a === 1 ? "x" : `${a}x`} + ${b})(${c === 1 ? "x" : `${c}x`} + ${d})} = ${derivExpr}`,
+        `f'(x) &= \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{2(${a === 1 ? "x" : `${a}x`} + ${b})(${c === 1 ? "x" : `${c}x`} + ${d})} \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
+      $$f'(${x0}) = \\frac{${det}}{2(${b})(${d})} = \\frac{${det}}{${denAns}} = ${slopeValLatex}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: สมบัติลอการิทึมและฟังก์ชันกรณฑ์",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f'",
+    derivLatex: derivExpr,
+    ansLatex: slopeValLatex,
+    promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
+    hintText: `ใช้สมบัติลอการิทึม $\\ln\\sqrt{A/B} = \\frac{1}{2}(\\ln A - \\ln B)$ แยกพจน์ก่อนดิฟจะง่ายกว่ามาก`,
+    solHtml: solText,
+    exactNum: numAns,
+    exactDen: denAns
+  };
+}
+
+// 3.15 การหาอนุพันธ์อันดับสอง
+function genDerivHardSecondDerivative() {
+  let a = rand(1, 3);
+  let b = rand(1, 4);
+  let k = rand(1, 3);
+  let x0 = 0;
+
+  let uExpr = `${a === 1 ? "" : a}x^{2} + ${b}x`;
+  let fExpr = `(${uExpr}) e^{-${k === 1 ? "" : k}x}`;
+
+  let slopeVal = 2 * a - 2 * k * b;
+  let deriv1Expr = `\\left(-${k*a}x^{2} + ${2*a - k*b}x + ${b}\\right) e^{-${k === 1 ? "" : k}x}`;
+  let deriv2Expr = `\\left(${k*k*a}x^{2} + (${k*k*b - 4*k*a})x + (${2*a - 2*k*b})\\right) e^{-${k === 1 ? "" : k}x}`;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: หาอนุพันธ์อันดับหนึ่ง $f'(x)$ โดยใช้กฎผลคูณ</strong><br>
+      กำหนดให้ $u = ${uExpr}$ และ $v = e^{-${k === 1 ? "" : k}x}$ จะได้ว่า
+      ${adaptiveMath(
+        `f'(x) = (${2*a}x + ${b})e^{-${k === 1 ? "" : k}x} + (${uExpr})(-${k}e^{-${k === 1 ? "" : k}x}) = \\left[(${2*a}x + ${b}) - ${k}(${uExpr})\\right]e^{-${k === 1 ? "" : k}x} = ${deriv1Expr}`,
+        `f'(x) &= (${2*a}x + ${b})e^{-${k === 1 ? "" : k}x} + (${uExpr})(-${k}e^{-${k === 1 ? "" : k}x}) \\\\ &= \\left[(${2*a}x + ${b}) - ${k}(${uExpr})\\right]e^{-${k === 1 ? "" : k}x} \\\\ &= ${deriv1Expr}`
+      )}
+      ดังนั้น $$f'(x) = ${deriv1Expr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: หาอนุพันธ์อันดับสอง $f''(x) = \\frac{d}{dx}[f'(x)]$ โดยใช้กฎผลคูณอีกครั้ง</strong><br>
+      จะได้ว่า
+      ${adaptiveMath(
+        `f''(x) = \\frac{d}{dx}\\left[(-${k*a}x^2 + ${2*a-k*b}x + ${b})e^{-${k === 1 ? "" : k}x}\\right] = ${deriv2Expr}`,
+        `f''(x) &= (-${2*k*a}x + ${2*a-k*b})e^{-${k === 1 ? "" : k}x} + (-${k*a}x^2 + ${2*a-k*b}x + ${b})(-${k}e^{-${k === 1 ? "" : k}x}) \\\\ &= ${deriv2Expr}`
+      )}
+      ดังนั้น $$f''(x) = ${deriv2Expr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$ เพื่อหาค่าอนุพันธ์อันดับสอง $f''(${x0})$</strong><br>
+      $$f''(${x0}) = (${2*a - 2*k*b})e^{0} = ${slopeVal}$$
+    </div>
+  `;
+
+  return {
+    topic: "derivative",
+    category: "อนุพันธ์: อันดับสอง",
+    difficulty: "hard",
+    probLatex: `f(x) = ${fExpr}`,
+    x0: x0,
+    targetSymbol: "f''",
+    derivLatex: deriv2Expr,
+    ansLatex: `${slopeVal}`,
+    promptText: `✍️ ทดลองคำนวณค่าอนุพันธ์อันดับสอง $f''(${x0})$:`,
+    hintText: `หา $f'(x)$ ด้วยกฎผลคูณก่อน จากนั้นนำผลลัพธ์มาดิฟต่ออีกครั้งเพื่อหา $f''(x)$`,
+    solHtml: solText,
+    exactNum: slopeVal,
+    exactDen: 1
+  };
+}
+
 // ==========================================
-// 3. Application State & Controller
+// 4. Combined Pool & Application Controller
 // ==========================================
+let currentTopic = 'all'; // 'all', 'limit', 'derivative'
+let currentMode = 'free';  // 'free', 'filter', 'quiz'
+let filterDifficulty = 'all'; // 'all', 'easy', 'med', 'hard'
+
 let currentProblem = null;
 let scoreCorrect = 0;
 let streakCount = 0;
-
-let currentMode = 'free'; // 'free', 'filter', 'quiz'
-let filterDifficulty = 'all'; // 'all', 'easy', 'med', 'hard'
 
 // Quiz Session State
 let quizSession = {
@@ -1402,77 +2335,115 @@ let quizSession = {
   questions: []
 };
 
-// Local Storage Persistent Stats
+// Persistent Stats
 let userStats = {
   totalAnswered: 0,
   totalCorrect: 0,
   bestStreak: 0,
+  limitCorrect: 0,
+  derivCorrect: 0,
   hardSolved: 0,
   quizAceCount: 0,
   badges: []
 };
 
 const allAchievements = [
-  { id: 'first_blood', icon: '🥇', title: 'ก้าวแรกสู่ลิมิต', desc: 'ตอบถูกข้อแรกสำเร็จ' },
-  { id: 'streak_5', icon: '🔥', title: 'ลู่เข้าไม่หยุด', desc: 'ทำ Streak ตอบถูกต่อเนื่อง 5 ข้อ' },
-  { id: 'streak_10', icon: '⚡', title: 'สู่ความเร็วแสง', desc: 'ทำ Streak ตอบถูกต่อเนื่อง 10 ข้อ' },
-  { id: 'hard_5', icon: '🧠', title: 'ปรมาจารย์ลิมิต', desc: 'ตอบถูกระดับท้าทายครบ 5 ข้อ' },
-  { id: 'quiz_ace', icon: '🏆', title: 'Quiz Ace (5/5)', desc: 'ได้คะแนนเต็มในโหมดแบบทดสอบย่อย' }
+  { id: 'first_step', icon: '🥇', title: 'ก้าวแรกสู่แคลคูลัส', desc: 'ตอบถูกข้อแรกสำเร็จ' },
+  { id: 'streak_5', icon: '🔥', title: 'ติดไฟต่อเนื่อง', desc: 'ทำ Streak ตอบถูกต่อเนื่อง 5 ข้อ' },
+  { id: 'streak_10', icon: '⚡', title: 'แรงไม่หยุด', desc: 'ทำ Streak ตอบถูกต่อเนื่อง 10 ข้อ' },
+  { id: 'limit_master', icon: '📘', title: 'เซียนลิมิต', desc: 'ทำโจทย์ลิมิตถูกต้องสะสม 5 ข้อ' },
+  { id: 'deriv_master', icon: '📙', title: 'ปรมาจารย์อนุพันธ์', desc: 'ทำโจทย์อนุพันธ์ถูกต้องสะสม 5 ข้อ' },
+  { id: 'hard_scholar', icon: '🧠', title: 'ยอดฝีมือระดับท้าทาย', desc: 'แก้โจทย์ระดับท้าทายสำเร็จ 5 ข้อ' },
+  { id: 'quiz_ace', icon: '🏆', title: 'Calculus Quiz Ace (5/5)', desc: 'ได้คะแนนเต็มในแบบทดสอบย่อย 5 ข้อ' }
 ];
+
+const limitGenerators = [
+  genLimitEasyFactoring,
+  genLimitEasyTrig,
+  genLimitEasyExpLimit,
+  genLimitMedFactoring,
+  genLimitMedSqrtConjugate,
+  genLimitMedCbrtConjugate,
+  genLimitMedComplexFraction,
+  genLimitHardDoubleConjugate,
+  genLimitHardTrigCube,
+  genLimitHardTrigProduct,
+  genLimitHardInfinityConjugate,
+  genLimitHardTrigPolyPoint
+];
+
+const derivGenerators = [
+  genDerivEasyPoly,
+  genDerivEasyTrig,
+  genDerivEasyExp,
+  genDerivEasyTangent,
+  genDerivMedProductExp,
+  genDerivMedQuotientRational,
+  genDerivMedChainRadical,
+  genDerivMedChainLog,
+  genDerivMedInverseTrig,
+  genDerivHardLogDiff,
+  genDerivHardDamped,
+  genDerivHardInverseTrigCancellation,
+  genDerivHardArctanRational,
+  genDerivHardLogNestedRadical,
+  genDerivHardSecondDerivative
+];
+
+const allGenerators = [...limitGenerators, ...derivGenerators];
 
 function loadStats() {
   try {
-    let saved = localStorage.getItem('cal_limit_stats');
+    let saved = localStorage.getItem('cal_hub_stats');
     if (saved) userStats = Object.assign(userStats, JSON.parse(saved));
   } catch(e) { console.warn("LocalStorage load error:", e); }
 }
 
 function saveStats() {
   try {
-    localStorage.setItem('cal_limit_stats', JSON.stringify(userStats));
+    localStorage.setItem('cal_hub_stats', JSON.stringify(userStats));
   } catch(e) { console.warn("LocalStorage save error:", e); }
 }
 
 function checkAchievements(isCorrect) {
-  let newlyUnlocked = [];
-  if (isCorrect && userStats.totalCorrect >= 1 && !userStats.badges.includes('first_blood')) {
-    userStats.badges.push('first_blood'); newlyUnlocked.push('first_blood');
+  if (isCorrect && userStats.totalCorrect >= 1 && !userStats.badges.includes('first_step')) {
+    userStats.badges.push('first_step');
   }
   if (streakCount >= 5 && !userStats.badges.includes('streak_5')) {
-    userStats.badges.push('streak_5'); newlyUnlocked.push('streak_5');
+    userStats.badges.push('streak_5');
   }
   if (streakCount >= 10 && !userStats.badges.includes('streak_10')) {
-    userStats.badges.push('streak_10'); newlyUnlocked.push('streak_10');
+    userStats.badges.push('streak_10');
   }
-  if (userStats.hardSolved >= 5 && !userStats.badges.includes('hard_5')) {
-    userStats.badges.push('hard_5'); newlyUnlocked.push('hard_5');
+  if (userStats.limitCorrect >= 5 && !userStats.badges.includes('limit_master')) {
+    userStats.badges.push('limit_master');
+  }
+  if (userStats.derivCorrect >= 5 && !userStats.badges.includes('deriv_master')) {
+    userStats.badges.push('deriv_master');
+  }
+  if (userStats.hardSolved >= 5 && !userStats.badges.includes('hard_scholar')) {
+    userStats.badges.push('hard_scholar');
   }
   if (quizSession.score === 5 && !userStats.badges.includes('quiz_ace')) {
-    userStats.badges.push('quiz_ace'); newlyUnlocked.push('quiz_ace');
+    userStats.badges.push('quiz_ace');
   }
   saveStats();
-  return newlyUnlocked;
 }
 
-const generators = [
-  // 🟢 ง่าย
-  genEasyFactoring,
-  genEasyTrig,
-  genEasyExpLimit,
-  // 🟡 ปานกลาง
-  genMedFactoring,
-  genMedSqrtConjugate,
-  genMedCbrtConjugate,
-  genMedComplexFraction,
-  // 🔴 ท้าทาย
-  genHardDoubleConjugate,
-  genHardTrigCube,
-  genHardTrigProduct,
-  genHardInfinityConjugate,
-  genHardTrigPolyPoint
-];
+function setTopic(topic) {
+  currentTopic = topic;
+  document.getElementById('topicAllBtn').classList.toggle('active', topic === 'all');
+  document.getElementById('topicLimitBtn').classList.toggle('active', topic === 'limit');
+  document.getElementById('topicDerivBtn').classList.toggle('active', topic === 'derivative');
 
-function switchMode(mode) {
+  if (currentMode === 'quiz') {
+    startQuizSession();
+  } else {
+    generateRandomProblem();
+  }
+}
+
+function setMode(mode) {
   currentMode = mode;
   document.getElementById('modeFreeBtn').classList.toggle('active', mode === 'free');
   document.getElementById('modeFilterBtn').classList.toggle('active', mode === 'filter');
@@ -1501,6 +2472,20 @@ function setFilterDifficulty(diff) {
   generateRandomProblem();
 }
 
+function getActivePool() {
+  let pool = allGenerators;
+  if (currentTopic === 'limit') pool = limitGenerators;
+  else if (currentTopic === 'derivative') pool = derivGenerators;
+
+  if (currentMode === 'filter' && filterDifficulty !== 'all') {
+    pool = pool.filter(g => {
+      let testObj = g();
+      return testObj.difficulty === filterDifficulty;
+    });
+  }
+  return pool;
+}
+
 function generateNextProblem() {
   if (currentMode === 'quiz' && quizSession.active) {
     if (quizSession.currentIdx < quizSession.totalQuestions - 1) {
@@ -1515,14 +2500,7 @@ function generateNextProblem() {
 }
 
 function generateRandomProblem() {
-  let pool = generators;
-  if (currentMode === 'filter' && filterDifficulty !== 'all') {
-    pool = generators.filter(g => {
-      let testObj = g();
-      return testObj.difficulty === filterDifficulty;
-    });
-  }
-
+  let pool = getActivePool();
   let gen = pool[Math.floor(Math.random() * pool.length)];
   currentProblem = gen();
   renderProblemView(currentProblem);
@@ -1544,17 +2522,33 @@ function renderProblemView(prob) {
   }
 
   // อัปเดต UI
-  document.getElementById('topicBadge').textContent = `ประเภท: ${prob.category}`;
-  document.getElementById('probBox').innerHTML = `
-    <div style="font-size: 0.95rem; color: var(--muted); margin-bottom: 6px;">จงหาค่าของลิมิตต่อไปนี้:</div>
-    $$\\displaystyle ${prob.probLatex}$$
-  `;
+  document.getElementById('topicBadge').textContent = prob.category;
+  
+  if (prob.topic === 'limit') {
+    document.getElementById('probBox').innerHTML = `
+      <div style="font-size: 0.95rem; color: var(--muted); margin-bottom: 6px;">จงหาค่าของลิมิตต่อไปนี้:</div>
+      $$\\displaystyle ${prob.probLatex}$$
+    `;
+    document.getElementById('ansContent').innerHTML = `$$\\displaystyle ${prob.ansLatex}$$`;
+  } else {
+    const sym = prob.targetSymbol || "f'";
+    document.getElementById('probBox').innerHTML = `
+      <div style="font-size: 0.95rem; color: var(--muted); margin-bottom: 6px;">กำหนดฟังก์ชัน:</div>
+      $$\\displaystyle ${prob.probLatex}$$
+      <div style="font-size: 0.95rem; color: var(--muted); margin-top: 6px;">จงหาอนุพันธ์ $${sym}(x)$ และคำนวณค่าของ $${sym}(${prob.x0})$</div>
+    `;
+    document.getElementById('ansContent').innerHTML = `
+      <strong>อนุพันธ์:</strong> $$\\displaystyle ${sym}(x) = ${prob.derivLatex}$$
+      <strong>ค่าที่จุด $x = ${prob.x0}$:</strong> $$\\displaystyle ${sym}(${prob.x0}) = ${prob.ansLatex}$$
+      ${prob.tangentLatex ? `<strong>สมการเส้นสัมผัสที่จุด $x = ${prob.x0}$:</strong> $$\\displaystyle ${prob.tangentLatex}$$` : ""}
+    `;
+  }
 
-  document.getElementById('ansContent').innerHTML = `$$\\displaystyle ${prob.ansLatex}$$`;
+  document.getElementById('quizPromptLabel').innerHTML = prob.promptText || "✍️ ทดลองคำนวณและใส่คำตอบ:";
   document.getElementById('solContent').innerHTML = prob.solHtml;
 
   // Hint content
-  document.getElementById('hintContent').textContent = prob.hintText || "ตรวจสอบรูปแบบไม่กำหนดแล้วลองแยกตัวประกอบหรือคูณสังยุค";
+  document.getElementById('hintContent').textContent = prob.hintText || "ลองตรวจสอบรูปแบบและจัดรูปทีละขั้นตอน";
   document.getElementById('hintBox').classList.add('hidden');
 
   // รีเซ็ตสถานะ
@@ -1571,6 +2565,7 @@ function renderProblemView(prob) {
   feedback.innerHTML = '';
 
   safeRenderMath(document.getElementById('probBox'));
+  safeRenderMath(document.getElementById('quizPromptLabel'));
 }
 
 function startQuizSession() {
@@ -1579,10 +2574,13 @@ function startQuizSession() {
   quizSession.score = 0;
   quizSession.questions = [];
 
-  // สุ่ม 5 ข้อ: ง่าย 1 ข้อ, ปานกลาง 2 ข้อ, ท้าทาย 2 ข้อ
-  let easyPool = generators.filter(g => g().difficulty === 'easy');
-  let medPool = generators.filter(g => g().difficulty === 'med');
-  let hardPool = generators.filter(g => g().difficulty === 'hard');
+  let pool = allGenerators;
+  if (currentTopic === 'limit') pool = limitGenerators;
+  else if (currentTopic === 'derivative') pool = derivGenerators;
+
+  let easyPool = pool.filter(g => g().difficulty === 'easy');
+  let medPool = pool.filter(g => g().difficulty === 'med');
+  let hardPool = pool.filter(g => g().difficulty === 'hard');
 
   quizSession.questions.push(easyPool[Math.floor(Math.random()*easyPool.length)]());
   quizSession.questions.push(medPool[Math.floor(Math.random()*medPool.length)]());
@@ -1622,8 +2620,8 @@ function finishQuizSession() {
 
   if (score === 5) {
     userStats.quizAceCount++;
-    checkAchievements(true);
   }
+  checkAchievements(true);
 }
 
 function parseInputFraction(str) {
@@ -1659,7 +2657,7 @@ function checkAnswer() {
   if (!parsed) {
     inputEl.classList.add('input-error');
     feedback.className = 'feedback-box feedback-error';
-    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> รูปแบบคำตอบไม่ถูกต้อง</div><div>กรุณากรอกเป็นตัวเลขหรือเศษส่วน เช่น <code>1/2</code>, <code>-3/4</code>, <code>5</code>, <code>0</code></div>';
+    feedback.innerHTML = '<div class="feedback-title"><span>⚠️</span> รูปแบบคำตอบไม่ถูกต้อง</div><div>กรุณากรอกเป็นตัวเลขหรือเศษส่วน เช่น <code>1/2</code>, <code>-3/4</code>, <code>6</code>, <code>0</code></div>';
     return;
   }
 
@@ -1672,8 +2670,10 @@ function checkAnswer() {
     scoreCorrect++;
     streakCount++;
     userStats.totalCorrect++;
-    if (streakCount > userStats.bestStreak) userStats.bestStreak = streakCount;
+    if (currentProblem.topic === 'limit') userStats.limitCorrect++;
+    else if (currentProblem.topic === 'derivative') userStats.derivCorrect++;
     if (currentProblem.difficulty === 'hard') userStats.hardSolved++;
+    if (streakCount > userStats.bestStreak) userStats.bestStreak = streakCount;
     if (quizSession.active) quizSession.score++;
 
     document.getElementById('scoreCorrect').textContent = scoreCorrect;
@@ -1684,7 +2684,7 @@ function checkAnswer() {
     feedback.innerHTML = `
       <div class="feedback-title"><span>✅</span> ถูกต้องยอดเยี่ยม!</div>
       <div style="font-size: 1.05rem; margin-top: 4px;">
-        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ตรงกับค่าลิมิตจริง $$\\displaystyle ${currentProblem.ansLatex}$$
+        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ตรงกับค่าจริง $$\\displaystyle ${currentProblem.ansLatex}$$
       </div>
     `;
   } else {
@@ -1696,10 +2696,10 @@ function checkAnswer() {
     feedback.innerHTML = `
       <div class="feedback-title"><span>❌</span> ยังไม่ถูกต้อง</div>
       <div style="font-size: 1.05rem; margin-top: 4px;">
-        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ยังไม่ตรงกับค่าลิมิตของโจทย์ข้อนี้
+        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ยังไม่ตรงกับค่าคำตอบของโจทย์ข้อนี้
       </div>
       <div style="font-size: 0.95rem; margin-top: 8px; color: #721c24;">
-        💡 คำแนะนำ: ลองตรวจสอบการแยกตัวประกอบ / เครื่องหมายของสังยุค หรือกดปุ่ม <strong>"ดูวิธีทำอย่างละเอียด"</strong> ด้านล่าง
+        💡 คำแนะนำ: ลองกดปุ่ม <strong>"💡 ดูคำใบ้"</strong> หรือกดปุ่ม <strong>"ดูวิธีทำอย่างละเอียด"</strong> ด้านล่าง
       </div>
     `;
   }
@@ -1736,6 +2736,8 @@ function toggleStatsModal() {
   if (!modal.classList.contains('hidden')) {
     document.getElementById('statTotalAnswered').textContent = userStats.totalAnswered;
     document.getElementById('statTotalCorrect').textContent = userStats.totalCorrect;
+    document.getElementById('statLimitCorrect').textContent = userStats.limitCorrect;
+    document.getElementById('statDerivCorrect').textContent = userStats.derivCorrect;
     let acc = userStats.totalAnswered > 0 ? Math.round((userStats.totalCorrect / userStats.totalAnswered)*100) : 0;
     document.getElementById('statAccuracy').textContent = `${acc}%`;
     document.getElementById('statBestStreak').textContent = userStats.bestStreak;
@@ -1758,7 +2760,7 @@ function toggleStatsModal() {
 
 function resetStats() {
   if (confirm("คุณแน่ใจหรือไม่ว่าต้องการรีเซ็ตสถิติและความสำเร็จทั้งหมด?")) {
-    userStats = { totalAnswered: 0, totalCorrect: 0, bestStreak: 0, hardSolved: 0, quizAceCount: 0, badges: [] };
+    userStats = { totalAnswered: 0, totalCorrect: 0, bestStreak: 0, limitCorrect: 0, derivCorrect: 0, hardSolved: 0, quizAceCount: 0, badges: [] };
     scoreCorrect = 0; streakCount = 0;
     document.getElementById('scoreCorrect').textContent = 0;
     document.getElementById('streakCount').textContent = 0;
@@ -1797,6 +2799,13 @@ document.addEventListener('DOMContentLoaded', function() {
       link.classList.add('active');
     }
   });
+
+  // URL Parameter check (e.g. ?topic=limit or ?topic=derivative)
+  const urlParams = new URLSearchParams(window.location.search);
+  const topicParam = urlParams.get('topic');
+  if (topicParam === 'limit' || topicParam === 'derivative') {
+    setTopic(topicParam);
+  }
 });
 </script>
 
