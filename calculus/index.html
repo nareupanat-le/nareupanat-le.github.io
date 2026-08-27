@@ -2312,7 +2312,11 @@ function genDerivMedChainRadical() {
   let x0 = 0;
 
   let fExpr = `\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}`;
-  let derivExpr = `\\frac{${2*a}x + ${b}}{2\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}}`;
+  
+  let derivNum = b % 2 === 0 ? `${a}x + ${b/2}` : `${2*a}x + ${b}`;
+  let derivDen = b % 2 === 0 ? `\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}` : `2\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}`;
+  let derivExpr = `\\frac{${derivNum}}{${derivDen}}`;
+  
   let slopeValLatex = toFrac(b, 2 * c_sqrt);
 
   let solText = `
@@ -2331,7 +2335,7 @@ function genDerivMedChainRadical() {
         f'(x) &= \\frac{d}{dx} \\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}} \\\\
         &= \\frac{1}{2\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}} \\frac{d}{dx} (${a === 1 ? "" : a}x^2 + ${b}x + ${c2}) \\\\
         &= \\frac{1}{2\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}} \\left[ \\frac{d}{dx}(${a === 1 ? "" : a}x^2) + \\frac{d}{dx}(${b}x) + \\frac{d}{dx}(${c2}) \\right] \\\\
-        &= \\frac{1}{2\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}} (${2*a}x + ${b} + 0).
+        &= \\frac{1}{2\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}} (${2*a}x + ${b} + 0) ${b % 2 === 0 ? `\\\\ &= \\frac{${a}x + ${b/2}}{\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}}` : ""}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
@@ -2341,10 +2345,10 @@ function genDerivMedChainRadical() {
     <div class="solution-step">
       <strong>ขั้นที่ 3: คำนวณค่า $f'(${x0})$ โดยแทน $x = ${x0}$ ลงใน $f'(x)$ จะได้</strong>
       $$\\begin{align*}
-        f'(${x0}) &= \\frac{${2*a}(${x0}) + ${b}}{2\\sqrt{${a}(${x0})^2 + ${b}(${x0}) + ${c2}}} \\\\
-        &= \\frac{${b}}{2\\sqrt{0 + 0 + ${c2}}} \\\\
-        &= \\frac{${b}}{2\\sqrt{${c2}}} \\\\
-        &= \\frac{${b}}{2(${c_sqrt})} \\\\
+        f'(${x0}) &= \\frac{${b % 2 === 0 ? a : 2*a}(${x0}) + ${b % 2 === 0 ? b/2 : b}}{${b % 2 === 0 ? "" : "2"}\\sqrt{${a}(${x0})^2 + ${b}(${x0}) + ${c2}}} \\\\
+        &= \\frac{${b % 2 === 0 ? b/2 : b}}{${b % 2 === 0 ? "" : "2"}\\sqrt{0 + 0 + ${c2}}} \\\\
+        &= \\frac{${b % 2 === 0 ? b/2 : b}}{${b % 2 === 0 ? "" : "2"}\\sqrt{${c2}}} \\\\
+        &= \\frac{${b % 2 === 0 ? b/2 : b}}{${b % 2 === 0 ? "" : "2"}(${c_sqrt})} \\\\
         &= ${slopeValLatex}.
       \\end{align*}$$
       ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
@@ -2903,7 +2907,13 @@ function genDerivFractionalPower() {
   let x0 = 1;
 
   let fExpr = `${a === 1 ? "" : a}x^3 + \\frac{${b}}{x} + ${c}\\sqrt{x}`;
-  let derivExpr = `${3*a}x^2 - \\frac{${b}}{x^2} + \\frac{${c}}{2\\sqrt{x}}`;
+  
+  let cFracNum = c % 2 === 0 ? c / 2 : c;
+  let cFracDen = c % 2 === 0 ? "" : "2";
+  let thirdTermDeriv = cFracDen === "" ? `\\frac{${cFracNum}}{\\sqrt{x}}` : `\\frac{${cFracNum}}{${cFracDen}\\sqrt{x}}`;
+  
+  let derivExpr = `${3*a}x^2 - \\frac{${b}}{x^2} + ${thirdTermDeriv}`;
+  
   let numVal = 6 * a - 2 * b + c;
   let denVal = 2;
   let slopeValLatex = toFrac(numVal, denVal);
@@ -2934,15 +2944,14 @@ function genDerivFractionalPower() {
     <div class="solution-step">
       <strong>ขั้นที่ 3: คำนวณค่า $f'(${x0})$ โดยแทน $x = ${x0}$ ลงใน $f'(x)$ จะได้</strong>
       $$\\begin{align*}
-        f'(${x0}) &= ${3*a}(${x0})^2 - \\frac{${b}}{(${x0})^2} + \\frac{${c}}{2\\sqrt{${x0}}} \\\\
-        &= ${3*a}(1) - \\frac{${b}}{1} + \\frac{${c}}{2} \\\\
-        &= ${3*a} - ${b} + \\frac{${c}}{2} \\\\
+        f'(${x0}) &= ${3*a}(${x0})^2 - \\frac{${b}}{(${x0})^2} + ${cFracDen === "" ? `\\frac{${cFracNum}}{\\sqrt{${x0}}}` : `\\frac{${cFracNum}}{${cFracDen}\\sqrt{${x0}}}`} \\\\
+        &= ${3*a}(1) - \\frac{${b}}{1} + ${cFracDen === "" ? `${cFracNum}` : `\\frac{${cFracNum}}{${cFracDen}}`} \\\\
+        &= ${3*a} - ${b} + ${cFracDen === "" ? `${cFracNum}` : `\\frac{${cFracNum}}{${cFracDen}}`} \\\\
         &= ${slopeValLatex}.
       \\end{align*}$$
       ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
     </div>
   `;
-
   return {
     topic: "derivative",
     category: "อนุพันธ์: เลขยกกำลังตรรกยะและติดลบ",
@@ -3701,10 +3710,9 @@ function genDerivInverseTrigArcSecCsc() {
   let x0 = 1;
 
   let fExpr = `${a === 1 ? "" : a}\\operatorname{arcsec}(${k}x)`;
-  let derivExpr = `\\frac{${a*k}}{|${k}x|\\sqrt{${k*k}x^2 - 1}}`;
+  let derivExpr = `\\frac{${a}}{|x|\\sqrt{${k*k}x^2 - 1}}`;
   
-  // Calculate slope string logic safely
-  let slopeValLatex = `\\frac{${a*k}}{${k}\\sqrt{${k*k - 1}}}`;
+  let slopeValLatex = `\\frac{${a}}{\\sqrt{${k*k - 1}}}`;
   if (a === 1) slopeValLatex = `\\frac{1}{\\sqrt{${k*k - 1}}}`;
 
   let solText = `
@@ -3721,7 +3729,8 @@ function genDerivInverseTrigArcSecCsc() {
       $$\\begin{align*}
         f'(x) &= \\frac{d}{dx} \\left[ ${a === 1 ? "" : a}\\operatorname{arcsec}(${k}x) \\right] \\\\
         &= ${a === 1 ? "1" : a} \\left( \\frac{1}{|${k}x|\\sqrt{(${k}x)^2-1}} \\right) \\frac{d}{dx} (${k}x) \\\\
-        &= \\frac{${a === 1 ? "1" : a}}{|${k}x|\\sqrt{${k*k}x^2-1}} (${k}).
+        &= \\frac{${a === 1 ? "1" : a}}{${k}|x|\\sqrt{${k*k}x^2-1}} (${k}) \\\\
+        &= \\frac{${a}}{|x|\\sqrt{${k*k}x^2-1}}.
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
@@ -3731,8 +3740,8 @@ function genDerivInverseTrigArcSecCsc() {
     <div class="solution-step">
       <strong>ขั้นที่ 3: คำนวณค่า $f'(${x0})$ โดยแทน $x = ${x0}$ ลงใน $f'(x)$ จะได้</strong>
       $$\\begin{align*}
-        f'(${x0}) &= \\frac{${a*k}}{|${k}(${x0})|\\sqrt{${k*k}(${x0})^2-1}} \\\\
-        &= \\frac{${a*k}}{${k}\\sqrt{${k*k}-1}} \\\\
+        f'(${x0}) &= \\frac{${a}}{|${x0}|\\sqrt{${k*k}(${x0})^2-1}} \\\\
+        &= \\frac{${a}}{1\\sqrt{${k*k}-1}} \\\\
         &= ${slopeValLatex}.
       \\end{align*}$$
       ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
