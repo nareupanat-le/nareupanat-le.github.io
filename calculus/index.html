@@ -2436,10 +2436,12 @@ function setTopic(topic) {
   document.getElementById('topicLimitBtn').classList.toggle('active', topic === 'limit');
   document.getElementById('topicDerivBtn').classList.toggle('active', topic === 'derivative');
 
-  if (currentMode === 'quiz') {
-    startQuizSession();
-  } else {
-    generateRandomProblem();
+  if (currentProblem !== null) {
+    if (currentMode === 'quiz') {
+      startQuizSession();
+    } else {
+      generateRandomProblem();
+    }
   }
 }
 
@@ -2456,11 +2458,16 @@ function setMode(mode) {
 
   let btnAction = document.getElementById('btnMainAction');
   if (mode === 'quiz') {
-    startQuizSession();
+    btnAction.textContent = quizSession.active ? '➡️ ข้อถัดไป' : '▶️ เริ่มทำแบบทดสอบ 5 ข้อ';
+    if (currentProblem !== null && quizSession.active) {
+      startQuizSession();
+    }
   } else {
     quizSession.active = false;
     btnAction.textContent = '🎲 สุ่มโจทย์ใหม่';
-    generateRandomProblem();
+    if (currentProblem !== null) {
+      generateRandomProblem();
+    }
   }
 }
 
@@ -2469,7 +2476,9 @@ function setFilterDifficulty(diff) {
   document.querySelectorAll('.filter-pill').forEach(el => {
     el.classList.toggle('active', el.getAttribute('onclick').includes(`'${diff}'`));
   });
-  generateRandomProblem();
+  if (currentProblem !== null) {
+    generateRandomProblem();
+  }
 }
 
 function getActivePool() {
@@ -2487,8 +2496,10 @@ function getActivePool() {
 }
 
 function generateNextProblem() {
-  if (currentMode === 'quiz' && quizSession.active) {
-    if (quizSession.currentIdx < quizSession.totalQuestions - 1) {
+  if (currentMode === 'quiz') {
+    if (!quizSession.active) {
+      startQuizSession();
+    } else if (quizSession.currentIdx < quizSession.totalQuestions - 1) {
       quizSession.currentIdx++;
       loadQuizQuestion(quizSession.currentIdx);
     } else {
