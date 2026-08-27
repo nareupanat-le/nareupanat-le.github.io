@@ -964,7 +964,7 @@ function genEasyTangent() {
     <div class="solution-step">
       <strong>ขั้นที่ 4: สร้างสมการเส้นสัมผัส $y - y_0 = m(x - x_0)$</strong><br>
       จะได้ว่า
-      $$\\displaystyle y - (${y0}) = ${slopeVal}(x - (${x0}))$$
+      $$\\displaystyle y ${y0 >= 0 ? `- ${y0}` : `+ ${Math.abs(y0)}`} = ${slopeVal === 1 ? "" : (slopeVal === -1 ? "-" : slopeVal)}(x ${x0 >= 0 ? `- ${x0}` : `+ ${Math.abs(x0)}`})$$
       ดังนั้นสมการเส้นสัมผัสคือ $$\\displaystyle ${tangentEq}$$
     </div>
   `;

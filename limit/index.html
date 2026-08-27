@@ -721,7 +721,10 @@ window.addEventListener('resize', function() {
 function genEasyFactoring() {
   let a = randNonZero(-4, 4);
   let a2 = a * a;
-  let probLatex = `\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{x - ${a >= 0 ? a : `(${a})`}}`;
+  let absA = Math.abs(a);
+  let termCancel = (a > 0) ? `x - ${a}` : `x + ${absA}`;
+  let termOther = (a > 0) ? `x + ${a}` : `x - ${absA}`;
+  let probLatex = `\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{${termCancel}}`;
   let finalVal = 2 * a;
 
   let solText = `
@@ -732,17 +735,17 @@ function genEasyFactoring() {
     <div class="solution-step">
       <strong>ขั้นที่ 2: แยกตัวประกอบผลต่างกำลังสองที่ตัวเศษ</strong><br>
       ${adaptiveMath(
-        `\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{x - ${a >= 0 ? a : `(${a})`}} = \\lim_{x \\to ${a}} \\frac{(x - ${a})(x + ${a})}{x - ${a}}`,
-        `\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{x - ${a >= 0 ? a : `(${a})`}} &= \\lim_{x \\to ${a}} \\frac{(x - ${a})(x + ${a})}{x - ${a}}`
+        `\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{${termCancel}} = \\lim_{x \\to ${a}} \\frac{(${termCancel})(${termOther})}{${termCancel}}`,
+        `\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{${termCancel}} &= \\lim_{x \\to ${a}} \\frac{(${termCancel})(${termOther})}{${termCancel}}`
       )}
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: ตัดทอนพจน์ร่วม $(x - ${a})$ และแทนค่า $x = ${a}$</strong><br>
+      <strong>ขั้นที่ 3: ตัดทอนพจน์ร่วม $(${termCancel})$ และแทนค่า $x = ${a}$</strong><br>
       ${adaptiveMath(
-        `= \\lim_{x \\to ${a}} (x + ${a}) = (${a}) + (${a}) = ${finalVal}`,
-        `&= \\lim_{x \\to ${a}} (x + ${a}) \\\\ &= (${a}) + (${a}) \\\\ &= ${finalVal}`
+        `= \\lim_{x \\to ${a}} (${termOther}) = (${a}) ${a > 0 ? `+ ${a}` : `- ${absA}`} = ${finalVal}`,
+        `&= \\lim_{x \\to ${a}} (${termOther}) \\\\ &= (${a}) ${a > 0 ? `+ ${a}` : `- ${absA}`} \\\\ &= ${finalVal}`
       )}
-      ดังนั้น $$\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{x - ${a >= 0 ? a : `(${a})`}} = ${finalVal}$$
+      ดังนั้น $$\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{${termCancel}} = ${finalVal}$$
     </div>
   `;
 
@@ -753,7 +756,7 @@ function genEasyFactoring() {
     limitPt: a,
     limitVal: finalVal,
     ansLatex: `${finalVal}`,
-    hintText: `ใช้เอกลักษณ์ $x^2 - a^2 = (x-a)(x+a)$ แล้วตัดทอนพจน์ร่วม $(x-a)$ ออก`,
+    hintText: `ใช้เอกลักษณ์ $x^2 - ${a2} = (${termCancel})(${termOther})$ แล้วตัดทอนพจน์ร่วม $(${termCancel})$ ออก`,
     solHtml: solText,
     exactNum: finalVal,
     exactDen: 1
@@ -1063,8 +1066,12 @@ function genMedCbrtConjugate() {
 // 2.7 เศษส่วนซ้อน
 function genMedComplexFraction() {
   let a = randNonZero(-3, 3);
+  let absA = Math.abs(a);
   let k = rand(1, 3);
-  let probLatex = `\\lim_{x \\to ${a}} \\frac{\\frac{${k}}{x} - \\frac{${k}}{${a}}}{x - ${a >= 0 ? a : `(${a})`}}`;
+  let numPart = (a > 0) ? `\\frac{${k}}{x} - \\frac{${k}}{${a}}` : `\\frac{${k}}{x} + \\frac{${k}}{${absA}}`;
+  let denPart = (a > 0) ? `x - ${a}` : `x + ${absA}`;
+  let termCancel = (a > 0) ? `x - ${a}` : `x + ${absA}`;
+  let probLatex = `\\lim_{x \\to ${a}} \\frac{${numPart}}{${denPart}}`;
   
   let finalNum = -k;
   let finalDen = a * a;
@@ -1078,15 +1085,15 @@ function genMedComplexFraction() {
     <div class="solution-step">
       <strong>ขั้นที่ 2: ทำตัวส่วนของเศษส่วนซ้อนให้เท่ากัน</strong><br>
       ${adaptiveMath(
-        `\\frac{${k}}{x} - \\frac{${k}}{${a}} = \\frac{${k}(${a}) - ${k}x}{${a}x} = \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x}`,
-        `\\frac{${k}}{x} - \\frac{${k}}{${a}} &= \\frac{${k}(${a}) - ${k}x}{${a}x} \\\\ &= \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x}`
+        `${numPart} = \\frac{${k}(${a}) - ${k}x}{${a}x} = \\frac{-${k === 1 ? "" : k}(${termCancel})}{${a >= 0 ? a : `(${a})`}x}`,
+        `${numPart} &= \\frac{${k}(${a}) - ${k}x}{${a >= 0 ? a : `(${a})`}x} \\\\ &= \\frac{-${k === 1 ? "" : k}(${termCancel})}{${a >= 0 ? a : `(${a})`}x}`
       )}
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนกลับในลิมิตและตัดทอนพจน์ $(x - ${a})$</strong><br>
+      <strong>ขั้นที่ 3: แทนกลับในลิมิตและตัดทอนพจน์ $(${termCancel})$</strong><br>
       ${adaptiveMath(
-        `\\lim_{x \\to ${a}} \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x(x - ${a})} = \\lim_{x \\to ${a}} \\frac{-${k}}{${a}x}`,
-        `\\lim_{x \\to ${a}} \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x(x - ${a})} &= \\lim_{x \\to ${a}} \\frac{-${k}}{${a}x}`
+        `\\lim_{x \\to ${a}} \\frac{-${k === 1 ? "" : k}(${termCancel})}{${a >= 0 ? a : `(${a})`}x(${termCancel})} = \\lim_{x \\to ${a}} \\frac{-${k}}{${a >= 0 ? a : `(${a})`}x}`,
+        `\\lim_{x \\to ${a}} \\frac{-${k === 1 ? "" : k}(${termCancel})}{${a >= 0 ? a : `(${a})`}x(${termCancel})} &= \\lim_{x \\to ${a}} \\frac{-${k}}{${a >= 0 ? a : `(${a})`}x}`
       )}
     </div>
     <div class="solution-step">
@@ -1095,7 +1102,7 @@ function genMedComplexFraction() {
         `= \\frac{-${k}}{(${a})(${a})} = ${finalValLatex}`,
         `&= \\frac{-${k}}{(${a})(${a})} \\\\ &= ${finalValLatex}`
       )}
-      ดังนั้น $$\\lim_{x \\to ${a}} \\frac{\\frac{${k}}{x} - \\frac{${k}}{${a}}}{x - ${a >= 0 ? a : `(${a})`}} = ${finalValLatex}$$
+      ดังนั้น $$\\lim_{x \\to ${a}} \\frac{${numPart}}{${denPart}} = ${finalValLatex}$$
     </div>
   `;
 
@@ -1106,7 +1113,7 @@ function genMedComplexFraction() {
     limitPt: a,
     limitVal: finalNum/finalDen,
     ansLatex: finalValLatex,
-    hintText: `หา ครน. ทำตัวส่วนของเศษส่วนซ้อนข้างบนให้เท่ากันก่อนตัดพจน์ $(x-${a})$`,
+    hintText: `หา ครน. ทำตัวส่วนของเศษส่วนซ้อนข้างบนให้เท่ากันก่อนตัดพจน์ $(${termCancel})$`,
     solHtml: solText,
     exactNum: finalNum,
     exactDen: finalDen
