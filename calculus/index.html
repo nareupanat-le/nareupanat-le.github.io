@@ -525,7 +525,7 @@
 </header>
 
 <main>
-  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.0.4</span></h3>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.0.5</span></h3>
   <p class="byline">คลังโจทย์แคลคูลัส 1 พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
@@ -629,7 +629,7 @@
   </div>
 
   <footer style="text-align: center; margin-top: 28px; margin-bottom: 16px; font-size: 0.85rem; color: var(--muted);">
-    Calculus 1 Practice Hub • v.2026.0.4
+    Calculus 1 Practice Hub • v.2026.0.5
   </footer>
 </main>
 
@@ -1959,19 +1959,14 @@ function genDerivEasyTrig() {
     <div class="solution-step">
       <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
       • $\\frac{d}{dx}[\\sin(u)] = \\cos(u) \\cdot \\frac{du}{dx}$<br>
-      • $\\frac{d}{dx}[kx] = k$<br>
+      • $\\frac{d}{dx}[x^n] = n x^{n-1}$<br>
       • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: ดำเนินการหาอนุพันธ์ตามสูตรและกฎลูกโซ่</strong><br>
       ${adaptiveMath(
-        `f'(x) = \\frac{d}{dx}\\left[${a}\\sin(${k}x)\\right] = ${a}\\frac{d}{dx}[\\sin(${k}x)]`,
-        `f'(x) &= \\frac{d}{dx}\\left[${a}\\sin(${k}x)\\right] \\\\ &= ${a}\\frac{d}{dx}[\\sin(${k}x)]`
-      )}
-      ใช้สูตรอนุพันธ์ของ $\\sin(u)$ โดยให้ $u = ${k}x$:
-      ${adaptiveMath(
-        `= ${a}\\left(\\cos(${k}x) \\cdot \\frac{d}{dx}[${k}x]\\right) = ${a}(\\cos(${k}x) \\cdot ${k}) = ${derivExpr}`,
-        `&= ${a}\\left(\\cos(${k}x) \\cdot \\frac{d}{dx}[${k}x]\\right) \\\\ &= ${a}(\\cos(${k}x) \\cdot ${k}) \\\\ &= ${derivExpr}`
+        `f'(x) = \\frac{d}{dx}\\left[${a}\\sin(${k}x)\\right] = ${a}\\frac{d}{dx}[\\sin(${k}x)] = ${a}\\left(\\cos(${k}x)\\frac{d}{dx}[${k}x]\\right) = ${a}(\\cos(${k}x) \\cdot ${k}) = ${derivExpr}`,
+        `f'(x) &= \\frac{d}{dx}\\left[${a}\\sin(${k}x)\\right] \\\\ &= ${a}\\frac{d}{dx}[\\sin(${k}x)] \\\\ &= ${a}\\left(\\cos(${k}x)\\frac{d}{dx}[${k}x]\\right) \\\\ &= ${a}(\\cos(${k}x) \\cdot ${k}) \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
@@ -2070,25 +2065,46 @@ function genDerivEasyTangent() {
   let bFormatted = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
   let cFormatted = c === 0 ? "" : (c > 0 ? `+ ${c}` : `- ${Math.abs(c)}`);
 
+  let customProbPrompt = `
+    <div style="font-size: 0.95rem; color: var(--muted); margin-bottom: 6px;">กำหนดสมการเส้นโค้ง:</div>
+    $$\\displaystyle y = ${fExpr}$$
+    <div style="font-size: 0.95rem; color: var(--muted); margin-top: 6px;">จงหาความชันของเส้นสัมผัส $m_t$ และสร้างสมการเส้นสัมผัสที่จุด $x = ${x0}$</div>
+  `;
+
+  let customAnsContent = `
+    <strong>ความชันเส้นสัมผัส:</strong> $$\\displaystyle m_t = f'(${x0}) = ${slopeVal}$$
+    <strong>จุดสัมผัส:</strong> $$\\displaystyle (${x0}, ${y0})$$
+    <strong>สมการเส้นสัมผัส:</strong> $$\\displaystyle ${tangentEq}$$
+  `;
+
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: หาอนุพันธ์ทั่วไป $f'(x)$ เพื่อหาฟังก์ชันความชัน</strong><br>
-      $$\\displaystyle f'(x) = \\frac{d}{dx}\\left(${fExpr}\\right) = ${derivExpr}$$
+      <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาสมการเส้นสัมผัส</strong><br>
+      • ความชันของเส้นสัมผัส $m_t = f'(x_0)$<br>
+      • สมการเส้นตรงผ่านจุด $(x_0, y_0)$ คือ $y - y_0 = m_t(x - x_0)$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: หาความชันของเส้นสัมผัส $m$ ที่จุด $x = ${x0}$</strong><br>
-      $$\\displaystyle m = f'(${x0}) = ${2 * a}(${x0 >= 0 ? x0 : `(${x0})`}) ${bFormatted} = ${slopeVal}$$
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทั่วไป $f'(x)$ เพื่อหาฟังก์ชันความชัน</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{d}{dx}\\left(${fExpr}\\right) = ${derivExpr}`,
+        `f'(x) &= \\frac{d}{dx}\\left(${fExpr}\\right) \\\\ &= ${derivExpr}`
+      )}
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: หาพิกัดจุดสัมผัส $(x_0, y_0)$</strong><br>
-      $$\\displaystyle y_0 = f(${x0}) = ${a}(${x0})^2 ${bFormatted}(${x0}) ${cFormatted} = ${y0}$$<br>
+      <strong>ขั้นที่ 3: หาความชันของเส้นสัมผัส $m_t$ ที่จุด $x = ${x0}$</strong><br>
+      $$m_t = f'(${x0}) = ${2 * a}(${x0 >= 0 ? x0 : `(${x0})`}) ${bFormatted} = ${slopeVal}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: หาพิกัดจุดสัมผัส $(x_0, y_0)$</strong><br>
+      เมื่อแทนค่า $x = ${x0}$ ในสมการเส้นโค้ง:<br>
+      $$y_0 = f(${x0}) = ${a}(${x0})^2 ${bFormatted}(${x0}) ${cFormatted} = ${y0}$$
       ดังนั้นจุดสัมผัสคือ $(${x0}, ${y0})$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: สร้างสมการเส้นสัมผัส $y - y_0 = m(x - x_0)$</strong><br>
+      <strong>ขั้นที่ 5: สร้างสมการเส้นสัมผัส $y - y_0 = m_t(x - x_0)$</strong><br>
       จะได้ว่า
-      $$\\displaystyle y ${y0 >= 0 ? `- ${y0}` : `+ ${Math.abs(y0)}`} = ${slopeVal === 1 ? "" : (slopeVal === -1 ? "-" : slopeVal)}(x ${x0 >= 0 ? `- ${x0}` : `+ ${Math.abs(x0)}`})$$
-      ดังนั้นสมการเส้นสัมผัสคือ $$\\displaystyle ${tangentEq}$$
+      $$y ${y0 >= 0 ? `- ${y0}` : `+ ${Math.abs(y0)}`} = ${slopeVal === 1 ? "" : (slopeVal === -1 ? "-" : slopeVal)}(x ${x0 >= 0 ? `- ${x0}` : `+ ${Math.abs(x0)}`})$$
+      ดังนั้นสมการเส้นสัมผัสคือ $$${tangentEq}$$
     </div>
   `;
 
@@ -2096,14 +2112,17 @@ function genDerivEasyTangent() {
     topic: "derivative",
     category: "อนุพันธ์: การประยุกต์สมการเส้นสัมผัส",
     difficulty: "easy",
-    probLatex: `f(x) = ${fExpr}`,
+    probLatex: `y = ${fExpr}`,
     x0: x0,
-    targetSymbol: "f'",
+    y0: y0,
+    targetSymbol: "m_t",
+    customProbPrompt: customProbPrompt,
+    customAnsContent: customAnsContent,
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     tangentLatex: tangentEq,
-    promptText: `✍️ ทดลองคำนวณความชันเส้นสัมผัส $f'(${x0})$:`,
-    hintText: `หาความชัน $m = f'(${x0})$ โดยดิฟ $f(x)$ แล้วแทน $x = ${x0}$`,
+    promptText: `✍️ ทดลองคำนวณความชันของเส้นสัมผัส $m_t$ ที่จุด $x = ${x0}$:` ,
+    hintText: `หาความชัน $m_t = f'(${x0})$ โดยดิฟ $f(x)$ แล้วแทน $x = ${x0}$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
@@ -2190,7 +2209,9 @@ function genDerivMedQuotientRational() {
     <div class="solution-step">
       <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
       • กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$<br>
-      • $\\frac{d}{dx}[ax + b] = a$
+      • $\\frac{d}{dx}[x^n] = n x^{n-1}$<br>
+      • $\\frac{d}{dx}[c] = 0$<br>
+      • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
@@ -2363,7 +2384,8 @@ function genDerivMedInverseTrig() {
     <div class="solution-step">
       <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
       • $\\frac{d}{dx}[\\arctan(u)] = \\frac{1}{1+u^2} \\cdot \\frac{du}{dx}$<br>
-      • $\\frac{d}{dx}[kx] = k$
+      • $\\frac{d}{dx}[x^n] = n x^{n-1}$<br>
+      • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: ดำเนินการหาอนุพันธ์ตามกฎลูกโซ่</strong><br>
@@ -2991,7 +3013,8 @@ function genDerivTrigCscCot() {
       <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
       • $\\frac{d}{dx}[\\sin(u)] = \\cos(u) \\cdot \\frac{du}{dx}$<br>
       • $\\frac{d}{dx}[\\cos(u)] = -\\sin(u) \\cdot \\frac{du}{dx}$<br>
-      • $\\frac{d}{dx}[kx] = k$
+      • $\\frac{d}{dx}[x^n] = n x^{n-1}$<br>
+      • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์อย่างละเอียด</strong><br>
@@ -3042,13 +3065,15 @@ function genDerivGeneralExp() {
     <div class="solution-step">
       <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
       • $\\frac{d}{dx}[a^u] = a^u \\ln(a) \\cdot \\frac{du}{dx}$<br>
-      • $\\frac{d}{dx}[kx + b] = k$
+      • $\\frac{d}{dx}[x^n] = n x^{n-1}$<br>
+      • $\\frac{d}{dx}[c] = 0$<br>
+      • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: ดำเนินการหาอนุพันธ์ตามสูตรและกฎลูกโซ่</strong><br>
       ${adaptiveMath(
-        `f'(x) = \\frac{d}{dx}\\left[${base}^{${k}x + ${b}}\\right] = ${base}^{${k}x + ${b}} \\ln(${base}) \\cdot \\frac{d}{dx}(${k}x + ${b}) = ${k}\\ln(${base}) \\cdot ${base}^{${k}x + ${b}}`,
-        `f'(x) &= \\frac{d}{dx}\\left[${base}^{${k}x + ${b}}\\right] \\\\ &= ${base}^{${k}x + ${b}} \\ln(${base}) \\cdot \\frac{d}{dx}(${k}x + ${b}) \\\\ &= ${k}\\ln(${base}) \\cdot ${base}^{${k}x + ${b}}`
+        `f'(x) = \\frac{d}{dx}\\left[${base}^{${k}x + ${b}}\\right] = ${base}^{${k}x + ${b}} \\ln(${base}) \\cdot \\frac{d}{dx}(${k}x + ${b}) = ${base}^{${k}x + ${b}} \\ln(${base}) \\cdot (${k}) = ${derivExpr}`,
+        `f'(x) &= \\frac{d}{dx}\\left[${base}^{${k}x + ${b}}\\right] \\\\ &= ${base}^{${k}x + ${b}} \\ln(${base}) \\cdot \\frac{d}{dx}(${k}x + ${b}) \\\\ &= ${base}^{${k}x + ${b}} \\ln(${base}) \\cdot (${k}) \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
@@ -3347,14 +3372,15 @@ function genDerivTrigCotCscPure() {
     <div class="solution-step">
       <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
       • $\\frac{d}{dx}[\\cot(u)] = -\\csc^2(u) \\cdot \\frac{du}{dx}$<br>
-      • $\\frac{d}{dx}\\left[kx + \\frac{\\pi}{4}\\right] = k$<br>
+      • $\\frac{d}{dx}[x^n] = n x^{n-1}$<br>
+      • $\\frac{d}{dx}[c] = 0$<br>
       • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: ดำเนินการหาอนุพันธ์ตามสูตรและกฎลูกโซ่</strong><br>
       ${adaptiveMath(
-        `f'(x) = \\frac{d}{dx}\\left[${a}\\cot\\left(${k}x + \\frac{\\pi}{4}\\right)\\right] = ${a}\\left(-\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right)\\frac{d}{dx}\\left(${k}x + \\frac{\\pi}{4}\\right)\\right) = ${derivExpr}`,
-        `f'(x) &= \\frac{d}{dx}\\left[${a}\\cot\\left(${k}x + \\frac{\\pi}{4}\\right)\\right] \\\\ &= ${a}\\left(-\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right)\\frac{d}{dx}\\left(${k}x + \\frac{\\pi}{4}\\right)\\right) \\\\ &= ${derivExpr}`
+        `f'(x) = \\frac{d}{dx}\\left[${a}\\cot\\left(${k}x + \\frac{\\pi}{4}\\right)\\right] = ${a}\\left(-\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right)\\frac{d}{dx}\\left(${k}x + \\frac{\\pi}{4}\\right)\\right) = ${a}\\left(-\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right)(${k})\\right) = ${derivExpr}`,
+        `f'(x) &= \\frac{d}{dx}\\left[${a}\\cot\\left(${k}x + \\frac{\\pi}{4}\\right)\\right] \\\\ &= ${a}\\left(-\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right)\\frac{d}{dx}\\left(${k}x + \\frac{\\pi}{4}\\right)\\right) \\\\ &= ${a}\\left(-\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right)(${k})\\right) \\\\ &= ${derivExpr}`
       )}
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
@@ -3399,19 +3425,20 @@ function genDerivInverseTrigArcCosCot() {
       <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
       • $\\frac{d}{dx}[\\arccos(u)] = -\\frac{1}{\\sqrt{1 - u^2}} \\cdot \\frac{du}{dx}$<br>
       • $\\frac{d}{dx}[\\operatorname{arccot}(u)] = -\\frac{1}{1 + u^2} \\cdot \\frac{du}{dx}$<br>
-      • $\\frac{d}{dx}[kx] = k$
+      • $\\frac{d}{dx}[x^n] = n x^{n-1}$<br>
+      • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์อย่างละเอียด</strong><br>
       • <em>พิจารณาพจน์ที่ 1 (${a === 1 ? "" : a}\\arccos(${k}x)):</em>
       ${adaptiveMath(
-        `\\frac{d}{dx}\\left[${a === 1 ? "" : a}\\arccos(${k}x)\\right] = ${a === 1 ? "" : `${a}\\cdot `}\\left(-\\frac{1}{\\sqrt{1 - (${k}x)^2}}\\frac{d}{dx}[${k}x]\\right) = -\\frac{${a*k}}{\\sqrt{1 - ${k*k}x^2}}`,
-        `\\frac{d}{dx}\\left[${a === 1 ? "" : a}\\arccos(${k}x)\\right] &= ${a === 1 ? "" : `${a}\\cdot `}\\left(-\\frac{1}{\\sqrt{1 - (${k}x)^2}}\\frac{d}{dx}[${k}x]\\right) \\\\ &= -\\frac{${a*k}}{\\sqrt{1 - ${k*k}x^2}}`
+        `\\frac{d}{dx}\\left[${a === 1 ? "" : a}\\arccos(${k}x)\\right] = ${a === 1 ? "" : `${a}\\cdot `}\\left(-\\frac{1}{\\sqrt{1 - (${k}x)^2}}\\frac{d}{dx}[${k}x]\\right) = ${a === 1 ? "" : `${a}\\cdot `}\\left(-\\frac{1}{\\sqrt{1 - ${k*k}x^2}}(${k})\\right) = -\\frac{${a*k}}{\\sqrt{1 - ${k*k}x^2}}`,
+        `\\frac{d}{dx}\\left[${a === 1 ? "" : a}\\arccos(${k}x)\\right] &= ${a === 1 ? "" : `${a}\\cdot `}\\left(-\\frac{1}{\\sqrt{1 - (${k}x)^2}}\\frac{d}{dx}[${k}x]\\right) \\\\ &= ${a === 1 ? "" : `${a}\\cdot `}\\left(-\\frac{1}{\\sqrt{1 - ${k*k}x^2}}(${k})\\right) \\\\ &= -\\frac{${a*k}}{\\sqrt{1 - ${k*k}x^2}}`
       )}
       • <em>พิจารณาพจน์ที่ 2 (${b === 1 ? "" : b}\\operatorname{arccot}(${m === 1 ? "x" : `${m}x`})):</em>
       ${adaptiveMath(
-        `\\frac{d}{dx}\\left[${b === 1 ? "" : b}\\operatorname{arccot}(${m === 1 ? "x" : `${m}x`})\\right] = ${b === 1 ? "" : `${b}\\cdot `}\\left(-\\frac{1}{1 + (${m === 1 ? "x" : `${m}x`})^2}\\frac{d}{dx}[${m === 1 ? "x" : `${m}x`}]\\right) = -\\frac{${b*m}}{1 + ${m*m}x^2}`,
-        `\\frac{d}{dx}\\left[${b === 1 ? "" : b}\\operatorname{arccot}(${m === 1 ? "x" : `${m}x`})\\right] &= ${b === 1 ? "" : `${b}\\cdot `}\\left(-\\frac{1}{1 + (${m === 1 ? "x" : `${m}x`})^2}\\frac{d}{dx}[${m === 1 ? "x" : `${m}x`}]\\right) \\\\ &= -\\frac{${b*m}}{1 + ${m*m}x^2}`
+        `\\frac{d}{dx}\\left[${b === 1 ? "" : b}\\operatorname{arccot}(${m === 1 ? "x" : `${m}x`})\\right] = ${b === 1 ? "" : `${b}\\cdot `}\\left(-\\frac{1}{1 + (${m === 1 ? "x" : `${m}x`})^2}\\frac{d}{dx}[${m === 1 ? "x" : `${m}x`}]\\right) = ${b === 1 ? "" : `${b}\\cdot `}\\left(-\\frac{1}{1 + ${m*m}x^2}(${m})\\right) = -\\frac{${b*m}}{1 + ${m*m}x^2}`,
+        `\\frac{d}{dx}\\left[${b === 1 ? "" : b}\\operatorname{arccot}(${m === 1 ? "x" : `${m}x`})\\right] &= ${b === 1 ? "" : `${b}\\cdot `}\\left(-\\frac{1}{1 + (${m === 1 ? "x" : `${m}x`})^2}\\frac{d}{dx}[${m === 1 ? "x" : `${m}x`}]\\right) \\\\ &= ${b === 1 ? "" : `${b}\\cdot `}\\left(-\\frac{1}{1 + ${m*m}x^2}(${m})\\right) \\\\ &= -\\frac{${b*m}}{1 + ${m*m}x^2}`
       )}
     </div>
     <div class="solution-step">
@@ -3454,7 +3481,8 @@ function genDerivInverseTrigArcSecCsc() {
     <div class="solution-step">
       <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
       • $\\frac{d}{dx}[\\operatorname{arcsec}(u)] = \\frac{1}{|u|\\sqrt{u^2 - 1}} \\cdot \\frac{du}{dx}$<br>
-      • $\\frac{d}{dx}[kx] = k$
+      • $\\frac{d}{dx}[x^n] = n x^{n-1}$<br>
+      • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: ดำเนินการหาอนุพันธ์ตามสูตรและกฎลูกโซ่</strong><br>
@@ -3615,7 +3643,8 @@ function genDerivMixedNestedTrig() {
       <strong>ขั้นที่ 1: สูตรที่ต้องใช้ในการหาอนุพันธ์</strong><br>
       • $\\frac{d}{dx}[\\tan(u)] = \\sec^2(u) \\cdot \\frac{du}{dx}$<br>
       • $\\frac{d}{dx}[\\arcsin(u)] = \\frac{1}{\\sqrt{1 - u^2}} \\cdot \\frac{du}{dx}$<br>
-      • $\\frac{d}{dx}[kx] = k$
+      • $\\frac{d}{dx}[x^n] = n x^{n-1}$<br>
+      • $\\frac{d}{dx}[c \\cdot g(x)] = c \\frac{d}{dx}[g(x)]$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: ดำเนินการหาอนุพันธ์ตามกฎลูกโซ่จากชั้นนอกสู่ชั้นใน</strong><br>
