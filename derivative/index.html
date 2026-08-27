@@ -524,8 +524,9 @@ function genEasyPoly() {
       <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์</strong><br>
       ${adaptiveMath(
         `f'(x) = \\frac{d}{dx}\\left(${fExpr}\\right) = ${derivExpr}`,
-        `f'(x) &= \\frac{d}{dx}\\left(${fExpr}\\right) \\\\ &= ${3*a}x^2 ${2*b >= 0 ? `+ ${2*b}` : `- ${Math.abs(2*b)}`}x ${c >= 0 ? `+ ${c}` : `- ${Math.abs(c)}`} \\\\ &= ${derivExpr}`
+        `f'(x) &= \\frac{d}{dx}\\left(${fExpr}\\right) \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
@@ -562,14 +563,24 @@ function genEasyTrig() {
       <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันไซน์ร่วมกับกฎลูกโซ่ $\\frac{d}{dx}[\\sin(u)] = \\cos(u) \\cdot \\frac{du}{dx}$</strong>
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: กำหนด $u = ${k}x \\implies \\frac{du}{dx} = ${k}$</strong><br>
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
+      กำหนดให้ $u = ${k}x$ จะได้ว่า
+      ${adaptiveMath(
+        `u' = \\frac{d}{dx}(${k}x) = ${k}`,
+        `u' &= \\frac{d}{dx}(${k}x) \\\\ &= ${k}`
+      )}
+      ดังนั้น $$u' = ${k}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
       ${adaptiveMath(
         `f'(x) = ${a} \\cdot \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) = ${a} \\cdot \\cos(${k}x) \\cdot ${k} = ${derivExpr}`,
         `f'(x) &= ${a} \\cdot \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) \\\\ &= ${a} \\cdot \\cos(${k}x) \\cdot ${k} \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
       $$f'(${x0}) = ${a*k}\\cos(0) = ${a*k}(1) = ${slopeVal}$$
     </div>
   `;
@@ -601,17 +612,27 @@ function genEasyExp() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: ใช้สูตร $\\frac{d}{dx}[e^{kx}] = k e^{kx}$</strong>
+      <strong>ขั้นที่ 1: ใช้สูตร $\\frac{d}{dx}[e^u] = e^u \\cdot \\frac{du}{dx}$</strong>
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์</strong><br>
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของพจน์เอกซ์โพเนนเชียล</strong><br>
+      กำหนดให้ $u = ${k}x$ จะได้ว่า
+      ${adaptiveMath(
+        `\\frac{d}{dx}\\left[e^{${k}x}\\right] = e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) = e^{${k}x} \\cdot ${k} = ${k}e^{${k}x}`,
+        `\\frac{d}{dx}\\left[e^{${k}x}\\right] &= e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= e^{${k}x} \\cdot ${k} \\\\ &= ${k}e^{${k}x}`
+      )}
+      ดังนั้น $$\\frac{d}{dx}\\left[e^{${k}x}\\right] = ${k}e^{${k}x}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: รวมพจน์ทั้งหมดเพื่อหา $f'(x)$</strong><br>
       ${adaptiveMath(
         `f'(x) = ${a === 1 ? "" : `${a} \\cdot `}${k}e^{${k}x} ${b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`} = ${derivExpr}`,
-        `f'(x) &= \\frac{d}{dx}[${a === 1 ? "" : a}e^{${k}x}] + \\frac{d}{dx}[${b}x] \\\\ &= ${a*k}e^{${k}x} ${b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`}`
+        `f'(x) &= \\frac{d}{dx}[${a === 1 ? "" : a}e^{${k}x}] + \\frac{d}{dx}[${b}x] \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
       $$f'(${x0}) = ${a*k}e^0 + (${b}) = ${a*k}(1) + (${b}) = ${slopeVal}$$
     </div>
   `;
@@ -665,7 +686,9 @@ function genEasyTangent() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: สร้างสมการเส้นสัมผัส $y - y_0 = m(x - x_0)$</strong><br>
-      $$\\displaystyle y - (${y0}) = ${slopeVal}(x - (${x0})) \\implies ${tangentEq}$$
+      จะได้ว่า
+      $$\\displaystyle y - (${y0}) = ${slopeVal}(x - (${x0}))$$
+      ดังนั้นสมการเส้นสัมผัสคือ $$\\displaystyle ${tangentEq}$$
     </div>
   `;
 
@@ -705,17 +728,26 @@ function genMedProductExp() {
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
       กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-      ${adaptiveMath(`u' = \\frac{d}{dx}(${uExpr}) = ${a}`, `u' &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${a}`)}
+      ${adaptiveMath(
+        `u' = \\frac{d}{dx}(${uExpr}) = ${a}`,
+        `u' &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${a}`
+      )}
+      ดังนั้น $$u' = ${a}$$
       <br>
       กำหนดให้ $v = e^{${k}x}$ จะได้ว่า
-      ${adaptiveMath(`v' = \\frac{d}{dx}[e^{${k}x}] = ${k}e^{${k}x}`, `v' &= \\frac{d}{dx}[e^{${k}x}] \\\\ &= ${k}e^{${k}x}`)}
+      ${adaptiveMath(
+        `v' = \\frac{d}{dx}\\left[e^{${k}x}\\right] = e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) = e^{${k}x} \\cdot ${k} = ${k}e^{${k}x}`,
+        `v' &= \\frac{d}{dx}\\left[e^{${k}x}\\right] \\\\ &= e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= e^{${k}x} \\cdot ${k} \\\\ &= ${k}e^{${k}x}`
+      )}
+      ดังนั้น $$v' = ${k}e^{${k}x}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณและดึงตัวร่วม $e^{${k}x}$</strong><br>
       ${adaptiveMath(
-        `f'(x) = (${a})e^{${k}x} + (${uExpr})(${k}e^{${k}x}) = ${derivExpr}`,
+        `f'(x) = (${a})e^{${k}x} + (${uExpr})(${k}e^{${k}x}) = \\left[${a} + ${k}(${uExpr})\\right]e^{${k}x} = ${derivExpr}`,
         `f'(x) &= (${a})e^{${k}x} + (${uExpr})(${k}e^{${k}x}) \\\\ &= \\left[${a} + ${k}(${uExpr})\\right]e^{${k}x} \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
@@ -758,16 +790,28 @@ function genMedQuotientRational() {
       <strong>ขั้นที่ 1: ใช้กฎผลหาร $\\left(\\frac{u}{v}\\right)' = \\frac{u'v - uv'}{v^2}$</strong>
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์</strong><br>
-      ให้ $u = ${a === 1 ? "x" : `${a}x`} + ${b} \\implies u' = ${a}$<br>
-      ให้ $v = ${c === 1 ? "x" : `${c}x`} + ${d} \\implies v' = ${c}$
+      <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
+      กำหนดให้ $u = ${a === 1 ? "x" : `${a}x`} + ${b}$ จะได้ว่า
+      ${adaptiveMath(
+        `u' = \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) = ${a}`,
+        `u' &= \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) \\\\ &= ${a}`
+      )}
+      ดังนั้น $$u' = ${a}$$
+      <br>
+      กำหนดให้ $v = ${c === 1 ? "x" : `${c}x`} + ${d}$ จะได้ว่า
+      ${adaptiveMath(
+        `v' = \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) = ${c}`,
+        `v' &= \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) \\\\ &= ${c}`
+      )}
+      ดังนั้น $$v' = ${c}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนค่าและกระจายพจน์ตัวเศษ</strong><br>
       ${adaptiveMath(
-        `f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
+        `f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
         `f'(x) &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
@@ -811,16 +855,21 @@ function genMedChainRadical() {
       <strong>ขั้นที่ 1: แปลงรูปกรณฑ์เป็นเลขยกกำลังตรรกยะ $f(x) = (${uExpr})^{1/2}$</strong>
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: ใช้กฎลูกโซ่ $\\frac{d}{dx}[u^n] = n u^{n-1} \\cdot \\frac{du}{dx}$</strong><br>
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
       กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-      ${adaptiveMath(`\\frac{du}{dx} = \\frac{d}{dx}(${uExpr}) = ${uPrime}`, `\\frac{du}{dx} &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${uPrime}`)}
+      ${adaptiveMath(
+        `\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`,
+        `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`
+      )}
+      ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่าในสูตรและจัดรูป</strong><br>
+      <strong>ขั้นที่ 3: ใช้กฎลูกโซ่ $\\frac{d}{dx}[u^n] = n u^{n-1} \\cdot \\frac{du}{dx}$ แทนค่าและจัดรูป</strong><br>
       ${adaptiveMath(
-        `f'(x) = \\frac{1}{2}(${uExpr})^{-1/2} \\cdot (${uPrime}) = ${derivExpr}`,
+        `f'(x) = \\frac{1}{2}(${uExpr})^{-1/2} \\cdot (${uPrime}) = \\frac{1}{2\\sqrt{${uExpr}}} \\cdot (${uPrime}) = ${derivExpr}`,
         `f'(x) &= \\frac{1}{2}(${uExpr})^{-1/2} \\cdot \\frac{d}{dx}(${uExpr}) \\\\ &= \\frac{1}{2\\sqrt{${uExpr}}} \\cdot (${uPrime}) \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
@@ -863,8 +912,13 @@ function genMedChainLog() {
       <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันลอการิทึม $\\frac{d}{dx}[\\ln(u)] = \\frac{1}{u} \\cdot \\frac{du}{dx}$</strong>
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: กำหนด $u = ${uExpr}$ แล้วหา $\\frac{du}{dx}$</strong><br>
-      ${adaptiveMath(`\\frac{du}{dx} = \\frac{d}{dx}(${uExpr}) = ${uPrime}`, `\\frac{du}{dx} &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${uPrime}`)}
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
+      กำหนดให้ $u = ${uExpr}$ จะได้ว่า
+      ${adaptiveMath(
+        `\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`,
+        `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`
+      )}
+      ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
@@ -872,6 +926,7 @@ function genMedChainLog() {
         `f'(x) = \\frac{1}{${uExpr}} \\cdot (${uPrime}) = ${derivExpr}`,
         `f'(x) &= \\frac{1}{${uExpr}} \\cdot \\frac{d}{dx}(${uExpr}) \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
@@ -907,14 +962,24 @@ function genMedInverseTrig() {
       <strong>ขั้นที่ 1: ใช้สูตรอนุพันธ์ของฟังก์ชันอาร์กแทนเจนต์ $\\frac{d}{dx}[\\arctan(u)] = \\frac{1}{1+u^2} \\cdot \\frac{du}{dx}$</strong>
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: กำหนด $u = ${k}x \\implies \\frac{du}{dx} = ${k}$</strong><br>
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
+      กำหนดให้ $u = ${k}x$ จะได้ว่า
+      ${adaptiveMath(
+        `\\frac{du}{dx} = \\frac{d}{dx}(${k}x) = ${k}`,
+        `\\frac{du}{dx} &= \\frac{d}{dx}(${k}x) \\\\ &= ${k}`
+      )}
+      ดังนั้น $$\\frac{du}{dx} = ${k}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
       ${adaptiveMath(
         `f'(x) = \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) = \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} = ${derivExpr}`,
         `f'(x) &= \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: คำนวณค่า $f'(${x0})$</strong><br>
+      <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
       $$f'(${x0}) = \\frac{${k}}{1 + 0} = ${slopeVal}$$
     </div>
   `;
@@ -950,10 +1015,12 @@ function genHardLogDiff() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์เทียบกับ $x$ ทั้งสองข้างโดยใช้กฎลูกโซ่และกฎผลคูณ</strong><br>
+      จะได้ว่า
       ${adaptiveMath(
         `\\frac{d}{dx}[\\ln y] = \\frac{d}{dx}[${k}x \\ln x] \\implies \\frac{1}{y}\\frac{dy}{dx} = ${k}\\ln x + ${k}x\\left(\\frac{1}{x}\\right) = ${k}(\\ln x + 1)`,
         `\\frac{1}{y}\\frac{dy}{dx} &= \\frac{d}{dx}[${k}x \\ln x] \\\\ &= ${k}\\ln x + ${k}x \\cdot \\frac{1}{x} \\\\ &= ${k}(\\ln x + 1)`
       )}
+      ดังนั้น $$\\frac{1}{y}\\frac{dy}{dx} = ${k}(\\ln x + 1)$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: คูณ $y$ กลับทั้งสองข้างเพื่อหา $f'(x)$</strong><br>
@@ -961,6 +1028,7 @@ function genHardLogDiff() {
         `f'(x) = y \\cdot ${k}(\\ln x + 1) = ${derivExpr}`,
         `f'(x) &= y \\cdot ${k}(\\ln x + 1) \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$ ที่จุด $x = ${x0}$</strong><br>
@@ -997,8 +1065,19 @@ function genHardDamped() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
-      กำหนดให้ $u = e^{-${a === 1 ? "" : a}x} \\implies u' = -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}$<br>
-      กำหนดให้ $v = \\sin(${b}x) \\implies v' = ${b}\\cos(${b}x)$
+      กำหนดให้ $u = e^{-${a === 1 ? "" : a}x}$ จะได้ว่า
+      ${adaptiveMath(
+        `u' = \\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x}\\right] = e^{-${a === 1 ? "" : a}x} \\cdot \\frac{d}{dx}(-${a === 1 ? "" : a}x) = e^{-${a === 1 ? "" : a}x} \\cdot (-${a}) = -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}`,
+        `u' &= \\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x}\\right] \\\\ &= e^{-${a === 1 ? "" : a}x} \\cdot \\frac{d}{dx}(-${a === 1 ? "" : a}x) \\\\ &= e^{-${a === 1 ? "" : a}x} \\cdot (-${a}) \\\\ &= -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}`
+      )}
+      ดังนั้น $$u' = -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}$$
+      <br>
+      กำหนดให้ $v = \\sin(${b}x)$ จะได้ว่า
+      ${adaptiveMath(
+        `v' = \\frac{d}{dx}[\\sin(${b}x)] = \\cos(${b}x) \\cdot \\frac{d}{dx}(${b}x) = \\cos(${b}x) \\cdot ${b} = ${b}\\cos(${b}x)`,
+        `v' &= \\frac{d}{dx}[\\sin(${b}x)] \\\\ &= \\cos(${b}x) \\cdot \\frac{d}{dx}(${b}x) \\\\ &= \\cos(${b}x) \\cdot ${b} \\\\ &= ${b}\\cos(${b}x)`
+      )}
+      ดังนั้น $$v' = ${b}\\cos(${b}x)$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณและดึงตัวร่วม $e^{-${a === 1 ? "" : a}x}$</strong><br>
@@ -1006,6 +1085,7 @@ function genHardDamped() {
         `f'(x) = (-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x})\\sin(${b}x) + (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) = ${derivExpr}`,
         `f'(x) &= (-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x})\\sin(${b}x) + (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
@@ -1037,21 +1117,25 @@ function genHardInverseTrigCancellation() {
 
   let solText = `
     <div class="solution-step">
-      <strong>ขั้นที่ 1: แยกหาอนุพันธ์ทีละพจน์ $f(x) = x\\arcsin(${k}x) + \\sqrt{1 - ${k*k}x^2}$</strong>
+      <strong>ขั้นที่ 1: แยกหาอนุพันธ์ทีละพจน์ $f(x) = \\underbrace{x\\arcsin(${k}x)}_{\\text{พจน์ที่ 1}} + \\underbrace{\\sqrt{1 - ${k*k}x^2}}_{\\text{พจน์ที่ 2}}$</strong>
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์พจน์ที่ 1 โดยใช้กฎผลคูณ</strong><br>
+      กำหนดให้ $u = x$ และ $v = \\arcsin(${k}x)$ จะได้ว่า
       ${adaptiveMath(
-        `\\frac{d}{dx}[x\\arcsin(${k}x)] = \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`,
+        `\\frac{d}{dx}[x\\arcsin(${k}x)] = (1)\\arcsin(${k}x) + x \\cdot \\frac{${k}}{\\sqrt{1-${k*k}x^2}} = \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`,
         `\\frac{d}{dx}[x\\arcsin(${k}x)] &= (1)\\arcsin(${k}x) + x \\cdot \\frac{${k}}{\\sqrt{1-${k*k}x^2}} \\\\ &= \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`
       )}
+      ดังนั้น $$\\frac{d}{dx}[x\\arcsin(${k}x)] = \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: หาอนุพันธ์พจน์ที่ 2 โดยใช้กฎลูกโซ่</strong><br>
+      กำหนดให้ $w = 1 - ${k*k}x^2$ จะได้ว่า
       ${adaptiveMath(
-        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] = \\frac{-2(${k*k})x}{2\\sqrt{1-${k*k}x^2}} = -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`,
-        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] &= \\frac{1}{2\\sqrt{1-${k*k}x^2}} \\cdot (-${2*k*k}x) \\\\ &= -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`
+        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] = \\frac{1}{2\\sqrt{1-${k*k}x^2}} \\cdot \\frac{d}{dx}(1-${k*k}x^2) = \\frac{-2(${k*k})x}{2\\sqrt{1-${k*k}x^2}} = -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`,
+        `\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] &= \\frac{1}{2\\sqrt{1-${k*k}x^2}} \\cdot \\frac{d}{dx}(1-${k*k}x^2) \\\\ &= \\frac{-${2*k*k}x}{2\\sqrt{1-${k*k}x^2}} \\\\ &= -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}`
       )}
+      ดังนั้น $$\\frac{d}{dx}\\left[\\sqrt{1-${k*k}x^2}\\right] = -\\frac{${k}x}{\\sqrt{1-${k*k}x^2}}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: รวมทั้งสองพจน์เข้าด้วยกัน (พจน์เศษส่วนจะหักล้างกันพอดี)</strong><br>
@@ -1059,6 +1143,7 @@ function genHardInverseTrigCancellation() {
         `f'(x) = \\left(\\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}}\\right) - \\frac{${k}x}{\\sqrt{1-${k*k}x^2}} = ${derivExpr}`,
         `f'(x) &= \\arcsin(${k}x) + \\frac{${k}x}{\\sqrt{1-${k*k}x^2}} - \\frac{${k}x}{\\sqrt{1-${k*k}x^2}} \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 5: คำนวณค่า $f'(${x0})$</strong><br>
@@ -1104,17 +1189,20 @@ function genHardArctanRational() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: กำหนด $u = ${uExpr}$ แล้วหา $\\frac{du}{dx}$ ด้วยกฎผลหาร</strong><br>
+      จะได้ว่า
       ${adaptiveMath(
         `\\frac{du}{dx} = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2}`,
         `\\frac{du}{dx} &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2}`
       )}
+      ดังนั้น $$\\frac{du}{dx} = \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนค่าในสูตรและจัดรูปเศษส่วนซ้อน</strong><br>
       ${adaptiveMath(
         `f'(x) = \\frac{1}{1 + \\left(${uExpr}\\right)^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
-        `f'(x) &= \\frac{1}{1 + \\left(${uExpr}\\right)^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
+        `f'(x) &= \\frac{1}{1 + \\left(${uExpr}\\right)^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= \\frac{(${c === 1 ? "x" : `${c}x`} + ${d})^2}{(${c === 1 ? "x" : `${c}x`} + ${d})^2 + (${a === 1 ? "x" : `${a}x`} + ${b})^2} \\cdot \\frac{${det}}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
       )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
@@ -1159,14 +1247,23 @@ function genHardLogNestedRadical() {
       $$f(x) = \\frac{1}{2}\\left[\\ln(${a === 1 ? "x" : `${a}x`} + ${b}) - \\ln(${c === 1 ? "x" : `${c}x`} + ${d})\\right]$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์ได้อย่างง่ายดาย</strong><br>
+      <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์</strong><br>
+      จะได้ว่า
       ${adaptiveMath(
-        `f'(x) = \\frac{1}{2}\\left[\\frac{${a}}{${a === 1 ? "x" : `${a}x`} + ${b}} - \\frac{${c}}{${c === 1 ? "x" : `${c}x`} + ${d}}\\right] = ${derivExpr}`,
-        `f'(x) &= \\frac{1}{2}\\left[\\frac{${a}}{${a === 1 ? "x" : `${a}x`} + ${b}} - \\frac{${c}}{${c === 1 ? "x" : `${c}x`} + ${d}}\\right] \\\\ &= ${derivExpr}`
+        `f'(x) = \\frac{1}{2}\\left[\\frac{${a}}{${a === 1 ? "x" : `${a}x`} + ${b}} - \\frac{${c}}{${c === 1 ? "x" : `${c}x`} + ${d}}\\right]`,
+        `f'(x) &= \\frac{1}{2}\\left[\\frac{${a}}{${a === 1 ? "x" : `${a}x`} + ${b}} - \\frac{${c}}{${c === 1 ? "x" : `${c}x`} + ${d}}\\right]`
       )}
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$</strong><br>
+      <strong>ขั้นที่ 3: ทำส่วนให้เท่ากันและรวมพจน์</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{${a}(${c === 1 ? "x" : `${c}x`} + ${d}) - ${c}(${a === 1 ? "x" : `${a}x`} + ${b})}{2(${a === 1 ? "x" : `${a}x`} + ${b})(${c === 1 ? "x" : `${c}x`} + ${d})} = ${derivExpr}`,
+        `f'(x) &= \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{2(${a === 1 ? "x" : `${a}x`} + ${b})(${c === 1 ? "x" : `${c}x`} + ${d})} \\\\ &= ${derivExpr}`
+      )}
+      ดังนั้น $$f'(x) = ${derivExpr}$$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
       $$f'(${x0}) = \\frac{${det}}{2(${b})(${d})} = \\frac{${det}}{${denAns}} = ${slopeValLatex}$$
     </div>
   `;
@@ -1202,17 +1299,21 @@ function genHardSecondDerivative() {
   let solText = `
     <div class="solution-step">
       <strong>ขั้นที่ 1: หาอนุพันธ์อันดับหนึ่ง $f'(x)$ โดยใช้กฎผลคูณ</strong><br>
+      กำหนดให้ $u = ${uExpr}$ และ $v = e^{-${k === 1 ? "" : k}x}$ จะได้ว่า
       ${adaptiveMath(
-        `f'(x) = (${2*a}x + ${b})e^{-${k === 1 ? "" : k}x} + (${uExpr})(-${k}e^{-${k === 1 ? "" : k}x}) = ${deriv1Expr}`,
-        `f'(x) &= (${2*a}x + ${b})e^{-${k === 1 ? "" : k}x} + (${uExpr})(-${k}e^{-${k === 1 ? "" : k}x}) \\\\ &= ${deriv1Expr}`
+        `f'(x) = (${2*a}x + ${b})e^{-${k === 1 ? "" : k}x} + (${uExpr})(-${k}e^{-${k === 1 ? "" : k}x}) = \\left[(${2*a}x + ${b}) - ${k}(${uExpr})\\right]e^{-${k === 1 ? "" : k}x} = ${deriv1Expr}`,
+        `f'(x) &= (${2*a}x + ${b})e^{-${k === 1 ? "" : k}x} + (${uExpr})(-${k}e^{-${k === 1 ? "" : k}x}) \\\\ &= \\left[(${2*a}x + ${b}) - ${k}(${uExpr})\\right]e^{-${k === 1 ? "" : k}x} \\\\ &= ${deriv1Expr}`
       )}
+      ดังนั้น $$f'(x) = ${deriv1Expr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์อันดับสอง $f''(x) = \\frac{d}{dx}[f'(x)]$ โดยใช้กฎผลคูณอีกครั้ง</strong><br>
+      จะได้ว่า
       ${adaptiveMath(
         `f''(x) = \\frac{d}{dx}\\left[(-${k*a}x^2 + ${2*a-k*b}x + ${b})e^{-${k === 1 ? "" : k}x}\\right] = ${deriv2Expr}`,
         `f''(x) &= (-${2*k*a}x + ${2*a-k*b})e^{-${k === 1 ? "" : k}x} + (-${k*a}x^2 + ${2*a-k*b}x + ${b})(-${k}e^{-${k === 1 ? "" : k}x}) \\\\ &= ${deriv2Expr}`
       )}
+      ดังนั้น $$f''(x) = ${deriv2Expr}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนค่า $x = ${x0}$ เพื่อหาค่าอนุพันธ์อันดับสอง $f''(${x0})$</strong><br>
