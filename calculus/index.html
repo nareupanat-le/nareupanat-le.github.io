@@ -525,7 +525,7 @@
 </header>
 
 <main>
-  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.21:31</span></h3>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.21:46</span></h3>
   <p class="byline">คลังโจทย์แคลคูลัส 1 พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
@@ -629,7 +629,7 @@
   </div>
 
   <footer style="text-align: center; margin-top: 28px; margin-bottom: 16px; font-size: 0.85rem; color: var(--muted);">
-    Calculus 1 Practice Hub • v.2026.08.27.21:31
+    Calculus 1 Practice Hub • v.2026.08.27.21:46
   </footer>
 </main>
 
@@ -4266,9 +4266,9 @@ function genDerivWbSecExp() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 5: แทนค่า $x = 1$</strong><br>
-      เนื่องจากที่ $x=1$ จะได้ $$ ${a}(1)^2 - ${a}(1) = 0 $$ และ $$ ${b}(1)^2 - ${b}(1) = 0 $$
-      ดังนั้น $e^0 = 1$, $\\sec(0) = 1$, และ $\\tan(0) = 0$<br>
-      $$f'(1) = 1(1)(0)(${b}) + 1(1)(${a}) = 0 + ${a} = ${slopeVal}$$
+      $$f'(1) = e^{${a}(1)^2 - ${a}(1)}(${2*a}(1) - ${a})\\sec(${b}(1)^2 - ${b}(1)) + e^{${a}(1)^2 - ${a}(1)}\\sec(${b}(1)^2 - ${b}(1))\\tan(${b}(1)^2 - ${b}(1))(${2*b}(1) - ${b})$$
+      $$= e^{0}(${a})\\sec(0) + e^{0}\\sec(0)\\tan(0)(${b})$$
+      $$= (1)(${a})(1) + (1)(1)(0)(${b}) = ${a} + 0 = ${slopeVal}$$
     </div>
   `;
 
@@ -4330,8 +4330,8 @@ function genDerivWbProductExpPoly() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 5: แทนค่า $x = 1$</strong><br>
-      ที่ $x=1$ จะได้กำลังของ $e$ เป็น $$ ${b}(1)^2 - ${b} = 0 $$ ทำให้ $e^0 = 1$<br>
-      $$f'(1) = ${a}(1)^2 (1) (3 + ${2*b}(1)^2) = ${a}(3 + ${2*b}) = ${slopeVal}$$
+      $$f'(1) = ${a}(1)^2 e^{${b}(1)^2 - ${b}}(3 + ${2*b}(1)^2)$$
+      $$= ${a}(1)e^{0}(3 + ${2*b}) = ${a}(1)(1)(${3+2*b}) = ${slopeVal}$$
     </div>
   `;
 
@@ -4395,8 +4395,8 @@ function genDerivWbLogCos() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 5: แทนค่า $x = 0$</strong><br>
-      ที่ $x=0$ จะได้ $e^0 = 1$, $\\sin(0) = 0$<br>
-      $$f'(0) = \\frac{0 + ${b}}{1 + 0} + 0 = ${slopeVal}$$
+      $$f'(0) = \\frac{${2*a}(0) e^{${a}(0)^2} + ${b}}{e^{${a}(0)^2} + ${b}(0)} + \\sin(${c}(0)^3)(${3*c}(0)^2)$$
+      $$= \\frac{0 + ${b}}{e^{0} + 0} + \\sin(0)(0) = \\frac{${b}}{1} + 0 = ${slopeVal}$$
     </div>
   `;
 
@@ -4459,7 +4459,8 @@ function genDerivWbArctanLog() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 5: แทนค่า $x = 0$</strong><br>
-      $$f'(0) = \\frac{${a*b}}{1 + 0} - \\frac{0}{0 + 1} = ${slopeVal} - 0 = ${slopeVal}$$
+      $$f'(0) = \\frac{${a}(${b})}{1 + ${b*b}(0)^2} - \\frac{${2*c}(0)}{${c}(0)^2 + 1}$$
+      $$= \\frac{${a*b}}{1 + 0} - \\frac{0}{0 + 1} = ${slopeVal} - 0 = ${slopeVal}$$
     </div>
   `;
 
@@ -4505,22 +4506,34 @@ function genDerivWbExpSinRadical() {
       \\end{align*}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์</strong><br>
-      ให้ $u = ${a}e^{-${b}x} + ${c}\\sin(${d}x)$ และ $v = \\sqrt{4 - x^2}$<br>
-      $u' = -${a*b}e^{-${b}x} + ${c*d}\\cos(${d}x)$<br>
-      $v' = \\frac{-2x}{2\\sqrt{4-x^2}} = \\frac{-x}{\\sqrt{4-x^2}}$
+      <strong>ขั้นที่ 2: ใช้กฎผลหารและกฎลูกโซ่</strong>
+      ${adaptiveMath(
+        `f'(x) = \\frac{\\sqrt{4 - x^2} \\frac{d}{dx}[${a}e^{-${b}x} + ${c}\\sin(${d}x)] - (${a}e^{-${b}x} + ${c}\\sin(${d}x)) \\frac{d}{dx}[\\sqrt{4 - x^2}]}{(\\sqrt{4 - x^2})^2}`,
+        `f'(x) &= \\frac{\\sqrt{4 - x^2} \\frac{d}{dx}[${a}e^{-${b}x} + ${c}\\sin(${d}x)]}{(\\sqrt{4 - x^2})^2} \\\\ &\\quad - \\frac{(${a}e^{-${b}x} + ${c}\\sin(${d}x)) \\frac{d}{dx}[\\sqrt{4 - x^2}]}{(\\sqrt{4 - x^2})^2}`
+      )}
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 3: แทนค่า $x = 0$ ลงใน $u, u', v, v'$ ทันที</strong><br>
-      การแทนค่าลงไปเลยจะทำให้คิดเลขง่ายกว่าจัดรูปผลหารทั้งหมด<br>
-      $u(0) = ${a}(1) + ${c}(0) = ${a}$<br>
-      $u'(0) = -${a*b}(1) + ${c*d}(1) = ${-a*b + c*d}$<br>
-      $v(0) = \\sqrt{4 - 0} = 2$<br>
-      $v'(0) = \\frac{0}{2} = 0$
+      <strong>ขั้นที่ 3: หาอนุพันธ์ของแต่ละส่วน</strong>
+      $$\\begin{align*}
+        \\frac{d}{dx}[${a}e^{-${b}x} + ${c}\\sin(${d}x)] &= -${a*b}e^{-${b}x} + ${c*d}\\cos(${d}x) \\\\
+        \\frac{d}{dx}[\\sqrt{4 - x^2}] &= \\frac{1}{2\\sqrt{4-x^2}}(-2x) = \\frac{-x}{\\sqrt{4-x^2}}
+      \\end{align*}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: คำนวณอนุพันธ์ที่จุด $x=0$ จากกฎผลหาร</strong><br>
-      $$f'(0) = \\frac{v(0)u'(0) - u(0)v'(0)}{[v(0)]^2} = \\frac{(2)(${numVal}) - (${a})(0)}{2^2} = \\frac{${2*numVal}}{4} = ${slopeValLatex}$$
+      <strong>ขั้นที่ 4: นำมาประกอบกัน</strong><br>
+      ${adaptiveMath(
+        `f'(x) = \\frac{\\sqrt{4 - x^2} (-${a*b}e^{-${b}x} + ${c*d}\\cos(${d}x)) - (${a}e^{-${b}x} + ${c}\\sin(${d}x)) \\left(\\frac{-x}{\\sqrt{4-x^2}}\\right)}{4 - x^2}`,
+        `f'(x) &= \\frac{\\sqrt{4 - x^2} (-${a*b}e^{-${b}x} + ${c*d}\\cos(${d}x))}{4 - x^2} \\\\ &\\quad - \\frac{(${a}e^{-${b}x} + ${c}\\sin(${d}x)) \\left(\\frac{-x}{\\sqrt{4-x^2}}\\right)}{4 - x^2}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 5: แทนค่า $x = 0$</strong><br>
+      ${adaptiveMath(
+        `f'(0) = \\frac{\\sqrt{4 - (0)^2} (-${a*b}e^{0} + ${c*d}\\cos(0)) - (${a}e^{0} + ${c}\\sin(0)) \\left(\\frac{-0}{\\sqrt{4-(0)^2}}\\right)}{4 - (0)^2}`,
+        `f'(0) &= \\frac{\\sqrt{4 - (0)^2} (-${a*b}e^{0} + ${c*d}\\cos(0))}{4 - (0)^2} \\\\ &\\quad - \\frac{(${a}e^{0} + ${c}\\sin(0)) \\left(\\frac{-0}{\\sqrt{4-(0)^2}}\\right)}{4 - (0)^2}`
+      )}
+      $$= \\frac{2(-${a*b}(1) + ${c*d}(1)) - (${a}(1) + 0)(0)}{4}$$
+      $$= \\frac{${2*numVal} - 0}{4} = ${slopeValLatex}$$
     </div>
   `;
 
