@@ -144,7 +144,7 @@ function generateProblem() {
         let probLatex = `\\lim_{x \\to ${a}} \\frac{${numExp}}{${denExp}}`;
 
         currentProb = {
-            prob: `$${probLatex}$`,
+            prob: `${instruction}<br>${displayEquation}`,
             ans: `$${finalVal}$`,
             sol: `<b>วิธีทำอย่างละเอียด:</b><br>` +
                  `1. แทนค่า $x = ${a}$ จะพบว่าอยู่ในรูปแบบ $\\frac{0}{0}$<br>` +
