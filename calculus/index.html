@@ -2193,31 +2193,27 @@ function genDerivMedProductExp() {
       \\end{align*}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: ใช้กฎผลคูณของการหาอนุพันธ์ (หน้า ดิฟหลัง $+$ หลัง ดิฟหน้า)</strong>
-      ${adaptiveMath(
-        `f'(x) = \\frac{d}{dx}\\left[(${uExpr})e^{${k}x}\\right] = (${uExpr})\\frac{d}{dx}\\left[e^{${k}x}\\right] + e^{${k}x}\\frac{d}{dx}\\left[${uExpr}\\right]`,
-        `f'(x) &= \\frac{d}{dx}\\left[(${uExpr})e^{${k}x}\\right] \\\\ &= (${uExpr})\\frac{d}{dx}\\left[e^{${k}x}\\right] + e^{${k}x}\\frac{d}{dx}\\left[${uExpr}\\right]`
-      )}
-    </div>
-    <div class="solution-step">
-      <strong>ขั้นที่ 3: หาอนุพันธ์ของแต่ละตัวประกอบแยกกัน</strong>
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของ $f$ จะได้</strong>
       $$\\begin{align*}
-        \\frac{d}{dx}\\left[e^{${k}x}\\right] &= e^{${k}x}\\frac{d}{dx}(${k}x) = e^{${k}x} \\cdot ${k}\\frac{dx}{dx} = e^{${k}x} \\cdot ${k}(1) = ${k}e^{${k}x} \\\\
-        \\frac{d}{dx}[${uExpr}] &= ${a}\\frac{dx}{dx} + \\frac{d}{dx}(${b}) = ${a}(1) + 0 = ${a}
+        f'(x) &= \\frac{d}{dx} \\left[ (${uExpr})e^{${k}x} \\right] \\\\
+        &= (${uExpr}) \\frac{d}{dx} e^{${k}x} + e^{${k}x} \\frac{d}{dx} (${uExpr}) \\\\
+        &= (${uExpr}) \\left( e^{${k}x} \\frac{d}{dx}(${k}x) \\right) + e^{${k}x} \\left[ \\frac{d}{dx}(${a === 1 ? "" : a}x) + \\frac{d}{dx}(${b}) \\right] \\\\
+        &= (${uExpr}) \\left( e^{${k}x} (${k}) \\right) + e^{${k}x} \\left[ ${a} + 0 \\right]
       \\end{align*}$$
+      ดังนั้น
+      \\begin{equation*}
+        f'(x) = ${derivExpr}.
+      \\end{equation*}
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: รวมผลลัพธ์ของทุกพจน์เข้าด้วยกัน</strong><br>
-      ${adaptiveMath(
-        `f'(x) = (${uExpr})(${k}e^{${k}x}) + e^{${k}x}(${a}) = \\left[${k}(${uExpr}) + ${a}\\right]e^{${k}x} = ${derivExpr}`,
-        `f'(x) &= (${uExpr})(${k}e^{${k}x}) + e^{${k}x}(${a}) \\\\ &= \\left[${k}(${uExpr}) + ${a}\\right]e^{${k}x} \\\\ &= ${derivExpr}`
-      )}
-      ดังนั้น $$f'(x) = ${derivExpr}$$
-    </div>
-    <div class="solution-step">
-      <strong>ขั้นที่ 5: แทนค่าจุดที่กำหนด $x = ${x0}$</strong>
-      $$f'(${x0}) = (${k*a}(0) + ${k*b + a})e^{0} = (${k*b + a})(1) = ${slopeVal}$$
-      ดังนั้น $$f'(${x0}) = ${slopeVal}$$
+      <strong>ขั้นที่ 3: คำนวณค่า $f'(${x0})$ โดยแทน $x = ${x0}$ ลงใน $f'(x)$ จะได้</strong>
+      $$\\begin{align*}
+        f'(${x0}) &= (${k*a}(${x0}) + ${k*b + a}) e^{${k}(${x0})} \\\\
+        &= (${k*a*x0} + ${k*b + a}) e^0 \\\\
+        &= ${slopeVal}(1) \\\\
+        &= ${slopeVal}.
+      \\end{align*}$$
+      ดังนั้น $f'(${x0}) = ${slopeVal}$.
     </div>
   `;
 
@@ -2581,9 +2577,9 @@ function genDerivHardDamped() {
   let a = rand(1, 3);
   let b = rand(2, 4);
   let x0 = 0;
-  let fExpr = `e^{-${a === 1 ? "" : a}x} \\sin(${b}x)`;
-  let derivExpr = `e^{-${a === 1 ? "" : a}x} \\left(${b}\\cos(${b}x) - ${a === 1 ? "" : a}\\sin(${b}x)\\right)`;
-  let slopeVal = b;
+  let fExpr = `e^{-${a === 1 ? "" : a}x} \\cos(${b}x)`;
+  let derivExpr = `e^{-${a === 1 ? "" : a}x} \\left(-${b}\\sin(${b}x) - ${a === 1 ? "" : a}\\cos(${b}x)\\right)`;
+  let slopeVal = -a;
 
   let solText = `
     <div class="solution-step">
@@ -2591,37 +2587,33 @@ function genDerivHardDamped() {
       $$\\begin{align*}
         (u \\cdot v)' &= u v' + v u' \\\\
         [e^u]' &= e^u u' \\\\
-        [\\sin(u)]' &= \\cos(u) u' \\\\
-        [u^n]' &= n u^{n-1} u' \\\\
+        [\\cos(u)]' &= -\\sin(u) u' \\\\
         (k_1f \\pm k_2 g)' &= k_1f' \\pm k_2g'
       \\end{align*}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: ใช้กฎผลคูณของการหาอนุพันธ์ (หน้า ดิฟหลัง $+$ หลัง ดิฟหน้า)</strong>
-      ${adaptiveMath(
-        `f'(x) = \\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x} \\sin(${b}x)\\right] = e^{-${a === 1 ? "" : a}x}\\frac{d}{dx}[\\sin(${b}x)] + \\sin(${b}x)\\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x}\\right]`,
-        `f'(x) &= \\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x} \\sin(${b}x)\\right] \\\\ &= e^{-${a === 1 ? "" : a}x}\\frac{d}{dx}[\\sin(${b}x)] + \\sin(${b}x)\\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x}\\right]`
-      )}
-    </div>
-    <div class="solution-step">
-      <strong>ขั้นที่ 3: หาอนุพันธ์ของแต่ละตัวประกอบแยกกัน</strong>
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของ $f$ จะได้</strong>
       $$\\begin{align*}
-        \\frac{d}{dx}[\\sin(${b}x)] &= \\cos(${b}x)\\frac{d}{dx}(${b}x) = \\cos(${b}x) \\cdot ${b}\\frac{dx}{dx} = ${b}\\cos(${b}x) \\\\
-        \\frac{d}{dx}\\left[e^{-${a === 1 ? "" : a}x}\\right] &= e^{-${a === 1 ? "" : a}x}\\frac{d}{dx}(-${a === 1 ? "" : a}x) = e^{-${a === 1 ? "" : a}x} \\cdot (-${a === 1 ? "" : a})\\frac{dx}{dx} = -${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}
+        f'(x) &= \\frac{d}{dx} \\left[ e^{-${a === 1 ? "" : a}x}\\cos(${b}x) \\right] \\\\
+        &= e^{-${a === 1 ? "" : a}x} \\frac{d}{dx} \\cos(${b}x) + \\cos(${b}x) \\frac{d}{dx} e^{-${a === 1 ? "" : a}x} \\\\
+        &= e^{-${a === 1 ? "" : a}x} \\left( -\\sin(${b}x) \\frac{d}{dx}(${b}x) \\right) + \\cos(${b}x) \\left( e^{-${a === 1 ? "" : a}x} \\frac{d}{dx}(-${a === 1 ? "" : a}x) \\right) \\\\
+        &= e^{-${a === 1 ? "" : a}x} ( -\\sin(${b}x) (${b}) ) + \\cos(${b}x) ( e^{-${a === 1 ? "" : a}x} (-${a}) ) \\\\
+        &= -${b}e^{-${a === 1 ? "" : a}x}\\sin(${b}x) - ${a}e^{-${a === 1 ? "" : a}x}\\cos(${b}x).
       \\end{align*}$$
+      ดังนั้น
+      \\begin{equation*}
+        f'(x) = -e^{-${a === 1 ? "" : a}x}(${b}\\sin(${b}x) + ${a}\\cos(${b}x)).
+      \\end{equation*}
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: รวมผลลัพธ์ของทุกพจน์เข้าด้วยกัน</strong><br>
-      ${adaptiveMath(
-        `f'(x) = (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) + \\sin(${b}x)(-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}) = ${derivExpr}`,
-        `f'(x) &= (e^{-${a === 1 ? "" : a}x})(${b}\\cos(${b}x)) + \\sin(${b}x)(-${a === 1 ? "" : a}e^{-${a === 1 ? "" : a}x}) \\\\ &= ${derivExpr}`
-      )}
-      ดังนั้น $$f'(x) = ${derivExpr}$$
-    </div>
-    <div class="solution-step">
-      <strong>ขั้นที่ 5: แทนค่าจุดที่กำหนด $x = ${x0}$</strong>
-      $$f'(${x0}) = e^{0}(${b}\\cos(0) - ${a === 1 ? "" : a}\\sin(0)) = 1(${b}(1) - 0) = ${slopeVal}$$
-      ดังนั้น $$f'(${x0}) = ${slopeVal}$$
+      <strong>ขั้นที่ 3: คำนวณค่า $f'(${x0})$ โดยแทน $x = ${x0}$ ลงใน $f'(x)$ จะได้</strong>
+      $$\\begin{align*}
+        f'(${x0}) &= -e^{-${a}(${x0})}(${b}\\sin(${b}(${x0})) + ${a}\\cos(${b}(${x0}))) \\\\
+        &= -e^0(${b}\\sin(0) + ${a}\\cos(0)) \\\\
+        &= -(1)(0 + ${a}(1)) \\\\
+        &= -${a}.
+      \\end{align*}$$
+      ดังนั้น $f'(${x0}) = -${a}$.
     </div>
   `;
 
@@ -3872,38 +3864,35 @@ function genDerivMixedExpArcCot() {
       <strong>ขั้นที่ 1: กฎและสูตรที่ต้องใช้ในการหาอนุพันธ์</strong>
       $$\\begin{align*}
         (u \\cdot v)' &= u v' + v u' \\\\
+        [\\arctan(u)]' &= \\frac{1}{1+u^2} u' \\\\
         [e^u]' &= e^u u' \\\\
-        [\\arctan(u)]' &= \\frac{1}{1 + u^2} u' \\\\
-        [u^n]' &= n u^{n-1} u'
+        [u^n]' &= n u^{n-1} u' \\\\
+        (k_1f \\pm k_2 g)' &= k_1f' \\pm k_2g'
       \\end{align*}$$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 2: ใช้กฎผลคูณของการหาอนุพันธ์ (หน้า ดิฟหลัง $+$ หลัง ดิฟหน้า)</strong>
-      ${adaptiveMath(
-        `f'(x) = \\frac{d}{dx}\\left[${fExpr}\\right] = (e^{${k === 1 ? "x" : `${k}x`}} + ${a}x)\\frac{d}{dx}[\\arctan(${b === 1 ? "x" : `${b}x`})] + \\arctan(${b === 1 ? "x" : `${b}x`})\\frac{d}{dx}[e^{${k === 1 ? "x" : `${k}x`}} + ${a}x]`,
-        `f'(x) &= \\frac{d}{dx}\\left[${fExpr}\\right] \\\\ &= (e^{${k === 1 ? "x" : `${k}x`}} + ${a}x)\\frac{d}{dx}[\\arctan(${b === 1 ? "x" : `${b}x`})] + \\arctan(${b === 1 ? "x" : `${b}x`})\\frac{d}{dx}[e^{${k === 1 ? "x" : `${k}x`}} + ${a}x]`
-      )}
-    </div>
-    <div class="solution-step">
-      <strong>ขั้นที่ 3: หาอนุพันธ์ของแต่ละตัวประกอบแยกกัน</strong>
+      <strong>ขั้นที่ 2: หาอนุพันธ์ของ $f$ จะได้</strong>
       $$\\begin{align*}
-        \\frac{d}{dx}[\\arctan(${b === 1 ? "x" : `${b}x`})] &= \\frac{1}{1 + (${b === 1 ? "x" : `${b}x`})^2}\\frac{d}{dx}[${b === 1 ? "x" : `${b}x`}] = \\frac{${b}}{1 + ${b*b}x^2} \\\\
-        \\frac{d}{dx}[e^{${k === 1 ? "x" : `${k}x`}} + ${a}x] &= ${k === 1 ? "" : k}e^{${k === 1 ? "x" : `${k}x`}} + ${a}
+        f'(x) &= \\frac{d}{dx} \\left[ (e^{${k === 1 ? "" : k}x} + ${a}x)\\arctan(${b === 1 ? "" : b}x) \\right] \\\\
+        &= (e^{${k === 1 ? "" : k}x} + ${a}x) \\frac{d}{dx} \\arctan(${b === 1 ? "" : b}x) + \\arctan(${b === 1 ? "" : b}x) \\frac{d}{dx} (e^{${k === 1 ? "" : k}x} + ${a}x) \\\\
+        &= (e^{${k === 1 ? "" : k}x} + ${a}x) \\left( \\frac{1}{1+(${b === 1 ? "" : b}x)^2} \\frac{d}{dx}(${b === 1 ? "" : b}x) \\right) + \\arctan(${b === 1 ? "" : b}x) \\left[ \\frac{d}{dx}(e^{${k === 1 ? "" : k}x}) + \\frac{d}{dx}(${a}x) \\right] \\\\
+        &= (e^{${k === 1 ? "" : k}x} + ${a}x) \\left( \\frac{1}{1+${b*b}x^2} (${b}) \\right) + \\arctan(${b === 1 ? "" : b}x) \\left[ e^{${k === 1 ? "" : k}x}\\frac{d}{dx}(${k === 1 ? "" : k}x) + ${a} \\right] \\\\
+        &= \\frac{${b === 1 ? "" : b}(e^{${k === 1 ? "" : k}x} + ${a}x)}{1+${b*b}x^2} + \\arctan(${b === 1 ? "" : b}x) (${k === 1 ? "" : k}e^{${k === 1 ? "" : k}x} + ${a}).
       \\end{align*}$$
+      ดังนั้น
+      \\begin{equation*}
+        f'(x) = ${derivExpr}.
+      \\end{equation*}
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: รวมผลลัพธ์ของทุกพจน์เข้าด้วยกัน</strong><br>
-      ${adaptiveMath(
-        `f'(x) = (e^{${k === 1 ? "x" : `${k}x`}} + ${a}x)\\left(\\frac{${b}}{1 + ${b*b}x^2}\\right) + (${k === 1 ? "" : k}e^{${k === 1 ? "x" : `${k}x`}} + ${a})\\arctan(${b === 1 ? "x" : `${b}x`}) = ${derivExpr}`,
-        `f'(x) &= (e^{${k === 1 ? "x" : `${k}x`}} + ${a}x)\\left(\\frac{${b}}{1 + ${b*b}x^2}\\right) + (${k === 1 ? "" : k}e^{${k === 1 ? "x" : `${k}x`}} + ${a})\\arctan(${b === 1 ? "x" : `${b}x`}) \\\\ &= ${derivExpr}`
-      )}
-      ดังนั้น $$f'(x) = ${derivExpr}$$
-    </div>
-    <div class="solution-step">
-      <strong>ขั้นที่ 5: แทนค่าจุดที่กำหนด $x = ${x0}$</strong>
-      เมื่อ $e^0 = 1$ และ $\\arctan(0) = 0$:
-      $$f'(${x0}) = \\frac{${b}(1 + 0)}{1 + 0} + (${k === 1 ? "1" : `${k}(1)`} + ${a})(0) = ${b}(1) + 0 = ${slopeVal}$$
-      ดังนั้น $$f'(${x0}) = ${slopeVal}$$
+      <strong>ขั้นที่ 3: คำนวณค่า $f'(${x0})$ โดยแทน $x = ${x0}$ ลงใน $f'(x)$ จะได้</strong>
+      $$\\begin{align*}
+        f'(${x0}) &= \\frac{${b === 1 ? "" : b}(e^{${k}(${x0})} + ${a}(${x0}))}{1+${b*b}(${x0})^2} + (${k === 1 ? "" : k}e^{${k}(${x0})} + ${a})\\arctan(${b}(${x0})) \\\\
+        &= \\frac{${b === 1 ? "" : b}(e^0 + 0)}{1+0} + (${k === 1 ? "" : k}e^0 + ${a})(0) \\\\
+        &= \\frac{${b === 1 ? "" : b}(1 + 0)}{1} + 0 \\\\
+        &= ${slopeVal}.
+      \\end{align*}$$
+      ดังนั้น $f'(${x0}) = ${slopeVal}$.
     </div>
   `;
 

@@ -529,40 +529,30 @@ Given $f(x) = e^{-2x}\cos(3x)$, find $f'(x)$ and evaluate $f'(0)$.
 		(u \cdot v)' &= u v' + v u' \\
 		[e^u]' &= e^u u' \\
 		[\cos(u)]' &= -\sin(u) u' \\
-		[u^n]' &= n u^{n-1} u' \\
 		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
 	\end{align*}
 	
-	\item [Step 2.] Apply the product rule:
-	\begin{equation}\label{eq;3.2.1}
-		f'(x) = \frac{d}{dx} \left[e^{-2x}\cos(3x)\right]
-		= e^{-2x}\frac{d}{dx}\left[\cos(3x)\right] + \cos(3x)\frac{d}{dx}\left[e^{-2x}\right].
-	\end{equation}
-
-	\item [Step 3.] Differentiate each factor separately:
-	\begin{itemize}
-		\item Consider the derivative of $\cos(3x)$:
-		\begin{equation*}
-			\frac{d}{dx}[\cos(3x)] = -\sin(3x)\frac{d}{dx}(3x) = -\sin(3x) \cdot 3\frac{d}{dx}x = -\sin(3x) \cdot 3(1) = -3\sin(3x).
-		\end{equation*}
-		\item Consider the derivative of $e^{-2x}$:
-		\begin{equation*}
-			\frac{d}{dx}\left[e^{-2x}\right] = e^{-2x}\frac{d}{dx}(-2x) = e^{-2x} \cdot (-2)\frac{d}{dx}x = e^{-2x} \cdot (-2)(1) = -2e^{-2x}.
-		\end{equation*}
-	\end{itemize}
-
-	\item [Step 4.] Combine these terms together, we obtain:
+	\item [Step 2.] Find the derivative of $f$, we obtain
 	\begin{align*}
-		f'(x) &= e^{-2x}\frac{d}{dx}\left[\cos(3x)\right] + \cos(3x)\frac{d}{dx}\left[e^{-2x}\right] \\
-		&= e^{-2x}(-3\sin(3x)) + \cos(3x)(-2e^{-2x}) \\
-		&= -3e^{-2x}\sin(3x) - 2e^{-2x}\cos(3x) \\
-		&= -(3\sin(3x) + 2\cos(3x))e^{-2x}.
+		f'(x) &= \frac{d}{dx} \left[ e^{-2x}\cos(3x) \right] \\
+		&= e^{-2x} \frac{d}{dx} \cos(3x) + \cos(3x) \frac{d}{dx} e^{-2x} \\
+		&= e^{-2x} \left( -\sin(3x) \frac{d}{dx}(3x) \right) + \cos(3x) \left( e^{-2x} \frac{d}{dx}(-2x) \right) \\
+		&= e^{-2x} ( -\sin(3x) (3) ) + \cos(3x) ( e^{-2x} (-2) ) \\
+		&= -3e^{-2x}\sin(3x) - 2e^{-2x}\cos(3x).
 	\end{align*}
-
-	\item [Step 5.] Evaluate at $x = 0$, since $e^0 = 1$, $\sin(0) = 0$, and $\cos(0) = 1$, we obtain:
+	Thus,
 	\begin{equation*}
-		f'(0) = -(3(0) + 2(1))e^0 = -2(1) = -2.
+		f'(x) = -e^{-2x}(3\sin(3x) + 2\cos(3x)).
 	\end{equation*}
+	
+	\item [Step 3.] Compute $f'(0)$ by putting $x = 0$ into $f'(x)$, then we have
+	\begin{align*}
+		f'(0) &= -e^{-2(0)}(3\sin(3(0)) + 2\cos(3(0))) \\
+		&= -e^{0}(3\sin(0) + 2\cos(0)) \\
+		&= -(1)(3(0) + 2(1)) \\
+		&= -2.
+	\end{align*}
+	Therefore, $f'(0) = -2$.
 \end{enumerate}
 \end{solutionbox}
 
@@ -575,41 +565,33 @@ Given $f(x) = (e^{3x} + 2x)\arctan(x)$, find $f'(x)$ and evaluate $f'(0)$.
 	\item [Step 1.] Rules and formula used in this problem are:
 	\begin{align*}
 		(u \cdot v)' &= u v' + v u' \\
-		[\arctan(u)]' &= \frac{1}{1 + u^2} u' \\
+		[\arctan(u)]' &= \frac{1}{1+u^2} u' \\
 		[e^u]' &= e^u u' \\
 		[u^n]' &= n u^{n-1} u' \\
 		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
 	\end{align*}
 	
-	\item [Step 2.] Apply the product rule:
-	\begin{equation}\label{eq;3.3.1}
-		f'(x) = \frac{d}{dx} \left[(e^{3x} + 2x)\arctan(x)\right]
-		= (e^{3x} + 2x)\frac{d}{dx}\left[\arctan(x)\right] + \arctan(x)\frac{d}{dx}\left[e^{3x} + 2x\right].
-	\end{equation}
-
-	\item [Step 3.] Differentiate each factor separately:
-	\begin{itemize}
-		\item Consider the derivative of $\arctan(x)$:
-		\begin{equation*}
-			\frac{d}{dx}[\arctan(x)] = \frac{1}{1 + x^2}\frac{d}{dx}x = \frac{1}{1 + x^2}(1) = \frac{1}{1 + x^2}.
-		\end{equation*}
-		\item Consider the derivative of $(e^{3x} + 2x)$:
-		\begin{equation*}
-			\frac{d}{dx}[e^{3x} + 2x] = \frac{d}{dx}\left[e^{3x}\right] + 2\frac{d}{dx}x = e^{3x}\cdot 3(1) + 2(1) = 3e^{3x} + 2.
-		\end{equation*}
-	\end{itemize}
-
-	\item [Step 4.] Combine these terms together, we obtain:
+	\item [Step 2.] Find the derivative of $f$, we obtain
 	\begin{align*}
-		f'(x) &= (e^{3x} + 2x)\frac{d}{dx}\left[\arctan(x)\right] + \arctan(x)\frac{d}{dx}\left[e^{3x} + 2x\right] \\
-		&= (e^{3x} + 2x)\left(\frac{1}{1 + x^2}\right) + \arctan(x)(3e^{3x} + 2) \\
-		&= \frac{e^{3x} + 2x}{1 + x^2} + (3e^{3x} + 2)\arctan(x).
+		f'(x) &= \frac{d}{dx} \left[ (e^{3x} + 2x)\arctan(x) \right] \\
+		&= (e^{3x} + 2x) \frac{d}{dx} \arctan(x) + \arctan(x) \frac{d}{dx} (e^{3x} + 2x) \\
+		&= (e^{3x} + 2x) \left( \frac{1}{1+x^2} \frac{d}{dx}(x) \right) + \arctan(x) \left[ \frac{d}{dx}(e^{3x}) + \frac{d}{dx}(2x) \right] \\
+		&= (e^{3x} + 2x) \left( \frac{1}{1+x^2} (1) \right) + \arctan(x) \left[ e^{3x}\frac{d}{dx}(3x) + 2 \right] \\
+		&= \frac{e^{3x} + 2x}{1+x^2} + \arctan(x) (3e^{3x} + 2).
 	\end{align*}
-
-	\item [Step 5.] Evaluate at $x = 0$, since $e^0 = 1$ and $\arctan(0) = 0$, we obtain:
+	Thus,
 	\begin{equation*}
-		f'(0) = \frac{1 + 0}{1 + 0} + (3(1) + 2)\arctan(0) = 1 + 5(0) = 1.
+		f'(x) = \frac{e^{3x} + 2x}{1+x^2} + (3e^{3x} + 2)\arctan(x).
 	\end{equation*}
+	
+	\item [Step 3.] Compute $f'(0)$ by putting $x = 0$ into $f'(x)$, then we have
+	\begin{align*}
+		f'(0) &= \frac{e^{3(0)} + 2(0)}{1+(0)^2} + (3e^{3(0)} + 2)\arctan(0) \\
+		&= \frac{e^{0} + 0}{1+0} + (3e^{0} + 2)(0) \\
+		&= \frac{1 + 0}{1} + 0 \\
+		&= 1.
+	\end{align*}
+	Therefore, $f'(0) = 1$.
 \end{enumerate}
 \end{solutionbox}
 
@@ -627,41 +609,33 @@ Given $f(x) = \frac{2x + 3}{x - 4}$, find $f'(x)$ and evaluate $f'(0)$.
 \begin{enumerate}
 	\item [Step 1.] Rules and formula used in this problem are:
 	\begin{align*}
-		\left(\frac{u}{v}\right)' &= \frac{vu' - uv'}{v^2} \\
+		\left(\frac{u}{v}\right)' &= \frac{v u' - u v'}{v^2} \\
 		[u^n]' &= n u^{n-1} u' \\
 		[c]' &= 0 \\
 		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
 	\end{align*}
 	
-	\item [Step 2.] Apply the quotient rule:
-	\begin{equation}\label{eq;4.1.1}
-		f'(x) = \frac{d}{dx} \left[\frac{2x + 3}{x - 4}\right]
-		= \frac{(x - 4)\frac{d}{dx}[2x + 3] - (2x + 3)\frac{d}{dx}[x - 4]}{(x - 4)^2}.
-	\end{equation}
-
-	\item [Step 3.] Differentiate numerator and denominator separately:
-	\begin{itemize}
-		\item Consider the derivative of the numerator:
-		\begin{equation*}
-			\frac{d}{dx}[2x + 3] = 2\frac{d}{dx}x + \frac{d}{dx}(3) = 2(1) + 0 = 2.
-		\end{equation*}
-		\item Consider the derivative of the denominator:
-		\begin{equation*}
-			\frac{d}{dx}[x - 4] = \frac{d}{dx}x - \frac{d}{dx}(4) = 1(1) - 0 = 1.
-		\end{equation*}
-	\end{itemize}
-
-	\item [Step 4.] Combine these terms together, we obtain:
+	\item [Step 2.] Find the derivative of $f$, we obtain
 	\begin{align*}
-		f'(x) &= \frac{(x - 4)(2) - (2x + 3)(1)}{(x - 4)^2} \\
-		&= \frac{2x - 8 - 2x - 3}{(x - 4)^2} \\
-		&= -\frac{11}{(x - 4)^2}.
+		f'(x) &= \frac{d}{dx} \left[ \frac{2x + 3}{x - 4} \right] \\
+		&= \frac{(x - 4) \frac{d}{dx}(2x + 3) - (2x + 3) \frac{d}{dx}(x - 4)}{(x - 4)^2} \\
+		&= \frac{(x - 4) \left[ \frac{d}{dx}(2x) + \frac{d}{dx}(3) \right] - (2x + 3) \left[ \frac{d}{dx}(x) - \frac{d}{dx}(4) \right]}{(x - 4)^2} \\
+		&= \frac{(x - 4)(2 + 0) - (2x + 3)(1 - 0)}{(x - 4)^2} \\
+		&= \frac{2(x - 4) - 1(2x + 3)}{(x - 4)^2} \\
+		&= \frac{2x - 8 - 2x - 3}{(x - 4)^2}.
 	\end{align*}
-
-	\item [Step 5.] Evaluate at $x = 0$, we obtain:
+	Thus,
 	\begin{equation*}
-		f'(0) = -\frac{11}{(0 - 4)^2} = -\frac{11}{16}.
+		f'(x) = -\frac{11}{(x - 4)^2}.
 	\end{equation*}
+	
+	\item [Step 3.] Compute $f'(0)$ by putting $x = 0$ into $f'(x)$, then we have
+	\begin{align*}
+		f'(0) &= -\frac{11}{(0 - 4)^2} \\
+		&= -\frac{11}{(-4)^2} \\
+		&= -\frac{11}{16}.
+	\end{align*}
+	Therefore, $f'(0) = -\frac{11}{16}$.
 \end{enumerate}
 \end{solutionbox}
 
@@ -673,41 +647,35 @@ Given $f(x) = \frac{\sin(2x)}{\sqrt{x^2 + 1}}$, find $f'(x)$ and evaluate $f'(0)
 \begin{enumerate}
 	\item [Step 1.] Rules and formula used in this problem are:
 	\begin{align*}
-		\left(\frac{u}{v}\right)' &= \frac{vu' - uv'}{v^2} \\
+		\left(\frac{u}{v}\right)' &= \frac{v u' - u v'}{v^2} \\
 		[\sin(u)]' &= \cos(u) u' \\
 		[\sqrt{u}]' &= \frac{1}{2\sqrt{u}} u' \\
 		[u^n]' &= n u^{n-1} u' \\
-		[c]' &= 0
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
 	\end{align*}
 	
-	\item [Step 2.] Apply the quotient rule:
-	\begin{equation}\label{eq;4.2.1}
-		f'(x) = \frac{d}{dx} \left[\frac{\sin(2x)}{\sqrt{x^2 + 1}}\right]
-		= \frac{\sqrt{x^2 + 1}\frac{d}{dx}[\sin(2x)] - \sin(2x)\frac{d}{dx}\left[\sqrt{x^2 + 1}\right]}{\left(\sqrt{x^2 + 1}\right)^2}.
-	\end{equation}
-
-	\item [Step 3.] Differentiate numerator and denominator separately:
-	\begin{itemize}
-		\item Consider the derivative of the numerator $\sin(2x)$:
-		\begin{equation*}
-			\frac{d}{dx}[\sin(2x)] = \cos(2x)\frac{d}{dx}(2x) = \cos(2x) \cdot 2(1) = 2\cos(2x).
-		\end{equation*}
-		\item Consider the derivative of the denominator $\sqrt{x^2 + 1}$:
-		\begin{equation*}
-			\frac{d}{dx}\left[\sqrt{x^2 + 1}\right] = \frac{1}{2\sqrt{x^2 + 1}}\frac{d}{dx}[x^2 + 1] = \frac{2x(1) + 0}{2\sqrt{x^2 + 1}} = \frac{x}{\sqrt{x^2 + 1}}.
-		\end{equation*}
-	\end{itemize}
-
-	\item [Step 4.] Combine these terms together, we obtain:
+	\item [Step 2.] Find the derivative of $f$, we obtain
 	\begin{align*}
-		f'(x) &= \frac{\sqrt{x^2 + 1}(2\cos(2x)) - \sin(2x)\left(\frac{x}{\sqrt{x^2 + 1}}\right)}{x^2 + 1} \\
-		&= \frac{2(x^2 + 1)\cos(2x) - x\sin(2x)}{(x^2 + 1)^{\frac{3}{2}}}.
+		f'(x) &= \frac{d}{dx} \left[ \frac{\sin(2x)}{\sqrt{x^2 + 1}} \right] \\
+		&= \frac{\sqrt{x^2 + 1} \frac{d}{dx}\sin(2x) - \sin(2x) \frac{d}{dx}\sqrt{x^2 + 1}}{(\sqrt{x^2 + 1})^2} \\
+		&= \frac{\sqrt{x^2 + 1} \left(\cos(2x)\frac{d}{dx}(2x)\right) - \sin(2x) \left(\frac{1}{2\sqrt{x^2+1}}\frac{d}{dx}(x^2+1)\right)}{x^2 + 1} \\
+		&= \frac{\sqrt{x^2 + 1} \left(\cos(2x)(2)\right) - \sin(2x) \left(\frac{1}{2\sqrt{x^2+1}} \left[ \frac{d}{dx}(x^2) + \frac{d}{dx}(1) \right] \right)}{x^2 + 1} \\
+		&= \frac{\sqrt{x^2 + 1} (2\cos(2x)) - \sin(2x) \left(\frac{1}{2\sqrt{x^2+1}} (2x + 0)\right)}{x^2 + 1} \\
+		&= \frac{2\sqrt{x^2 + 1}\cos(2x) - \frac{x\sin(2x)}{\sqrt{x^2+1}}}{x^2 + 1}.
 	\end{align*}
-
-	\item [Step 5.] Evaluate at $x = 0$, since $\cos(0) = 1$ and $\sin(0) = 0$, we obtain:
+	Thus,
 	\begin{equation*}
-		f'(0) = \frac{2(0 + 1)(1) - 0(0)}{(0 + 1)^{\frac{3}{2}}} = \frac{2}{1} = 2.
+		f'(x) = \frac{2(x^2+1)\cos(2x) - x\sin(2x)}{(x^2+1)^{\frac{3}{2}}}.
 	\end{equation*}
+	
+	\item [Step 3.] Compute $f'(0)$ by putting $x = 0$ into $f'(x)$, then we have
+	\begin{align*}
+		f'(0) &= \frac{2(0^2+1)\cos(2(0)) - (0)\sin(2(0))}{(0^2+1)^{\frac{3}{2}}} \\
+		&= \frac{2(1)\cos(0) - 0}{(1)^{\frac{3}{2}}} \\
+		&= \frac{2(1) - 0}{1} \\
+		&= 2.
+	\end{align*}
+	Therefore, $f'(0) = 2$.
 \end{enumerate}
 \end{solutionbox}
 
@@ -731,27 +699,26 @@ Given $f(x) = \sqrt{2x^2 + 3x + 4}$, find $f'(x)$ and evaluate $f'(0)$.
 		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
 	\end{align*}
 	
-	\item [Step 2.] Apply the chain rule by letting $u = 2x^2 + 3x + 4$:
-	\begin{equation}\label{eq;5.1.1}
-		f'(x) = \frac{d}{dx} \left[\sqrt{2x^2 + 3x + 4}\right]
-		= \frac{1}{2\sqrt{2x^2 + 3x + 4}} \frac{d}{dx}\left[2x^2 + 3x + 4\right].
-	\end{equation}
-
-	\item [Step 3.] Differentiate the inner function:
-	\begin{equation*}
-		\frac{d}{dx}[2x^2 + 3x + 4] = 2\frac{d}{dx}[x^2] + 3\frac{d}{dx}x + \frac{d}{dx}(4) = 2(2x\cdot 1) + 3(1) + 0 = 4x + 3.
-	\end{equation*}
-
-	\item [Step 4.] Combine these terms together, we obtain:
+	\item [Step 2.] Find the derivative of $f$, we obtain
 	\begin{align*}
-		f'(x) &= \frac{1}{2\sqrt{2x^2 + 3x + 4}} (4x + 3) \\
-		&= \frac{4x + 3}{2\sqrt{2x^2 + 3x + 4}}.
+		f'(x) &= \frac{d}{dx} \sqrt{2x^2 + 3x + 4} \\
+		&= \frac{1}{2\sqrt{2x^2 + 3x + 4}} \frac{d}{dx} (2x^2 + 3x + 4) \\
+		&= \frac{1}{2\sqrt{2x^2 + 3x + 4}} \left[ \frac{d}{dx}(2x^2) + \frac{d}{dx}(3x) + \frac{d}{dx}(4) \right] \\
+		&= \frac{1}{2\sqrt{2x^2 + 3x + 4}} (4x + 3 + 0).
 	\end{align*}
-
-	\item [Step 5.] Evaluate at $x = 0$, we obtain:
+	Thus,
 	\begin{equation*}
-		f'(0) = \frac{4(0) + 3}{2\sqrt{2(0)^2 + 3(0) + 4}} = \frac{3}{2\sqrt{4}} = \frac{3}{2(2)} = \frac{3}{4}.
+		f'(x) = \frac{4x + 3}{2\sqrt{2x^2 + 3x + 4}}.
 	\end{equation*}
+	
+	\item [Step 3.] Compute $f'(0)$ by putting $x = 0$ into $f'(x)$, then we have
+	\begin{align*}
+		f'(0) &= \frac{4(0) + 3}{2\sqrt{2(0)^2 + 3(0) + 4}} \\
+		&= \frac{3}{2\sqrt{0 + 0 + 4}} \\
+		&= \frac{3}{2\sqrt{4}} \\
+		&= \frac{3}{4}.
+	\end{align*}
+	Therefore, $f'(0) = \frac{3}{4}$.
 \end{enumerate}
 \end{solutionbox}
 
@@ -769,26 +736,25 @@ Given $f(x) = \ln(x^2 + 3x + 2)$, find $f'(x)$ and evaluate $f'(0)$.
 		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
 	\end{align*}
 	
-	\item [Step 2.] Apply the chain rule by letting $u = x^2 + 3x + 2$:
-	\begin{equation}\label{eq;5.2.1}
-		f'(x) = \frac{d}{dx} \left[\ln(x^2 + 3x + 2)\right]
-		= \frac{1}{x^2 + 3x + 2} \frac{d}{dx}\left[x^2 + 3x + 2\right].
-	\end{equation}
-
-	\item [Step 3.] Differentiate the inner function:
-	\begin{equation*}
-		\frac{d}{dx}[x^2 + 3x + 2] = \frac{d}{dx}[x^2] + 3\frac{d}{dx}x + \frac{d}{dx}(2) = 2x(1) + 3(1) + 0 = 2x + 3.
-	\end{equation*}
-
-	\item [Step 4.] Combine these terms together, we obtain:
+	\item [Step 2.] Find the derivative of $f$, we obtain
+	\begin{align*}
+		f'(x) &= \frac{d}{dx} \ln(x^2 + 3x + 2) \\
+		&= \frac{1}{x^2 + 3x + 2} \frac{d}{dx} (x^2 + 3x + 2) \\
+		&= \frac{1}{x^2 + 3x + 2} \left[ \frac{d}{dx}(x^2) + \frac{d}{dx}(3x) + \frac{d}{dx}(2) \right] \\
+		&= \frac{1}{x^2 + 3x + 2} (2x + 3 + 0).
+	\end{align*}
+	Thus,
 	\begin{equation*}
 		f'(x) = \frac{2x + 3}{x^2 + 3x + 2}.
 	\end{equation*}
-
-	\item [Step 5.] Evaluate at $x = 0$, we obtain:
-	\begin{equation*}
-		f'(0) = \frac{2(0) + 3}{0^2 + 3(0) + 2} = \frac{3}{2}.
-	\end{equation*}
+	
+	\item [Step 3.] Compute $f'(0)$ by putting $x = 0$ into $f'(x)$, then we have
+	\begin{align*}
+		f'(0) &= \frac{2(0) + 3}{(0)^2 + 3(0) + 2} \\
+		&= \frac{3}{0 + 0 + 2} \\
+		&= \frac{3}{2}.
+	\end{align*}
+	Therefore, $f'(0) = \frac{3}{2}$.
 \end{enumerate}
 \end{solutionbox}
 
@@ -803,30 +769,30 @@ Given $f(x) = 2\cot\left(3x + \frac{\pi}{4}\right)$, find $f'(x)$ and evaluate $
 		[\cot(u)]' &= -\csc^2(u) u' \\
 		[u^n]' &= n u^{n-1} u' \\
 		[c]' &= 0 \\
-		(k \cdot g)' &= k \cdot g'
+		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
 	\end{align*}
 	
-	\item [Step 2.] Apply constant multiple and chain rule by letting $u = 3x + \frac{\pi}{4}$:
-	\begin{equation}\label{eq;5.3.1}
-		f'(x) = 2\frac{d}{dx}\left[\cot\left(3x + \frac{\pi}{4}\right)\right]
-		= 2\left(-\csc^2\left(3x + \frac{\pi}{4}\right)\frac{d}{dx}\left[3x + \frac{\pi}{4}\right]\right).
-	\end{equation}
-
-	\item [Step 3.] Differentiate the inner function:
-	\begin{equation*}
-		\frac{d}{dx}\left[3x + \frac{\pi}{4}\right] = 3\frac{d}{dx}x + \frac{d}{dx}\left(\frac{\pi}{4}\right) = 3(1) + 0 = 3.
-	\end{equation*}
-
-	\item [Step 4.] Combine these terms together, we obtain:
+	\item [Step 2.] Find the derivative of $f$, we obtain
 	\begin{align*}
-		f'(x) &= 2\left(-\csc^2\left(3x + \frac{\pi}{4}\right) \cdot 3\right) \\
-		&= -6\csc^2\left(3x + \frac{\pi}{4}\right).
+		f'(x) &= \frac{d}{dx} \left[ 2\cot\left(3x + \frac{\pi}{4}\right) \right] \\
+		&= 2 \left( -\csc^2\left(3x + \frac{\pi}{4}\right) \right) \frac{d}{dx} \left(3x + \frac{\pi}{4}\right) \\
+		&= -2\csc^2\left(3x + \frac{\pi}{4}\right) \left[ \frac{d}{dx}(3x) + \frac{d}{dx}\left(\frac{\pi}{4}\right) \right] \\
+		&= -2\csc^2\left(3x + \frac{\pi}{4}\right) (3 + 0).
 	\end{align*}
-
-	\item [Step 5.] Evaluate at $x = 0$, since $\csc\left(\frac{\pi}{4}\right) = \sqrt{2}$, we obtain $\csc^2\left(\frac{\pi}{4}\right) = 2$:
+	Thus,
 	\begin{equation*}
-		f'(0) = -6\csc^2\left(\frac{\pi}{4}\right) = -6(2) = -12.
+		f'(x) = -6\csc^2\left(3x + \frac{\pi}{4}\right).
 	\end{equation*}
+	
+	\item [Step 3.] Compute $f'(0)$ by putting $x = 0$ into $f'(x)$, then we have
+	\begin{align*}
+		f'(0) &= -6\csc^2\left(3(0) + \frac{\pi}{4}\right) \\
+		&= -6\csc^2\left(\frac{\pi}{4}\right) \\
+		&= -6(\sqrt{2})^2 \\
+		&= -6(2) \\
+		&= -12.
+	\end{align*}
+	Therefore, $f'(0) = -12$.
 \end{enumerate}
 \end{solutionbox}
 
@@ -838,32 +804,30 @@ Given $f(x) = 2\operatorname{arcsec}(3x)$, find $f'(x)$ and evaluate $f'(1)$.
 \begin{enumerate}
 	\item [Step 1.] Rules and formula used in this problem are:
 	\begin{align*}
-		[\operatorname{arcsec}(u)]' &= \frac{1}{|u|\sqrt{u^2 - 1}} u' \\
+		[\operatorname{arcsec}(u)]' &= \frac{1}{|u|\sqrt{u^2-1}} u' \\
 		[u^n]' &= n u^{n-1} u' \\
-		(k \cdot g)' &= k \cdot g'
+		(k_1f)' &= k_1f'
 	\end{align*}
 	
-	\item [Step 2.] Apply constant multiple and chain rule by letting $u = 3x$:
-	\begin{equation}\label{eq;5.4.1}
-		f'(x) = 2\frac{d}{dx}\left[\operatorname{arcsec}(3x)\right]
-		= 2\left(\frac{1}{|3x|\sqrt{(3x)^2 - 1}}\frac{d}{dx}[3x]\right).
-	\end{equation}
-
-	\item [Step 3.] Differentiate the inner function:
-	\begin{equation*}
-		\frac{d}{dx}[3x] = 3\frac{d}{dx}x = 3(1) = 3.
-	\end{equation*}
-
-	\item [Step 4.] Combine these terms together, we obtain:
+	\item [Step 2.] Find the derivative of $f$, we obtain
 	\begin{align*}
-		f'(x) &= 2\left(\frac{1}{|3x|\sqrt{9x^2 - 1}} \cdot 3\right) \\
-		&= \frac{6}{|3x|\sqrt{9x^2 - 1}} = \frac{2}{|x|\sqrt{9x^2 - 1}}.
+		f'(x) &= \frac{d}{dx} \left[ 2\operatorname{arcsec}(3x) \right] \\
+		&= 2 \left( \frac{1}{|3x|\sqrt{(3x)^2-1}} \right) \frac{d}{dx} (3x) \\
+		&= \frac{2}{|3x|\sqrt{9x^2-1}} (3).
 	\end{align*}
-
-	\item [Step 5.] Evaluate at $x = 1$, we obtain:
+	Thus,
 	\begin{equation*}
-		f'(1) = \frac{2}{|1|\sqrt{9(1)^2 - 1}} = \frac{2}{\sqrt{8}} = \frac{2}{2\sqrt{2}} = \frac{\sqrt{2}}{2}.
+		f'(x) = \frac{6}{|3x|\sqrt{9x^2-1}}.
 	\end{equation*}
+	
+	\item [Step 3.] Compute $f'(1)$ by putting $x = 1$ into $f'(x)$, then we have
+	\begin{align*}
+		f'(1) &= \frac{6}{|3(1)|\sqrt{9(1)^2-1}} \\
+		&= \frac{6}{3\sqrt{8}} \\
+		&= \frac{2}{2\sqrt{2}} \\
+		&= \frac{1}{\sqrt{2}} = \frac{\sqrt{2}}{2}.
+	\end{align*}
+	Therefore, $f'(1) = \frac{\sqrt{2}}{2}$.
 \end{enumerate}
 \end{solutionbox}
 
@@ -876,30 +840,31 @@ Given $f(x) = \tan(\arcsin(3x))$, find $f'(x)$ and evaluate $f'(0)$.
 	\item [Step 1.] Rules and formula used in this problem are:
 	\begin{align*}
 		[\tan(u)]' &= \sec^2(u) u' \\
-		[\arcsin(u)]' &= \frac{1}{\sqrt{1 - u^2}} u' \\
+		[\arcsin(u)]' &= \frac{1}{\sqrt{1-u^2}} u' \\
 		[u^n]' &= n u^{n-1} u'
 	\end{align*}
 	
-	\item [Step 2.] Apply the chain rule from outer to inner functions:
-	\begin{equation}\label{eq;5.5.1}
-		f'(x) = \frac{d}{dx}\left[\tan(\arcsin(3x))\right]
-		= \sec^2(\arcsin(3x))\frac{d}{dx}\left[\arcsin(3x)\right].
-	\end{equation}
-
-	\item [Step 3.] Differentiate the inner function $\arcsin(3x)$:
+	\item [Step 2.] Find the derivative of $f$, we obtain
+	\begin{align*}
+		f'(x) &= \frac{d}{dx} \tan(\arcsin(3x)) \\
+		&= \sec^2(\arcsin(3x)) \frac{d}{dx} \arcsin(3x) \\
+		&= \sec^2(\arcsin(3x)) \left( \frac{1}{\sqrt{1-(3x)^2}} \right) \frac{d}{dx} (3x) \\
+		&= \sec^2(\arcsin(3x)) \left( \frac{1}{\sqrt{1-9x^2}} \right) (3).
+	\end{align*}
+	Thus,
 	\begin{equation*}
-		\frac{d}{dx}[\arcsin(3x)] = \frac{1}{\sqrt{1 - (3x)^2}}\frac{d}{dx}[3x] = \frac{1}{\sqrt{1 - 9x^2}} \cdot 3\frac{d}{dx}x = \frac{3}{\sqrt{1 - 9x^2}}.
+		f'(x) = \frac{3\sec^2(\arcsin(3x))}{\sqrt{1-9x^2}}.
 	\end{equation*}
-
-	\item [Step 4.] Combine these terms together, we obtain:
-	\begin{equation*}
-		f'(x) = \sec^2(\arcsin(3x))\cdot \frac{3}{\sqrt{1 - 9x^2}} = \frac{3\sec^2(\arcsin(3x))}{\sqrt{1 - 9x^2}}.
-	\end{equation*}
-
-	\item [Step 5.] Evaluate at $x = 0$, since $\arcsin(0) = 0$ and $\sec(0) = 1$, we obtain:
-	\begin{equation*}
-		f'(0) = \frac{3\sec^2(0)}{\sqrt{1 - 0}} = \frac{3(1)^2}{1} = 3.
-	\end{equation*}
+	
+	\item [Step 3.] Compute $f'(0)$ by putting $x = 0$ into $f'(x)$, then we have
+	\begin{align*}
+		f'(0) &= \frac{3\sec^2(\arcsin(3(0)))}{\sqrt{1-9(0)^2}} \\
+		&= \frac{3\sec^2(\arcsin(0))}{\sqrt{1}} \\
+		&= \frac{3\sec^2(0)}{1} \\
+		&= 3(1)^2 \\
+		&= 3.
+	\end{align*}
+	Therefore, $f'(0) = 3$.
 \end{enumerate}
 \end{solutionbox}
 
@@ -909,38 +874,37 @@ Given $f(x) = x^{3x}$ for $x > 0$, find $f'(x)$ and evaluate $f'(1)$.
 \end{problembox}
 \begin{solutionbox}
 \begin{enumerate}
-	\item [Step 1.] Rules and properties used in logarithmic differentiation:
+	\item [Step 1.] Rules and formula used in this problem are:
 	\begin{align*}
-		\ln(u^r) &= r\ln(u) \\
+		\ln(u^v) &= v \ln(u) \\
 		[\ln(y)]' &= \frac{1}{y} y' \\
 		(u \cdot v)' &= u v' + v u' \\
 		[\ln(x)]' &= \frac{1}{x}
 	\end{align*}
 	
-	\item [Step 2.] Take natural logarithm of both sides and differentiate:
-	Let $y = x^{3x}$. Then $\ln(y) = 3x\ln(x)$.
-	\begin{align*}\label{eq;5.6.1}
-		\frac{d}{dx}[\ln(y)] &= \frac{d}{dx}[3x\ln(x)] \\
-		\frac{1}{y}\frac{dy}{dx} &= 3x\frac{d}{dx}[\ln(x)] + \ln(x)\frac{d}{dx}[3x].
-	\end{align*}
-
-	\item [Step 3.] Differentiate each part on the right-hand side:
-	\begin{itemize}
-		\item $3x\frac{d}{dx}[\ln(x)] = 3x\left(\frac{1}{x}\right) = 3$.
-		\item $\ln(x)\frac{d}{dx}[3x] = \ln(x)\cdot 3(1) = 3\ln(x)$.
-	\end{itemize}
-
-	\item [Step 4.] Combine and solve for $\frac{dy}{dx} = f'(x)$:
+	\item [Step 2.] Find the derivative of $f$, we obtain
 	\begin{align*}
-		\frac{1}{y}\frac{dy}{dx} &= 3 + 3\ln(x) = 3(1 + \ln(x)) \\
-		f'(x) &= y \cdot 3(1 + \ln(x)) \\
-		f'(x) &= 3x^{3x}(1 + \ln(x)).
+		y &= x^{3x} \\
+		\ln(y) &= \ln(x^{3x}) = 3x \ln(x) \\
+		\frac{d}{dx} \ln(y) &= \frac{d}{dx} (3x \ln(x)) \\
+		\frac{1}{y} \frac{dy}{dx} &= 3x \frac{d}{dx}\ln(x) + \ln(x) \frac{d}{dx}(3x) \\
+		\frac{1}{y} \frac{dy}{dx} &= 3x \left(\frac{1}{x}\right) + \ln(x) (3) \\
+		\frac{1}{y} \frac{dy}{dx} &= 3 + 3\ln(x) \\
+		\frac{dy}{dx} &= y (3 + 3\ln(x)).
 	\end{align*}
-
-	\item [Step 5.] Evaluate at $x = 1$, since $\ln(1) = 0$ and $1^3 = 1$, we obtain:
+	Thus,
 	\begin{equation*}
-		f'(1) = 3(1)^{3}(1 + \ln(1)) = 3(1)(1 + 0) = 3.
+		f'(x) = x^{3x} (3 + 3\ln(x)).
 	\end{equation*}
+	
+	\item [Step 3.] Compute $f'(1)$ by putting $x = 1$ into $f'(x)$, then we have
+	\begin{align*}
+		f'(1) &= (1)^{3(1)} (3 + 3\ln(1)) \\
+		&= 1 (3 + 3(0)) \\
+		&= 1(3) \\
+		&= 3.
+	\end{align*}
+	Therefore, $f'(1) = 3$.
 \end{enumerate}
 \end{solutionbox}
 
@@ -954,38 +918,38 @@ Given $f(x) = x^2 e^{2x}$, find $f''(x)$ and evaluate $f''(0)$.
 	\begin{align*}
 		(u \cdot v)' &= u v' + v u' \\
 		[e^u]' &= e^u u' \\
-		[u^n]' &= n u^{n-1} u' \\
-		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
+		[u^n]' &= n u^{n-1} u'
 	\end{align*}
 	
-	\item [Step 2.] Find the first derivative $f'(x)$ using the product rule:
-	\begin{equation}\label{eq;5.7.1}
-		f'(x) = \frac{d}{dx}\left[x^2 e^{2x}\right] = x^2 \frac{d}{dx}[e^{2x}] + e^{2x} \frac{d}{dx}[x^2].
-	\end{equation}
-
-	\item [Step 3.] Differentiate each component:
+	\item [Step 2.] Find the first derivative $f'(x)$:
 	\begin{align*}
-		\frac{d}{dx}[e^{2x}] &= e^{2x}\frac{d}{dx}[2x] = 2e^{2x} \\
-		\frac{d}{dx}[x^2] &= 2x\frac{dx}{dx} = 2x(1) = 2x
+		f'(x) &= \frac{d}{dx} (x^2 e^{2x}) \\
+		&= x^2 \frac{d}{dx}e^{2x} + e^{2x} \frac{d}{dx}x^2 \\
+		&= x^2(e^{2x}(2)) + e^{2x}(2x) \\
+		&= 2x^2 e^{2x} + 2x e^{2x}.
 	\end{align*}
-
-	\item [Step 4.] Combine and simplify $f'(x)$:
-	\begin{equation*}
-		f'(x) = x^2(2e^{2x}) + e^{2x}(2x) = 2x^2 e^{2x} + 2x e^{2x} = (2x^2 + 2x)e^{2x}.
-	\end{equation*}
-
-	\item [Step 5.] Find the second derivative $f''(x)$ by differentiating $f'(x)$ again:
+	Find the second derivative $f''(x)$:
 	\begin{align*}
-		f''(x) &= \frac{d}{dx}\left[(2x^2 + 2x)e^{2x}\right] \\
-		&= (2x^2 + 2x)\frac{d}{dx}[e^{2x}] + e^{2x}\frac{d}{dx}[2x^2 + 2x] \\
-		&= (2x^2 + 2x)(2e^{2x}) + e^{2x}(4x + 2) \\
-		&= (4x^2 + 4x + 4x + 2)e^{2x} \\
-		&= (4x^2 + 8x + 2)e^{2x}.
+		f''(x) &= \frac{d}{dx} (2x^2 e^{2x} + 2x e^{2x}) \\
+		&= \frac{d}{dx} (2x^2 e^{2x}) + \frac{d}{dx} (2x e^{2x}) \\
+		&= \left[ 2x^2 \frac{d}{dx}e^{2x} + e^{2x} \frac{d}{dx}2x^2 \right] + \left[ 2x \frac{d}{dx}e^{2x} + e^{2x} \frac{d}{dx}2x \right] \\
+		&= \left[ 2x^2\left(e^{2x}\frac{d}{dx}(2x)\right) + e^{2x}(4x) \right] + \left[ 2x\left(e^{2x}\frac{d}{dx}(2x)\right) + e^{2x}(2) \right] \\
+		&= \left[ 2x^2(e^{2x}(2)) + e^{2x}(4x) \right] + \left[ 2x(e^{2x}(2)) + e^{2x}(2) \right] \\
+		&= 4x^2 e^{2x} + 4x e^{2x} + 4x e^{2x} + 2 e^{2x}.
 	\end{align*}
-	Evaluate at $x = 0$:
+	Thus,
 	\begin{equation*}
-		f''(0) = (4(0)^2 + 8(0) + 2)e^{0} = 2(1) = 2.
+		f''(x) = (4x^2 + 8x + 2) e^{2x}.
 	\end{equation*}
+	
+	\item [Step 3.] Compute $f''(0)$ by putting $x = 0$ into $f''(x)$, then we have
+	\begin{align*}
+		f''(0) &= (4(0)^2 + 8(0) + 2) e^{2(0)} \\
+		&= (0 + 0 + 2) e^{0} \\
+		&= 2(1) \\
+		&= 2.
+	\end{align*}
+	Therefore, $f''(0) = 2$.
 \end{enumerate}
 \end{solutionbox}
 
