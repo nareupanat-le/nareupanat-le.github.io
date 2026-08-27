@@ -525,7 +525,7 @@
 </header>
 
 <main>
-  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.21:55</span></h3>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.22:04</span></h3>
   <p class="byline">คลังโจทย์แคลคูลัส 1 พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
@@ -629,7 +629,7 @@
   </div>
 
   <footer style="text-align: center; margin-top: 28px; margin-bottom: 16px; font-size: 0.85rem; color: var(--muted);">
-    Calculus 1 Practice Hub • v.2026.08.27.21:55
+    Calculus 1 Practice Hub • v.2026.08.27.22:04
   </footer>
 </main>
 
@@ -3405,7 +3405,7 @@ function genDerivNormalLine() {
       <strong>ขั้นที่ 5: หาสมการเส้นปกติ</strong><br>
       $$\\begin{align*}
         y - y_0 &= m_n(x - x_0) \\\\
-        ${normalEq}
+        y ${y0 >= 0 ? `- ${y0}` : `+ ${Math.abs(y0)}`} &= ${slopeNormalLatex}(x ${x0 >= 0 ? `- ${x0}` : `+ ${Math.abs(x0)}`})
       \\end{align*}$$
       ดังนั้นสมการเส้นปกติคือ $$${normalEq}$$
     </div>
@@ -4217,8 +4217,8 @@ const limitGenerators = [
 // =========================================================
 
 function genDerivWbSecExp() {
-  let a = randNonZero(-3, 3);
-  let b = rand(1, 3);
+  let a = rand(2, 4);
+  let b = rand(2, 4);
   let x0 = 1;
 
   let fExpr = `e^{${a}x^2 - ${a}x} \\sec(${b}x^2 - ${b}x)`;
@@ -4291,7 +4291,7 @@ function genDerivWbSecExp() {
 
 function genDerivWbProductExpPoly() {
   let a = randNonZero(-4, 4);
-  let b = rand(1, 4);
+  let b = rand(2, 4);
   let x0 = 1;
 
   let fExpr = `${a === 1 ? "" : (a === -1 ? "-" : a)}x^3 e^{${b}x^2 - ${b}}`;
@@ -4353,9 +4353,9 @@ function genDerivWbProductExpPoly() {
 }
 
 function genDerivWbLogCos() {
-  let a = randNonZero(-3, 3);
-  let b = rand(1, 4);
-  let c = rand(1, 3);
+  let a = rand(2, 4);
+  let b = rand(2, 5);
+  let c = rand(2, 4);
   let x0 = 0;
 
   let fExpr = `\\ln(e^{${a}x^2} + ${b}x) - \\cos(${c}x^3)`;
@@ -4418,9 +4418,9 @@ function genDerivWbLogCos() {
 }
 
 function genDerivWbArctanLog() {
-  let a = rand(1, 4);
-  let b = rand(1, 4);
-  let c = rand(1, 3);
+  let a = rand(2, 5);
+  let b = rand(2, 4);
+  let c = rand(2, 4);
   let x0 = 0;
 
   let fExpr = `${a}\\arctan(${b}x) - \\ln(${c}x^2 + 1)`;
@@ -4482,10 +4482,10 @@ function genDerivWbArctanLog() {
 }
 
 function genDerivWbExpSinRadical() {
-  let a = rand(1, 4);
-  let b = rand(1, 3);
-  let c = rand(1, 4);
-  let d = rand(1, 3);
+  let a = rand(2, 5);
+  let b = rand(2, 4);
+  let c = rand(2, 5);
+  let d = rand(2, 4);
   let p = 4; // sqrt(4) = 2
   let x0 = 0;
 
