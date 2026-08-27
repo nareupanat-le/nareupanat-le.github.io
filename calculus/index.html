@@ -2311,8 +2311,8 @@ function genDerivMedChainRadical() {
   let c2 = c_sqrt * c_sqrt;
   let x0 = 0;
 
-  let fExpr = `\\\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}`;
-  let derivExpr = `\\\\frac{${2*a}x + ${b}}{2\\\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}}`;
+  let fExpr = `\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}`;
+  let derivExpr = `\\frac{${2*a}x + ${b}}{2\\sqrt{${a === 1 ? "" : a}x^2 + ${b}x + ${c2}}}`;
   let slopeValLatex = toFrac(b, 2 * c_sqrt);
 
   let solText = `
@@ -2374,8 +2374,8 @@ function genDerivMedChainLog() {
   let c = rand(1, 5);
   let x0 = 0;
 
-  let fExpr = `\\\\ln(${a === 1 ? "" : a}x^2 + ${b}x + ${c})`;
-  let derivExpr = `\\\\frac{${2*a}x + ${b}}{${a === 1 ? "" : a}x^2 + ${b}x + ${c}}`;
+  let fExpr = `\\ln(${a === 1 ? "" : a}x^2 + ${b}x + ${c})`;
+  let derivExpr = `\\frac{${2*a}x + ${b}}{${a === 1 ? "" : a}x^2 + ${b}x + ${c}}`;
   let slopeValLatex = toFrac(b, c);
 
   let solText = `
@@ -2494,7 +2494,7 @@ function genDerivHardLogDiff() {
   let x0 = 1;
 
   let fExpr = `x^{${k}x}`;
-  let derivExpr = `x^{${k}x} (${k} + ${k}\\\\ln(x))`;
+  let derivExpr = `x^{${k}x} (${k} + ${k}\\ln(x))`;
   let slopeVal = k;
 
   let solText = `
@@ -3570,8 +3570,8 @@ function genDerivTrigCotCscPure() {
   let k = rand(2, 4);
   let x0 = 0;
 
-  let fExpr = `${a === 1 ? "" : a}\\\\cot\\\\left(${k}x + \\\\frac{\\\\pi}{4}\\\\right)`;
-  let derivExpr = `-${a*k}\\\\csc^2\\\\left(${k}x + \\\\frac{\\\\pi}{4}\\\\right)`;
+  let fExpr = `${a === 1 ? "" : a}\\cot\\left(${k}x + \\frac{\\pi}{4}\\right)`;
+  let derivExpr = `-${a*k}\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right)`;
   let slopeVal = -a * k * 2;
   
   let solText = `
@@ -3700,12 +3700,12 @@ function genDerivInverseTrigArcSecCsc() {
   let k = rand(2, 4);
   let x0 = 1;
 
-  let fExpr = `${a === 1 ? "" : a}\\\\operatorname{arcsec}(${k}x)`;
-  let derivExpr = `\\\\frac{${a*k}}{|${k}x|\\\\sqrt{${k*k}x^2 - 1}}`;
+  let fExpr = `${a === 1 ? "" : a}\\operatorname{arcsec}(${k}x)`;
+  let derivExpr = `\\frac{${a*k}}{|${k}x|\\sqrt{${k*k}x^2 - 1}}`;
   
   // Calculate slope string logic safely
-  let slopeValLatex = `\\\\frac{${a*k}}{${k}\\\\sqrt{${k*k - 1}}}`;
-  if (a === 1) slopeValLatex = `\\\\frac{1}{\\\\sqrt{${k*k - 1}}}`;
+  let slopeValLatex = `\\frac{${a*k}}{${k}\\sqrt{${k*k - 1}}}`;
+  if (a === 1) slopeValLatex = `\\frac{1}{\\sqrt{${k*k - 1}}}`;
 
   let solText = `
     <div class="solution-step">
@@ -3896,8 +3896,8 @@ function genDerivMixedNestedTrig() {
   let k = rand(2, 4);
   let x0 = 0;
 
-  let fExpr = `\\\\tan(\\\\arcsin(${k}x))`;
-  let derivExpr = `\\\\frac{${k}\\\\sec^2(\\\\arcsin(${k}x))}{\\\\sqrt{1-${k*k}x^2}}`;
+  let fExpr = `\\tan(\\arcsin(${k}x))`;
+  let derivExpr = `\\frac{${k}\\sec^2(\\arcsin(${k}x))}{\\sqrt{1-${k*k}x^2}}`;
   let slopeVal = k;
 
   let solText = `
@@ -3958,10 +3958,10 @@ function genDerivMixedQuotientTrigRadical() {
   let b = rand(1, 4);
   let x0 = 0;
 
-  let fExpr = `\\\\frac{\\\\sin(${k}x)}{\\\\sqrt{x^2 + ${b}}}`;
+  let fExpr = `\\frac{\\sin(${k}x)}{\\sqrt{x^2 + ${b}}}`;
   let slopeVal = k / Math.sqrt(b);
-  let slopeValLatex = slopeVal % 1 === 0 ? slopeVal.toString() : `\\\\frac{${k}}{\\\\sqrt{${b}}}`;
-  let derivExpr = `\\\\frac{${k}(x^2+${b})\\\\cos(${k}x) - x\\\\sin(${k}x)}{(x^2+${b})^{\\\\frac{3}{2}}}`;
+  let slopeValLatex = slopeVal % 1 === 0 ? slopeVal.toString() : `\\frac{${k}}{\\sqrt{${b}}}`;
+  let derivExpr = `\\frac{${k}(x^2+${b})\\cos(${k}x) - x\\sin(${k}x)}{(x^2+${b})^{\\frac{3}{2}}}`;
 
   let solText = `
     <div class="solution-step">
