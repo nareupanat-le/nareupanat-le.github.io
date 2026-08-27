@@ -525,7 +525,7 @@
 </header>
 
 <main>
-  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.0.5</span></h3>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.0.5.1</span></h3>
   <p class="byline">คลังโจทย์แคลคูลัส 1 พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
@@ -629,7 +629,7 @@
   </div>
 
   <footer style="text-align: center; margin-top: 28px; margin-bottom: 16px; font-size: 0.85rem; color: var(--muted);">
-    Calculus 1 Practice Hub • v.2026.0.5
+    Calculus 1 Practice Hub • v.2026.0.5.1
   </footer>
 </main>
 
@@ -2014,9 +2014,9 @@ function genDerivEasyExp() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์อย่างละเอียด</strong><br>
-      • <em>พิจารณาพจน์ที่ 1 (${a === 1 ? "" : a}e^{${k}x}):</em>
+      • <em>พิจารณาพจน์ที่ 1 ($${a === 1 ? "" : a}e^{${k}x}$):</em>
       $$\\frac{d}{dx}\\left[${a === 1 ? "" : a}e^{${k}x}\\right] = ${a === 1 ? "" : `${a}\\cdot `}\\left(e^{${k}x}\\frac{d}{dx}[${k}x]\\right) = ${a*k}e^{${k}x}$$
-      • <em>พิจารณาพจน์ที่ 2 (${b > 0 ? `${b}x` : `-${Math.abs(b)}x`}):</em>
+      • <em>พิจารณาพจน์ที่ 2 ($${b > 0 ? `${b}x` : `-${Math.abs(b)}x`}$):</em>
       $$\\frac{d}{dx}[${b}x] = ${b}$$
     </div>
     <div class="solution-step">
@@ -2910,9 +2910,9 @@ function genDerivTrigSec() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์อย่างละเอียด</strong><br>
-      • <em>พิจารณาพจน์ที่ 1 (${a}\\sec(x)):</em>
+      • <em>พิจารณาพจน์ที่ 1 ($${a}\\sec(x)$):</em>
       $$\\frac{d}{dx}[${a}\\sec(x)] = ${a}\\frac{d}{dx}[\\sec(x)] = ${a}\\sec(x)\\tan(x)$$
-      • <em>พิจารณาพจน์ที่ 2 (${b}\\tan(x)):</em>
+      • <em>พิจารณาพจน์ที่ 2 ($${b}\\tan(x)$):</em>
       $$\\frac{d}{dx}[${b}\\tan(x)] = ${b}\\frac{d}{dx}[\\tan(x)] = ${b}\\sec^2(x)$$
     </div>
     <div class="solution-step">
@@ -3018,9 +3018,9 @@ function genDerivTrigCscCot() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์อย่างละเอียด</strong><br>
-      • <em>พิจารณาพจน์ที่ 1 (${a}\\sin(${k}x)):</em>
+      • <em>พิจารณาพจน์ที่ 1 ($${a}\\sin(${k}x)$):</em>
       $$\\frac{d}{dx}[${a}\\sin(${k}x)] = ${a}\\left(\\cos(${k}x)\\frac{d}{dx}[${k}x]\\right) = ${a}(\\cos(${k}x) \\cdot ${k}) = ${a*k}\\cos(${k}x)$$
-      • <em>พิจารณาพจน์ที่ 2 (-\\cos(${k}x)):</em>
+      • <em>พิจารณาพจน์ที่ 2 ($-\\cos(${k}x)$):</em>
       $$-\\frac{d}{dx}[\\cos(${k}x)] = -\\left(-\\sin(${k}x)\\frac{d}{dx}[${k}x]\\right) = ${k}\\sin(${k}x)$$
     </div>
     <div class="solution-step">
@@ -3430,12 +3430,12 @@ function genDerivInverseTrigArcCosCot() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์ทีละพจน์อย่างละเอียด</strong><br>
-      • <em>พิจารณาพจน์ที่ 1 (${a === 1 ? "" : a}\\arccos(${k}x)):</em>
+      • <em>พิจารณาพจน์ที่ 1 ($${a === 1 ? "" : a}\\arccos(${k}x)$):</em>
       ${adaptiveMath(
         `\\frac{d}{dx}\\left[${a === 1 ? "" : a}\\arccos(${k}x)\\right] = ${a === 1 ? "" : `${a}\\cdot `}\\left(-\\frac{1}{\\sqrt{1 - (${k}x)^2}}\\frac{d}{dx}[${k}x]\\right) = ${a === 1 ? "" : `${a}\\cdot `}\\left(-\\frac{1}{\\sqrt{1 - ${k*k}x^2}}(${k})\\right) = -\\frac{${a*k}}{\\sqrt{1 - ${k*k}x^2}}`,
         `\\frac{d}{dx}\\left[${a === 1 ? "" : a}\\arccos(${k}x)\\right] &= ${a === 1 ? "" : `${a}\\cdot `}\\left(-\\frac{1}{\\sqrt{1 - (${k}x)^2}}\\frac{d}{dx}[${k}x]\\right) \\\\ &= ${a === 1 ? "" : `${a}\\cdot `}\\left(-\\frac{1}{\\sqrt{1 - ${k*k}x^2}}(${k})\\right) \\\\ &= -\\frac{${a*k}}{\\sqrt{1 - ${k*k}x^2}}`
       )}
-      • <em>พิจารณาพจน์ที่ 2 (${b === 1 ? "" : b}\\operatorname{arccot}(${m === 1 ? "x" : `${m}x`})):</em>
+      • <em>พิจารณาพจน์ที่ 2 ($${b === 1 ? "" : b}\\operatorname{arccot}(${m === 1 ? "x" : `${m}x`})$):</em>
       ${adaptiveMath(
         `\\frac{d}{dx}\\left[${b === 1 ? "" : b}\\operatorname{arccot}(${m === 1 ? "x" : `${m}x`})\\right] = ${b === 1 ? "" : `${b}\\cdot `}\\left(-\\frac{1}{1 + (${m === 1 ? "x" : `${m}x`})^2}\\frac{d}{dx}[${m === 1 ? "x" : `${m}x`}]\\right) = ${b === 1 ? "" : `${b}\\cdot `}\\left(-\\frac{1}{1 + ${m*m}x^2}(${m})\\right) = -\\frac{${b*m}}{1 + ${m*m}x^2}`,
         `\\frac{d}{dx}\\left[${b === 1 ? "" : b}\\operatorname{arccot}(${m === 1 ? "x" : `${m}x`})\\right] &= ${b === 1 ? "" : `${b}\\cdot `}\\left(-\\frac{1}{1 + (${m === 1 ? "x" : `${m}x`})^2}\\frac{d}{dx}[${m === 1 ? "x" : `${m}x`}]\\right) \\\\ &= ${b === 1 ? "" : `${b}\\cdot `}\\left(-\\frac{1}{1 + ${m*m}x^2}(${m})\\right) \\\\ &= -\\frac{${b*m}}{1 + ${m*m}x^2}`
