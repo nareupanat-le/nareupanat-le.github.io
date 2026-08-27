@@ -15,7 +15,7 @@
 \contentsline {subsection}{\numberline {2.4}Type 2.4: Sum of Inverse Trigonometric Functions}{11}{subsection.2.4}%
 \contentsline {section}{\numberline {3}Product Rule: $(uv)' = uv' + vu'$}{13}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Type 3.1: Polynomial $\times $ Exponential}{13}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Type 3.2: Exponential $\times $ Trigonometric (Damped Oscillation)}{14}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.2}Type 3.2: Exponential $\times $ Trigonometric (Damped Oscillation)}{13}{subsection.3.2}%
 \contentsline {subsection}{\numberline {3.3}Type 3.3: Polynomial / Exponential $\times $ Inverse Trigonometric}{14}{subsection.3.3}%
 \contentsline {section}{\numberline {4}Quotient Rule: $\left (\frac {u}{v}\right )' = \frac {vu' - uv'}{v^2}$}{16}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Type 4.1: Rational Polynomial Function}{16}{subsection.4.1}%

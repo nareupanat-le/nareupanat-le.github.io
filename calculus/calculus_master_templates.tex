@@ -494,36 +494,27 @@ Given $f(x) = (2x + 3)e^{2x}$, find $f'(x)$ and evaluate $f'(0)$.
 		(k_1f \pm k_2 g)' &= k_1f' \pm k_2g'
 	\end{align*}
 	
-	\item [Step 2.] Apply the product rule:
-	\begin{equation}\label{eq;3.1.1}
-		f'(x) = \frac{d}{dx} \left[(2x + 3)e^{2x}\right]
-		= (2x + 3)\frac{d}{dx}\left[e^{2x}\right] + e^{2x}\frac{d}{dx}\left[2x + 3\right].
-	\end{equation}
-
-	\item [Step 3.] Differentiate each factor separately:
-	\begin{itemize}
-		\item Consider the derivative of $e^{2x}$:
-		\begin{equation*}
-			\frac{d}{dx}\left[e^{2x}\right] = e^{2x}\frac{d}{dx}(2x) = e^{2x} \cdot 2\frac{d}{dx}x = e^{2x} \cdot 2(1) = 2e^{2x}.
-		\end{equation*}
-		\item Consider the derivative of $(2x + 3)$:
-		\begin{equation*}
-			\frac{d}{dx}[2x + 3] = 2\frac{d}{dx}x + \frac{d}{dx}(3) = 2(1) + 0 = 2.
-		\end{equation*}
-	\end{itemize}
-
-	\item [Step 4.] Combine these terms together, we obtain:
+	\item [Step 2.] Find the derivative of $f$, we obtain
 	\begin{align*}
-		f'(x) &= (2x + 3)\frac{d}{dx}\left[e^{2x}\right] + e^{2x}\frac{d}{dx}\left[2x + 3\right] \\
-		&= (2x + 3)(2e^{2x}) + e^{2x}(2) \\
-		&= (4x + 6)e^{2x} + 2e^{2x} \\
-		&= (4x + 8)e^{2x}.
+		f'(x) &= \frac{d}{dx} (2x + 3)e^{2x} \\
+		&= (2x+3) \frac{d}{dx} e^{2x} + e^{2x} \frac{d}{dx} (2x + 3) \\
+		&= (2x+3) e^{2x} \frac{d}{dx} 2x + e^{2x} \left[ \frac{d}{dx} 2x + \frac{d}{dx} 3 \right] \\
+		&= (2x+3) e^{2x} (2) + e^{2x} \left[ 2 + 0 \right]
 	\end{align*}
-
-	\item [Step 5.] Evaluate at $x = 0$, since $e^{2(0)} = e^0 = 1$, we obtain:
+	Thus,
 	\begin{equation*}
-		f'(0) = (4(0) + 8)e^0 = 8(1) = 8.
+		f'(x) = (4x + 6) e^{2x} + 2e^{2x}.
 	\end{equation*}
+	
+	\item [Step 3.] Compute $f'(0)$ by putting $x = 0$ into $f'(x)$, then we have
+	\begin{align*}
+		f'(0) &= (4(0) + 6) e^{2(0)} + 2e^{2(0)} \\
+		&= (0+6) e^{0} + 2e^{0} \\
+		&= 6(1) + 2(1) \\
+		&= 6+2 \\
+		&= 8.
+	\end{align*}
+	Therefore, $f'(0) = 8$.
 \end{enumerate}
 \end{solutionbox}
 
