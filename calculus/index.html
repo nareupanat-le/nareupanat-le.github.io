@@ -525,7 +525,7 @@
 </header>
 
 <main>
-  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.19:39</span></h3>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.08.27.20:41</span></h3>
   <p class="byline">คลังโจทย์แคลคูลัส 1 พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
@@ -629,7 +629,7 @@
   </div>
 
   <footer style="text-align: center; margin-top: 28px; margin-bottom: 16px; font-size: 0.85rem; color: var(--muted);">
-    Calculus 1 Practice Hub • v.2026.08.27.19:39
+    Calculus 1 Practice Hub • v.2026.08.27.20:41
   </footer>
 </main>
 
@@ -2154,16 +2154,16 @@ function genDerivEasyTangent() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 5: สร้างสมการเส้นสัมผัส</strong><br>
-      ${adaptiveMath(
-        `y - y_0 = m_t(x - x_0) \\implies y ${y0 >= 0 ? `- ${y0}` : `+ ${Math.abs(y0)}`} = ${slopeVal === 1 ? "" : (slopeVal === -1 ? "-" : slopeVal)}(x ${x0 >= 0 ? `- ${x0}` : `+ ${Math.abs(x0)}`})`,
-        `y - y_0 &= m_t(x - x_0) \\\\ y ${y0 >= 0 ? `- ${y0}` : `+ ${Math.abs(y0)}`} &= ${slopeVal === 1 ? "" : (slopeVal === -1 ? "-" : slopeVal)}(x ${x0 >= 0 ? `- ${x0}` : `+ ${Math.abs(x0)}`})`
-      )}
+      $$\begin{align*}
+        y - y_0 &= m_t(x - x_0) \\
+        y ${y0 >= 0 ? `- ${y0}` : `+ ${Math.abs(y0)}`} &= ${slopeVal === 1 ? "" : (slopeVal === -1 ? "-" : slopeVal)}(x ${x0 >= 0 ? `- ${x0}` : `+ ${Math.abs(x0)}`})
+      \end{align*}$$
       ดังนั้นสมการเส้นสัมผัสคือ $$${tangentEq}$$
     </div>
   `;
 
   return {
-    topic: "derivative",
+    topic: "tangent_normal",
     category: "อนุพันธ์: การประยุกต์สมการเส้นสัมผัส",
     difficulty: "easy",
     probLatex: `y = ${fExpr}`,
@@ -2175,7 +2175,7 @@ function genDerivEasyTangent() {
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     tangentLatex: tangentEq,
-    promptText: `✍️ ทดลองคำนวณความชันของเส้นสัมผัส $m_t$ ที่จุด $x = ${x0}$:` ,
+    promptText: `✍️ ทดลองคำนวณความชันของเส้นสัมผัส $m_t$ ที่จุด $x = ${x0}$:`,
     hintText: `หาความชัน $m_t = f'(${x0})$ โดยดิฟ $f(x)$ แล้วแทน $x = ${x0}$`,
     solHtml: solText,
     exactNum: slopeVal,
@@ -2544,7 +2544,10 @@ function genDerivHardLogDiff() {
     <div class="solution-step">
       <strong>ขั้นที่ 2: ใส่ลอการิทึมธรรมชาติทั้งสองข้างและหาอนุพันธ์เทียบกับ $x$</strong><br>
       กำหนดให้ $y = x^{${k}x}$ จะได้ว่า $\\ln(y) = ${k}x\\ln(x)$
-      $$\\frac{d}{dx}[\\ln(y)] = \\frac{d}{dx}[${k}x\\ln(x)] \\implies \\frac{1}{y}\\frac{dy}{dx} = ${k}x\\frac{d}{dx}[\\ln(x)] + \\ln(x)\\frac{d}{dx}[${k}x]$$
+      $$\\begin{align*}
+        \\frac{d}{dx}[\\ln(y)] &= \\frac{d}{dx}[${k}x\\ln(x)] \\\\
+        \\frac{1}{y}\\frac{dy}{dx} &= ${k}x\\frac{d}{dx}[\\ln(x)] + \\ln(x)\\frac{d}{dx}[${k}x]
+      \\end{align*}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: หาอนุพันธ์ของแต่ละส่วนในฝั่งขวา</strong>
@@ -2555,10 +2558,11 @@ function genDerivHardLogDiff() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: รวมผลลัพธ์และแก้สมการหา $\\frac{dy}{dx} = f'(x)$</strong><br>
-      ${adaptiveMath(
-        `\\frac{1}{y}\\frac{dy}{dx} = ${k} + ${k}\\ln(x) = ${k}(\\ln x + 1) \\implies f'(x) = y \\cdot ${k}(\\ln x + 1) = ${derivExpr}`,
-        `\\frac{1}{y}\\frac{dy}{dx} &= ${k} + ${k}\\ln(x) = ${k}(\\ln x + 1) \\\\ \\implies f'(x) &= y \\cdot ${k}(\\ln x + 1) \\\\ &= ${derivExpr}`
-      )}
+      $$\\begin{align*}
+        \\frac{1}{y}\\frac{dy}{dx} &= ${k} + ${k}\\ln(x) = ${k}(\\ln x + 1) \\\\
+        f'(x) &= y \\cdot ${k}(\\ln x + 1) \\\\
+        f'(x) &= ${derivExpr}
+      \\end{align*}$$
       ดังนั้น $$f'(x) = ${derivExpr}$$
     </div>
     <div class="solution-step">
@@ -2899,6 +2903,7 @@ function genDerivHardSecondDerivative() {
     <div class="solution-step">
       <strong>ขั้นที่ 3: หาอนุพันธ์อันดับสอง $f''(x) = \\frac{d}{dx}[f'(x)]$ โดยใช้กฎผลคูณ</strong><br>
       ${adaptiveMath(
+{{ ... }}
         `f''(x) = \\frac{d}{dx}\\left[(-${k*a}x^2 + ${2*a-k*b}x + ${b})e^{-${k === 1 ? "" : k}x}\\right] = (-${2*k*a}x + ${2*a-k*b})e^{-${k === 1 ? "" : k}x} + (-${k*a}x^2 + ${2*a-k*b}x + ${b})(-${k === 1 ? "" : k}e^{-${k === 1 ? "" : k}x})`,
         `f''(x) &= \\frac{d}{dx}\\left[(-${k*a}x^2 + ${2*a-k*b}x + ${b})e^{-${k === 1 ? "" : k}x}\\right] \\\\ &= (-${2*k*a}x + ${2*a-k*b})e^{-${k === 1 ? "" : k}x} + (-${k*a}x^2 + ${2*a-k*b}x + ${b})(-${k === 1 ? "" : k}e^{-${k === 1 ? "" : k}x})`
       )}
@@ -3040,8 +3045,8 @@ function genDerivProductPoly() {
     <div class="solution-step">
       <strong>ขั้นที่ 3: หาอนุพันธ์ของแต่ละตัวประกอบแยกกัน</strong>
       $$\\begin{align*}
-        \\frac{d}{dx}[${vExpr}] &= ${c}\\frac{dx}{dx} + \\frac{d}{dx}(${d}) = ${c}(1) + 0 = ${c} \\\\
-        \\frac{d}{dx}[${uExpr}] &= ${a}\\frac{d}{dx}[x^2] + \\frac{d}{dx}(${b}) = ${a}(2x\\cdot 1) + 0 = ${2*a}x
+        \\frac{d}{dx}\\left[${vExpr}\\right] &= ${c}\\frac{dx}{dx} + \\frac{d}{dx}(${d}) = ${c}(1) + 0 = ${c} \\\\
+        \\frac{d}{dx}\\left[${uExpr}\\right] &= ${a}\\frac{d}{dx}[x^2] + \\frac{d}{dx}(${b}) = ${a}(2x\\cdot 1) + 0 = ${2*a}x
       \\end{align*}$$
     </div>
     <div class="solution-step">
@@ -3391,21 +3396,24 @@ function genDerivNormalLine() {
       จะได้จุดสัมผัส $(x_0, y_0) = (${x0}, ${y0})$
     </div>
     <div class="solution-step">
-      <strong>ขั้นที่ 4: หาความชันของเส้นปกติ $m_n$</strong><br>
-      $$m_t = f'(${x0}) = ${slopeTangent} \\implies m_n = -\\frac{1}{m_t} = -\\frac{1}{${slopeTangent}} = ${slopeNormalLatex}$$
+      <strong>ขั้นที่ 4: หาความชันของเส้นปกติ $m_n$</strong>
+      $$\begin{align*}
+        m_t &= f'(${x0}) = ${slopeTangent} \\
+        m_n &= -\frac{1}{m_t} = -\frac{1}{${slopeTangent}} = ${slopeNormalLatex}
+      \end{align*}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 5: หาสมการเส้นปกติ</strong><br>
-      ${adaptiveMath(
-        `y - y_0 = m_n(x - x_0) \\implies ${normalEq}`,
-        `y - y_0 &= m_n(x - x_0) \\\\ ${normalEq}`
-      )}
+      $$\begin{align*}
+        y - y_0 &= m_n(x - x_0) \\
+        ${normalEq}
+      \end{align*}$$
       ดังนั้นสมการเส้นปกติคือ $$${normalEq}$$
     </div>
   `;
 
   return {
-    topic: "derivative",
+    topic: "tangent_normal",
     category: "อนุพันธ์: สมการเส้นปกติของเส้นโค้ง",
     difficulty: "med",
     probLatex: `y = ${fExpr}`,
@@ -3451,8 +3459,8 @@ function genDerivImplicitCircle() {
   `;
 
   let customAnsContent = `
-    <strong>อนุพันธ์โดยปริยาย:</strong> $$\\displaystyle \\frac{dy}{dx} = -\\frac{x}{y}$$
-    <strong>ค่าที่จุด $(${x0}, ${y0})$:</strong> $$\\displaystyle \\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
+    <strong>อนุพันธ์โดยปริยาย:</strong> $$\displaystyle \\frac{dy}{dx} = -\\frac{x}{y}$$
+    <strong>ค่าที่จุด $(${x0}, ${y0})$:</strong> $$\displaystyle \\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
   `;
 
   let solText = `
@@ -3466,7 +3474,10 @@ function genDerivImplicitCircle() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์เทียบกับตัวแปร $x$ ทั้งสองข้างของสมการ</strong>
-      $$\\frac{d}{dx}\\left(x^2 + y^2\\right) = \\frac{d}{dx}(${rad2}) \\implies \\frac{d}{dx}[x^2] + \\frac{d}{dx}[y^2] = 0$$
+      $$\\begin{align*}
+        \\frac{d}{dx}\\left[x^2 + y^2\\right] &= \\frac{d}{dx}[${rad2}] \\\\
+        \\frac{d}{dx}[x^2] + \\frac{d}{dx}[y^2] &= 0
+      \\end{align*}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: คำนวณอนุพันธ์ของแต่ละพจน์</strong>
@@ -3477,10 +3488,11 @@ function genDerivImplicitCircle() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: นำผลลัพธ์มารวมกันและจัดรูปหา $\\frac{dy}{dx}$</strong><br>
-      ${adaptiveMath(
-        `2x + 2y\\frac{dy}{dx} = 0 \\implies 2y\\frac{dy}{dx} = -2x \\implies \\frac{dy}{dx} = -\\frac{2x}{2y} = -\\frac{x}{y}`,
-        `2x + 2y\\frac{dy}{dx} &= 0 \\\\ 2y\\frac{dy}{dx} &= -2x \\\\ \\frac{dy}{dx} &= -\\frac{2x}{2y} = -\\frac{x}{y}`
-      )}
+      $$\\begin{align*}
+        2x + 2y\\frac{dy}{dx} &= 0 \\\\
+        2y\\frac{dy}{dx} &= -2x \\\\
+        \\frac{dy}{dx} &= -\\frac{2x}{2y} = -\\frac{x}{y}
+      \\end{align*}$$
       ดังนั้น $$\\frac{dy}{dx} = -\\frac{x}{y}$$
     </div>
     <div class="solution-step">
@@ -3491,7 +3503,7 @@ function genDerivImplicitCircle() {
   `;
 
   return {
-    topic: "derivative",
+    topic: "implicit",
     category: "อนุพันธ์โดยปริยาย: สมการวงกลม",
     difficulty: "hard",
     probLatex: `x^2 + y^2 = ${rad2}`,
@@ -3537,8 +3549,8 @@ function genDerivImplicitPolynomial() {
   `;
 
   let customAnsContent = `
-    <strong>อนุพันธ์โดยปริยาย:</strong> $$\\displaystyle \\frac{dy}{dx} = \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}$$
-    <strong>ค่าที่จุด $(${x0}, ${y0})$:</strong> $$\\displaystyle \\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
+    <strong>อนุพันธ์โดยปริยาย:</strong> $$\displaystyle \\frac{dy}{dx} = \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}$$
+    <strong>ค่าที่จุด $(${x0}, ${y0})$:</strong> $$\displaystyle \\left.\\frac{dy}{dx}\\right|_{(${x0}, ${y0})} = ${slopeValLatex}$$
   `;
 
   let solText = `
@@ -3553,7 +3565,10 @@ function genDerivImplicitPolynomial() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาอนุพันธ์เทียบกับตัวแปร $x$ ทั้งสองข้างของสมการ</strong>
-      $$\\frac{d}{dx}\\left(${a === 1 ? "x^2" : `${a}x^2`} - ${b === 1 ? "" : b}xy + ${c === 1 ? "y^2" : `${c}y^2`}\\right) = \\frac{d}{dx}(${d}) \\implies \\frac{d}{dx}[${a === 1 ? "x^2" : `${a}x^2`}] - ${b === 1 ? "" : b}\\frac{d}{dx}[xy] + \\frac{d}{dx}[${c === 1 ? "y^2" : `${c}y^2`}] = 0$$
+      $$\\begin{align*}
+        \\frac{d}{dx}\\left[${a === 1 ? "x^2" : `${a}x^2`} - ${b === 1 ? "" : b}xy + ${c === 1 ? "y^2" : `${c}y^2`}\\right] &= \\frac{d}{dx}[${d}] \\\\
+        \\frac{d}{dx}[${a === 1 ? "x^2" : `${a}x^2`}] - ${b === 1 ? "" : b}\\frac{d}{dx}[xy] + \\frac{d}{dx}[${c === 1 ? "y^2" : `${c}y^2`}] &= 0
+      \\end{align*}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: คำนวณอนุพันธ์ของแต่ละพจน์</strong>
@@ -3565,10 +3580,12 @@ function genDerivImplicitPolynomial() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: นำผลลัพธ์มารวมกันและจัดรูปหา $\\frac{dy}{dx}$</strong><br>
-      ${adaptiveMath(
-        `${2*a}x - ${b === 1 ? "" : b}\\left(x\\frac{dy}{dx} + y\\right) + ${2*c}y\\frac{dy}{dx} = 0 \\implies \\left(${2*c}y - ${b === 1 ? "x" : `${b}x`}\\right)\\frac{dy}{dx} = ${b === 1 ? "y" : `${b}y`} - ${2*a}x`,
-        `${2*a}x - ${b === 1 ? "" : b}\\left(x\\frac{dy}{dx} + y\\right) + ${2*c}y\\frac{dy}{dx} &= 0 \\\\ ${2*a}x - ${b === 1 ? "y" : `${b}y`} - ${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx} + ${2*c}y\\frac{dy}{dx} &= 0 \\\\ \\left(${2*c}y - ${b === 1 ? "x" : `${b}x`}\\right)\\frac{dy}{dx} &= ${b === 1 ? "y" : `${b}y`} - ${2*a}x`
-      )}
+      $$\\begin{align*}
+        ${2*a}x - ${b === 1 ? "" : b}\\left(x\\frac{dy}{dx} + y\\right) + ${2*c}y\\frac{dy}{dx} &= 0 \\\\
+        ${2*a}x - ${b === 1 ? "y" : `${b}y`} - ${b === 1 ? "x" : `${b}x`}\\frac{dy}{dx} + ${2*c}y\\frac{dy}{dx} &= 0 \\\\
+        \\left(${2*c}y - ${b === 1 ? "x" : `${b}x`}\\right)\\frac{dy}{dx} &= ${b === 1 ? "y" : `${b}y`} - ${2*a}x \\\\
+        \\frac{dy}{dx} &= \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}
+      \\end{align*}$$
       ดังนั้น $$\\frac{dy}{dx} = \\frac{${b === 1 ? "y" : `${b}y`} - ${2*a}x}{${2*c}y - ${b === 1 ? "x" : `${b}x`}}$$
     </div>
     <div class="solution-step">
@@ -3579,7 +3596,7 @@ function genDerivImplicitPolynomial() {
   `;
 
   return {
-    topic: "derivative",
+    topic: "implicit",
     category: "อนุพันธ์โดยปริยาย: พหุนามผสม xy",
     difficulty: "hard",
     probLatex: eqLatex,
@@ -4191,11 +4208,11 @@ const limitGenerators = [
   genLimitTrigTanSec
 ];
 
-const derivGenerators = [
+// 1. หมวดอนุพันธ์ฟังก์ชันชัดแจ้ง (Explicit Derivatives: y = f(x)) - ไม่รวมโดยปริยายและเส้นสัมผัส
+const explicitDerivGenerators = [
   genDerivEasyPoly,
   genDerivEasyTrig,
   genDerivEasyExp,
-  genDerivEasyTangent,
   genDerivFractionalPower,
   genDerivProductPoly,
   genDerivMedProductExp,
@@ -4210,15 +4227,12 @@ const derivGenerators = [
   genDerivInverseTrigArcCosCot,
   genDerivMixedPolyCot,
   genDerivGeneralExp,
-  genDerivNormalLine,
   genDerivHardLogDiff,
   genDerivHardDamped,
   genDerivHardInverseTrigCancellation,
   genDerivHardArctanRational,
   genDerivHardLogNestedRadical,
   genDerivHardSecondDerivative,
-  genDerivImplicitCircle,
-  genDerivImplicitPolynomial,
   genDerivInverseTrigArcSecCsc,
   genDerivMixedExpArcCot,
   genDerivMixedNestedTrig,
@@ -4226,17 +4240,28 @@ const derivGenerators = [
   genDerivMixedLogTrig
 ];
 
-const tangentNormalGenerators = [
-  genDerivEasyTangent,
-  genDerivNormalLine
-];
+// Alias เพื่อความเข้ากันได้
+const derivGenerators = explicitDerivGenerators;
 
+// 2. หมวดอนุพันธ์ฟังก์ชันโดยปริยาย (Implicit Derivatives)
 const implicitGenerators = [
   genDerivImplicitCircle,
   genDerivImplicitPolynomial
 ];
 
-const allGenerators = [...limitGenerators, ...derivGenerators];
+// 3. หมวดเส้นสัมผัสและเส้นปกติ (Tangent & Normal Lines)
+const tangentNormalGenerators = [
+  genDerivEasyTangent,
+  genDerivNormalLine
+];
+
+// หมวดทั้งหมด (คละบทเรียน)
+const allGenerators = [
+  ...limitGenerators,
+  ...explicitDerivGenerators,
+  ...implicitGenerators,
+  ...tangentNormalGenerators
+];
 
 function loadStats() {
   try {
@@ -4332,9 +4357,9 @@ function setFilterDifficulty(diff) {
 function getActivePool() {
   let pool = allGenerators;
   if (currentTopic === 'limit') pool = limitGenerators;
-  else if (currentTopic === 'derivative') pool = derivGenerators;
-  else if (currentTopic === 'tangent_normal') pool = tangentNormalGenerators;
+  else if (currentTopic === 'derivative' || currentTopic === 'explicit') pool = explicitDerivGenerators;
   else if (currentTopic === 'implicit') pool = implicitGenerators;
+  else if (currentTopic === 'tangent_normal') pool = tangentNormalGenerators;
 
   if (currentMode === 'filter' && filterDifficulty !== 'all') {
     let filtered = pool.filter(g => {
@@ -4445,19 +4470,22 @@ function startQuizSession() {
   quizSession.score = 0;
   quizSession.questions = [];
 
-  let pool = allGenerators;
-  if (currentTopic === 'limit') pool = limitGenerators;
-  else if (currentTopic === 'derivative') pool = derivGenerators;
+  let pool = getActivePool();
 
   let easyPool = pool.filter(g => g().difficulty === 'easy');
   let medPool = pool.filter(g => g().difficulty === 'med');
   let hardPool = pool.filter(g => g().difficulty === 'hard');
 
-  quizSession.questions.push(easyPool[Math.floor(Math.random()*easyPool.length)]());
-  quizSession.questions.push(medPool[Math.floor(Math.random()*medPool.length)]());
-  quizSession.questions.push(medPool[Math.floor(Math.random()*medPool.length)]());
-  quizSession.questions.push(hardPool[Math.floor(Math.random()*hardPool.length)]());
-  quizSession.questions.push(hardPool[Math.floor(Math.random()*hardPool.length)]());
+  const pick = (arr, fallbackArr) => {
+    let target = (arr && arr.length > 0) ? arr : fallbackArr;
+    return target[Math.floor(Math.random() * target.length)]();
+  };
+
+  quizSession.questions.push(pick(easyPool, pool));
+  quizSession.questions.push(pick(medPool, pool));
+  quizSession.questions.push(pick(medPool, pool));
+  quizSession.questions.push(pick(hardPool, pool));
+  quizSession.questions.push(pick(hardPool, pool));
 
   document.getElementById('quizReportCard').classList.add('hidden');
   loadQuizQuestion(0);

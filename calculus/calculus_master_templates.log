@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2026.2.25)  27 AUG 2026 19:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (TeX Live 2022/dev) (preloaded format=pdflatex 2026.2.25)  27 AUG 2026 20:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1152,31 +1152,51 @@ Package hyperref Warning: Token not allowed in a PDF string (Unicode):
 [21]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 994.
+(hyperref)                removing `math shift' on input line 995.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 994.
+(hyperref)                removing `math shift' on input line 995.
 
 [22] [23]
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1076.
+(hyperref)                removing `math shift' on input line 1046.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `math shift' on input line 1076.
+(hyperref)                removing `superscript' on input line 1046.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `superscript' on input line 1046.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `superscript' on input line 1046.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1046.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1085.
+
+
+Package hyperref Warning: Token not allowed in a PDF string (Unicode):
+(hyperref)                removing `math shift' on input line 1085.
 
 [24] [25] [26] [27] (./calculus_master_templates.aux)
 Package rerunfilecheck Info: File `calculus_master_templates.out' has not chang
 ed.
-(rerunfilecheck)             Checksum: 54FEAD72417C8D81D8E03BFDADAA353F;10721.
+(rerunfilecheck)             Checksum: D245F8AA58729E3D0F9F05703208E43D;10751.
  ) 
 Here is how much of TeX's memory you used:
- 24328 strings out of 478287
- 479229 string characters out of 5846750
- 792215 words of memory out of 5000000
- 42069 multiletter control sequences out of 15000+600000
+ 24322 strings out of 478287
+ 479178 string characters out of 5846750
+ 792008 words of memory out of 5000000
+ 42066 multiletter control sequences out of 15000+600000
  480709 words of font info for 72 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  99i,13n,104p,508b,1004s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1199,10 +1219,10 @@ e/2021/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2
 exmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2021/tex
 mf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2021/texm
 f-dist/fonts/type1/public/cm-super/sfrm1095.pfb>
-Output written on calculus_master_templates.pdf (27 pages, 295010 bytes).
+Output written on calculus_master_templates.pdf (27 pages, 295766 bytes).
 PDF statistics:
- 439 PDF objects out of 1000 (max. 8388607)
- 370 compressed objects within 4 object streams
- 85 named destinations out of 1000 (max. 500000)
+ 435 PDF objects out of 1000 (max. 8388607)
+ 366 compressed objects within 4 object streams
+ 82 named destinations out of 1000 (max. 500000)
  301 words of extra memory for PDF output out of 10000 (max. 10000000)
 
