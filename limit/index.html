@@ -57,6 +57,22 @@
       border: 1px solid rgba(122, 92, 58, 0.2);
     }
 
+    .badge-easy {
+      background: rgba(46, 125, 50, 0.1);
+      color: #2e7d32;
+      border-color: rgba(46, 125, 50, 0.3);
+    }
+    .badge-med {
+      background: rgba(230, 81, 0, 0.1);
+      color: #e65100;
+      border-color: rgba(230, 81, 0, 0.3);
+    }
+    .badge-hard {
+      background: rgba(198, 40, 40, 0.1);
+      color: #c62828;
+      border-color: rgba(198, 40, 40, 0.3);
+    }
+
     .stats {
       font-size: 0.9rem;
       color: var(--muted);
@@ -250,8 +266,8 @@
     }
 
     .solution-step {
-      margin-bottom: 12px;
-      padding-bottom: 12px;
+      margin-bottom: 14px;
+      padding-bottom: 14px;
       border-bottom: 1px dashed rgba(122, 92, 58, 0.15);
     }
 
@@ -261,9 +277,22 @@
       border-bottom: none;
     }
 
-    .highlight-term {
-      color: #9c4221;
-      font-weight: 600;
+    .adaptive-math {
+      width: 100%;
+      overflow-x: auto;
+      margin: 4px 0;
+    }
+    .adaptive-math .math-single {
+      display: block;
+    }
+    .adaptive-math .math-align {
+      display: none;
+    }
+    .adaptive-math.use-align .math-single {
+      display: none;
+    }
+    .adaptive-math.use-align .math-align {
+      display: block;
     }
 
     @media (max-width: 600px) {
@@ -289,12 +318,15 @@
 </header>
 
 <main>
-  <h3>แบบฝึกหัดลิมิต</h3>
-  <p class="byline">สุ่มโจทย์ลิมิตในรูปแบบไม่กำหนด $\left(\frac{0}{0}\right)$ คละทุกเทคนิค พร้อมระบบตรวจคำตอบและวิธีทำอย่างละเอียด</p>
+  <h3>แบบฝึกหัดลิมิต (Calculus 1)</h3>
+  <p class="byline">คละโจทย์ลิมิตในรูปแบบไม่กำหนด ($\frac{0}{0}, \infty - \infty$) ทุกระดับ: การแยกตัวประกอบ, สังยุครากที่สอง/สาม, สังยุคซ้อน, และลิมิตตรีโกณมิติ</p>
 
   <div class="app-card">
     <div class="meta-bar">
-      <div id="topicBadge" class="badge">สถานะ: รอสุ่มโจทย์</div>
+      <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+        <div id="topicBadge" class="badge">สถานะ: รอสุ่มโจทย์</div>
+        <div id="diffBadge" class="badge hidden">ระดับความยาก</div>
+      </div>
       <div class="stats">
         <span>ทำถูก: <strong id="scoreCorrect">0</strong> ข้อ</span>
         <span>Streak: <strong id="streakCount">0</strong> 🔥</span>
@@ -392,7 +424,8 @@ function poly2(A, B, C) {
   if (B !== 0) {
     let sign = B > 0 ? (res ? " + " : "") : (res ? " - " : "-");
     let absB = Math.abs(B);
-    res += `${sign}${absB === 1 ? "" : absB}x`;
+    let termX = absB === 1 ? "x" : `${absB}x`;
+    res += `${sign}${termX}`;
   }
   if (C !== 0) {
     let sign = C > 0 ? (res ? " + " : "") : (res ? " - " : "-");
@@ -413,46 +446,195 @@ function formatRoot3(k, b) {
   return b > 0 ? `\\sqrt[3]{${termX} + ${b}}` : `\\sqrt[3]{${termX} - ${Math.abs(b)}}`;
 }
 
+function adaptiveMath(singleLatex, alignLatex) {
+  return `
+    <div class="adaptive-math">
+      <div class="math-single">$$\\displaystyle ${singleLatex}$$</div>
+      <div class="math-align">$$\\begin{align*} ${alignLatex} \\end{align*}$$</div>
+    </div>
+  `;
+}
+
+function adaptMathEquations() {
+  const blocks = document.querySelectorAll('.adaptive-math');
+  blocks.forEach(block => {
+    block.classList.remove('use-align');
+    const singleEl = block.querySelector('.math-single');
+    if (!singleEl) return;
+    const mjxEl = singleEl.querySelector('mjx-container') || singleEl;
+    const containerWidth = block.clientWidth;
+    const mathWidth = mjxEl.scrollWidth || singleEl.scrollWidth;
+
+    if (containerWidth > 0 && mathWidth > containerWidth + 2) {
+      block.classList.add('use-align');
+    }
+  });
+}
+
 function safeRenderMath(element) {
   if (window.MathJax && MathJax.typesetPromise) {
-    MathJax.typesetPromise(element ? [element] : []).catch(function(err) {
+    MathJax.typesetPromise(element ? [element] : []).then(function() {
+      setTimeout(adaptMathEquations, 50);
+    }).catch(function(err) {
       console.warn('MathJax typesetting error:', err);
     });
   }
 }
 
-// ==========================================
-// 2. Generators แยกตามประเภท (Indeterminate 0/0)
-// ==========================================
+window.addEventListener('resize', function() {
+  adaptMathEquations();
+});
 
-// 2.1 แยกตัวประกอบ (Factoring)
-function generateFactoring() {
+// =========================================================
+// 2. Generators: สลับระดับง่าย (🟢) / ปานกลาง (🟡) / ท้าทาย (🔴)
+// =========================================================
+
+// --- กลุ่มระดับง่าย (🟢 พื้นฐาน) ---
+
+// 2.1 แยกตัวประกอบผลต่างกำลังสองพื้นฐาน (Basic Quadratic Factoring)
+function genEasyFactoring() {
+  let a = randNonZero(-4, 4);
+  let a2 = a * a;
+  let probLatex = `\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{x - ${a >= 0 ? a : `(${a})`}}`;
+  let finalVal = 2 * a;
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      แทนค่า $x = ${a}$ ในโจทย์ จะได้ผลลัพธ์ในรูปแบบไม่กำหนด $\\frac{0}{0}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: แยกตัวประกอบผลต่างกำลังสองที่ตัวเศษ</strong><br>
+      ${adaptiveMath(
+        `\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{x - ${a >= 0 ? a : `(${a})`}} = \\lim_{x \\to ${a}} \\frac{(x - ${a})(x + ${a})}{x - ${a}}`,
+        `\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{x - ${a >= 0 ? a : `(${a})`}} &= \\lim_{x \\to ${a}} \\frac{(x - ${a})(x + ${a})}{x - ${a}}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: ตัดทอนพจน์ร่วม $(x - ${a})$ และแทนค่า $x = ${a}$</strong><br>
+      ${adaptiveMath(
+        `= \\lim_{x \\to ${a}} (x + ${a}) = (${a}) + (${a}) = ${finalVal}`,
+        `&= \\lim_{x \\to ${a}} (x + ${a}) \\\\ &= (${a}) + (${a}) \\\\ &= ${finalVal}`
+      )}
+      ดังนั้น $$\\lim_{x \\to ${a}} \\frac{x^2 - ${a2}}{x - ${a >= 0 ? a : `(${a})`}} = ${finalVal}$$
+    </div>
+  `;
+
+  return {
+    category: "การแยกตัวประกอบผลต่างกำลังสอง (Difference of Squares)",
+    difficulty: "easy",
+    probLatex: probLatex,
+    ansLatex: `${finalVal}`,
+    solHtml: solText,
+    exactNum: finalVal,
+    exactDen: 1
+  };
+}
+
+// 2.2 ลิมิตตรีโกณมิติพื้นฐาน (Basic Trig Limit: sin(kx)/(mx))
+function genEasyTrig() {
+  let k = rand(2, 5);
+  let m = rand(1, 4);
+  let probLatex = `\\lim_{x \\to 0} \\frac{\\sin(${k}x)}{${m === 1 ? "x" : `${m}x`}}`;
+  let finalValLatex = toFrac(k, m);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      เมื่อ $x \\to 0$ พบว่า $\\frac{\\sin(0)}{0} = \\frac{0}{0}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: ใช้สมบัติลิมิตมาตรฐาน $\\lim_{\\theta \\to 0} \\frac{\\sin \\theta}{\\theta} = 1$</strong><br>
+      จัดรูปมุมให้ตรงกันโดยคูณและหารด้วย $${k}$:<br>
+      ${adaptiveMath(
+        `\\lim_{x \\to 0} \\frac{\\sin(${k}x)}{${m === 1 ? "x" : `${m}x`}} = \\lim_{x \\to 0} \\left( \\frac{\\sin(${k}x)}{${k}x} \\cdot \\frac{${k}}{${m}} \\right)`,
+        `\\lim_{x \\to 0} \\frac{\\sin(${k}x)}{${m === 1 ? "x" : `${m}x`}} &= \\lim_{x \\to 0} \\left( \\frac{\\sin(${k}x)}{${k}x} \\cdot \\frac{${k}}{${m}} \\right)`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: คำนวณค่าลิมิต</strong><br>
+      ${adaptiveMath(
+        `= (1) \\cdot \\frac{${k}}{${m}} = ${finalValLatex}`,
+        `&= (1) \\cdot \\frac{${k}}{${m}} \\\\ &= ${finalValLatex}`
+      )}
+      ดังนั้น $$\\lim_{x \\to 0} \\frac{\\sin(${k}x)}{${m === 1 ? "x" : `${m}x`}} = ${finalValLatex}$$
+    </div>
+  `;
+
+  return {
+    category: "ลิมิตตรีโกณมิติพื้นฐาน (Basic Trigonometric Limit)",
+    difficulty: "easy",
+    probLatex: probLatex,
+    ansLatex: finalValLatex,
+    solHtml: solText,
+    exactNum: k,
+    exactDen: m
+  };
+}
+
+// 2.3 ลิมิตเอกซ์โพเนนเชียลพื้นฐาน (e^(kx) - 1)/(mx)
+function genEasyExpLimit() {
+  let k = rand(2, 5);
+  let m = rand(1, 4);
+  let probLatex = `\\lim_{x \\to 0} \\frac{e^{${k}x} - 1}{${m === 1 ? "x" : `${m}x`}}`;
+  let finalValLatex = toFrac(k, m);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      เมื่อแทนค่า $x = 0$ จะได้ $\\frac{e^0 - 1}{0} = \\frac{0}{0}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: ใช้ลิมิตมาตรฐาน $\\lim_{u \\to 0} \\frac{e^u - 1}{u} = 1$</strong><br>
+      จัดรูปตัวแปร $u = ${k}x$ จะได้ว่า<br>
+      ${adaptiveMath(
+        `\\lim_{x \\to 0} \\frac{e^{${k}x} - 1}{${m === 1 ? "x" : `${m}x`}} = \\lim_{x \\to 0} \\left( \\frac{e^{${k}x} - 1}{${k}x} \\cdot \\frac{${k}}{${m}} \\right)`,
+        `\\lim_{x \\to 0} \\frac{e^{${k}x} - 1}{${m === 1 ? "x" : `${m}x`}} &= \\lim_{x \\to 0} \\left( \\frac{e^{${k}x} - 1}{${k}x} \\cdot \\frac{${k}}{${m}} \\right)`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: คำนวณค่าลิมิต</strong><br>
+      ${adaptiveMath(
+        `= (1) \\cdot \\frac{${k}}{${m}} = ${finalValLatex}`,
+        `&= (1) \\cdot \\frac{${k}}{${m}} \\\\ &= ${finalValLatex}`
+      )}
+      ดังนั้น $$\\lim_{x \\to 0} \\frac{e^{${k}x} - 1}{${m === 1 ? "x" : `${m}x`}} = ${finalValLatex}$$
+    </div>
+  `;
+
+  return {
+    category: "ลิมิตเอกซ์โพเนนเชียลพื้นฐาน (Basic Exponential Limit)",
+    difficulty: "easy",
+    probLatex: probLatex,
+    ansLatex: finalValLatex,
+    solHtml: solText,
+    exactNum: k,
+    exactDen: m
+  };
+}
+
+// --- กลุ่มระดับปานกลาง (🟡 ปานกลาง) ---
+
+// 2.4 การแยกตัวประกอบพหุนามทั่วไป (General Quadratic Factoring)
+function genMedFactoring() {
   let a = rand(-3, 3);
   let termCancel = (a === 0) ? "x" : (a > 0 ? `x - ${a}` : `x + ${Math.abs(a)}`);
   
   let p1 = rand(1, 2), q1 = rand(-3, 3);
   let p2 = rand(1, 2), q2 = rand(-3, 3);
-  
-  let deg1 = rand(1, 2);
-  let deg2 = rand(1, 2);
-  
-  // ป้องกันตัวส่วนเป็น 0 ที่ x = a หลังตัดทอน
-  if (deg2 === 2) {
-    while (p2 * a + q2 === 0) { q2 = rand(-3, 3); }
-  }
+  while (p2 * a + q2 === 0) { q2 = rand(-3, 3); }
 
-  let numExp = (deg1 === 2) ? poly2(p1, q1 - a * p1, -a * q1) : poly1(p1, -a * p1);
-  let denExp = (deg2 === 2) ? poly2(p2, q2 - a * p2, -a * q2) : poly1(p2, -a * p2);
+  let numExp = poly2(p1, q1 - a * p1, -a * q1);
+  let denExp = poly2(p2, q2 - a * p2, -a * q2);
 
-  let numFact = (deg1 === 2) ? `(${termCancel})(${poly1(p1, q1)})` : `${p1 === 1 ? "" : p1}(${termCancel})`;
-  let denFact = (deg2 === 2) ? `(${termCancel})(${poly1(p2, q2)})` : `${p2 === 1 ? "" : p2}(${termCancel})`;
+  let numFact = `(${termCancel})(${poly1(p1, q1)})`;
+  let denFact = `(${termCancel})(${poly1(p2, q2)})`;
 
-  let numSimp = (deg1 === 2) ? poly1(p1, q1) : `${p1}`;
-  let denSimp = (deg2 === 2) ? poly1(p2, q2) : `${p2}`;
+  let numSimp = poly1(p1, q1);
+  let denSimp = poly1(p2, q2);
 
-  // แก้บั๊กดีกรี 1: คำนวณค่าที่แท้จริง
-  let numVal = (deg1 === 2) ? (p1 * a + q1) : p1;
-  let denVal = (deg2 === 2) ? (p2 * a + q2) : p2;
+  let numVal = p1 * a + q1;
+  let denVal = p2 * a + q2;
 
   let finalValLatex = toFrac(numVal, denVal);
   let probLatex = `\\lim_{x \\to ${a}} \\frac{${numExp}}{${denExp}}`;
@@ -464,20 +646,31 @@ function generateFactoring() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: แยกตัวประกอบเศษและส่วน</strong><br>
-      $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{${numFact}}{${denFact}}$$
+      ${adaptiveMath(
+        `\\lim_{x \\to ${a}} \\frac{${numExp}}{${denExp}} = \\lim_{x \\to ${a}} \\frac{${numFact}}{${denFact}}`,
+        `\\lim_{x \\to ${a}} \\frac{${numExp}}{${denExp}} &= \\lim_{x \\to ${a}} \\frac{${numFact}}{${denFact}}`
+      )}
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: ตัดทอนพจน์ร่วม $(${termCancel})$</strong><br>
-      $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numSimp}}{${denSimp}}$$
+      ${adaptiveMath(
+        `= \\lim_{x \\to ${a}} \\frac{${numSimp}}{${denSimp}}`,
+        `&= \\lim_{x \\to ${a}} \\frac{${numSimp}}{${denSimp}}`
+      )}
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${a}$ เพื่อหาค่าลิมิต</strong><br>
-      $$\\displaystyle = ${finalValLatex}$$
+      ${adaptiveMath(
+        `= \\frac{${numVal}}{${denVal}} = ${finalValLatex}`,
+        `&= \\frac{${numVal}}{${denVal}} \\\\ &= ${finalValLatex}`
+      )}
+      ดังนั้น $$\\lim_{x \\to ${a}} \\frac{${numExp}}{${denExp}} = ${finalValLatex}$$
     </div>
   `;
 
   return {
-    category: "การแยกตัวประกอบ (Factoring)",
+    category: "การแยกตัวประกอบพหุนาม (Quadratic Factoring)",
+    difficulty: "med",
     probLatex: probLatex,
     ansLatex: finalValLatex,
     solHtml: solText,
@@ -486,8 +679,8 @@ function generateFactoring() {
   };
 }
 
-// 2.2 สังยุครากที่สอง (Square Root Conjugate)
-function generateSqrtConjugate() {
+// 2.5 สังยุครากที่สองเดี่ยว (Single Square Root Conjugate)
+function genMedSqrtConjugate() {
   let a = rand(-2, 3);
   let k = rand(1, 2);
   let c = rand(1, 3);
@@ -495,114 +688,66 @@ function generateSqrtConjugate() {
   let rootStr = formatRoot2(k, b);
   let termCancel = (a === 0) ? "x" : (a > 0 ? `x - ${a}` : `x + ${Math.abs(a)}`);
 
-  let rootPos = Math.random() < 0.5 ? 'num' : 'den';
-  let rootOrder = Math.random() < 0.5 ? 'rootFirst' : 'constFirst';
+  let rootPart = `${rootStr} - ${c}`;
+  let conj = `${rootStr} + ${c}`;
+  let factorMultiplier = k;
 
-  let rootPart = (rootOrder === 'rootFirst') ? `${rootStr} - ${c}` : `${c} - ${rootStr}`;
-  let conj = (rootOrder === 'rootFirst') ? `${rootStr} + ${c}` : `${c} + ${rootStr}`;
-  let factorMultiplier = (rootOrder === 'rootFirst') ? k : -k;
+  let p = rand(1, 2);
+  let polyExp = (p === 1) ? termCancel : `${p}(${termCancel})`;
+  if (p === 1 && a === 0) polyExp = "x";
+  else if (p > 1 && a === 0) polyExp = `${p}x`;
 
-  let p = rand(1, 2), q = rand(-2, 2);
-  let polyDeg = rand(1, 2);
-  if (polyDeg === 2) {
-    while (p * a + q === 0) { q = rand(-2, 2); }
-  }
+  let probLatex = `\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}}`;
+  let numSimpText = factorMultiplier === 1 ? `(${termCancel})` : `${factorMultiplier}(${termCancel})`;
+  let numAfterCancel = `${factorMultiplier}`;
+  let denAfterCancel = (p === 1) ? `(${conj})` : `${p}(${conj})`;
 
-  let polyExp = (polyDeg === 2) ? poly2(p, q - a * p, -a * q) : poly1(p, -a * p);
-  let polyFact = (polyDeg === 2) ? `(${termCancel})(${poly1(p, q)})` : `${p === 1 ? "" : p}(${termCancel})`;
-  let polySimp = (polyDeg === 2) ? `(${poly1(p, q)})` : (p === 1 ? "" : `${p}`);
+  let finalNum = factorMultiplier;
+  let finalDen = p * (2 * c);
+  let finalValLatex = toFrac(finalNum, finalDen);
 
-  // แก้บั๊กดีกรี 1:
-  let polyVal = (polyDeg === 2) ? (p * a + q) : p;
-  let conjVal = 2 * c;
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      แทนค่า $x = ${a}$ พบว่าอยู่ในรูปแบบ $\\frac{0}{0}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: คูณด้วยสังยุค (Conjugate) $(${conj})$ ทั้งเศษและส่วน</strong><br>
+      ${adaptiveMath(
+        `\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}} = \\lim_{x \\to ${a}} \\frac{(${rootPart})(${conj})}{(${polyExp})(${conj})}`,
+        `\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}} &= \\lim_{x \\to ${a}} \\frac{(${rootPart})(${conj})}{(${polyExp})(${conj})}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: จัดรูปผลต่างกำลังสองที่ตัวเศษ</strong><br>
+      ${adaptiveMath(
+        `= \\lim_{x \\to ${a}} \\frac{${numSimpText}}{(${polyExp})(${conj})}`,
+        `&= \\lim_{x \\to ${a}} \\frac{${numSimpText}}{(${polyExp})(${conj})}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: ตัดทอนพจน์ร่วม $(${termCancel})$ ออก และแทนค่า $x = ${a}$</strong><br>
+      ${adaptiveMath(
+        `= \\lim_{x \\to ${a}} \\frac{${numAfterCancel}}{${denAfterCancel}} = \\frac{${numAfterCancel}}{${finalDen}} = ${finalValLatex}`,
+        `&= \\lim_{x \\to ${a}} \\frac{${numAfterCancel}}{${denAfterCancel}} \\\\ &= \\frac{${numAfterCancel}}{${finalDen}} = ${finalValLatex}`
+      )}
+      ดังนั้น $$\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}} = ${finalValLatex}$$
+    </div>
+  `;
 
-  let probLatex = "", solText = "", finalNum = 0, finalDen = 1;
-
-  if (rootPos === 'num') {
-    probLatex = `\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}}`;
-    let numSimpText = factorMultiplier === 1 ? `(${termCancel})` : (factorMultiplier === -1 ? `-(${termCancel})` : `${factorMultiplier}(${termCancel})`);
-    let numAfterCancel = `${factorMultiplier}`;
-    let denAfterCancel = polySimp ? `${polySimp}(${conj})` : `(${conj})`;
-
-    finalNum = factorMultiplier;
-    finalDen = polyVal * conjVal;
-    let finalValLatex = toFrac(finalNum, finalDen);
-
-    solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
-        แทนค่า $x = ${a}$ พบว่าอยู่ในรูปแบบ $\\frac{0}{0}$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: คูณด้วยสังยุค (Conjugate) $(${conj})$ ทั้งเศษและส่วน</strong><br>
-        $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{(${rootPart})(${conj})}{(${polyExp})(${conj})}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: จัดรูปผลต่างกำลังสองที่ตัวเศษและแยกตัวประกอบตัวส่วน</strong><br>
-        $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numSimpText}}{${polyFact}(${conj})}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: ตัดทอนพจน์ร่วม $(${termCancel})$ ออก</strong><br>
-        $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numAfterCancel}}{${denAfterCancel}}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 5: แทนค่า $x = ${a}$</strong><br>
-        $$\\displaystyle = ${finalValLatex}$$
-      </div>
-    `;
-    return {
-      category: "สังยุครากที่สอง (Square Root Conjugate)",
-      probLatex: probLatex,
-      ansLatex: finalValLatex,
-      solHtml: solText,
-      exactNum: finalNum,
-      exactDen: finalDen
-    };
-  } else {
-    probLatex = `\\lim_{x \\to ${a}} \\frac{${polyExp}}{${rootPart}}`;
-    let denSimpText = factorMultiplier === 1 ? `(${termCancel})` : (factorMultiplier === -1 ? `-(${termCancel})` : `${factorMultiplier}(${termCancel})`);
-    let numAfterCancel = polySimp ? `${polySimp}(${conj})` : `(${conj})`;
-    let denAfterCancel = `${factorMultiplier}`;
-
-    finalNum = polyVal * conjVal;
-    finalDen = factorMultiplier;
-    let finalValLatex = toFrac(finalNum, finalDen);
-
-    solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
-        แทนค่า $x = ${a}$ พบว่าอยู่ในรูปแบบ $\\frac{0}{0}$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: คูณด้วยสังยุค (Conjugate) $(${conj})$ ทั้งเศษและส่วน</strong><br>
-        $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{(${polyExp})(${conj})}{(${rootPart})(${conj})}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: แยกตัวประกอบตัวเศษและจัดรูปผลต่างกำลังสองที่ตัวส่วน</strong><br>
-        $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${polyFact}(${conj})}{${denSimpText}}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: ตัดทอนพจน์ร่วม $(${termCancel})$ ออก</strong><br>
-        $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${numAfterCancel}}{${denAfterCancel}}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 5: แทนค่า $x = ${a}$</strong><br>
-        $$\\displaystyle = ${finalValLatex}$$
-      </div>
-    `;
-    return {
-      category: "สังยุครากที่สอง (Square Root Conjugate)",
-      probLatex: probLatex,
-      ansLatex: finalValLatex,
-      solHtml: solText,
-      exactNum: finalNum,
-      exactDen: finalDen
-    };
-  }
+  return {
+    category: "สังยุครากที่สอง (Square Root Conjugate)",
+    difficulty: "med",
+    probLatex: probLatex,
+    ansLatex: finalValLatex,
+    solHtml: solText,
+    exactNum: finalNum,
+    exactDen: finalDen
+  };
 }
 
-// 2.3 สังยุครากที่สาม (Cube Root Conjugate: ผลต่างกำลังสาม)
-function generateCbrtConjugate() {
+// 2.6 สังยุครากที่สาม / ผลต่างกำลังสาม (Cube Root Conjugate)
+function genMedCbrtConjugate() {
   let a = rand(-2, 2);
   let k = rand(1, 2);
   let c = rand(1, 2);
@@ -610,92 +755,73 @@ function generateCbrtConjugate() {
   let rootStr = formatRoot3(k, b);
   let termCancel = (a === 0) ? "x" : (a > 0 ? `x - ${a}` : `x + ${Math.abs(a)}`);
 
-  let rootPos = Math.random() < 0.5 ? 'num' : 'den';
-  let rootOrder = Math.random() < 0.5 ? 'rootFirst' : 'constFirst';
+  let rootPart = `${rootStr} - ${c}`;
+  let factorMultiplier = k;
 
-  let rootPart = (rootOrder === 'rootFirst') ? `${rootStr} - ${c}` : `${c} - ${rootStr}`;
-  let factorMultiplier = (rootOrder === 'rootFirst') ? k : -k;
-
-  // ผลต่างกำลังสาม: (u - v)(u^2 + uv + v^2) = u^3 - v^3
   let u2 = `(${rootStr})^{2}`;
   let uv = (c === 1) ? `${rootStr}` : `${c}${rootStr}`;
   let v2 = `${c * c}`;
   let conj = `${u2} + ${uv} + ${v2}`;
-  let conjVal = 3 * c * c; // ที่ x = a: c^2 + c^2 + c^2 = 3c^2
+  let conjVal = 3 * c * c;
 
   let p = rand(1, 2);
   let polyExp = (p === 1) ? termCancel : `${p}(${termCancel})`;
   if (p === 1 && a === 0) polyExp = "x";
   else if (p > 1 && a === 0) polyExp = `${p}x`;
 
-  let probLatex = "", solText = "", finalNum = 0, finalDen = 1;
+  let probLatex = `\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}}`;
+  let finalNum = factorMultiplier;
+  let finalDen = p * conjVal;
+  let finalValLatex = toFrac(finalNum, finalDen);
 
-  if (rootPos === 'num') {
-    probLatex = `\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}}`;
-    finalNum = factorMultiplier;
-    finalDen = p * conjVal;
-    let finalValLatex = toFrac(finalNum, finalDen);
-
-    solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
-        แทนค่า $x = ${a}$ ได้ผลลัพธ์ $\\frac{0}{0}$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: ใช้เอกลักษณ์ผลต่างกำลังสาม $(A-B)(A^2+AB+B^2) = A^3 - B^3$</strong><br>
-        คูณด้วยสังยุครากที่สามทั้งเศษและส่วน:<br>
-        $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{(${rootPart})(${conj})}{(${polyExp})(${conj})}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: จัดรูปตัวเศษ</strong><br>
-        $$\\displaystyle = \\lim_{x \\to ${a}} \\frac{${factorMultiplier === 1 ? "" : (factorMultiplier === -1 ? "-" : factorMultiplier)}(${termCancel})}{(${polyExp})(${conj})}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: ตัดทอนพจน์ร่วม $(${termCancel})$ และแทนค่า $x = ${a}$</strong><br>
-        สังเกตว่าเมื่อ $x = ${a}$ พจน์สังยุคจะมีค่า $(${c})^2 + (${c})(${c}) + ${c*c} = ${conjVal}$<br>
-        $$\\displaystyle = ${finalValLatex}$$
-      </div>
-    `;
-  } else {
-    probLatex = `\\lim_{x \\to ${a}} \\frac{${polyExp}}{${rootPart}}`;
-    finalNum = p * conjVal;
-    finalDen = factorMultiplier;
-    let finalValLatex = toFrac(finalNum, finalDen);
-
-    solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
-        แทนค่า $x = ${a}$ ได้ผลลัพธ์ $\\frac{0}{0}$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: ใช้เอกลักษณ์ผลต่างกำลังสาม $(A-B)(A^2+AB+B^2) = A^3 - B^3$</strong><br>
-        คูณด้วยสังยุครากที่สามทั้งเศษและส่วน:<br>
-        $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{(${polyExp})(${conj})}{(${rootPart})(${conj})}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: ตัดทอนพจน์ร่วม $(${termCancel})$ และแทนค่า $x = ${a}$</strong><br>
-        $$\\displaystyle = ${finalValLatex}$$
-      </div>
-    `;
-  }
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      แทนค่า $x = ${a}$ ได้ผลลัพธ์ $\\frac{0}{0}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: ใช้เอกลักษณ์ผลต่างกำลังสาม $(A-B)(A^2+AB+B^2) = A^3 - B^3$</strong><br>
+      คูณด้วยสังยุครากที่สามทั้งเศษและส่วน:<br>
+      ${adaptiveMath(
+        `\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}} = \\lim_{x \\to ${a}} \\frac{(${rootPart})(${conj})}{(${polyExp})(${conj})}`,
+        `\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}} &= \\lim_{x \\to ${a}} \\frac{(${rootPart})(${conj})}{(${polyExp})(${conj})}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: จัดรูปตัวเศษ</strong><br>
+      ${adaptiveMath(
+        `= \\lim_{x \\to ${a}} \\frac{${factorMultiplier === 1 ? "" : factorMultiplier}(${termCancel})}{(${polyExp})(${conj})}`,
+        `&= \\lim_{x \\to ${a}} \\frac{${factorMultiplier === 1 ? "" : factorMultiplier}(${termCancel})}{(${polyExp})(${conj})}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: ตัดทอนพจน์ร่วม $(${termCancel})$ และแทนค่า $x = ${a}$</strong><br>
+      สังเกตว่าเมื่อ $x = ${a}$ พจน์สังยุคจะมีค่า $(${c})^2 + (${c})(${c}) + ${c*c} = ${conjVal}$<br>
+      ${adaptiveMath(
+        `= \\frac{${factorMultiplier}}{(${p})(${conjVal})} = ${finalValLatex}`,
+        `&= \\frac{${factorMultiplier}}{(${p})(${conjVal})} \\\\ &= ${finalValLatex}`
+      )}
+      ดังนั้น $$\\lim_{x \\to ${a}} \\frac{${rootPart}}{${polyExp}} = ${finalValLatex}$$
+    </div>
+  `;
 
   return {
     category: "สังยุครากที่สาม (Cube Root Conjugate)",
+    difficulty: "med",
     probLatex: probLatex,
-    ansLatex: toFrac(finalNum, finalDen),
+    ansLatex: finalValLatex,
     solHtml: solText,
     exactNum: finalNum,
     exactDen: finalDen
   };
 }
 
-// 2.4 เศษส่วนซ้อน (Complex Fraction)
-function generateComplexFraction() {
+// 2.7 เศษส่วนซ้อน (Complex Fraction)
+function genMedComplexFraction() {
   let a = randNonZero(-3, 3);
   let k = rand(1, 3);
   let probLatex = `\\lim_{x \\to ${a}} \\frac{\\frac{${k}}{x} - \\frac{${k}}{${a}}}{x - ${a >= 0 ? a : `(${a})`}}`;
   
-  // (k/x - k/a)/(x-a) = (k(a-x)/(ax)) / (x-a) = -k / (a * x) -> at x = a: -k / a^2
   let finalNum = -k;
   let finalDen = a * a;
   let finalValLatex = toFrac(finalNum, finalDen);
@@ -707,20 +833,31 @@ function generateComplexFraction() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: ทำตัวส่วนของเศษส่วนซ้อนให้เท่ากัน</strong><br>
-      $$\\displaystyle \\frac{${k}}{x} - \\frac{${k}}{${a}} = \\frac{${k}(${a}) - ${k}x}{${a}x} = \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x}$$
+      ${adaptiveMath(
+        `\\frac{${k}}{x} - \\frac{${k}}{${a}} = \\frac{${k}(${a}) - ${k}x}{${a}x} = \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x}`,
+        `\\frac{${k}}{x} - \\frac{${k}}{${a}} &= \\frac{${k}(${a}) - ${k}x}{${a}x} \\\\ &= \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x}`
+      )}
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: แทนกลับในลิมิตและตัดทอนพจน์ $(x - ${a})$</strong><br>
-      $$\\displaystyle ${probLatex} = \\lim_{x \\to ${a}} \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x(x - ${a})} = \\lim_{x \\to ${a}} \\frac{-${k}}{${a}x}$$
+      ${adaptiveMath(
+        `\\lim_{x \\to ${a}} \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x(x - ${a})} = \\lim_{x \\to ${a}} \\frac{-${k}}{${a}x}`,
+        `\\lim_{x \\to ${a}} \\frac{-${k === 1 ? "" : k}(x - ${a})}{${a}x(x - ${a})} &= \\lim_{x \\to ${a}} \\frac{-${k}}{${a}x}`
+      )}
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 4: แทนค่า $x = ${a}$</strong><br>
-      $$\\displaystyle = \\frac{-${k}}{(${a})(${a})} = ${finalValLatex}$$
+      ${adaptiveMath(
+        `= \\frac{-${k}}{(${a})(${a})} = ${finalValLatex}`,
+        `&= \\frac{-${k}}{(${a})(${a})} \\\\ &= ${finalValLatex}`
+      )}
+      ดังนั้น $$\\lim_{x \\to ${a}} \\frac{\\frac{${k}}{x} - \\frac{${k}}{${a}}}{x - ${a >= 0 ? a : `(${a})`}} = ${finalValLatex}$$
     </div>
   `;
 
   return {
     category: "เศษส่วนซ้อน (Complex Fraction)",
+    difficulty: "med",
     probLatex: probLatex,
     ansLatex: finalValLatex,
     solHtml: solText,
@@ -729,78 +866,252 @@ function generateComplexFraction() {
   };
 }
 
-// 2.5 ลิมิตตรีโกณมิติ (Trigonometric Limit)
-function generateTrigLimit() {
-  let sub = Math.random();
-  let k = rand(2, 5);
+// --- กลุ่มระดับท้าทาย (🔴 ขั้นสูง) ---
+
+// 2.8 สังยุคซ้อนทั้งเศษและส่วน (Double Conjugate Technique)
+function genHardDoubleConjugate() {
+  let a = rand(1, 3);
+  let c = rand(1, 3);
+  let p = rand(1, 3);
+  let q = rand(1, 3);
+  let p2 = p * p;
+  let q2 = q * q;
+
+  let numRoot = `\\sqrt{${a === 1 ? "x" : `${a}x`} + ${p2}} - ${p}`;
+  let denRoot = `\\sqrt{${c === 1 ? "x" : `${c}x`} + ${q2}} - ${q}`;
+  let probLatex = `\\lim_{x \\to 0} \\frac{${numRoot}}{${denRoot}}`;
+
+  let conjNum = `\\sqrt{${a === 1 ? "x" : `${a}x`} + ${p2}} + ${p}`;
+  let conjDen = `\\sqrt{${c === 1 ? "x" : `${c}x`} + ${q2}} + ${q}`;
+
+  let finalNum = a * q;
+  let finalDen = c * p;
+  let finalValLatex = toFrac(finalNum, finalDen);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      แทนค่า $x = 0$ จะได้ $\\frac{\\sqrt{${p2}} - ${p}}{\\sqrt{${q2}} - ${q}} = \\frac{0}{0}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: คูณด้วยสังยุคของทั้งตัวเศษและตัวส่วนพร้อมกัน (Double Conjugates)</strong><br>
+      คูณด้วย $(${conjNum})$ และ $(${conjDen})$ ทั้งเศษและส่วน:<br>
+      ${adaptiveMath(
+        `\\lim_{x \\to 0} \\frac{(${numRoot})(${conjNum})(${conjDen})}{(${denRoot})(${conjDen})(${conjNum})}`,
+        `\\lim_{x \\to 0} \\frac{${numRoot}}{${denRoot}} &= \\lim_{x \\to 0} \\frac{(${numRoot})(${conjNum})(${conjDen})}{(${denRoot})(${conjDen})(${conjNum})}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: ยุบผลต่างกำลังสองทั้งเศษและส่วน</strong><br>
+      สังเกตว่า $(${numRoot})(${conjNum}) = ${a === 1 ? "x" : `${a}x`}$ และ $(${denRoot})(${conjDen}) = ${c === 1 ? "x" : `${c}x`}$<br>
+      ${adaptiveMath(
+        `= \\lim_{x \\to 0} \\frac{(${a === 1 ? "x" : `${a}x`})(${conjDen})}{(${c === 1 ? "x" : `${c}x`})(${conjNum})}`,
+        `&= \\lim_{x \\to 0} \\frac{(${a === 1 ? "x" : `${a}x`})(${conjDen})}{(${c === 1 ? "x" : `${c}x`})(${conjNum})}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: ตัดทอน $x$ และแทนค่า $x = 0$</strong><br>
+      ${adaptiveMath(
+        `= \\lim_{x \\to 0} \\frac{${a}(${conjDen})}{${c}(${conjNum})} = \\frac{${a}(${2*q})}{${c}(${2*p})} = ${finalValLatex}`,
+        `&= \\lim_{x \\to 0} \\frac{${a}(${conjDen})}{${c}(${conjNum})} \\\\ &= \\frac{${a}(${2*q})}{${c}(${2*p})} = ${finalValLatex}`
+      )}
+      ดังนั้น $$\\lim_{x \\to 0} \\frac{${numRoot}}{${denRoot}} = ${finalValLatex}$$
+    </div>
+  `;
+
+  return {
+    category: "สังยุคซ้อนทั้งเศษและส่วน (Double Conjugate)",
+    difficulty: "hard",
+    probLatex: probLatex,
+    ansLatex: finalValLatex,
+    solHtml: solText,
+    exactNum: finalNum,
+    exactDen: finalDen
+  };
+}
+
+// 2.9 ลิมิตตรีโกณมิติกำลังสาม ((tan(kx) - sin(kx))/x^3)
+function genHardTrigCube() {
+  let k = rand(2, 4);
+  let probLatex = `\\lim_{x \\to 0} \\frac{\\tan(${k}x) - \\sin(${k}x)}{x^3}`;
+  let finalNum = k * k * k;
+  let finalDen = 2;
+  let finalValLatex = toFrac(finalNum, finalDen);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      เมื่อ $x \\to 0$ จะได้ $\\frac{0 - 0}{0} = \\frac{0}{0}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: แปลง $\\tan(${k}x) = \\frac{\\sin(${k}x)}{\\cos(${k}x)}$ และดึงตัวร่วม</strong><br>
+      ${adaptiveMath(
+        `\\tan(${k}x) - \\sin(${k}x) = \\frac{\\sin(${k}x)(1 - \\cos(${k}x))}{\\cos(${k}x)}`,
+        `\\tan(${k}x) - \\sin(${k}x) &= \\frac{\\sin(${k}x) - \\sin(${k}x)\\cos(${k}x)}{\\cos(${k}x)} \\\\ &= \\frac{\\sin(${k}x)(1 - \\cos(${k}x))}{\\cos(${k}x)}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: กระจายพจน์ $x^3 = x \\cdot x^2$ แยกตามฟังก์ชัน</strong><br>
+      ${adaptiveMath(
+        `\\lim_{x \\to 0} \\frac{\\sin(${k}x)}{x} \\cdot \\frac{1 - \\cos(${k}x)}{x^2} \\cdot \\frac{1}{\\cos(${k}x)}`,
+        `\\lim_{x \\to 0} \\frac{\\tan(${k}x) - \\sin(${k}x)}{x^3} &= \\lim_{x \\to 0} \\left( \\frac{\\sin(${k}x)}{x} \\cdot \\frac{1 - \\cos(${k}x)}{x^2} \\cdot \\frac{1}{\\cos(${k}x)} \\right)`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: คำนวณค่าลิมิตแต่ละส่วน</strong><br>
+      ทราบว่า $\\lim_{x \\to 0}\\frac{\\sin(${k}x)}{x} = ${k}$, $\\lim_{x \\to 0}\\frac{1-\\cos(${k}x)}{x^2} = \\frac{${k}^2}{2} = \\frac{${k*k}}{2}$ และ $\\lim_{x \\to 0}\\cos(${k}x) = 1$<br>
+      ${adaptiveMath(
+        `= (${k}) \\cdot \\left(\\frac{${k*k}}{2}\\right) \\cdot 1 = ${finalValLatex}`,
+        `&= (${k}) \\cdot \\left(\\frac{${k*k}}{2}\\right) \\cdot (1) \\\\ &= ${finalValLatex}`
+      )}
+      ดังนั้น $$\\lim_{x \\to 0} \\frac{\\tan(${k}x) - \\sin(${k}x)}{x^3} = ${finalValLatex}$$
+    </div>
+  `;
+
+  return {
+    category: "ลิมิตตรีโกณมิติกำลังสาม (Trigonometric Identity & Cubics)",
+    difficulty: "hard",
+    probLatex: probLatex,
+    ansLatex: finalValLatex,
+    solHtml: solText,
+    exactNum: finalNum,
+    exactDen: finalDen
+  };
+}
+
+// 2.10 ลิมิตตรีโกณมิติผสมผลคูณ ((1 - cos(kx))/(x*sin(mx)))
+function genHardTrigProduct() {
+  let k = rand(2, 4);
   let m = rand(1, 4);
+  let probLatex = `\\lim_{x \\to 0} \\frac{1 - \\cos(${k}x)}{x\\sin(${m === 1 ? "x" : `${m}x`})}`;
+  let finalNum = k * k;
+  let finalDen = 2 * m;
+  let finalValLatex = toFrac(finalNum, finalDen);
 
-  if (sub < 0.5) {
-    // lim_{x->0} sin(kx) / (mx) หรือ tan(kx) / (mx)
-    let isTan = Math.random() < 0.4;
-    let funcName = isTan ? "\\tan" : "\\sin";
-    let probLatex = `\\lim_{x \\to 0} \\frac{${funcName}(${k}x)}{${m === 1 ? "x" : `${m}x`}}`;
-    let finalValLatex = toFrac(k, m);
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      แทน $x = 0$ ได้ $\\frac{1 - 1}{0} = \\frac{0}{0}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: จัดรูปโดยหารด้วย $x^2$ ทั้งเศษและส่วน</strong><br>
+      ${adaptiveMath(
+        `\\lim_{x \\to 0} \\frac{\\frac{1 - \\cos(${k}x)}{x^2}}{\\frac{x\\sin(${m === 1 ? "x" : `${m}x`})}{x^2}} = \\lim_{x \\to 0} \\frac{\\frac{1 - \\cos(${k}x)}{x^2}}{\\frac{\\sin(${m === 1 ? "x" : `${m}x`})}{x}}`,
+        `\\lim_{x \\to 0} \\frac{1 - \\cos(${k}x)}{x\\sin(${m === 1 ? "x" : `${m}x`})} &= \\lim_{x \\to 0} \\frac{\\frac{1 - \\cos(${k}x)}{x^2}}{\\frac{\\sin(${m === 1 ? "x" : `${m}x`})}{x}}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: คำนวณลิมิตของเศษและส่วน</strong><br>
+      ตัวเศษ: $\\lim_{x \\to 0}\\frac{1 - \\cos(${k}x)}{x^2} = \\frac{${k}^2}{2} = \\frac{${k*k}}{2}$<br>
+      ตัวส่วน: $\\lim_{x \\to 0}\\frac{\\sin(${m === 1 ? "x" : `${m}x`})}{x} = ${m}$<br>
+      ${adaptiveMath(
+        `= \\frac{\\frac{${k*k}}{2}}{${m}} = ${finalValLatex}`,
+        `&= \\frac{\\frac{${k*k}}{2}}{${m}} \\\\ &= ${finalValLatex}`
+      )}
+      ดังนั้น $$\\lim_{x \\to 0} \\frac{1 - \\cos(${k}x)}{x\\sin(${m === 1 ? "x" : `${m}x`})} = ${finalValLatex}$$
+    </div>
+  `;
 
-    let solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
-        เมื่อ $x \\to 0$ พบว่า $\\frac{${funcName}(0)}{0} = \\frac{0}{0}$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: ใช้สมบัติลิมิตมาตรฐาน $\\lim_{\\theta \\to 0} \\frac{\\sin \\theta}{\\theta} = 1$</strong><br>
-        จัดรูปมุมให้ตรงกันโดยคูณและหารด้วย $${k}$:<br>
-        $$\\displaystyle ${probLatex} = \\lim_{x \\to 0} \\left( \\frac{${funcName}(${k}x)}{${k}x} \\cdot \\frac{${k}}{${m}} \\right)$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: หาค่าลิมิต</strong><br>
-        $$\\displaystyle = 1 \\cdot \\frac{${k}}{${m}} = ${finalValLatex}$$
-      </div>
-    `;
+  return {
+    category: "ลิมิตตรีโกณมิติผสมผลคูณ (Trig Product Limit)",
+    difficulty: "hard",
+    probLatex: probLatex,
+    ansLatex: finalValLatex,
+    solHtml: solText,
+    exactNum: finalNum,
+    exactDen: finalDen
+  };
+}
 
-    return {
-      category: "ลิมิตตรีโกณมิติ (Trigonometric Limit)",
-      probLatex: probLatex,
-      ansLatex: finalValLatex,
-      solHtml: solText,
-      exactNum: k,
-      exactDen: m
-    };
-  } else {
-    // lim_{x->0} (1 - cos(kx)) / (m x^2) -> k^2 / (2m)
-    let probLatex = `\\lim_{x \\to 0} \\frac{1 - \\cos(${k}x)}{${m === 1 ? "x^{2}" : `${m}x^{2}`}}`;
-    let finalNum = k * k;
-    let finalDen = 2 * m;
-    let finalValLatex = toFrac(finalNum, finalDen);
+// 2.11 ลิมิตอนันต์ในรูปผลต่างกรณฑ์ (Infinity Minus Infinity Conjugate)
+function genHardInfinityConjugate() {
+  let a = rand(2, 6);
+  let probLatex = `\\lim_{x \\to \\infty} \\left( \\sqrt{x^2 + ${a}x} - x \\right)`;
+  let finalNum = a;
+  let finalDen = 2;
+  let finalValLatex = toFrac(finalNum, finalDen);
 
-    let solText = `
-      <div class="solution-step">
-        <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
-        เมื่อ $x \\to 0$ ได้ $\\frac{1 - \\cos(0)}{0} = \\frac{0}{0}$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 2: คูณด้วยสังยุค $(1 + \\cos(${k}x))$ ทั้งเศษและส่วน</strong><br>
-        $$\\displaystyle ${probLatex} = \\lim_{x \\to 0} \\frac{(1 - \\cos(${k}x))(1 + \\cos(${k}x))}{${m === 1 ? "x^{2}" : `${m}x^{2}`}(1 + \\cos(${k}x))}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 3: ใช้เอกลักษณ์ $1 - \\cos^2(\\theta) = \\sin^2(\\theta)$</strong><br>
-        $$\\displaystyle = \\lim_{x \\to 0} \\left( \\frac{\\sin^2(${k}x)}{x^2} \\cdot \\frac{1}{${m}(1 + \\cos(${k}x))} \\right) = \\lim_{x \\to 0} \\left( \\frac{\\sin(${k}x)}{x} \\right)^2 \\cdot \\frac{1}{${m}(1 + \\cos(${k}x))}$$
-      </div>
-      <div class="solution-step">
-        <strong>ขั้นที่ 4: แทนค่าและหาลิมิต</strong><br>
-        $$\\displaystyle = (${k})^2 \\cdot \\frac{1}{${m}(1 + 1)} = \\frac{${k*k}}{${2*m}} = ${finalValLatex}$$
-      </div>
-    `;
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      เมื่อ $x \\to \\infty$ จะได้รูปแบบไม่กำหนด $\\infty - \\infty$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: คูณด้วยสังยุค $(\\sqrt{x^2 + ${a}x} + x)$ ทั้งเศษและส่วน</strong><br>
+      ${adaptiveMath(
+        `\\lim_{x \\to \\infty} \\frac{(\\sqrt{x^2 + ${a}x} - x)(\\sqrt{x^2 + ${a}x} + x)}{\\sqrt{x^2 + ${a}x} + x} = \\lim_{x \\to \\infty} \\frac{(x^2 + ${a}x) - x^2}{\\sqrt{x^2 + ${a}x} + x}`,
+        `\\lim_{x \\to \\infty} \\left( \\sqrt{x^2 + ${a}x} - x \\right) &= \\lim_{x \\to \\infty} \\frac{(x^2 + ${a}x) - x^2}{\\sqrt{x^2 + ${a}x} + x} \\\\ &= \\lim_{x \\to \\infty} \\frac{${a}x}{\\sqrt{x^2 + ${a}x} + x}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: หารด้วย $x$ ทั้งเศษและส่วน (นำ $x = \\sqrt{x^2}$ เข้าไปในกรณฑ์)</strong><br>
+      ${adaptiveMath(
+        `= \\lim_{x \\to \\infty} \\frac{${a}}{\\sqrt{1 + \\frac{${a}}{x}} + 1}`,
+        `&= \\lim_{x \\to \\infty} \\frac{${a}}{\\sqrt{1 + \\frac{${a}}{x}} + 1}`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 4: หาลิมิตเมื่อ $x \\to \\infty$ (พจน์ $\\frac{${a}}{x} \\to 0$)</strong><br>
+      ${adaptiveMath(
+        `= \\frac{${a}}{\\sqrt{1 + 0} + 1} = \\frac{${a}}{2} = ${finalValLatex}`,
+        `&= \\frac{${a}}{\\sqrt{1 + 0} + 1} \\\\ &= \\frac{${a}}{2} = ${finalValLatex}`
+      )}
+      ดังนั้น $$\\lim_{x \\to \\infty} \\left( \\sqrt{x^2 + ${a}x} - x \\right) = ${finalValLatex}$$
+    </div>
+  `;
 
-    return {
-      category: "ลิมิตตรีโกณมิติ (Trigonometric Limit)",
-      probLatex: probLatex,
-      ansLatex: finalValLatex,
-      solHtml: solText,
-      exactNum: finalNum,
-      exactDen: finalDen
-    };
-  }
+  return {
+    category: "ลิมิตอนันต์สังยุค (Limit at Infinity with Conjugate)",
+    difficulty: "hard",
+    probLatex: probLatex,
+    ansLatex: finalValLatex,
+    solHtml: solText,
+    exactNum: finalNum,
+    exactDen: finalDen
+  };
+}
+
+// 2.12 ลิมิตผสมตรีโกณมิติและพหุนามที่จุด x -> a
+function genHardTrigPolyPoint() {
+  let a = rand(1, 4);
+  let a2 = a * a;
+  let probLatex = `\\lim_{x \\to ${a}} \\frac{\\sin(x - ${a})}{x^2 - ${a2}}`;
+  let finalNum = 1;
+  let finalDen = 2 * a;
+  let finalValLatex = toFrac(finalNum, finalDen);
+
+  let solText = `
+    <div class="solution-step">
+      <strong>ขั้นที่ 1: ตรวจสอบรูปแบบ</strong><br>
+      แทนค่า $x = ${a}$ ได้ $\\frac{\\sin(0)}{${a2} - ${a2}} = \\frac{0}{0}$
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 2: แยกตัวประกอบ $x^2 - ${a2} = (x - ${a})(x + ${a})$</strong><br>
+      ${adaptiveMath(
+        `\\lim_{x \\to ${a}} \\frac{\\sin(x - ${a})}{(x - ${a})(x + ${a})} = \\lim_{x \\to ${a}} \\left( \\frac{\\sin(x - ${a})}{x - ${a}} \\cdot \\frac{1}{x + ${a}} \\right)`,
+        `\\lim_{x \\to ${a}} \\frac{\\sin(x - ${a})}{x^2 - ${a2}} &= \\lim_{x \\to ${a}} \\left( \\frac{\\sin(x - ${a})}{x - ${a}} \\cdot \\frac{1}{x + ${a}} \\right)`
+      )}
+    </div>
+    <div class="solution-step">
+      <strong>ขั้นที่ 3: กำหนดตัวแปรเปลี่ยน $u = x - ${a}$ (เมื่อ $x \\to ${a} \\implies u \\to 0$)</strong><br>
+      จะได้ว่า $\\lim_{u \\to 0} \\frac{\\sin u}{u} = 1$<br>
+      ${adaptiveMath(
+        `= (1) \\cdot \\frac{1}{(${a}) + (${a})} = \\frac{1}{${2*a}} = ${finalValLatex}`,
+        `&= (1) \\cdot \\frac{1}{(${a}) + (${a})} \\\\ &= \\frac{1}{${2*a}} = ${finalValLatex}`
+      )}
+      ดังนั้น $$\\lim_{x \\to ${a}} \\frac{\\sin(x - ${a})}{x^2 - ${a2}} = ${finalValLatex}$$
+    </div>
+  `;
+
+  return {
+    category: "ลิมิตตรีโกณมิติผสมพหุนาม (Trig-Poly Composite Limit)",
+    difficulty: "hard",
+    probLatex: probLatex,
+    ansLatex: finalValLatex,
+    solHtml: solText,
+    exactNum: finalNum,
+    exactDen: finalDen
+  };
 }
 
 // ==========================================
@@ -810,20 +1121,42 @@ let currentProblem = null;
 let scoreCorrect = 0;
 let streakCount = 0;
 
+// คลังโจทย์ 12 ประเภท: ง่าย (~25%), ปานกลาง (~35%), ท้าทาย (~40%)
 const generators = [
-  generateFactoring,
-  generateFactoring,
-  generateSqrtConjugate,
-  generateSqrtConjugate,
-  generateCbrtConjugate,
-  generateComplexFraction,
-  generateTrigLimit
+  // 🟢 ง่าย
+  genEasyFactoring,
+  genEasyTrig,
+  genEasyExpLimit,
+  // 🟡 ปานกลาง
+  genMedFactoring,
+  genMedSqrtConjugate,
+  genMedCbrtConjugate,
+  genMedComplexFraction,
+  // 🔴 ท้าทาย
+  genHardDoubleConjugate,
+  genHardTrigCube,
+  genHardTrigProduct,
+  genHardInfinityConjugate,
+  genHardTrigPolyPoint
 ];
 
 function generateRandomProblem() {
-  // สุ่มเลือก generator คละทุกเทคนิค
   let gen = generators[Math.floor(Math.random() * generators.length)];
   currentProblem = gen();
+
+  // ป้ายแสดงระดับความยาก (Difficulty Badge)
+  const diffBadge = document.getElementById('diffBadge');
+  diffBadge.classList.remove('hidden', 'badge-easy', 'badge-med', 'badge-hard');
+  if (currentProblem.difficulty === 'easy') {
+    diffBadge.classList.add('badge-easy');
+    diffBadge.innerHTML = '🟢 ระดับ: พื้นฐาน';
+  } else if (currentProblem.difficulty === 'med') {
+    diffBadge.classList.add('badge-med');
+    diffBadge.innerHTML = '🟡 ระดับ: ปานกลาง';
+  } else {
+    diffBadge.classList.add('badge-hard');
+    diffBadge.innerHTML = '🔴 ระดับ: ท้าทาย';
+  }
 
   // อัปเดต UI
   document.getElementById('topicBadge').textContent = `ประเภท: ${currentProblem.category}`;
@@ -852,7 +1185,7 @@ function generateRandomProblem() {
 }
 
 function parseInputFraction(str) {
-  str = str.trim().replace(/\s+/g, '');
+  str = str.trim().replace(/\\s+/g, '');
   if (!str) return null;
   if (str.includes('/')) {
     let parts = str.split('/');
@@ -902,7 +1235,7 @@ function checkAnswer() {
     feedback.innerHTML = `
       <div class="feedback-title"><span>✅</span> ถูกต้องยอดเยี่ยม!</div>
       <div style="font-size: 1.05rem; margin-top: 4px;">
-        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ตรงกับค่าลิมิตจริง $\\displaystyle ${currentProblem.ansLatex}$
+        คำตอบที่คุณใส่คือ <code>${inputStr}</code> — ตรงกับค่าลิมิตจริง $$\\displaystyle ${currentProblem.ansLatex}$$
       </div>
     `;
   } else {
@@ -967,7 +1300,6 @@ document.getElementById('userAnsInput').addEventListener('keyup', function(e) {
 
 // เริ่มต้นหน้าเว็บ (ยังไม่ต้องสุ่มโจทย์จนกว่าผู้ใช้จะกดปุ่ม)
 document.addEventListener('DOMContentLoaded', function() {
-  // แสดงปีปัจจุบันที่ Footer
   let yearSpan = document.getElementById('y');
   if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 
