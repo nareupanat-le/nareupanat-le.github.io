@@ -525,7 +525,7 @@
 </header>
 
 <main>
-  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub)</h3>
+  <h3>ศูนย์ฝึกโจทย์แคลคูลัส 1 (Calculus 1 Practice Hub) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.01</span></h3>
   <p class="byline">คลังโจทย์แคลคูลัส 1 พร้อมระบบตรวจและวิธีทำละเอียด</p>
 
   <div class="app-card">
@@ -533,7 +533,9 @@
     <div class="topic-nav">
       <button id="topicAllBtn" class="topic-btn active" onclick="setTopic('all')">🎲 ทั้งหมด (คละบทเรียน)</button>
       <button id="topicLimitBtn" class="topic-btn" onclick="setTopic('limit')">📘 ลิมิต (Limits)</button>
-      <button id="topicDerivBtn" class="topic-btn" onclick="setTopic('derivative')">📙 อนุพันธ์ (Derivatives)</button>
+      <button id="topicDerivBtn" class="topic-btn" onclick="setTopic('derivative')">📙 อนุพันธ์ทั่วไป</button>
+      <button id="topicImplicitBtn" class="topic-btn" onclick="setTopic('implicit')">🔄 ฟังก์ชันโดยปริยาย</button>
+      <button id="topicTangentBtn" class="topic-btn" onclick="setTopic('tangent_normal')">📐 เส้นสัมผัส & เส้นปกติ</button>
     </div>
 
     <!-- Sub Navigation: Mode Selector & Stats Button -->
@@ -625,6 +627,10 @@
       </div>
     </div>
   </div>
+
+  <footer style="text-align: center; margin-top: 28px; margin-bottom: 16px; font-size: 0.85rem; color: var(--muted);">
+    Calculus 1 Practice Hub • v.2026.01
+  </footer>
 </main>
 
 <!-- Modal แสดงสถิติและความสำเร็จ -->
@@ -3790,6 +3796,16 @@ const derivGenerators = [
   genDerivMixedLogTrig
 ];
 
+const tangentNormalGenerators = [
+  genDerivEasyTangent,
+  genDerivNormalLine
+];
+
+const implicitGenerators = [
+  genDerivImplicitCircle,
+  genDerivImplicitPolynomial
+];
+
 const allGenerators = [...limitGenerators, ...derivGenerators];
 
 function loadStats() {
@@ -3835,6 +3851,8 @@ function setTopic(topic) {
   document.getElementById('topicAllBtn').classList.toggle('active', topic === 'all');
   document.getElementById('topicLimitBtn').classList.toggle('active', topic === 'limit');
   document.getElementById('topicDerivBtn').classList.toggle('active', topic === 'derivative');
+  document.getElementById('topicTangentBtn').classList.toggle('active', topic === 'tangent_normal');
+  document.getElementById('topicImplicitBtn').classList.toggle('active', topic === 'implicit');
 
   if (currentProblem !== null) {
     if (currentMode === 'quiz') {
@@ -3885,12 +3903,15 @@ function getActivePool() {
   let pool = allGenerators;
   if (currentTopic === 'limit') pool = limitGenerators;
   else if (currentTopic === 'derivative') pool = derivGenerators;
+  else if (currentTopic === 'tangent_normal') pool = tangentNormalGenerators;
+  else if (currentTopic === 'implicit') pool = implicitGenerators;
 
   if (currentMode === 'filter' && filterDifficulty !== 'all') {
-    pool = pool.filter(g => {
+    let filtered = pool.filter(g => {
       let testObj = g();
       return testObj.difficulty === filterDifficulty;
     });
+    if (filtered.length > 0) pool = filtered;
   }
   return pool;
 }
@@ -4220,10 +4241,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // URL Parameter check (e.g. ?topic=limit or ?topic=derivative)
+  // URL Parameter check (e.g. ?topic=limit, ?topic=derivative, ?topic=tangent_normal, ?topic=implicit)
   const urlParams = new URLSearchParams(window.location.search);
   const topicParam = urlParams.get('topic');
-  if (topicParam === 'limit' || topicParam === 'derivative') {
+  if (['limit', 'derivative', 'tangent_normal', 'implicit'].includes(topicParam)) {
     setTopic(topicParam);
   }
 });
