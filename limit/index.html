@@ -259,7 +259,7 @@
 
   <div class="app-card">
     <div class="meta-bar">
-      <div id="topicBadge" class="badge">ประเภท: สุ่มทุกรูปแบบ</div>
+      <div id="topicBadge" class="badge">สถานะ: รอสุ่มโจทย์</div>
       <div class="stats">
         <span>ทำถูก: <strong id="scoreCorrect">0</strong> ข้อ</span>
         <span>Streak: <strong id="streakCount">0</strong> 🔥</span>
@@ -268,7 +268,7 @@
 
     <!-- พื้นที่แสดงโจทย์ -->
     <div id="probBox" class="prob-display">
-      <em>กำลังเตรียมโจทย์...</em>
+      <span style="color: var(--muted);">กดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> ด้านล่างเพื่อเริ่มต้นทำแบบฝึกหัด</span>
     </div>
 
     <!-- ส่วนทดลองตอบ (Interactive Quiz) -->
@@ -829,10 +829,14 @@ function parseInputFraction(str) {
 }
 
 function checkAnswer() {
-  if (!currentProblem) return;
+  let feedback = document.getElementById('feedbackBox');
+  if (!currentProblem) {
+    feedback.className = 'feedback-box feedback-error';
+    feedback.innerHTML = '⚠️ กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> ก่อนทำแบบฝึกหัดครับ';
+    return;
+  }
   let inputStr = document.getElementById('userAnsInput').value;
   let parsed = parseInputFraction(inputStr);
-  let feedback = document.getElementById('feedbackBox');
 
   if (!parsed) {
     feedback.className = 'feedback-box feedback-error';
@@ -863,7 +867,12 @@ function checkAnswer() {
 }
 
 function toggleAnswer() {
-  if (!currentProblem) return;
+  if (!currentProblem) {
+    let feedback = document.getElementById('feedbackBox');
+    feedback.className = 'feedback-box feedback-error';
+    feedback.innerHTML = '⚠️ กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ';
+    return;
+  }
   let box = document.getElementById('ansBox');
   box.classList.toggle('hidden');
   if (!box.classList.contains('hidden')) {
@@ -872,7 +881,12 @@ function toggleAnswer() {
 }
 
 function toggleSolution() {
-  if (!currentProblem) return;
+  if (!currentProblem) {
+    let feedback = document.getElementById('feedbackBox');
+    feedback.className = 'feedback-box feedback-error';
+    feedback.innerHTML = '⚠️ กรุณากดปุ่ม <strong>"🎲 สุ่มโจทย์ใหม่"</strong> เพื่อเริ่มต้นก่อนครับ';
+    return;
+  }
   let box = document.getElementById('solBox');
   box.classList.toggle('hidden');
   if (!box.classList.contains('hidden')) {
@@ -887,7 +901,7 @@ document.getElementById('userAnsInput').addEventListener('keyup', function(e) {
   }
 });
 
-// เริ่มต้นสร้างโจทย์เมื่อโหลดหน้า
+// เริ่มต้นหน้าเว็บ (ยังไม่ต้องสุ่มโจทย์จนกว่าผู้ใช้จะกดปุ่ม)
 document.addEventListener('DOMContentLoaded', function() {
   // แสดงปีปัจจุบันที่ Footer
   let yearSpan = document.getElementById('y');
@@ -902,9 +916,6 @@ document.addEventListener('DOMContentLoaded', function() {
       link.classList.add('active');
     }
   });
-
-  // สุ่มโจทย์ข้อแรก
-  generateRandomProblem();
 });
 </script>
 
