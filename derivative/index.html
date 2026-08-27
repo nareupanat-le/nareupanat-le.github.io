@@ -379,12 +379,29 @@ function safeRenderMath(element) {
   }
 }
 
-function formatCoeff(c, isLeading = false) {
-  if (c === 0) return "";
-  if (c === 1) return isLeading ? "" : "+ ";
-  if (c === -1) return "-";
-  if (c > 0) return isLeading ? `${c}` : `+ ${c}`;
-  return isLeading ? `${c}` : `- ${Math.abs(c)}`;
+function poly1(p, q) {
+  if (p === 0) return `${q}`;
+  let termX = (p === 1) ? "x" : (p === -1 ? "-x" : `${p}x`);
+  if (q === 0) return termX;
+  return q > 0 ? `${termX} + ${q}` : `${termX} - ${Math.abs(q)}`;
+}
+
+function poly2(A, B, C) {
+  let res = "";
+  if (A === 1) res += "x^{2}";
+  else if (A === -1) res += "-x^{2}";
+  else if (A !== 0) res += `${A}x^{2}`;
+
+  if (B !== 0) {
+    let sign = B > 0 ? (res ? " + " : "") : (res ? " - " : "-");
+    let absB = Math.abs(B);
+    res += `${sign}${absB === 1 ? "" : absB}x`;
+  }
+  if (C !== 0) {
+    let sign = C > 0 ? (res ? " + " : "") : (res ? " - " : "-");
+    res += `${sign}${Math.abs(C)}`;
+  }
+  return res || "0";
 }
 
 // ==========================================
@@ -766,17 +783,22 @@ function generateMultiChainRule() {
 function generateTangentLineProblem() {
   let a = rand(1, 2);
   let b = randNonZero(-3, 3);
-  let c = rand(-2, 3);
+  let c = rand(-3, 3);
   let x0 = rand(-2, 2);
 
-  let fExpr = `${a === 1 ? "" : a}x^{2} ${formatCoeff(b)}x ${formatCoeff(c)}`;
+  let fExpr = poly2(a, b, c);
   let y0 = a * x0 * x0 + b * x0 + c;
   let slopeVal = 2 * a * x0 + b;
-  let derivExpr = `${2 * a}x ${formatCoeff(b)}`;
+  let derivExpr = poly1(2 * a, b);
 
   let constTerm = y0 - slopeVal * x0;
-  let tangentEq = `y = ${slopeVal === 1 ? "x" : (slopeVal === -1 ? "-x" : (slopeVal === 0 ? "" : `${slopeVal}x`))} ${formatCoeff(constTerm)}`.trim();
-  if (tangentEq === "y =") tangentEq = "y = 0";
+  let tangentEq = `y = ${poly1(slopeVal, constTerm)}`;
+  if (slopeVal === 0) {
+    tangentEq = `y = ${constTerm}`;
+  }
+
+  let bFormatted = b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`;
+  let cFormatted = c === 0 ? "" : (c > 0 ? `+ ${c}` : `- ${Math.abs(c)}`);
 
   let solText = `
     <div class="solution-step">
@@ -785,11 +807,11 @@ function generateTangentLineProblem() {
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 2: หาความชันของเส้นสัมผัส $m$ ที่จุด $x = ${x0}$</strong><br>
-      $$\\displaystyle m = f'(${x0}) = ${2 * a}(${x0 >= 0 ? x0 : `(${x0})`}) ${formatCoeff(b)} = ${slopeVal}$$
+      $$\\displaystyle m = f'(${x0}) = ${2 * a}(${x0 >= 0 ? x0 : `(${x0})`}) ${bFormatted} = ${slopeVal}$$
     </div>
     <div class="solution-step">
       <strong>ขั้นที่ 3: หาพิกัดจุดสัมผัส $(x_0, y_0)$</strong><br>
-      $$\\displaystyle y_0 = f(${x0}) = ${a}(${x0})^2 ${formatCoeff(b)}(${x0}) ${formatCoeff(c)} = ${y0}$$<br>
+      $$\\displaystyle y_0 = f(${x0}) = ${a}(${x0})^2 ${bFormatted}(${x0}) ${cFormatted} = ${y0}$$<br>
       ดังนั้นจุดสัมผัสคือ $(${x0}, ${y0})$
     </div>
     <div class="solution-step">
