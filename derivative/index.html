@@ -261,6 +261,24 @@
       border-bottom: none;
     }
 
+    .adaptive-math {
+      width: 100%;
+      overflow-x: auto;
+      margin: 4px 0;
+    }
+    .adaptive-math .math-single {
+      display: block;
+    }
+    .adaptive-math .math-align {
+      display: none;
+    }
+    .adaptive-math.use-align .math-single {
+      display: none;
+    }
+    .adaptive-math.use-align .math-align {
+      display: block;
+    }
+
     @media (max-width: 600px) {
       .app-card { padding: 18px; }
       .btn-group { flex-direction: column; }
@@ -371,13 +389,44 @@ function randNonZero(min, max) {
   return val;
 }
 
+function adaptiveMath(singleLatex, alignLatex) {
+  return `
+    <div class="adaptive-math">
+      <div class="math-single">$$\\displaystyle ${singleLatex}$$</div>
+      <div class="math-align">$$\\begin{align*} ${alignLatex} \\end{align*}$$</div>
+    </div>
+  `;
+}
+
+function adaptMathEquations() {
+  const blocks = document.querySelectorAll('.adaptive-math');
+  blocks.forEach(block => {
+    block.classList.remove('use-align');
+    const singleEl = block.querySelector('.math-single');
+    if (!singleEl) return;
+    const mjxEl = singleEl.querySelector('mjx-container') || singleEl;
+    const containerWidth = block.clientWidth;
+    const mathWidth = mjxEl.scrollWidth || singleEl.scrollWidth;
+
+    if (containerWidth > 0 && mathWidth > containerWidth + 2) {
+      block.classList.add('use-align');
+    }
+  });
+}
+
 function safeRenderMath(element) {
   if (window.MathJax && MathJax.typesetPromise) {
-    MathJax.typesetPromise(element ? [element] : []).catch(function(err) {
+    MathJax.typesetPromise(element ? [element] : []).then(function() {
+      setTimeout(adaptMathEquations, 50);
+    }).catch(function(err) {
       console.warn("MathJax error:", err);
     });
   }
 }
+
+window.addEventListener('resize', function() {
+  adaptMathEquations();
+});
 
 function poly1(p, q) {
   if (p === 0) return `${q}`;
@@ -434,28 +483,25 @@ function generateInverseTrigChain() {
       <div class="solution-step">
         <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
         กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-        $$\\begin{align*}
-        \\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
-        &= ${uPrime}
-        \\end{align*}$$
-        ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
+        ${adaptiveMath(
+          `\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`,
+          `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 3: แทนค่าในสูตรและจัดรูป</strong><br>
-        $$\\begin{align*}
-        f'(x) &= \\frac{1}{1 + (${uExpr})^2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
-        &= \\frac{1}{1 + (${uExpr})^2} \\cdot (${uPrime}) \\\\
-        &= ${derivExpr}
-        \\end{align*}$$
-        ดังนั้น $$f'(x) = ${derivExpr}$$
+        ${adaptiveMath(
+          `f'(x) = \\frac{1}{1 + (${uExpr})^2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) = \\frac{1}{1 + (${uExpr})^2} \\cdot (${uPrime}) = ${derivExpr}`,
+          `f'(x) &= \\frac{1}{1 + (${uExpr})^2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= \\frac{1}{1 + (${uExpr})^2} \\cdot (${uPrime}) \\\\ &= ${derivExpr}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$ และสมการเส้นสัมผัสที่จุด $x = ${x0}$</strong><br>
         แทนค่า $x = ${x0}$ ลงใน $f'(x)$:<br>
-        $$\\begin{align*}
-        f'(${x0}) &= \\frac{${2*a}(${x0}) + ${k}}{1 + (${uExpr.replace(/x/g, `(${x0})`)})^2} \\\\
-        &= ${slopeVal}
-        \\end{align*}$$
+        ${adaptiveMath(
+          `f'(${x0}) = \\frac{${2*a}(${x0}) + ${k}}{1 + (${uExpr.replace(/x/g, `(${x0})`)})^2} = ${slopeVal}`,
+          `f'(${x0}) &= \\frac{${2*a}(${x0}) + ${k}}{1 + (${uExpr.replace(/x/g, `(${x0})`)})^2} \\\\ &= ${slopeVal}`
+        )}
         พิกัดจุดสัมผัสคือ $(${x0}, f(${x0})) = (${x0}, ${y0Val})$<br>
         สมการเส้นสัมผัส: $y - ${y0Val} = ${slopeVal}(x - ${x0}) \\implies ${tangentEq}$
       </div>
@@ -488,20 +534,17 @@ function generateInverseTrigChain() {
       <div class="solution-step">
         <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
         กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-        $$\\begin{align*}
-        \\frac{du}{dx} &= \\frac{d}{dx}(${uExpr}) \\\\
-        &= ${k}
-        \\end{align*}$$
-        ดังนั้น $$\\frac{du}{dx} = ${k}$$
+        ${adaptiveMath(
+          `\\frac{du}{dx} = \\frac{d}{dx}(${uExpr}) = ${k}`,
+          `\\frac{du}{dx} &= \\frac{d}{dx}(${uExpr}) \\\\ &= ${k}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 3: แทนค่าในสูตร</strong><br>
-        $$\\begin{align*}
-        f'(x) &= \\frac{1}{\\sqrt{1 - (${uExpr})^2}} \\cdot \\frac{d}{dx}(${uExpr}) \\\\
-        &= \\frac{1}{\\sqrt{1 - ${k*k}x^2}} \\cdot (${k}) \\\\
-        &= ${derivExpr}
-        \\end{align*}$$
-        ดังนั้น $$f'(x) = ${derivExpr}$$
+        ${adaptiveMath(
+          `f'(x) = \\frac{1}{\\sqrt{1 - (${uExpr})^2}} \\cdot \\frac{d}{dx}(${uExpr}) = \\frac{1}{\\sqrt{1 - ${k*k}x^2}} \\cdot (${k}) = ${derivExpr}`,
+          `f'(x) &= \\frac{1}{\\sqrt{1 - (${uExpr})^2}} \\cdot \\frac{d}{dx}(${uExpr}) \\\\ &= \\frac{1}{\\sqrt{1 - ${k*k}x^2}} \\cdot (${k}) \\\\ &= ${derivExpr}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
@@ -548,28 +591,23 @@ function generateProductRuleMixed() {
       <div class="solution-step">
         <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
         กำหนดให้ $u = ${u}$ จะได้ว่า
-        $$\\begin{align*}
-        u' &= \\frac{d}{dx}(${u}) \\\\
-        &= ${a}
-        \\end{align*}$$
-        ดังนั้น $$u' = ${a}$$
+        ${adaptiveMath(
+          `u' = \\frac{d}{dx}(${u}) = ${a}`,
+          `u' &= \\frac{d}{dx}(${u}) \\\\ &= ${a}`
+        )}
         <br>
         กำหนดให้ $v = \\arctan(${k}x)$ จะได้ว่า
-        $$\\begin{align*}
-        v' &= \\frac{d}{dx}[\\arctan(${k}x)] \\\\
-        &= \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) \\\\
-        &= \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} \\\\
-        &= \\frac{${k}}{1 + ${k*k}x^2}
-        \\end{align*}$$
-        ดังนั้น $$v' = \\frac{${k}}{1 + ${k*k}x^2}$$
+        ${adaptiveMath(
+          `v' = \\frac{d}{dx}[\\arctan(${k}x)] = \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) = \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} = \\frac{${k}}{1 + ${k*k}x^2}`,
+          `v' &= \\frac{d}{dx}[\\arctan(${k}x)] \\\\ &= \\frac{1}{1 + (${k}x)^2} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= \\frac{1}{1 + ${k*k}x^2} \\cdot ${k} \\\\ &= \\frac{${k}}{1 + ${k*k}x^2}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณ $(uv)' = u'v + uv'$</strong><br>
-        $$\\begin{align*}
-        f'(x) &= (${a})\\arctan(${k}x) + (${u})\\left(\\frac{${k}}{1 + ${k*k}x^2}\\right) \\\\
-        &= ${derivExpr}
-        \\end{align*}$$
-        ดังนั้น $$f'(x) = ${derivExpr}$$
+        ${adaptiveMath(
+          `f'(x) = (${a})\\arctan(${k}x) + (${u})\\left(\\frac{${k}}{1 + ${k*k}x^2}\\right) = ${derivExpr}`,
+          `f'(x) &= (${a})\\arctan(${k}x) + (${u})\\left(\\frac{${k}}{1 + ${k*k}x^2}\\right) \\\\ &= ${derivExpr}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: หาค่าความชัน $f'(${x0})$</strong><br>
@@ -609,29 +647,23 @@ function generateProductRuleMixed() {
       <div class="solution-step">
         <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
         กำหนดให้ $u = ${u}$ จะได้ว่า
-        $$\\begin{align*}
-        u' &= \\frac{d}{dx}(${u}) \\\\
-        &= ${2*a}x + ${b}
-        \\end{align*}$$
-        ดังนั้น $$u' = ${2*a}x + ${b}$$
+        ${adaptiveMath(
+          `u' = \\frac{d}{dx}(${u}) = ${2*a}x + ${b}`,
+          `u' &= \\frac{d}{dx}(${u}) \\\\ &= ${2*a}x + ${b}`
+        )}
         <br>
         กำหนดให้ $v = e^{${k}x}$ จะได้ว่า
-        $$\\begin{align*}
-        v' &= \\frac{d}{dx}\\left[e^{${k}x}\\right] \\\\
-        &= e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) \\\\
-        &= e^{${k}x} \\cdot ${k} \\\\
-        &= ${k}e^{${k}x}
-        \\end{align*}$$
-        ดังนั้น $$v' = ${k}e^{${k}x}$$
+        ${adaptiveMath(
+          `v' = \\frac{d}{dx}\\left[e^{${k}x}\\right] = e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) = e^{${k}x} \\cdot ${k} = ${k}e^{${k}x}`,
+          `v' &= \\frac{d}{dx}\\left[e^{${k}x}\\right] \\\\ &= e^{${k}x} \\cdot \\frac{d}{dx}(${k}x) \\\\ &= e^{${k}x} \\cdot ${k} \\\\ &= ${k}e^{${k}x}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลคูณและดึงตัวร่วม $e^{${k}x}$</strong><br>
-        $$\\begin{align*}
-        f'(x) &= (${2*a}x + ${b})e^{${k}x} + (${u})(${k}e^{${k}x}) \\\\
-        &= \\left[(${2*a}x + ${b}) + ${k}(${u})\\right]e^{${k}x} \\\\
-        &= ${derivExpr}
-        \\end{align*}$$
-        ดังนั้น $$f'(x) = ${derivExpr}$$
+        ${adaptiveMath(
+          `f'(x) = (${2*a}x + ${b})e^{${k}x} + (${u})(${k}e^{${k}x}) = \\left[(${2*a}x + ${b}) + ${k}(${u})\\right]e^{${k}x} = ${derivExpr}`,
+          `f'(x) &= (${2*a}x + ${b})e^{${k}x} + (${u})(${k}e^{${k}x}) \\\\ &= \\left[(${2*a}x + ${b}) + ${k}(${u})\\right]e^{${k}x} \\\\ &= ${derivExpr}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$ เพื่อหาค่า $f'(${x0})$</strong><br>
@@ -681,28 +713,23 @@ function generateQuotientRule() {
       <div class="solution-step">
         <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
         กำหนดให้ $u = \\sin(${k}x)$ จะได้ว่า
-        $$\\begin{align*}
-        u' &= \\frac{d}{dx}[\\sin(${k}x)] \\\\
-        &= \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) \\\\
-        &= \\cos(${k}x) \\cdot ${k} \\\\
-        &= ${uPrime}
-        \\end{align*}$$
-        ดังนั้น $$u' = ${uPrime}$$
+        ${adaptiveMath(
+          `u' = \\frac{d}{dx}[\\sin(${k}x)] = \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) = \\cos(${k}x) \\cdot ${k} = ${uPrime}`,
+          `u' &= \\frac{d}{dx}[\\sin(${k}x)] \\\\ &= \\cos(${k}x) \\cdot \\frac{d}{dx}(${k}x) \\\\ &= \\cos(${k}x) \\cdot ${k} \\\\ &= ${uPrime}`
+        )}
         <br>
         กำหนดให้ $v = ${v}$ จะได้ว่า
-        $$\\begin{align*}
-        v' &= \\frac{d}{dx}(${v}) \\\\
-        &= ${vPrime}
-        \\end{align*}$$
-        ดังนั้น $$v' = ${vPrime}$$
+        ${adaptiveMath(
+          `v' = \\frac{d}{dx}(${v}) = ${vPrime}`,
+          `v' &= \\frac{d}{dx}(${v}) \\\\ &= ${vPrime}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 3: แทนค่าในสูตรกฎผลหาร</strong><br>
-        $$\\begin{align*}
-        f'(x) &= \\frac{(${uPrime})(${v}) - (\\sin(${k}x))(${vPrime})}{(${v})^2} \\\\
-        &= ${derivExpr}
-        \\end{align*}$$
-        ดังนั้น $$f'(x) = ${derivExpr}$$
+        ${adaptiveMath(
+          `f'(x) = \\frac{(${uPrime})(${v}) - (\\sin(${k}x))(${vPrime})}{(${v})^2} = ${derivExpr}`,
+          `f'(x) &= \\frac{(${uPrime})(${v}) - (\\sin(${k}x))(${vPrime})}{(${v})^2} \\\\ &= ${derivExpr}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: คำนวณค่า $f'(${x0})$</strong><br>
@@ -741,27 +768,23 @@ function generateQuotientRule() {
       <div class="solution-step">
         <strong>ขั้นที่ 2: กำหนด $u$ และ $v$ แล้วหาอนุพันธ์แต่ละฟังก์ชัน</strong><br>
         กำหนดให้ $u = ${a === 1 ? "x" : `${a}x`} + ${b}$ จะได้ว่า
-        $$\\begin{align*}
-        u' &= \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) \\\\
-        &= ${a}
-        \\end{align*}$$
-        ดังนั้น $$u' = ${a}$$
+        ${adaptiveMath(
+          `u' = \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) = ${a}`,
+          `u' &= \\frac{d}{dx}(${a === 1 ? "x" : `${a}x`} + ${b}) \\\\ &= ${a}`
+        )}
         <br>
         กำหนดให้ $v = ${c === 1 ? "x" : `${c}x`} + ${d}$ จะได้ว่า
-        $$\\begin{align*}
-        v' &= \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) \\\\
-        &= ${c}
-        \\end{align*}$$
-        ดังนั้น $$v' = ${c}$$
+        ${adaptiveMath(
+          `v' = \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) = ${c}`,
+          `v' &= \\frac{d}{dx}(${c === 1 ? "x" : `${c}x`} + ${d}) \\\\ &= ${c}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 3: แทนค่าและกระจายพจน์ตัวเศษ</strong><br>
-        $$\\begin{align*}
-        f'(x) &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\
-        &= \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\
-        &= ${derivExpr}
-        \\end{align*}$$
-        ดังนั้น $$f'(x) = ${derivExpr}$$
+        ${adaptiveMath(
+          `f'(x) = \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} = ${derivExpr}`,
+          `f'(x) &= \\frac{(${a})(${c === 1 ? "x" : `${c}x`} + ${d}) - (${a === 1 ? "x" : `${a}x`} + ${b})(${c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= \\frac{(${a*c}x + ${a*d}) - (${a*c}x + ${b*c})}{(${c === 1 ? "x" : `${c}x`} + ${d})^2} \\\\ &= ${derivExpr}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
@@ -808,20 +831,17 @@ function generateMultiChainRule() {
       <div class="solution-step">
         <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
         กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-        $$\\begin{align*}
-        \\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
-        &= ${uPrime}
-        \\end{align*}$$
-        ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
+        ${adaptiveMath(
+          `\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`,
+          `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 3: แทนค่าในสูตรกฎลูกโซ่</strong><br>
-        $$\\begin{align*}
-        f'(x) &= \\frac{1}{${uExpr}} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
-        &= \\frac{1}{${uExpr}} \\cdot (${uPrime}) \\\\
-        &= ${derivExpr}
-        \\end{align*}$$
-        ดังนั้น $$f'(x) = ${derivExpr}$$
+        ${adaptiveMath(
+          `f'(x) = \\frac{1}{${uExpr}} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) = \\frac{1}{${uExpr}} \\cdot (${uPrime}) = ${derivExpr}`,
+          `f'(x) &= \\frac{1}{${uExpr}} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= \\frac{1}{${uExpr}} \\cdot (${uPrime}) \\\\ &= ${derivExpr}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
@@ -860,20 +880,17 @@ function generateMultiChainRule() {
       <div class="solution-step">
         <strong>ขั้นที่ 2: หาอนุพันธ์ของฟังก์ชันไส้ใน</strong><br>
         กำหนดให้ $u = ${uExpr}$ จะได้ว่า
-        $$\\begin{align*}
-        \\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
-        &= ${uPrime}
-        \\end{align*}$$
-        ดังนั้น $$\\frac{du}{dx} = ${uPrime}$$
+        ${adaptiveMath(
+          `\\frac{du}{dx} = \\frac{d}{dx}\\left(${uExpr}\\right) = ${uPrime}`,
+          `\\frac{du}{dx} &= \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= ${uPrime}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 3: ใช้กฎลูกโซ่ $\\frac{d}{dx}[u^n] = n u^{n-1} \\cdot \\frac{du}{dx}$ แทนค่าและจัดรูป</strong><br>
-        $$\\begin{align*}
-        f'(x) &= \\frac{1}{2}(${uExpr})^{-1/2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\
-        &= \\frac{1}{2\\sqrt{${uExpr}}} \\cdot (${uPrime}) \\\\
-        &= ${derivExpr}
-        \\end{align*}$$
-        ดังนั้น $$f'(x) = ${derivExpr}$$
+        ${adaptiveMath(
+          `f'(x) = \\frac{1}{2}(${uExpr})^{-1/2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) = \\frac{1}{2\\sqrt{${uExpr}}} \\cdot (${uPrime}) = ${derivExpr}`,
+          `f'(x) &= \\frac{1}{2}(${uExpr})^{-1/2} \\cdot \\frac{d}{dx}\\left(${uExpr}\\right) \\\\ &= \\frac{1}{2\\sqrt{${uExpr}}} \\cdot (${uPrime}) \\\\ &= ${derivExpr}`
+        )}
       </div>
       <div class="solution-step">
         <strong>ขั้นที่ 4: แทนค่า $x = ${x0}$</strong><br>
