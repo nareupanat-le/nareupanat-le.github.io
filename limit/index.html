@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบสุ่มโจทย์ลิมิตแคลคูลัส</title>
+    <!-- MathJax สำหรับเรนเดอร์สมการ LaTeX -->
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f4f6f9; padding: 20px; }
+        .card { background: white; max-width: 650px; margin: 0 auto; padding: 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+        .btn-group { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; justify-content: center; }
+        .btn { padding: 10px 16px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s; color: white; }
+        .btn-blue { background: #0066cc; }
+        .btn-green { background: #28a745; }
+        .btn-cyan { background: #17a2b8; }
+        .btn:hover { opacity: 0.9; }
+        .box { margin-top: 15px; padding: 16px; border-radius: 6px; background: #f8f9fa; border-left: 4px solid #0066cc; font-size: 1.05rem; line-height: 1.7; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 style="text-align: center; margin-top: 0;">แบบฝึกหัดลิมิตแบบสุ่ม (Indeterminate Form $\frac{0}{0}$)</h2>
+    
+    <div class="btn-group">
+        <button class="btn btn-blue" onclick="generateProblem()">1. สุ่มโจทย์ใหม่</button>
+        <button class="btn btn-green" onclick="showAnswer()">2. ดูคำตอบ</button>
+        <button class="btn btn-cyan" onclick="showSolution()">3. ดูวิธีทำอย่างละเอียด</button>
+    </div>
+
+    <div id="probBox" class="box"><em>กดปุ่ม "สุ่มโจทย์ใหม่" เพื่อเริ่มต้นทำแบบฝึกหัด</em></div>
+    <div id="ansBox" class="box hidden"></div>
+    <div id="solBox" class="box hidden"></div>
+</div>
+
+<script>
+let currentProb = null;
+
+function gcd(a, b) {
+    a = Math.abs(a); b = Math.abs(b);
+    while (b) { let t = b; b = a % b; a = t; }
+    return a;
+}
+
+function toFrac(n, d) {
+    if (d < 0) { n = -n; d = -d; }
+    let g = gcd(n, d);
+    n /= g; d /= g;
+    if (d === 1) return `${n}`;
+    return `\\frac{${n}}{${d}}`;
+}
+
+function poly1(p, q) {
+    if (p === 0) return `${q}`;
+    let termX = (p === 1) ? "x" : (p === -1 ? "-x" : `${p}x`);
+    if (q === 0) return termX;
+    return q > 0 ? `${termX} + ${q}` : `${termX} - ${Math.abs(q)}`;
+}
+
+function poly2(A, B, C) {
+    let res = "";
+    if (A === 1) res += "x^{2}";
+    else if (A === -1) res += "-x^{2}";
+    else if (A !== 0) res += `${A}x^{2}`;
+
+    if (B !== 0) {
+        let sign = B > 0 ? (res ? " + " : "") : " - ";
+        let absB = Math.abs(B);
+        res += `${sign}${absB === 1 ? "" : absB}x`;
+    }
+    if (C !== 0) {
+        let sign = C > 0 ? (res ? " + " : "") : " - ";
+        res += `${sign}${Math.abs(C)}`;
+    }
+    return res || "0";
+}
+
+function rand(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function generateProblem() {
+    let a = rand(-3, 4);
+    let termCancel = a >= 0 ? (a === 0 ? "x" : `x - ${a}`) : `x + ${Math.abs(a)}`;
+    let type = Math.random() < 0.5 ? 'factoring' : 'conjugate';
+    
+    if (type === 'factoring') {
+        let p1 = rand(1, 3), q1 = rand(-3, 3);
+        let p2 = rand(1, 3), q2 = rand(-3, 3);
+        while (p2 * a + q2 === 0) { q2 = rand(-3, 3); }
+
+        let deg1 = rand(1, 2), deg2 = rand(1, 2);
+        
+        let numExp = (deg1 === 2) ? poly2(p1, q1 - a * p1, -a * q1) : poly1(p1, -a * p1);
+        let denExp = (deg2 === 2) ? poly2(p2, q2 - a * p2, -a * q2) : poly1(p2, -a * p2);
+
+        let numFact = (deg1 === 2) ? `(${termCancel})(${poly1(p1, q1)})` : `${p1}(${termCancel})`;
+        let denFact = (deg2 === 2) ? `(${termCancel})(${poly1(p2, q2)})` : `${p2}(${termCancel})`;
+
+        let numSimp = (deg1 === 2) ? poly1(p1, q1) : `${p1}`;
+        let denSimp = (deg2 === 2) ? poly1(p2, q2) : `${p2}`;
+
+        let finalVal = toFrac(p1 * a + q1, p2 * a + q2);
+        let probLatex = `\\lim_{x \\to ${a}} \\frac{${numExp}}{${denExp}}`;
+
+        currentProb = {
+            prob: `$${probLatex}$`,
+            ans: `$${finalVal}$`,
+            sol: `<b>วิธีทำอย่างละเอียด:</b><br>` +
+                 `1. แทนค่า $x = ${a}$ จะพบว่าอยู่ในรูปแบบ $\\frac{0}{0}$<br>` +
+                 `2. แยกตัวประกอบของเศษและส่วน:<br>` +
+                 `   $$${probLatex} = \\lim_{x \\to ${a}} \\frac{${numFact}}{${denFact}}$$<br>` +
+                 `3. ตัดทอนพจน์ร่วม $(${termCancel})$ ออก:<br>` +
+                 `   $$= \\lim_{x \\to ${a}} \\frac{${numSimp}}{${denSimp}}$$<br>` +
+                 `4. แทนค่า $x = ${a}$ ในพจน์ที่เหลือ:<br>` +
+                 `   $$= ${finalVal}$$`
+        };
+    } else {
+        let c = rand(1, 4);
+        let b = c * c - a;
+        let p = rand(1, 2), q = rand(-3, 3);
+        while (p * a + q === 0) { q = rand(-3, 3); }
+
+        let denDeg = rand(1, 2);
+        let denExp = (denDeg === 2) ? poly2(p, q - a * p, -a * q) : poly1(p, -a * p);
+        let denFact = (denDeg === 2) ? `(${termCancel})(${poly1(p, q)})` : `${p}(${termCancel})`;
+        let denSimp = (denDeg === 2) ? `(${poly1(p, q)})` : (p === 1 ? "" : `${p}`);
+
+        let rootPart = b >= 0 ? `\\sqrt{x + ${b}}` : `\\sqrt{x - ${Math.abs(b)}}`;
+        let conj = `${rootPart} + ${c}`;
+        let numExp = `${rootPart} - ${c}`;
+
+        let finalVal = toFrac(1, (p * a + q) * (2 * c));
+        let probLatex = `\\lim_{x \\to ${a}} \\frac{${numExp}}{${denExp}}`;
+
+        currentProb = {
+            prob: `$${probLatex}$`,
+            ans: `$${finalVal}$`,
+            sol: `<b>วิธีทำอย่างละเอียด:</b><br>` +
+                 `1. แทนค่า $x = ${a}$ จะพบว่าอยู่ในรูปแบบ $\\frac{0}{0}$<br>` +
+                 `2. คูณด้วยสังยุค (Conjugate) ของตัวเศษ:<br>` +
+                 `   $$${probLatex} = \\lim_{x \\to ${a}} \\frac{(${numExp})(${conj})}{(${denExp})(${conj})}$$<br>` +
+                 `3. จัดรูปผลต่างกำลังสองและแยกตัวประกอบตัวส่วน:<br>` +
+                 `   $$= \\lim_{x \\to ${a}} \\frac{${termCancel}}{${denFact}(${conj})}$$<br>` +
+                 `4. ตัดทอนพจน์ร่วม $(${termCancel})$ ออก:<br>` +
+                 `   $$= \\lim_{x \\to ${a}} \\frac{1}{${denSimp ? denSimp + '(' + conj + ')' : conj}}$$<br>` +
+                 `5. แทนค่า $x = ${a}$ ในพจน์ที่เหลือ:<br>` +
+                 `   $$= ${finalVal}$$`
+        };
+    }
+
+    document.getElementById('ansBox').classList.add('hidden');
+    document.getElementById('solBox').classList.add('hidden');
+    document.getElementById('probBox').innerHTML = currentProb.prob;
+    MathJax.typesetPromise();
+}
+
+function showAnswer() {
+    if (!currentProb) return;
+    let box = document.getElementById('ansBox');
+    box.innerHTML = `<b>คำตอบ:</b> ${currentProb.ans}`;
+    box.classList.remove('hidden');
+    MathJax.typesetPromise();
+}
+
+function showSolution() {
+    if (!currentProb) return;
+    let box = document.getElementById('solBox');
+    box.innerHTML = currentProb.sol;
+    box.classList.remove('hidden');
+    MathJax.typesetPromise();
+}
+</script>
+
+</body>
+</html>
