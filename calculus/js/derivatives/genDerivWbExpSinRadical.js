@@ -58,7 +58,7 @@ function genDerivWbExpSinRadical() {
     derivLatex: `\\frac{vu' - uv'}{v^2} \\text{ (แทนค่าโดยตรงจะรวดเร็วกว่า)}`,
     ansLatex: slopeValLatex,
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(0)$ (แทนค่า $x=0$):`,
-    hintText: `หาค่าของ u(0), u'(0), v(0), v'(0) ก่อน แล้วนำไปแทนในสูตร \\frac{vu'-uv'}{v^2} จะคิดเลขง่ายมาก`,
+    hintText: `หาค่าของ $u(0)$, $u'(0)$, $v(0)$, $v'(0)$ ก่อน แล้วนำไปแทนในสูตร $\\frac{vu'-uv'}{v^2}$ จะคิดเลขง่ายมาก`,
     solHtml: solText,
     exactNum: numVal,
     exactDen: denVal

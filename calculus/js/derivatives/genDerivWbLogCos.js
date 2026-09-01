@@ -53,7 +53,7 @@ function genDerivWbLogCos() {
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(0)$ (แทนค่า $x=0$):`,
-    hintText: `ใช้ \\frac{d}{dx}[\\ln(u)] = \\frac{u'}{u} และ \\frac{d}{dx}[\\cos(u)] = -\\sin(u)u'`,
+    hintText: `ใช้ $\\frac{d}{dx}[\\ln(u)] = \\frac{u'}{u}$ และ $\\frac{d}{dx}[\\cos(u)] = -\\sin(u)u'$`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1
