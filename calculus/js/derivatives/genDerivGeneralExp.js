@@ -6,9 +6,9 @@ function genDerivGeneralExp() {
 
   let fExpr = `${base}^{${k}x + ${b}}`;
   let coeffVal = k * Math.pow(base, b);
-  derivExpr = `${coeffVal}\\ln(${base}) \\cdot ${base}^{${k}x}`;
+  let derivExpr = `${coeffVal}\\ln(${base}) \\cdot ${base}^{${k}x}`;
 
-  let derivExpr = `${k}\\ln(${base}) \\cdot ${base}^{${k}x + ${b}}`;
+  derivExpr = `${k}\\ln(${base}) \\cdot ${base}^{${k}x + ${b}}`;
 
   let solText = `
     <div class="solution-step">

@@ -12,6 +12,7 @@ function genDerivHardLogNestedRadical() {
   let derivDen = det % 2 === 0 ? `(${a === 1 ? "x" : `${a}x`} + ${b})(${c === 1 ? "x" : `${c}x`} + ${d})` : `2(${a === 1 ? "x" : `${a}x`} + ${b})(${c === 1 ? "x" : `${c}x`} + ${d})`;
   let derivExpr = `\\frac{${derivNum}}{${derivDen}}`;
   
+  let slopeValLatex = toFrac(det, 2 * b * d);
   let solText = `
     <div class="solution-step">
       <strong>ขั้นที่ 1: กฎและสูตรที่ต้องใช้ในการหาอนุพันธ์</strong>
@@ -61,7 +62,7 @@ function genDerivHardLogNestedRadical() {
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
     hintText: `ใช้สมบัติลอการิทึม $\\ln\\sqrt{A/B} = \\frac{1}{2}(\\ln A - \\ln B)$ แยกพจน์ก่อนดิฟจะง่ายกว่ามาก`,
     solHtml: solText,
-    exactNum: numAns,
-    exactDen: denAns
+    exactNum: det,
+    exactDen: 2 * b * d
   };
 }

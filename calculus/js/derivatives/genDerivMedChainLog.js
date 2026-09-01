@@ -53,7 +53,7 @@ function genDerivMedChainLog() {
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
     hintText: `ใช้สูตร $\\frac{d}{dx}[\\ln(u)] = \\frac{u'}{u}$`,
     solHtml: solText,
-    exactNum: numAns,
-    exactDen: denAns
+    exactNum: b,
+    exactDen: c
   };
 }

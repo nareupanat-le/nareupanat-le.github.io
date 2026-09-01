@@ -60,7 +60,7 @@ function genDerivMedChainRadical() {
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(${x0})$:`,
     hintText: `แปลง $\\sqrt{u} = u^{1/2}$ แล้วดิฟโดยใช้กฎลูกโซ่ $\\frac{1}{2\\sqrt{u}} \\cdot u'$`,
     solHtml: solText,
-    exactNum: numAns,
-    exactDen: denAns
+    exactNum: b,
+    exactDen: 2 * c_sqrt
   };
 }

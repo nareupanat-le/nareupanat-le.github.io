@@ -9,9 +9,9 @@ function genDerivMixedPolyCot() {
   let fExpr = `(${uExpr})${vExpr}`;
 
   let slopeVal = -2 * b * k;
-  derivExpr = `2(${a}x)${vExpr} - ${k === 1 ? "" : `${k}`}(${uExpr})\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)`;
+  let derivExpr = `2(${a}x)${vExpr} - ${k === 1 ? "" : `${k}`}(${uExpr})\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)`;
 
-  let derivExpr = `2(${a}x)\\cot\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right) - ${k === 1 ? "" : k}(${a === 1 ? "" : a}x^2 + ${b})\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)`;
+  derivExpr = `2(${a}x)\\cot\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right) - ${k === 1 ? "" : k}(${a === 1 ? "" : a}x^2 + ${b})\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)`;
 
   let solText = `
     <div class="solution-step">

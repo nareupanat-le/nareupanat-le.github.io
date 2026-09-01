@@ -14,9 +14,9 @@ function genDerivWbSecExp() {
   // f'(1) = u(1)v'(1) + v(1)u'(1) = 1(0) + 1(a) = a
   
   let slopeVal = a;
-  derivExpr = `e^{${a}x^2 - ${a}x}(${2*a}x - ${a})\\sec(${b}x^2 - ${b}x) + e^{${a}x^2 - ${a}x}\\sec(${b}x^2 - ${b}x)\\tan(${b}x^2 - ${b}x)(${2*b}x - ${b})`;
+  let derivExpr = `e^{${a}x^2 - ${a}x}(${2*a}x - ${a})\\sec(${b}x^2 - ${b}x) + e^{${a}x^2 - ${a}x}\\sec(${b}x^2 - ${b}x)\\tan(${b}x^2 - ${b}x)(${2*b}x - ${b})`;
   
-  let derivExpr = `(${2*b}x - ${b})e^{${a}x^2 - ${a}x}\\sec(${b}x^2 - ${b}x)\\tan(${b}x^2 - ${b}x) + (${2*a}x - ${a})e^{${a}x^2 - ${a}x}\\sec(${b}x^2 - ${b}x)`;
+  derivExpr = `(${2*b}x - ${b})e^{${a}x^2 - ${a}x}\\sec(${b}x^2 - ${b}x)\\tan(${b}x^2 - ${b}x) + (${2*a}x - ${a})e^{${a}x^2 - ${a}x}\\sec(${b}x^2 - ${b}x)`;
   let solText = `
     <div class="solution-step">
       <strong>ขั้นที่ 1: กฎและสูตรที่ต้องใช้ในการหาอนุพันธ์</strong>
