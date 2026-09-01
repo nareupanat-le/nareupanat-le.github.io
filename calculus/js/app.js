@@ -1,6 +1,6 @@
 // 4. Combined Pool & Application Controller
 // ==========================================
-let currentTopic = 'all'; // 'all', 'limit', 'derivative'
+let currentTopic = 'derivative'; // 'all', 'limit', 'derivative'
 let currentMode = 'free';  // 'free', 'filter', 'quiz'
 let filterDifficulty = 'all'; // 'all', 'easy', 'med', 'hard'
 
@@ -39,28 +39,28 @@ const allAchievements = [
   { id: 'quiz_ace', icon: '🏆', title: 'Calculus Quiz Ace (5/5)', desc: 'ได้คะแนนเต็มในแบบทดสอบย่อย 5 ข้อ' }
 ];
 
-const limitGenerators = [
-  genLimitEasyFactoring,
-  genLimitEasyTrig,
-  genLimitEasyExpLimit,
-  genLimitAbsOneSided,
-  genLimitDiffCubes,
-  genLimitMedFactoring,
-  genLimitMedSqrtConjugate,
-  genLimitMedCbrtConjugate,
-  genLimitMedComplexFraction,
-  genLimitInfinityPolyRatio,
-  genLimitInfinityRadicalRatio,
-  genLimitTrigCotCsc,
-  genLimitHardDoubleConjugate,
-  genLimitHardTrigCube,
-  genLimitHardTrigProduct,
-  genLimitHardInfinityConjugate,
-  genLimitHardTrigPolyPoint,
-  genLimitLHopitalExpTrig,
-  genLimitLHopitalDoubleDeriv,
-  genLimitTrigTanSec
-];
+//const limitGenerators = [
+//  genLimitEasyFactoring,
+//  genLimitEasyTrig,
+//  genLimitEasyExpLimit,
+//  genLimitAbsOneSided,
+//  genLimitDiffCubes,
+//  genLimitMedFactoring,
+//  genLimitMedSqrtConjugate,
+//  genLimitMedCbrtConjugate,
+//  genLimitMedComplexFraction,
+//  genLimitInfinityPolyRatio,
+//  genLimitInfinityRadicalRatio,
+//  genLimitTrigCotCsc,
+//  genLimitHardDoubleConjugate,
+//  genLimitHardTrigCube,
+//  genLimitHardTrigProduct,
+//  genLimitHardInfinityConjugate,
+//  genLimitHardTrigPolyPoint,
+//  genLimitLHopitalExpTrig,
+//  genLimitLHopitalDoubleDeriv,
+//  genLimitTrigTanSec
+//];
 
 // 1. หมวดอนุพันธ์ฟังก์ชันชัดแจ้ง (Explicit Derivatives: y = f(x)) - ไม่รวมโดยปริยายและเส้นสัมผัส
 
@@ -135,7 +135,7 @@ const tangentNormalGenerators = [
 
 // หมวดทั้งหมด (คละบทเรียน)
 const allGenerators = [
-  ...limitGenerators,
+  //...limitGenerators,
   ...explicitDerivGenerators,
   ...implicitGenerators,
   ...tangentNormalGenerators
@@ -261,7 +261,7 @@ function setFilterDifficulty(diff) {
 
 function getActivePool() {
   let pool = allGenerators;
-  if (currentTopic === 'limit') pool = limitGenerators;
+  //if (currentTopic === 'limit') pool = limitGenerators;
   else if (currentTopic === 'derivative' || currentTopic === 'explicit') pool = explicitDerivGenerators;
   else if (currentTopic === 'implicit') pool = implicitGenerators;
   else if (currentTopic === 'tangent_normal') pool = tangentNormalGenerators;
