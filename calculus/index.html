@@ -532,7 +532,7 @@
     <!-- Topic Navigation Tabs -->
     <div class="topic-nav">
       <button id="topicAllBtn" class="topic-btn active" onclick="setTopic('all')">🎲 ทั้งหมด (คละบทเรียน)</button>
-      <!-- <button id="topicLimitBtn" class="topic-btn" onclick="setTopic('limit')">📘 ลิมิต (Limits)</button> -->
+      <button id="topicLimitBtn" class="topic-btn" style="display: none;" onclick="setTopic('limit')">📘 ลิมิต (Limits)</button>
       <button id="topicDerivBtn" class="topic-btn" onclick="setTopic('derivative')">📙 อนุพันธ์ทั่วไป</button>
       <button id="topicImplicitBtn" class="topic-btn" onclick="setTopic('implicit')">🔄 ฟังก์ชันโดยปริยาย</button>
       <button id="topicTangentBtn" class="topic-btn" onclick="setTopic('tangent_normal')">📐 เส้นสัมผัส & เส้นปกติ</button>
@@ -645,7 +645,7 @@
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:0.95rem;">
         <div>ทำทั้งหมด: <strong id="statTotalAnswered">0</strong> ข้อ</div>
         <div>ตอบถูกรวม: <strong id="statTotalCorrect">0</strong> ข้อ</div>
-        <!-- <div>โจทย์ลิมิตผ่าน: <strong id="statLimitCorrect">0</strong> ข้อ</div> -->
+        <div style="display: none;">โจทย์ลิมิตผ่าน: <strong id="statLimitCorrect">0</strong> ข้อ</div>
         <div>โจทย์อนุพันธ์ผ่าน: <strong id="statDerivCorrect">0</strong> ข้อ</div>
         <div>ความแม่นยำ: <strong id="statAccuracy">0%</strong></div>
         <div>Streak สูงสุด: <strong id="statBestStreak">0</strong> 🔥</div>
