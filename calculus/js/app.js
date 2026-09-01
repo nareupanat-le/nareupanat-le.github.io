@@ -262,7 +262,7 @@ function setFilterDifficulty(diff) {
 function getActivePool() {
   let pool = allGenerators;
   //if (currentTopic === 'limit') pool = limitGenerators;
-  else if (currentTopic === 'derivative' || currentTopic === 'explicit') pool = explicitDerivGenerators;
+  if (currentTopic === 'derivative' || currentTopic === 'explicit') pool = explicitDerivGenerators;
   else if (currentTopic === 'implicit') pool = implicitGenerators;
   else if (currentTopic === 'tangent_normal') pool = tangentNormalGenerators;
 

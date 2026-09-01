@@ -16,17 +16,22 @@ global.document = {
 global.MathJax = { typesetPromise: async ()=>{} };
 
 const files = ['js/utils.js']
-  .concat(fs.readdirSync('js/limits').map(f => 'js/limits/' + f))
+  // .concat(fs.readdirSync('js/limits').map(f => 'js/limits/' + f))
   .concat(fs.readdirSync('js/derivatives').map(f => 'js/derivatives/' + f))
   .concat(['js/app.js']);
 
 let fullCode = files.map(f => fs.readFileSync(f, 'utf8')).join('\n');
 fullCode += `
-currentTopic = 'limit';
-currentMode = 'filter';
-filterDifficulty = 'easy';
-generateNextProblem();
-console.log("Success! Problem is: " + currentProblem.probLatex);
+currentTopic = 'derivative';
+currentMode = 'free';
+filterDifficulty = 'all';
+console.log("Calling generateNextProblem()...");
+try {
+  generateNextProblem();
+  console.log("Success! currentProblem:", currentProblem.probLatex);
+} catch(e) {
+  console.error("Error in generateNextProblem:", e);
+}
 `;
 
 try {
