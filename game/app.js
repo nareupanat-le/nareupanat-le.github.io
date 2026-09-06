@@ -490,7 +490,7 @@ function addBlockRow(initialWords = '', skipTypeset = false) {
     row.innerHTML = `
         <span class="block-label">\\(\\Gamma_{${blockCount}}\\):</span>
         <input type="text" class="block-input" value="${initialWords}" placeholder="e.g. 01, 0110 (comma-separated words)">
-        <button class="btn-copy-block" title="Copy words in this block" style="background:rgba(59, 130, 246, 0.15);border:1px solid rgba(59,130,246,0.3);color:var(--accent-blue);width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;flex-shrink:0;">📋</button>
+        <button class="btn-copy-block" title="Copy words in this block" style="border: 1px solid var(--glass-border);width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;flex-shrink:0;">📋</button>
         <button class="btn-remove-block" title="Remove Block">&times;</button>
     `;
     blocksContainer.appendChild(row);
@@ -750,17 +750,17 @@ document.getElementById('btn-compute').addEventListener('click', () => {
             let is_initial = P.some(pb => pb.sort().join(',') === [...set].sort().join(','));
             let badge = '';
             if (set.origin_type === 'initial' || is_initial) {
-                badge = `<span style="color:var(--accent-cyan);font-size:0.85em;font-weight:600;">[Initial Block]</span>`;
+                badge = `<span style="font-size:0.85em;font-weight:600;">[Initial Block]</span>`;
             } else if (set.origin_type === 'concatenation') {
-                let origin_str = set.origin_label ? ` <span style="color:var(--text-secondary);font-size:0.85em;margin-left:4px;">(from \\(${set.origin_label}\\))</span>` : '';
-                badge = `<span style="color:var(--accent-purple);font-weight:700;font-size:0.85em;">[Surviving Concatenation Set]</span>${origin_str}`;
+                let origin_str = set.origin_label ? ` <span style="font-size:0.85em;margin-left:4px;">(from \\(${set.origin_label}\\))</span>` : '';
+                badge = `<span style="font-weight:700;font-size:0.85em;">[Surviving Concatenation Set]</span>${origin_str}`;
             } else {
-                let origin_str = set.origin_label ? ` <span style="color:var(--text-secondary);font-size:0.85em;margin-left:4px;">(from \\(${set.origin_label}\\))</span>` : '';
-                badge = `<span style="color:var(--accent-pink);font-weight:700;font-size:0.85em;">[Surviving Replacement Set]</span>${origin_str}`;
+                let origin_str = set.origin_label ? ` <span style="font-size:0.85em;margin-left:4px;">(from \\(${set.origin_label}\\))</span>` : '';
+                badge = `<span style="font-weight:700;font-size:0.85em;">[Surviving Replacement Set]</span>${origin_str}`;
             }
-            let copySetBtn = `<button class="btn-copy-set" data-words="${set.join(', ')}" title="Copy words in S_${idx+1}" style="background:rgba(236, 72, 153, 0.15);border:1px solid rgba(236, 72, 153, 0.3);color:var(--accent-pink);padding:2px 8px;border-radius:6px;font-size:0.8rem;cursor:pointer;margin-left:8px;">📋 Copy Words</button>`;
+            let copySetBtn = `<button class="btn-copy-set" data-words="${set.join(', ')}" title="Copy words in S_${idx+1}" style="border: 1px solid var(--glass-border);padding:2px 8px;border-radius:6px;font-size:0.8rem;cursor:pointer;margin-left:8px;">📋 Copy Words</button>`;
             let step_k_val = set.step_k || 1;
-            return `<li style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;gap:8px;border-bottom:1px solid var(--glass-border);padding-bottom:8px;"><div>\\(S_${idx+1} = \\{ ${set.join(', ')} \\}\\) ${badge} ${copySetBtn}</div><div style="color:var(--text-muted);font-weight:600;font-size:0.95em;font-family:monospace;margin-left:auto;">(k=${step_k_val})</div></li>`;
+            return `<li style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;gap:8px;border-bottom:1px solid var(--glass-border);padding-bottom:8px;"><div>\\(S_${idx+1} = \\{ ${set.join(', ')} \\}\\) ${badge} ${copySetBtn}</div><div style="font-weight:600;font-size:0.95em;font-family:monospace;margin-left:auto;">(k=${step_k_val})</div></li>`;
         }).join('');
         document.getElementById('result-stabilizer').innerHTML = `<ul style="list-style-type:none;padding-left:0;line-height:1.8;margin:0;">${e_items}</ul>`;
         
@@ -776,21 +776,21 @@ document.getElementById('btn-compute').addEventListener('click', () => {
         // Render WQO Minimality Filter Log
         let logRows = current_checked_log.map((entry, idx) => {
             let statusBadge = entry.survived 
-                ? `<span style="color:var(--success);font-weight:700;">✅ Survived</span>` 
-                : `<span style="color:var(--error);font-weight:600;">❌ Absorbed by \\(${entry.absorbed_by}\\)</span>`;
+                ? `<span style="font-weight:700;">✅ Survived</span>` 
+                : `<span style="font-weight:600;">❌ Absorbed by \\(${entry.absorbed_by}\\)</span>`;
             let wordsPreview = entry.words.length > 5 ? entry.words.slice(0, 5).join(', ') + `, ... (+${entry.words.length - 5} more)` : entry.words.join(', ');
             return `<tr style="border-bottom: 1px solid var(--glass-border);">
                 <td style="padding: 8px; font-family: monospace;">\\(${entry.label}\\)</td>
                 <td style="padding: 8px;">${entry.type}</td>
                 <td style="padding: 8px; text-align: center;">\\(k=${entry.step_k}\\)</td>
                 <td style="padding: 8px;">${statusBadge}</td>
-                <td style="padding: 8px; font-family: monospace; color: var(--text-secondary); font-size: 0.8rem;">\\(\\{ ${wordsPreview} \\}\\)</td>
+                <td style="padding: 8px; font-family: monospace;  font-size: 0.8rem;">\\(\\{ ${wordsPreview} \\}\\)</td>
             </tr>`;
         }).join('');
         
         let logTableHtml = `<table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
-                <tr style="border-bottom: 1px solid var(--glass-border); color: var(--accent-blue);">
+                <tr style="border-bottom: 1px solid var(--glass-border); ">
                     <th style="padding: 8px;">Candidate Set</th>
                     <th style="padding: 8px;">Type</th>
                     <th style="padding: 8px; text-align: center;">Step</th>
@@ -834,8 +834,8 @@ document.getElementById('btn-compute').addEventListener('click', () => {
                 typeName = 'Replacement';
                 arrow = ` <-- \\(${set.origin_label}\\)`;
             }
-            return `<div style="padding: 8px 14px; background: rgba(255,255,255,0.03); border-left: 4px solid ${color}; border-radius: 8px; margin-bottom: 8px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                <strong style="color:${color}; font-size:1.05em;">\\(${label}\\)</strong> <span style="font-size:0.85em; opacity:0.8; background:var(--glass-border); padding:2px 8px; border-radius:4px;">[${typeName}]</span> <span style="color:var(--text-secondary);">${arrow}</span> <span style="margin-left:auto; font-size:0.85em; color:var(--text-muted);">(step k=${set.step_k || 1})</span>
+            return `<div style="padding: 8px 14px;  border-left: 4px solid ${color}; border-radius: 8px; margin-bottom: 8px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+                <strong style="color:${color}; font-size:1.05em;">\\(${label}\\)</strong> <span style="font-size:0.85em; opacity:0.8; background:var(--glass-border); padding:2px 8px; border-radius:4px;">[${typeName}]</span> <span style="">${arrow}</span> <span style="margin-left:auto; font-size:0.85em; ">(step k=${set.step_k || 1})</span>
             </div>`;
         }).join('');
         let lineageEl = document.getElementById('result-lineage-tree');
@@ -979,28 +979,28 @@ function inspectNode(node) {
     }
     
     let statusHtml = node.survived ? 
-        '<span style="color:var(--success); font-weight:600; font-size:0.88rem;">✅ Minimal Stabilizer Element (Survives in \\(\\mathbb{E}\\))</span>' : 
-        `<span style="color:var(--error); font-weight:600; font-size:0.88rem;">❌ Absorbed by \\(${node.absorbed_by || 'E'}\\) under \\(\\ll\\)</span>`;
+        '<span style=" font-weight:600; font-size:0.88rem;">✅ Minimal Stabilizer Element (Survives in \\(\\mathbb{E}\\))</span>' : 
+        `<span style=" font-weight:600; font-size:0.88rem;">❌ Absorbed by \\(${node.absorbed_by || 'E'}\\) under \\(\\ll\\)</span>`;
 
     let wordTags = (node.words || []).map(w => `<span class="inspector-word-tag">${w}</span>`).join('');
     
     panel.innerHTML = `
         <div style="border-bottom: 1px dashed var(--glass-border); padding-bottom: 12px; margin-bottom: 12px;">
-            <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--accent-purple); background:rgba(192,132,252,0.15); border: 1px solid rgba(192,132,252,0.4); padding:3px 8px; border-radius:6px; font-weight:600;">${node.set_type}</span>
-            <h3 style="margin: 10px 0 6px 0; color: var(--text-primary); font-size: 1.35rem;">\\(${node.display_label}\\)</h3>
-            <div style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5;">Origin: \\(${node.origin_label || 'User Defined'}\\)</div>
+            <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px;   border: 1px solid var(--glass-border); padding:3px 8px; border-radius:6px; font-weight:600;">${node.set_type}</span>
+            <h3 style="margin: 10px 0 6px 0;  font-size: 1.35rem;">\\(${node.display_label}\\)</h3>
+            <div style=" font-size: 0.9rem; line-height: 1.5;">Origin: \\(${node.origin_label || 'User Defined'}\\)</div>
             <div style="margin-top: 8px;">${statusHtml}</div>
         </div>
         <div style="flex-grow: 1;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <span style="font-size:0.9rem; color:var(--text-secondary); font-weight:600;">Word Elements (${(node.words || []).length}):</span>
-                <button onclick="navigator.clipboard.writeText('${(node.words || []).join(', ')}'); this.innerText='Copied!'; setTimeout(()=>this.innerText='📋 Copy Words', 1500);" style="background:var(--glass-border); border: 1px solid var(--glass-border); color:var(--text-primary); padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.75rem;">📋 Copy Words</button>
+                <span style="font-size:0.9rem;  font-weight:600;">Word Elements (${(node.words || []).length}):</span>
+                <button onclick="navigator.clipboard.writeText('${(node.words || []).join(', ')}'); this.innerText='Copied!'; setTimeout(()=>this.innerText='📋 Copy Words', 1500);" style="background:var(--glass-border); border: 1px solid var(--glass-border);  padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.75rem;">📋 Copy Words</button>
             </div>
-            <div style="max-height: 180px; overflow-y: auto; background: rgba(0,0,0,0.35); padding: 8px; border-radius: 8px; border: 1px solid var(--glass-border);">
+            <div style="max-height: 180px; overflow-y: auto;  padding: 8px; border-radius: 8px; border: 1px solid var(--glass-border);">
                 ${wordTags}
             </div>
         </div>
-        <div style="margin-top: 14px; border-top: 1px dashed var(--glass-border); padding-top: 12px; font-size:0.88rem; color:var(--text-secondary); line-height: 1.6;">
+        <div style="margin-top: 14px; border-top: 1px dashed var(--glass-border); padding-top: 12px; font-size:0.88rem;  line-height: 1.6;">
             <div>⚡ <strong>Reduces (\\(\\ll\\)):</strong> ${reduces.length > 0 ? `\\(${reduces.join(', ')}\\)` : 'None'}</div>
             <div style="margin-top:4px;">🛡️ <strong>Reduced by (\\(\\gg\\)):</strong> ${reducedBy.length > 0 ? `\\(${reducedBy.join(', ')}\\)` : 'None (Minimal Source)'}</div>
         </div>
@@ -1022,7 +1022,7 @@ function renderInteractiveGraph(mode) {
     if (btnAbs) btnAbs.classList.toggle('active-mode', showAbsorbedNodes);
     
     if (typeof vis === 'undefined' || !vis.Network) {
-        container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--error);">⚠️ Graph visualization library (vis-network) is loading or unavailable. Please check internet connection for CDN.</div>';
+        container.innerHTML = '<div style="padding: 20px; text-align: center; ">⚠️ Graph visualization library (vis-network) is loading or unavailable. Please check internet connection for CDN.</div>';
         return;
     }
     
@@ -1044,8 +1044,8 @@ function renderInteractiveGraph(mode) {
                 id: nId,
                 label: `Γ${i+1} ≡ S${sIdx+1}\n[Minimal Block]`,
                 title: `Initial Block Γ${i+1} (Survives as S${sIdx+1})\nWords: ${block.join(', ')}`,
-                color: { background: 'var(--glass-border)', border: 'var(--accent-blue)', highlight: { background: 'var(--glass-bg)', border: 'var(--accent-cyan)' } },
-                font: { color: 'var(--text-primary)', face: 'Outfit', size: 15, bold: true },
+                color: { background: '#ffffff', border: '#7A5C3A', highlight: { background: '#faf8f5', border: '#4E3A29' } },
+                font: { color: '#111111', face: 'ui-monospace, monospace', size: 14 },
                 shape: 'box', margin: 12,
                 shadow: { enabled: true, color: 'rgba(56, 189, 248, 0.5)', size: 12 },
                 set_type: 'Initial Block ≡ Minimal Set',
@@ -1064,7 +1064,7 @@ function renderInteractiveGraph(mode) {
                 id: nId,
                 label: `Γ${i+1}\n[Absorbed]`,
                 title: `Initial Block Γ${i+1} (Absorbed by ${absorbedBy})\nWords: ${block.join(', ')}`,
-                color: { background: 'var(--glass-bg)', border: 'var(--glass-border)', highlight: { background: 'var(--glass-border)', border: 'var(--text-secondary)' } },
+                color: { background: '#ffffff', border: '#7A5C3A', highlight: { background: '#faf8f5', border: '#4E3A29' } },
                 font: { color: 'var(--text-secondary)', face: 'Outfit', size: 13 },
                 shape: 'box', margin: 10,
                 shapeProperties: { borderDashes: [5, 5] },
@@ -1098,7 +1098,7 @@ function renderInteractiveGraph(mode) {
                 label: `S${j+1}\n${isRep ? '[Replacement]' : '[Concatenation]'}`,
                 title: `Stabilizer Set S${j+1}\nOrigin: ${set.origin_label || ''}\nWords: ${set.join(', ')}`,
                 color: { background: bg, border: border, highlight: { background: hlBg, border: hlBorder } },
-                font: { color: 'var(--text-primary)', face: 'Outfit', size: 15, bold: true },
+                font: { color: '#111111', face: 'ui-monospace, monospace', size: 14 },
                 shape: 'box', margin: 12,
                 shadow: { enabled: true, color: shadowCol, size: 12 },
                 set_type: isRep ? 'Surviving Replacement Set' : 'Surviving Concatenation Set',
@@ -1120,7 +1120,7 @@ function renderInteractiveGraph(mode) {
                     id: item.node_id,
                     label: `[Absorbed]\n${item.type}`,
                     title: `Absorbed Candidate (${item.type})\nOrigin: ${item.label}\nAbsorbed by: ${item.absorbed_by}\nWords: ${(item.words||[]).join(', ')}`,
-                    color: { background: '#1e293b', border: 'var(--glass-border)', highlight: { background: 'var(--glass-bg)', border: 'var(--glass-border)' } },
+                    color: { background: '#ffffff', border: '#7A5C3A', highlight: { background: '#faf8f5', border: '#4E3A29' } },
                     font: { color: 'var(--text-secondary)', face: 'Outfit', size: 12 },
                     shape: 'box', margin: 8,
                     shapeProperties: { borderDashes: [4, 4] },

@@ -58,21 +58,21 @@
         </section>
 
         <section id="results" class="results-container hidden">
-            <div id="rare-radar-box" class="card glass-panel hidden" style="border: 1px solid var(--accent-pink); background: linear-gradient(135deg, rgba(251,191,36,0.15) 0%, rgba(245,158,11,0.05) 100%); margin-bottom: 24px; box-shadow: 0 0 25px rgba(251,191,36,0.2); transition: all 0.3s ease;">
+            <div id="rare-radar-box" class="card glass-panel hidden" style="border: 1px solid var(--accent-pink); background: linear-gradient(135deg, rgba(122,92,58,0.1) 0%, rgba(122,92,58,0.05) 100%); margin-bottom: 24px; box-shadow: 0 0 25px rgba(122,92,58,0.1); transition: all 0.3s ease;">
                 <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
                     <div style="display: flex; align-items: center; gap: 12px;">
                         <span id="rare-radar-icon" style="font-size: 2rem;">🏆</span>
                         <div>
                             <h3 id="rare-radar-title" style="color: var(--accent-pink); margin: 0; font-size: 1.2rem;">Rare Mathematical Phenomenon Detected!</h3>
-                            <p id="rare-radar-text" style="color: #fde68a; margin: 4px 0 0 0; font-size: 0.95rem;"></p>
+                            <p id="rare-radar-text" style="color: var(--text-secondary); margin: 4px 0 0 0; font-size: 0.95rem;"></p>
                         </div>
                     </div>
-                    <span id="rare-radar-badge" style="background: rgba(251,191,36,0.2); border: 1px solid var(--accent-pink); color: var(--accent-pink); padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">WQO Research Radar</span>
+                    <span id="rare-radar-badge" style="background: rgba(122,92,58,0.1); border: 1px solid var(--accent-pink); color: var(--accent-pink); padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">WQO Research Radar</span>
                 </div>
             </div>
 
             <div style="display: flex; justify-content: flex-end; margin-bottom: 16px;">
-                <button id="btn-export-latex" class="btn btn-secondary" style="background: linear-gradient(135deg, rgba(59,130,246,0.2), rgba(147,51,234,0.2)); border: 1px solid rgba(147,51,234,0.4); color: var(--text-primary); font-weight: 600;">📄 One-Click Copy LaTeX for Paper</button>
+                <button id="btn-export-latex" class="btn btn-secondary" style="background: linear-gradient(135deg, rgba(122,92,58,0.1), rgba(122,92,58,0.1)); border: 1px solid rgba(122,92,58,0.2); color: var(--text-primary); font-weight: 600;">📄 One-Click Copy LaTeX for Paper</button>
             </div>
 
             <div class="card glass-panel result-card">
@@ -91,7 +91,7 @@
                 <p class="desc-text">By Higman's Lemma, full words under \(\leq\) form a well-quasi-ordering. Iterative replacements \(\operatorname{rep}(X, Y)\) and concatenations filtered under the set reduction order \(\ll\) converge to a finite set of minimal replacement sets:</p>
                 <div id="result-stabilizer" class="math-content"></div>
                 <div style="margin-top: 20px; border-top: 1px dashed var(--glass-border); padding-top: 16px;">
-                    <button id="btn-toggle-filter-log" class="btn btn-secondary" style="background: rgba(59,130,246,0.15); border: 1px solid rgba(59,130,246,0.4); color: var(--accent-blue); font-size: 0.9rem; padding: 6px 12px; border-radius: 8px; cursor: pointer;">🔍 View WQO Minimality Filter Log (\(\min_{\ll}\) Evaluation of All Checked Candidates)</button>
+                    <button id="btn-toggle-filter-log" class="btn btn-secondary" style="background: rgba(122,92,58,0.05); border: 1px solid rgba(122,92,58,0.2); color: var(--accent-blue); font-size: 0.9rem; padding: 6px 12px; border-radius: 8px; cursor: pointer;">🔍 View WQO Minimality Filter Log (\(\min_{\ll}\) Evaluation of All Checked Candidates)</button>
                     <div id="filter-log-container" class="hidden" style="margin-top: 12px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; padding: 16px; overflow-x: auto; max-height: 400px; font-size: 0.85rem; line-height: 1.6;"></div>
                 </div>
                 <div style="margin-top: 24px; border-top: 1px dashed var(--glass-border); padding-top: 16px;">
@@ -100,23 +100,23 @@
                             🌌 Interactive WQO Hasse Diagram & Lineage Network
                         </h4>
                         <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                            <button id="btn-graph-lineage" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; background: rgba(192,132,252,0.25); border: 1px solid var(--accent-purple); color: var(--text-primary); box-shadow: 0 0 10px rgba(192,132,252,0.3);">🧬 Lineage Evolution</button>
+                            <button id="btn-graph-lineage" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; background: rgba(122,92,58,0.1); border: 1px solid var(--accent-purple); color: var(--text-primary); box-shadow: 0 0 10px rgba(0,0,0,0.05);">🧬 Lineage Evolution</button>
                             <button id="btn-graph-wqo" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; background: var(--glass-border); border: 1px solid var(--glass-border); color: var(--text-secondary);">⚡ WQO Reduction Order (<<)</button>
                             <button id="btn-graph-absorbed" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; background: var(--glass-border); border: 1px solid var(--glass-border); color: var(--text-secondary);" title="Toggle visibility of non-minimal absorbed sets">👻 Show Absorbed Sets</button>
                             <button id="btn-graph-fit" class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.85rem; border-radius: 8px;" title="Reset Zoom and Center Graph">🎯 Center</button>
-                            <button id="btn-graph-fullscreen" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; background: rgba(59, 130, 246, 0.2); border: 1px solid rgba(59, 130, 246, 0.5); color: var(--accent-blue); font-weight: 600; box-shadow: 0 0 10px rgba(59,130,246,0.3);" title="Expand Canvas to Fullscreen">⛶ ขยายเต็มจอ (Fullscreen Canvas)</button>
+                            <button id="btn-graph-fullscreen" class="btn btn-secondary" style="padding: 6px 14px; font-size: 0.85rem; border-radius: 8px; background: rgba(122,92,58,0.1); border: 1px solid rgba(122,92,58,0.2); color: var(--accent-blue); font-weight: 600; box-shadow: 0 0 10px rgba(0,0,0,0.05);" title="Expand Canvas to Fullscreen">⛶ ขยายเต็มจอ (Fullscreen Canvas)</button>
                         </div>
                     </div>
                     <p style="color: var(--text-secondary); font-size: 0.85rem; margin-bottom: 12px; line-height: 1.5;">
                         👉 <strong>Interactive Graph Instructions:</strong> Click any node to inspect set elements and WQO properties in the side panel. Drag nodes, or zoom and pan the canvas. Switch modes to explore genealogical generation vs. algebraic set reduction order \(\ll\). Click <strong>⛶ ขยายเต็มจอ</strong> for immersive widescreen analysis.
                     </p>
                     <div class="graph-grid-container">
-                        <button id="btn-exit-fullscreen" class="hidden" style="display: none; position: absolute; top: 16px; right: 24px; z-index: 1000000; background: rgba(239, 68, 68, 0.9); border: 2px solid #fca5a5; color: white; padding: 8px 18px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.6); font-size: 0.9rem;">✖ ย่อจอ (Exit Fullscreen / ESC)</button>
-                        <div id="network-graph-container" style="height: 480px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.8);">
+                        <button id="btn-exit-fullscreen" class="hidden" style="display: none; position: absolute; top: 16px; right: 24px; z-index: 1000000; background: rgba(239, 68, 68, 0.9); border: 2px solid #fca5a5; color: white; padding: 8px 18px; border-radius: 30px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,0,0,0.1); font-size: 0.9rem;">✖ ย่อจอ (Exit Fullscreen / ESC)</button>
+                        <div id="network-graph-container" style="height: 480px; background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; position: relative; overflow: hidden; box-shadow: inset 0 0 30px rgba(0,0,0,0.02);">
                             <!-- vis-network canvas mounts here -->
                         </div>
-                        <div id="node-inspector-panel" style="background: var(--glass-bg); border: 1px solid rgba(147, 51, 234, 0.35); border-radius: 12px; padding: 16px; height: 480px; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.4); display: flex; flex-direction: column;">
-                            <div style="text-align: center; color: #64748b; margin: auto;">
+                        <div id="node-inspector-panel" style="background: var(--glass-bg); border: 1px solid rgba(122,92,58,0.2); border-radius: 12px; padding: 16px; height: 480px; overflow-y: auto; box-shadow: 0 4px 20px rgba(0,0,0,0.05); display: flex; flex-direction: column;">
+                            <div style="text-align: center; color: var(--text-secondary); margin: auto;">
                                 <div style="font-size: 2.8rem; margin-bottom: 12px; opacity: 0.7;">👆</div>
                                 <h5 style="margin: 0 0 8px 0; color: var(--text-secondary); font-size: 1rem;">No Node Selected</h5>
                                 <p style="margin: 0; font-size: 0.85rem; line-height: 1.5;">Click a block or set in the graph to inspect its word elements, origin formula, and WQO minimality relationships.</p>
