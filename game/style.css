@@ -1,16 +1,16 @@
 :root {
-    --bg-primary: #0b0f19;
-    --bg-secondary: #131b2e;
-    --text-primary: #f8fafc;
-    --text-secondary: #94a3b8;
-    --accent-blue: #3b82f6;
-    --accent-purple: #8b5cf6;
-    --accent-cyan: #06b6d4;
-    --accent-pink: #ec4899;
-    --success: #10b981;
-    --error: #ef4444;
-    --glass-bg: rgba(255, 255, 255, 0.035);
-    --glass-border: rgba(255, 255, 255, 0.1);
+    --bg-primary: #ffffff;
+    --bg-secondary: #faf8f5;
+    --text-primary: #111111;
+    --text-secondary: #7A5C3A;
+    --accent-blue: #7A5C3A;
+    --accent-purple: #61492F;
+    --accent-cyan: #4E3A29;
+    --accent-pink: #d97706;
+    --success: #15803d;
+    --error: #b91c1c;
+    --glass-bg: rgba(255, 255, 255, 0.8);
+    --glass-border: rgba(122, 92, 58, 0.2);
 }
 
 * {
@@ -26,7 +26,7 @@ html, body {
 
 body {
     font-family: 'Outfit', sans-serif;
-    background: radial-gradient(circle at 50% 0%, var(--bg-secondary) 0%, var(--bg-primary) 80%);
+    background: var(--bg-secondary);
     color: var(--text-primary);
     min-height: 100vh;
     display: flex;

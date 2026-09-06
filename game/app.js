@@ -490,7 +490,7 @@ function addBlockRow(initialWords = '', skipTypeset = false) {
     row.innerHTML = `
         <span class="block-label">\\(\\Gamma_{${blockCount}}\\):</span>
         <input type="text" class="block-input" value="${initialWords}" placeholder="e.g. 01, 0110 (comma-separated words)">
-        <button class="btn-copy-block" title="Copy words in this block" style="background:rgba(59, 130, 246, 0.15);border:1px solid rgba(59,130,246,0.3);color:#93c5fd;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;flex-shrink:0;">📋</button>
+        <button class="btn-copy-block" title="Copy words in this block" style="background:rgba(59, 130, 246, 0.15);border:1px solid rgba(59,130,246,0.3);color:var(--accent-blue);width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;flex-shrink:0;">📋</button>
         <button class="btn-remove-block" title="Remove Block">&times;</button>
     `;
     blocksContainer.appendChild(row);
@@ -674,7 +674,7 @@ document.getElementById('btn-export-latex').addEventListener('click', (e) => {
     navigator.clipboard.writeText(fullLatex);
     let oldBtnText = e.currentTarget.innerHTML;
     e.currentTarget.innerHTML = '✅ Copied LaTeX to Clipboard!';
-    e.currentTarget.style.borderColor = '#10b981';
+    e.currentTarget.style.borderColor = 'var(--success)';
     setTimeout(() => { 
         e.currentTarget.innerHTML = oldBtnText; 
         e.currentTarget.style.borderColor = 'rgba(147,51,234,0.4)';
@@ -752,15 +752,15 @@ document.getElementById('btn-compute').addEventListener('click', () => {
             if (set.origin_type === 'initial' || is_initial) {
                 badge = `<span style="color:var(--accent-cyan);font-size:0.85em;font-weight:600;">[Initial Block]</span>`;
             } else if (set.origin_type === 'concatenation') {
-                let origin_str = set.origin_label ? ` <span style="color:#cbd5e1;font-size:0.85em;margin-left:4px;">(from \\(${set.origin_label}\\))</span>` : '';
-                badge = `<span style="color:#c084fc;font-weight:700;font-size:0.85em;">[Surviving Concatenation Set]</span>${origin_str}`;
+                let origin_str = set.origin_label ? ` <span style="color:var(--text-secondary);font-size:0.85em;margin-left:4px;">(from \\(${set.origin_label}\\))</span>` : '';
+                badge = `<span style="color:var(--accent-purple);font-weight:700;font-size:0.85em;">[Surviving Concatenation Set]</span>${origin_str}`;
             } else {
-                let origin_str = set.origin_label ? ` <span style="color:#cbd5e1;font-size:0.85em;margin-left:4px;">(from \\(${set.origin_label}\\))</span>` : '';
+                let origin_str = set.origin_label ? ` <span style="color:var(--text-secondary);font-size:0.85em;margin-left:4px;">(from \\(${set.origin_label}\\))</span>` : '';
                 badge = `<span style="color:var(--accent-pink);font-weight:700;font-size:0.85em;">[Surviving Replacement Set]</span>${origin_str}`;
             }
-            let copySetBtn = `<button class="btn-copy-set" data-words="${set.join(', ')}" title="Copy words in S_${idx+1}" style="background:rgba(236, 72, 153, 0.15);border:1px solid rgba(236, 72, 153, 0.3);color:#f472b6;padding:2px 8px;border-radius:6px;font-size:0.8rem;cursor:pointer;margin-left:8px;">📋 Copy Words</button>`;
+            let copySetBtn = `<button class="btn-copy-set" data-words="${set.join(', ')}" title="Copy words in S_${idx+1}" style="background:rgba(236, 72, 153, 0.15);border:1px solid rgba(236, 72, 153, 0.3);color:var(--accent-pink);padding:2px 8px;border-radius:6px;font-size:0.8rem;cursor:pointer;margin-left:8px;">📋 Copy Words</button>`;
             let step_k_val = set.step_k || 1;
-            return `<li style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;gap:8px;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:8px;"><div>\\(S_${idx+1} = \\{ ${set.join(', ')} \\}\\) ${badge} ${copySetBtn}</div><div style="color:var(--text-muted);font-weight:600;font-size:0.95em;font-family:monospace;margin-left:auto;">(k=${step_k_val})</div></li>`;
+            return `<li style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;margin-bottom:12px;gap:8px;border-bottom:1px solid var(--glass-border);padding-bottom:8px;"><div>\\(S_${idx+1} = \\{ ${set.join(', ')} \\}\\) ${badge} ${copySetBtn}</div><div style="color:var(--text-muted);font-weight:600;font-size:0.95em;font-family:monospace;margin-left:auto;">(k=${step_k_val})</div></li>`;
         }).join('');
         document.getElementById('result-stabilizer').innerHTML = `<ul style="list-style-type:none;padding-left:0;line-height:1.8;margin:0;">${e_items}</ul>`;
         
@@ -776,21 +776,21 @@ document.getElementById('btn-compute').addEventListener('click', () => {
         // Render WQO Minimality Filter Log
         let logRows = current_checked_log.map((entry, idx) => {
             let statusBadge = entry.survived 
-                ? `<span style="color:#10b981;font-weight:700;">✅ Survived</span>` 
-                : `<span style="color:#ef4444;font-weight:600;">❌ Absorbed by \\(${entry.absorbed_by}\\)</span>`;
+                ? `<span style="color:var(--success);font-weight:700;">✅ Survived</span>` 
+                : `<span style="color:var(--error);font-weight:600;">❌ Absorbed by \\(${entry.absorbed_by}\\)</span>`;
             let wordsPreview = entry.words.length > 5 ? entry.words.slice(0, 5).join(', ') + `, ... (+${entry.words.length - 5} more)` : entry.words.join(', ');
-            return `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+            return `<tr style="border-bottom: 1px solid var(--glass-border);">
                 <td style="padding: 8px; font-family: monospace;">\\(${entry.label}\\)</td>
                 <td style="padding: 8px;">${entry.type}</td>
                 <td style="padding: 8px; text-align: center;">\\(k=${entry.step_k}\\)</td>
                 <td style="padding: 8px;">${statusBadge}</td>
-                <td style="padding: 8px; font-family: monospace; color: #cbd5e1; font-size: 0.8rem;">\\(\\{ ${wordsPreview} \\}\\)</td>
+                <td style="padding: 8px; font-family: monospace; color: var(--text-secondary); font-size: 0.8rem;">\\(\\{ ${wordsPreview} \\}\\)</td>
             </tr>`;
         }).join('');
         
         let logTableHtml = `<table style="width: 100%; border-collapse: collapse; text-align: left;">
             <thead>
-                <tr style="border-bottom: 1px solid rgba(255,255,255,0.2); color: #93c5fd;">
+                <tr style="border-bottom: 1px solid var(--glass-border); color: var(--accent-blue);">
                     <th style="padding: 8px;">Candidate Set</th>
                     <th style="padding: 8px;">Type</th>
                     <th style="padding: 8px; text-align: center;">Step</th>
@@ -826,7 +826,7 @@ document.getElementById('btn-compute').addEventListener('click', () => {
             let typeName = 'Initial Block';
             let arrow = ` <-- \\(\\Gamma_{${idx+1}}\\)`;
             if (set.origin_type === 'concatenation') {
-                color = '#c084fc';
+                color = 'var(--accent-purple)';
                 typeName = 'Concatenation';
                 arrow = ` <-- \\(${set.origin_label}\\)`;
             } else if (set.origin_type === 'replacement') {
@@ -835,7 +835,7 @@ document.getElementById('btn-compute').addEventListener('click', () => {
                 arrow = ` <-- \\(${set.origin_label}\\)`;
             }
             return `<div style="padding: 8px 14px; background: rgba(255,255,255,0.03); border-left: 4px solid ${color}; border-radius: 8px; margin-bottom: 8px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
-                <strong style="color:${color}; font-size:1.05em;">\\(${label}\\)</strong> <span style="font-size:0.85em; opacity:0.8; background:rgba(255,255,255,0.08); padding:2px 8px; border-radius:4px;">[${typeName}]</span> <span style="color:#cbd5e1;">${arrow}</span> <span style="margin-left:auto; font-size:0.85em; color:var(--text-muted);">(step k=${set.step_k || 1})</span>
+                <strong style="color:${color}; font-size:1.05em;">\\(${label}\\)</strong> <span style="font-size:0.85em; opacity:0.8; background:var(--glass-border); padding:2px 8px; border-radius:4px;">[${typeName}]</span> <span style="color:var(--text-secondary);">${arrow}</span> <span style="margin-left:auto; font-size:0.85em; color:var(--text-muted);">(step k=${set.step_k || 1})</span>
             </div>`;
         }).join('');
         let lineageEl = document.getElementById('result-lineage-tree');
@@ -878,29 +878,29 @@ document.getElementById('btn-compute').addEventListener('click', () => {
             // Switch themes: Gold if Replacement is present, Silver if only Concatenation is present
             if (replaceCount > 0) {
                 // GOLD THEME (Gold Trophy)
-                rareBox.style.border = '1px solid #fbbf24';
+                rareBox.style.border = '1px solid var(--accent-pink)';
                 rareBox.style.background = 'linear-gradient(135deg, rgba(251,191,36,0.15) 0%, rgba(245,158,11,0.05) 100%)';
                 rareBox.style.boxShadow = '0 0 25px rgba(251,191,36,0.2)';
                 rareIcon.innerText = '🏆';
-                rareTitle.style.color = '#fbbf24';
+                rareTitle.style.color = 'var(--accent-pink)';
                 rareTitle.innerText = 'Rare Mathematical Phenomenon Detected!';
-                rareText.style.color = '#fde68a';
+                rareText.style.color = 'var(--text-secondary)';
                 rareBadge.style.background = 'rgba(251,191,36,0.2)';
-                rareBadge.style.borderColor = '#fbbf24';
-                rareBadge.style.color = '#fbbf24';
+                rareBadge.style.borderColor = 'var(--accent-pink)';
+                rareBadge.style.color = 'var(--accent-pink)';
                 rareBadge.innerText = 'WQO Gold Radar';
             } else {
                 // SILVER THEME (Silver Medal) - Only Concatenation found without Replacement
-                rareBox.style.border = '1px solid #94a3b8';
+                rareBox.style.border = '1px solid var(--text-secondary)';
                 rareBox.style.background = 'linear-gradient(135deg, rgba(203,213,225,0.15) 0%, rgba(148,163,184,0.05) 100%)';
                 rareBox.style.boxShadow = '0 0 25px rgba(203,213,225,0.2)';
                 rareIcon.innerText = '🥈';
-                rareTitle.style.color = '#e2e8f0';
+                rareTitle.style.color = 'var(--text-primary)';
                 rareTitle.innerText = 'Surviving Concatenation Structure Detected!';
-                rareText.style.color = '#cbd5e1';
+                rareText.style.color = 'var(--text-secondary)';
                 rareBadge.style.background = 'rgba(203,213,225,0.2)';
-                rareBadge.style.borderColor = '#cbd5e1';
-                rareBadge.style.color = '#cbd5e1';
+                rareBadge.style.borderColor = 'var(--text-secondary)';
+                rareBadge.style.color = 'var(--text-secondary)';
                 rareBadge.innerText = 'WQO Silver Radar';
             }
         } else {
@@ -979,28 +979,28 @@ function inspectNode(node) {
     }
     
     let statusHtml = node.survived ? 
-        '<span style="color:#4ade80; font-weight:600; font-size:0.88rem;">✅ Minimal Stabilizer Element (Survives in \\(\\mathbb{E}\\))</span>' : 
-        `<span style="color:#f87171; font-weight:600; font-size:0.88rem;">❌ Absorbed by \\(${node.absorbed_by || 'E'}\\) under \\(\\ll\\)</span>`;
+        '<span style="color:var(--success); font-weight:600; font-size:0.88rem;">✅ Minimal Stabilizer Element (Survives in \\(\\mathbb{E}\\))</span>' : 
+        `<span style="color:var(--error); font-weight:600; font-size:0.88rem;">❌ Absorbed by \\(${node.absorbed_by || 'E'}\\) under \\(\\ll\\)</span>`;
 
     let wordTags = (node.words || []).map(w => `<span class="inspector-word-tag">${w}</span>`).join('');
     
     panel.innerHTML = `
-        <div style="border-bottom: 1px dashed rgba(255,255,255,0.15); padding-bottom: 12px; margin-bottom: 12px;">
-            <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:#c084fc; background:rgba(192,132,252,0.15); border: 1px solid rgba(192,132,252,0.4); padding:3px 8px; border-radius:6px; font-weight:600;">${node.set_type}</span>
-            <h3 style="margin: 10px 0 6px 0; color: #f8fafc; font-size: 1.35rem;">\\(${node.display_label}\\)</h3>
-            <div style="color: #cbd5e1; font-size: 0.9rem; line-height: 1.5;">Origin: \\(${node.origin_label || 'User Defined'}\\)</div>
+        <div style="border-bottom: 1px dashed var(--glass-border); padding-bottom: 12px; margin-bottom: 12px;">
+            <span style="font-size:0.75rem; text-transform:uppercase; letter-spacing:1px; color:var(--accent-purple); background:rgba(192,132,252,0.15); border: 1px solid rgba(192,132,252,0.4); padding:3px 8px; border-radius:6px; font-weight:600;">${node.set_type}</span>
+            <h3 style="margin: 10px 0 6px 0; color: var(--text-primary); font-size: 1.35rem;">\\(${node.display_label}\\)</h3>
+            <div style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5;">Origin: \\(${node.origin_label || 'User Defined'}\\)</div>
             <div style="margin-top: 8px;">${statusHtml}</div>
         </div>
         <div style="flex-grow: 1;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                <span style="font-size:0.9rem; color:#cbd5e1; font-weight:600;">Word Elements (${(node.words || []).length}):</span>
-                <button onclick="navigator.clipboard.writeText('${(node.words || []).join(', ')}'); this.innerText='Copied!'; setTimeout(()=>this.innerText='📋 Copy Words', 1500);" style="background:rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color:#e2e8f0; padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.75rem;">📋 Copy Words</button>
+                <span style="font-size:0.9rem; color:var(--text-secondary); font-weight:600;">Word Elements (${(node.words || []).length}):</span>
+                <button onclick="navigator.clipboard.writeText('${(node.words || []).join(', ')}'); this.innerText='Copied!'; setTimeout(()=>this.innerText='📋 Copy Words', 1500);" style="background:var(--glass-border); border: 1px solid var(--glass-border); color:var(--text-primary); padding:4px 10px; border-radius:6px; cursor:pointer; font-size:0.75rem;">📋 Copy Words</button>
             </div>
-            <div style="max-height: 180px; overflow-y: auto; background: rgba(0,0,0,0.35); padding: 8px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.08);">
+            <div style="max-height: 180px; overflow-y: auto; background: rgba(0,0,0,0.35); padding: 8px; border-radius: 8px; border: 1px solid var(--glass-border);">
                 ${wordTags}
             </div>
         </div>
-        <div style="margin-top: 14px; border-top: 1px dashed rgba(255,255,255,0.15); padding-top: 12px; font-size:0.88rem; color:#94a3b8; line-height: 1.6;">
+        <div style="margin-top: 14px; border-top: 1px dashed var(--glass-border); padding-top: 12px; font-size:0.88rem; color:var(--text-secondary); line-height: 1.6;">
             <div>⚡ <strong>Reduces (\\(\\ll\\)):</strong> ${reduces.length > 0 ? `\\(${reduces.join(', ')}\\)` : 'None'}</div>
             <div style="margin-top:4px;">🛡️ <strong>Reduced by (\\(\\gg\\)):</strong> ${reducedBy.length > 0 ? `\\(${reducedBy.join(', ')}\\)` : 'None (Minimal Source)'}</div>
         </div>
@@ -1022,7 +1022,7 @@ function renderInteractiveGraph(mode) {
     if (btnAbs) btnAbs.classList.toggle('active-mode', showAbsorbedNodes);
     
     if (typeof vis === 'undefined' || !vis.Network) {
-        container.innerHTML = '<div style="padding: 20px; text-align: center; color: #f87171;">⚠️ Graph visualization library (vis-network) is loading or unavailable. Please check internet connection for CDN.</div>';
+        container.innerHTML = '<div style="padding: 20px; text-align: center; color: var(--error);">⚠️ Graph visualization library (vis-network) is loading or unavailable. Please check internet connection for CDN.</div>';
         return;
     }
     
@@ -1044,8 +1044,8 @@ function renderInteractiveGraph(mode) {
                 id: nId,
                 label: `Γ${i+1} ≡ S${sIdx+1}\n[Minimal Block]`,
                 title: `Initial Block Γ${i+1} (Survives as S${sIdx+1})\nWords: ${block.join(', ')}`,
-                color: { background: '#0284c7', border: '#38bdf8', highlight: { background: '#0369a1', border: '#7dd3fc' } },
-                font: { color: '#ffffff', face: 'Outfit', size: 15, bold: true },
+                color: { background: 'var(--glass-border)', border: 'var(--accent-blue)', highlight: { background: 'var(--glass-bg)', border: 'var(--accent-cyan)' } },
+                font: { color: 'var(--text-primary)', face: 'Outfit', size: 15, bold: true },
                 shape: 'box', margin: 12,
                 shadow: { enabled: true, color: 'rgba(56, 189, 248, 0.5)', size: 12 },
                 set_type: 'Initial Block ≡ Minimal Set',
@@ -1064,8 +1064,8 @@ function renderInteractiveGraph(mode) {
                 id: nId,
                 label: `Γ${i+1}\n[Absorbed]`,
                 title: `Initial Block Γ${i+1} (Absorbed by ${absorbedBy})\nWords: ${block.join(', ')}`,
-                color: { background: '#334155', border: '#64748b', highlight: { background: '#475569', border: '#94a3b8' } },
-                font: { color: '#cbd5e1', face: 'Outfit', size: 13 },
+                color: { background: 'var(--glass-bg)', border: 'var(--glass-border)', highlight: { background: 'var(--glass-border)', border: 'var(--text-secondary)' } },
+                font: { color: 'var(--text-secondary)', face: 'Outfit', size: 13 },
                 shape: 'box', margin: 10,
                 shapeProperties: { borderDashes: [5, 5] },
                 set_type: 'Initial Block (Absorbed)',
@@ -1087,10 +1087,10 @@ function renderInteractiveGraph(mode) {
         let nId = set.node_id || `S${j+1}`;
         if (!nodeMap[nId]) {
             let isRep = set.origin_type === 'replacement';
-            let bg = isRep ? '#b45309' : '#6b21a8';
-            let border = isRep ? '#fbbf24' : '#c084fc';
+            let bg = isRep ? 'var(--accent-pink)' : 'var(--accent-purple)';
+            let border = isRep ? 'var(--accent-pink)' : 'var(--accent-purple)';
             let hlBg = isRep ? '#d97706' : '#7e22ce';
-            let hlBorder = isRep ? '#fde68a' : '#e9d5ff';
+            let hlBorder = isRep ? 'var(--text-secondary)' : '#e9d5ff';
             let shadowCol = isRep ? 'rgba(251, 191, 36, 0.5)' : 'rgba(192, 132, 252, 0.5)';
             
             nodeMap[nId] = {
@@ -1098,7 +1098,7 @@ function renderInteractiveGraph(mode) {
                 label: `S${j+1}\n${isRep ? '[Replacement]' : '[Concatenation]'}`,
                 title: `Stabilizer Set S${j+1}\nOrigin: ${set.origin_label || ''}\nWords: ${set.join(', ')}`,
                 color: { background: bg, border: border, highlight: { background: hlBg, border: hlBorder } },
-                font: { color: '#ffffff', face: 'Outfit', size: 15, bold: true },
+                font: { color: 'var(--text-primary)', face: 'Outfit', size: 15, bold: true },
                 shape: 'box', margin: 12,
                 shadow: { enabled: true, color: shadowCol, size: 12 },
                 set_type: isRep ? 'Surviving Replacement Set' : 'Surviving Concatenation Set',
@@ -1120,8 +1120,8 @@ function renderInteractiveGraph(mode) {
                     id: item.node_id,
                     label: `[Absorbed]\n${item.type}`,
                     title: `Absorbed Candidate (${item.type})\nOrigin: ${item.label}\nAbsorbed by: ${item.absorbed_by}\nWords: ${(item.words||[]).join(', ')}`,
-                    color: { background: '#1e293b', border: '#475569', highlight: { background: '#334155', border: '#64748b' } },
-                    font: { color: '#94a3b8', face: 'Outfit', size: 12 },
+                    color: { background: '#1e293b', border: 'var(--glass-border)', highlight: { background: 'var(--glass-bg)', border: 'var(--glass-border)' } },
+                    font: { color: 'var(--text-secondary)', face: 'Outfit', size: 12 },
                     shape: 'box', margin: 8,
                     shapeProperties: { borderDashes: [4, 4] },
                     set_type: `Absorbed Candidate (${item.type})`,
@@ -1151,8 +1151,8 @@ function renderInteractiveGraph(mode) {
                             from: pId,
                             to: node.id,
                             label: isRep ? 'rep' : (isCat ? 'cat' : 'gen'),
-                            font: { align: 'middle', size: 11, color: '#cbd5e1', background: 'rgba(15,23,42,0.85)', strokeWidth: 0 },
-                            color: { color: isRep ? '#fbbf24' : (isCat ? '#c084fc' : '#38bdf8'), highlight: '#ffffff' },
+                            font: { align: 'middle', size: 11, color: 'var(--text-secondary)', background: 'rgba(15,23,42,0.85)', strokeWidth: 0 },
+                            color: { color: isRep ? 'var(--accent-pink)' : (isCat ? 'var(--accent-purple)' : 'var(--accent-blue)'), highlight: 'var(--text-primary)' },
                             arrows: { to: { enabled: true, scaleFactor: 1.1 } },
                             smooth: { type: 'cubicBezier', forceDirection: 'vertical', roundness: 0.35 },
                             width: 2
@@ -1173,8 +1173,8 @@ function renderInteractiveGraph(mode) {
                         from: node.id,
                         to: targetId,
                         label: '<< absorbed by',
-                        font: { align: 'middle', size: 10, color: '#f87171', background: 'rgba(15,23,42,0.85)', strokeWidth: 0 },
-                        color: { color: '#ef4444', highlight: '#f87171' },
+                        font: { align: 'middle', size: 10, color: 'var(--error)', background: 'rgba(15,23,42,0.85)', strokeWidth: 0 },
+                        color: { color: 'var(--error)', highlight: 'var(--error)' },
                         arrows: { to: { enabled: true, scaleFactor: 1.0 } },
                         dashes: [5, 5],
                         width: 1.5
@@ -1315,7 +1315,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 btnFull.innerHTML = '⛶ ขยายเต็มจอ (Fullscreen Canvas)';
                 btnFull.style.background = 'rgba(59, 130, 246, 0.2)';
                 btnFull.style.borderColor = 'rgba(59, 130, 246, 0.5)';
-                btnFull.style.color = '#93c5fd';
+                btnFull.style.color = 'var(--accent-blue)';
                 try {
                     if (document.fullscreenElement && document.exitFullscreen) {
                         document.exitFullscreen();
