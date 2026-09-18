@@ -304,7 +304,7 @@ function verify_admissibility(P) {
             let cond1_b_left = Gamma_i.every(w => w[w.length - 1] === '0');
             let cond1_b_right = Gamma_j.every(w => w[0] === '0');
             let cond1_b = cond1_b_left || cond1_b_right;
-            let cond1_b_reason = cond1_b ? (cond1_b_left && cond1_b_right ? `ทุกสายใน \\(\\Gamma_{${i+1}}\\) ลงท้ายด้วย 0 และทุกสายใน \\(\\Gamma_{${j+1}}\\) ขึ้นต้นด้วย 0` : (cond1_b_left ? `ทุกสายใน \\(\\Gamma_{${i+1}}\\) ลงท้ายด้วย 0` : `ทุกสายใน \\(\\Gamma_{${j+1}}\\) ขึ้นต้นด้วย 0`)) : null;
+            let cond1_b_reason = cond1_b ? (cond1_b_left && cond1_b_right ? `Every word in \\(\\Gamma_{${i+1}}\\) ends with 0 and every word in \\(\\Gamma_{${j+1}}\\) starts with 0` : (cond1_b_left ? `Every word in \\(\\Gamma_{${i+1}}\\) ends with 0` : `Every word in \\(\\Gamma_{${j+1}}\\) starts with 0`)) : null;
             
             // 1(c): Lower bounded by some Gamma_k in P
             let cond1_c_reducers = [];
@@ -882,10 +882,10 @@ document.getElementById('btn-export-latex').addEventListener('click', (e) => {
     }).join(' \\\\\\ \n');
     let formula_latex = `\\langle a \\rangle_{\\mathcal{P}} = ${current_formula_summands.join(' \\vee ')}`;
     let adm_note = current_is_admissible 
-        ? `จากการตรวจสอบตามบทนิยาม 5.4.7 พบว่าทุกคู่ดัชนี $i \\neq j$ สอดคล้องกับเงื่อนไขการต่อกันและเงื่อนไขการแทนที่เซต ดังนั้น $\\mathcal{P}$ จึงเป็นเซตกำหนดไอดีลยอมรับได้ (Admissible Ideal Assignment Set)`
-        : `ข้อสังเกต: เซตกำหนดไอดีล $\\mathcal{P}$ นี้ไม่สอดคล้องกับเงื่อนไขในบทนิยาม 5.4.7 จึงไม่เป็นเซตกำหนดไอดีลยอมรับได้`;
+        ? `According to Definition 5.4.7, every distinct index pair $i \\neq j$ satisfies both the concatenation and set replacement conditions; hence $\\mathcal{P}$ is an admissible partition ideal assignment (Admissible Ideal Assignment Set).`
+        : `Note: The partition ideal assignment $\\mathcal{P}$ does not satisfy all conditions of Definition 5.4.7 and is therefore not an admissible assignment.`;
     
-    let fullLatex = `\\begin{example}\nพิจารณาเซตกำหนดไอดีล $\\mathcal{P} = \\{ \\Gamma_1, \\dots, \\Gamma_{${current_P.length}} \\}$ บน $\\mathsf{F}$ โดยที่\n\\[ ${P_latex} \\]\n${adm_note}\n\nโดยทฤษฎีบท 5.4.12 และบทตั้งของฮิกแมน วงศ์เสถียรภาพ $\\mathbb{E} = \\min_{\\ll} \\mathcal{R}(\\mathcal{P})$ ประกอบด้วยสมาชิกเล็กสุด ดังนี้\n\\begin{align*}\n${E_latex}\n\\end{align*}\nและสูตรตัวก่อกำเนิดหลักของสมาชิกไอดีลผลแบ่งกั้น $\\langle a \\rangle_{\\mathcal{P}}$ ในกึ่งกรุปอันดับ $le$ สรุปได้เป็น:\n\\[ ${formula_latex} \\]\n\\end{example}`;
+    let fullLatex = `\\begin{example}\nConsider the partition ideal assignment $\\mathcal{P} = \\{ \\Gamma_1, \\dots, \\Gamma_{${current_P.length}} \\}$ on $\\mathsf{F}$ where\n\\[ ${P_latex} \\]\n${adm_note}\n\nBy Theorem 5.4.12 and Higman's Lemma, the stabilizer family $\\mathbb{E} = \\min_{\\ll} \\mathcal{R}(\\mathcal{P})$ consists of the following minimal elements:\n\\begin{align*}\n${E_latex}\n\\end{align*}\nand the principal generator formula of the partition ideal element $\\langle a \\rangle_{\\mathcal{P}}$ in an ordered $le$-semigroup is given by:\n\\[ ${formula_latex} \\]\n\\end{example}`;
     
     navigator.clipboard.writeText(fullLatex);
     let oldBtnText = e.currentTarget.innerHTML;
@@ -965,18 +965,18 @@ document.getElementById('btn-compute').addEventListener('click', () => {
         if (adm.is_admissible) {
             bannerCard.className = 'admissible-banner-card pass';
             bannerIcon.innerText = '🌟';
-            bannerTitle.innerText = 'เซตกำหนดไอดีลยอมรับได้ (Admissible Ideal Assignment Set)';
+            bannerTitle.innerText = 'Admissible Ideal Assignment Set';
             bannerDesc.innerHTML = adm.is_single_block 
-                ? 'เซตกำหนดไอดีลแบบ 1 บล็อก ถือเป็นเซตยอมรับได้โดยปริยาย (ไม่มีคู่ดัชนี \\(i \\neq j\\))'
-                : `สอดคล้องกับบทนิยาม 5.4.7 ครบทั้งเงื่อนไขการต่อกัน (ข้อ 1) และการแทนที่เซต (ข้อ 2) สำหรับทุกคู่ดัชนี \\(i \\neq j\\) ทั้ง ${adm.pairs.length} คู่`;
+                ? 'Single-block partition assignments are trivially admissible (no distinct index pairs \\(i \\neq j\\)).'
+                : `Satisfies Definition 5.4.7 for both Concatenation (Condition 1) and Set Replacement (Condition 2) across all ${adm.pairs.length} distinct index pairs \\(i \\neq j\\).`;
             bannerBadge.className = 'badge-status pass';
             bannerBadge.innerText = '✅ Admissible Verified';
         } else {
             bannerCard.className = 'admissible-banner-card fail';
             bannerIcon.innerText = '⚠️';
-            bannerTitle.innerText = 'ไม่เป็นเซตกำหนดไอดีลยอมรับได้ (Non-Admissible Ideal Assignment)';
+            bannerTitle.innerText = 'Non-Admissible Ideal Assignment';
             let failedCount = adm.pairs.filter(p => !p.is_admissible).length;
-            bannerDesc.innerHTML = `มี ${failedCount} คู่ดัชนีที่ไม่ผ่านเกณฑ์ตามบทนิยาม 5.4.7 (สูตรตัวก่อกำเนิดหลักอาจไม่รับประกันสมบัติขอบเขตบนสมาชิก \\(\\mathcal{P}\\)-ไอดีล)`;
+            bannerDesc.innerHTML = `Failed Definition 5.4.7 criteria in ${failedCount} index pair${failedCount > 1 ? 's' : ''} (the generator formula may not guarantee upper bound properties for \\(\\mathcal{P}\\)-ideals).`;
             bannerBadge.className = 'badge-status fail';
             bannerBadge.innerText = '❌ Non-Admissible';
         }
@@ -989,8 +989,8 @@ document.getElementById('btn-compute').addEventListener('click', () => {
         // Render Step 1 Summary
         document.getElementById('result-summary').innerHTML = `
             \\[ \\mathcal{P} = \\{ ${P.map((b, idx) => `\\Gamma_{${idx+1}} = \\{ ${b.join(', ')} \\}`).join(',\\quad ')} \\} \\]
-            <p>จำนวนบล็อกทั้งหมด \\(|\\mathcal{P}| = ${P.length}\\) บล็อก, ความยาวสายอักขระมากสุดคือ \\(${l_gamma + 1}\\) จึงได้พารามิเตอร์ความยาว \\(l_\\Gamma = ${l_gamma}\\)</p>
-            <p style="color: var(--success); font-weight:600; font-size:0.95rem;">✅ ตรวจสอบแล้ว: บล็อกทุกบล็อกแยกต่างหากจากกัน และยูเนียนของสายอักขระทั้งหมดเป็นปฏิโซ่แท้บน \\((\\mathsf{F}, \\le)\\)</p>
+            <p>Total blocks \\(|\\mathcal{P}| = ${P.length}\\), maximum word length is \\(${l_gamma + 1}\\), giving length parameter \\(l_\\Gamma = ${l_gamma}\\).</p>
+            <p style="color: var(--success); font-weight:600; font-size:0.95rem;">✅ Verified: All blocks are mutually disjoint and their union forms a strict antichain on \\((\\mathsf{F}, \\le)\\).</p>
         `;
         
         // Render Step 2 Admissibility Matrix
@@ -998,38 +998,38 @@ document.getElementById('btn-compute').addEventListener('click', () => {
         if (adm.is_single_block) {
             admEl.innerHTML = `
                 <div style="padding: 14px; background: var(--bg-secondary); border-radius: 10px; border: 1px solid var(--glass-border); font-size: 0.95rem;">
-                    เนื่องจาก \\(|\\mathcal{P}| = 1\\) (มีเพียงบล็อกเดียว \\(\\Gamma_1\\)) จึงไม่มีคู่ดัชนีที่ต่างกัน \\(i \\neq j\\) ให้ต้องพิจารณา ทำให้สอดคล้องกับบทนิยาม 5.4.7 โดยอัตโนมัติ (Vacuously True)
+                    Because \\(|\\mathcal{P}| = 1\\) (single block \\(\\Gamma_1\\)), there are no distinct index pairs \\(i \\neq j\\) to evaluate. Admissibility holds vacuously (Vacuously True according to Definition 5.4.7).
                 </div>
             `;
         } else {
             let rowsHtml = adm.pairs.map((p, idx) => {
                 let cond1_pills = [];
-                if (p.cond1_a) cond1_pills.push(`<span class="condition-pill satisfied" title="${p.cond1_a_reason || ''}">✅ 1(a) เซตโทน</span>`);
-                if (p.cond1_b) cond1_pills.push(`<span class="condition-pill satisfied" title="${p.cond1_b_reason || ''}">✅ 1(b) ขอบศูนย์</span>`);
-                if (p.cond1_c) cond1_pills.push(`<span class="condition-pill satisfied">✅ 1(c) มี \\(\\Gamma_{${p.cond1_c_reducers.join(',')}} \\ll \\Gamma_${p.i}\\Gamma_${p.j}\\)</span>`);
-                if (!p.cond1_satisfied) cond1_pills.push(`<span class="condition-pill failed">❌ ไม่ผ่าน 1(a,b,c)</span>`);
+                if (p.cond1_a) cond1_pills.push(`<span class="condition-pill satisfied" title="${p.cond1_a_reason || ''}">✅ 1(a) Singleton</span>`);
+                if (p.cond1_b) cond1_pills.push(`<span class="condition-pill satisfied" title="${p.cond1_b_reason || ''}">✅ 1(b) Boundary Zeroes</span>`);
+                if (p.cond1_c) cond1_pills.push(`<span class="condition-pill satisfied">✅ 1(c) Exists \\(\\Gamma_{${p.cond1_c_reducers.join(',')}} \\ll \\Gamma_${p.i}\\Gamma_${p.j}\\)</span>`);
+                if (!p.cond1_satisfied) cond1_pills.push(`<span class="condition-pill failed">❌ Condition 1 Failed</span>`);
                 
                 let cond2_pills = [];
-                if (p.cond2_a) cond2_pills.push(`<span class="condition-pill satisfied">✅ 2(a) บล็อกตัวแทนเซตโทน</span>`);
-                else if (p.cond2_b) cond2_pills.push(`<span class="condition-pill satisfied">✅ 2(b) ทุกเซตมี \\(\\Gamma_k \\ll S\\) (${p.repset_count} เซต)</span>`);
-                else cond2_pills.push(`<span class="condition-pill failed">❌ 2(b) ล้มเหลว (${p.violating_sets.length} เซตไม่ลดทอน)</span>`);
+                if (p.cond2_a) cond2_pills.push(`<span class="condition-pill satisfied">✅ 2(a) Singleton Replacer</span>`);
+                else if (p.cond2_b) cond2_pills.push(`<span class="condition-pill satisfied">✅ 2(b) All sets have \\(\\Gamma_k \\ll S\\) (${p.repset_count} sets)</span>`);
+                else cond2_pills.push(`<span class="condition-pill failed">❌ 2(b) Failed (${p.violating_sets.length} unreduced sets)</span>`);
                 
                 let statusBadge = p.is_admissible 
-                    ? `<span class="badge-status pass">✅ ผ่าน</span>` 
-                    : `<span class="badge-status fail">❌ ไม่ผ่าน</span>`;
+                    ? `<span class="badge-status pass">✅ Satisfied</span>` 
+                    : `<span class="badge-status fail">❌ Violated</span>`;
                     
-                let detailBtn = `<button class="pair-detail-btn" onclick="togglePairDetail(${idx})">🔍 ดูรายละเอียด</button>`;
+                let detailBtn = `<button class="pair-detail-btn" onclick="togglePairDetail(${idx})">🔍 View Details</button>`;
                 
                 let detailContent = `
                     <div id="pair-detail-${idx}" class="pair-detail-content hidden">
-                        <div><strong>การต่อกัน \\(\\Gamma_${p.i}\\Gamma_${p.j}\\) (${p.concat_words.length} สาย):</strong> \\(\\{ ${p.concat_words.join(', ')} \\}\\)</div>
-                        ${p.cond2_a ? '<div style="margin-top:4px; color:var(--text-secondary);">การแทนที่: ไม่ต้องสร้าง RepSet เนื่องจากบล็อกตัวแทนเป็นเซตโทน (ข้อ 2(a))</div>' : `
-                            <div style="margin-top:4px;"><strong>การแทนที่ \\(\\operatorname{RepSet}(\\Gamma_${p.i}, \\{\\Gamma_${p.j}\\})\\) (${p.repset_count} เซต):</strong></div>
+                        <div><strong>Concatenation \\(\\Gamma_${p.i}\\Gamma_${p.j}\\) (${p.concat_words.length} words):</strong> \\(\\{ ${p.concat_words.join(', ')} \\}\\)</div>
+                        ${p.cond2_a ? '<div style="margin-top:4px; color:var(--text-secondary);">Replacement: RepSet generation bypassed because the replacing block is a singleton (Condition 2(a)).</div>' : `
+                            <div style="margin-top:4px;"><strong>Replacement \\(\\operatorname{RepSet}(\\Gamma_${p.i}, \\{\\Gamma_${p.j}\\})\\) (${p.repset_count} sets):</strong></div>
                             <ul style="margin: 4px 0 0 16px; padding: 0;">
                                 ${p.repset_preview.map((s, s_idx) => `<li>\\(S_{${s_idx+1}} = \\{ ${s.join(', ')} \\}\\)</li>`).join('')}
-                                ${p.repset_count > 4 ? `<li>...และอีก ${p.repset_count - 4} เซต</li>` : ''}
+                                ${p.repset_count > 4 ? `<li>...and ${p.repset_count - 4} more sets</li>` : ''}
                             </ul>
-                            ${p.violating_sets.length > 0 ? `<div style="color:var(--error); margin-top:4px;"><strong>เซตที่ละเมิดเงื่อนไข (ไม่มี \\(\\Gamma_k\\) ลดทอน):</strong> ${p.violating_sets.map(vs => `\\(\\{${vs.join(',')}\\}\\)`).join('; ')}</div>` : ''}
+                            ${p.violating_sets.length > 0 ? `<div style="color:var(--error); margin-top:4px;"><strong>Violating sets (no reducing \\(\\Gamma_k\\)):</strong> ${p.violating_sets.map(vs => `\\(\\{${vs.join(',')}\\}\\)`).join('; ')}</div>` : ''}
                         `}
                     </div>
                 `;
@@ -1050,11 +1050,11 @@ document.getElementById('btn-compute').addEventListener('click', () => {
                     <table class="admissible-table">
                         <thead>
                             <tr>
-                                <th>คู่ดัชนี</th>
-                                <th>เงื่อนไขการต่อกัน (ข้อ 1)</th>
-                                <th>เงื่อนไขการแทนที่เซต (ข้อ 2)</th>
-                                <th style="text-align:center;">สถานะ</th>
-                                <th>หลักฐานเชิงการจัด</th>
+                                <th>Index Pair</th>
+                                <th>Concatenation (Condition 1)</th>
+                                <th>Set Replacement (Condition 2)</th>
+                                <th style="text-align:center;">Status</th>
+                                <th>Combinatorial Evidence</th>
                             </tr>
                         </thead>
                         <tbody>${rowsHtml}</tbody>
@@ -1189,40 +1189,50 @@ document.getElementById('btn-compute').addEventListener('click', () => {
             rareReasons.push(`High combinatorial expansion (|E| = ${E.length} vs |P| = ${P.length}).`);
         }
         
-        if (rareReasons.length > 0) {
-            rareText.innerText = rareReasons.join(' ');
-            rareBox.classList.remove('hidden');
-            
-            // Switch themes: Gold if Replacement is present, Silver if only Concatenation is present
-            if (replaceCount > 0) {
-                // GOLD THEME (Gold Trophy)
-                rareBox.style.border = '1px solid var(--accent-pink)';
-                rareBox.style.background = 'linear-gradient(135deg, rgba(251,191,36,0.15) 0%, rgba(245,158,11,0.05) 100%)';
-                rareBox.style.boxShadow = '0 0 25px rgba(251,191,36,0.2)';
-                rareIcon.innerText = '🏆';
-                rareTitle.style.color = 'var(--accent-pink)';
-                rareTitle.innerText = 'Rare Mathematical Phenomenon Detected!';
-                rareText.style.color = 'var(--text-secondary)';
-                rareBadge.style.background = 'rgba(251,191,36,0.2)';
-                rareBadge.style.borderColor = 'var(--accent-pink)';
-                rareBadge.style.color = 'var(--accent-pink)';
-                rareBadge.innerText = 'WQO Gold Radar';
+        if (rareBox) {
+            if (rareReasons.length > 0) {
+                if (rareText) rareText.innerText = rareReasons.join(' ');
+                rareBox.classList.remove('hidden');
+                
+                // Switch themes: Gold if Replacement is present, Silver if only Concatenation is present
+                if (replaceCount > 0) {
+                    // GOLD THEME (Gold Trophy)
+                    rareBox.style.border = '1px solid var(--accent-pink)';
+                    rareBox.style.background = 'linear-gradient(135deg, rgba(251,191,36,0.15) 0%, rgba(245,158,11,0.05) 100%)';
+                    rareBox.style.boxShadow = '0 0 25px rgba(251,191,36,0.2)';
+                    if (rareIcon) rareIcon.innerText = '🏆';
+                    if (rareTitle) {
+                        rareTitle.style.color = 'var(--accent-pink)';
+                        rareTitle.innerText = 'Rare Mathematical Phenomenon Detected!';
+                    }
+                    if (rareText) rareText.style.color = 'var(--text-secondary)';
+                    if (rareBadge) {
+                        rareBadge.style.background = 'rgba(251,191,36,0.2)';
+                        rareBadge.style.borderColor = 'var(--accent-pink)';
+                        rareBadge.style.color = 'var(--accent-pink)';
+                        rareBadge.innerText = 'WQO Gold Radar';
+                    }
+                } else {
+                    // SILVER THEME (Silver Medal) - Only Concatenation found without Replacement
+                    rareBox.style.border = '1px solid var(--text-secondary)';
+                    rareBox.style.background = 'linear-gradient(135deg, rgba(203,213,225,0.15) 0%, rgba(148,163,184,0.05) 100%)';
+                    rareBox.style.boxShadow = '0 0 25px rgba(203,213,225,0.2)';
+                    if (rareIcon) rareIcon.innerText = '🥈';
+                    if (rareTitle) {
+                        rareTitle.style.color = 'var(--text-primary)';
+                        rareTitle.innerText = 'Surviving Concatenation Structure Detected!';
+                    }
+                    if (rareText) rareText.style.color = 'var(--text-secondary)';
+                    if (rareBadge) {
+                        rareBadge.style.background = 'rgba(203,213,225,0.2)';
+                        rareBadge.style.borderColor = 'var(--text-secondary)';
+                        rareBadge.style.color = 'var(--text-secondary)';
+                        rareBadge.innerText = 'WQO Silver Radar';
+                    }
+                }
             } else {
-                // SILVER THEME (Silver Medal) - Only Concatenation found without Replacement
-                rareBox.style.border = '1px solid var(--text-secondary)';
-                rareBox.style.background = 'linear-gradient(135deg, rgba(203,213,225,0.15) 0%, rgba(148,163,184,0.05) 100%)';
-                rareBox.style.boxShadow = '0 0 25px rgba(203,213,225,0.2)';
-                rareIcon.innerText = '🥈';
-                rareTitle.style.color = 'var(--text-primary)';
-                rareTitle.innerText = 'Surviving Concatenation Structure Detected!';
-                rareText.style.color = 'var(--text-secondary)';
-                rareBadge.style.background = 'rgba(203,213,225,0.2)';
-                rareBadge.style.borderColor = 'var(--text-secondary)';
-                rareBadge.style.color = 'var(--text-secondary)';
-                rareBadge.innerText = 'WQO Silver Radar';
+                rareBox.classList.add('hidden');
             }
-        } else {
-            rareBox.classList.add('hidden');
         }
 
         // Render Valuations
@@ -1620,7 +1630,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let isFull = gridContainer.classList.toggle('fullscreen-mode');
         if (btnFull) {
             if (isFull) {
-                btnFull.innerHTML = '❌ ย่อจอ (Exit Fullscreen)';
+                btnFull.innerHTML = '❌ Exit Fullscreen';
                 btnFull.style.background = 'rgba(239, 68, 68, 0.25)';
                 btnFull.style.borderColor = '#fca5a5';
                 btnFull.style.color = '#fecaca';
@@ -1630,7 +1640,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 } catch(e) {}
             } else {
-                btnFull.innerHTML = '⛶ ขยายเต็มจอ (Fullscreen Canvas)';
+                btnFull.innerHTML = '⛶ Fullscreen Canvas';
                 btnFull.style.background = 'rgba(59, 130, 246, 0.2)';
                 btnFull.style.borderColor = 'rgba(59, 130, 246, 0.5)';
                 btnFull.style.color = 'var(--accent-blue)';
