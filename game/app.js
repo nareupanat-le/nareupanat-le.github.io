@@ -193,6 +193,190 @@ function rep_set(X, Y) {
     return Array.from(new Set(all_words)).sort();
 }
 
+// Compute RepSet(Gamma_i, {Gamma_j}) according to Definition 5.4.1:
+// rep^r(alpha, {Gamma_j}) = { Z_1 ... Z_m : Z_p in (if alpha[p]=='1' then {{1}, Gamma_j} else {{0}}) }
+// RepSet(Gamma_i, {Gamma_j}) = cross-union over alpha in Gamma_i of rep^r(alpha, {Gamma_j})
+function compute_exact_repset(Gamma_i, Gamma_j) {
+    let rep_r_for_each_word = [];
+    
+    for (let alpha of Gamma_i) {
+        let ones_pos = [];
+        for (let p = 0; p < alpha.length; p++) {
+            if (alpha[p] === '1') ones_pos.push(p);
+        }
+        let k = ones_pos.length;
+        let sets_for_alpha = [];
+        let total_masks = 1 << k;
+        
+        for (let mask = 0; mask < total_masks; mask++) {
+            let pos_options = [];
+            let one_counter = 0;
+            for (let p = 0; p < alpha.length; p++) {
+                if (alpha[p] === '0') {
+                    pos_options.push(['0']);
+                } else {
+                    let replace_this = (mask & (1 << one_counter)) !== 0;
+                    one_counter++;
+                    if (replace_this) {
+                        pos_options.push(Gamma_j);
+                    } else {
+                        pos_options.push(['1']);
+                    }
+                }
+            }
+            
+            let combo_words = [''];
+            for (let opts of pos_options) {
+                let next = [];
+                for (let pre of combo_words) {
+                    for (let opt of opts) {
+                        next.push(pre + opt);
+                    }
+                }
+                combo_words = next;
+            }
+            let unique_words = Array.from(new Set(combo_words)).sort();
+            sets_for_alpha.push(unique_words);
+        }
+        rep_r_for_each_word.push(sets_for_alpha);
+    }
+    
+    // Cross-union (biguplus) across all words in Gamma_i
+    let all_repsets = [[]];
+    for (let sets_for_alpha of rep_r_for_each_word) {
+        let next_repsets = [];
+        for (let cur of all_repsets) {
+            for (let S_alpha of sets_for_alpha) {
+                let union_words = Array.from(new Set([...cur, ...S_alpha])).sort();
+                next_repsets.push(union_words);
+            }
+        }
+        all_repsets = next_repsets;
+    }
+    
+    let unique_repsets = [];
+    let seen_keys = new Set();
+    for (let s of all_repsets) {
+        let key = s.join(',');
+        if (!seen_keys.has(key)) {
+            seen_keys.add(key);
+            unique_repsets.push(s);
+        }
+    }
+    return unique_repsets;
+}
+
+// Verify Admissibility of partition ideal assignment P according to Definition 5.4.7
+function verify_admissibility(P) {
+    let n = P.length;
+    if (n <= 1) {
+        return {
+            is_admissible: true,
+            pairs: [],
+            is_single_block: true
+        };
+    }
+    
+    let pairs = [];
+    let all_admissible = true;
+    
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n; j++) {
+            if (i === j) continue;
+            
+            let Gamma_i = P[i];
+            let Gamma_j = P[j];
+            
+            // 1. Condition 1: Concatenation Gamma_i Gamma_j
+            let concats = [];
+            for (let w1 of Gamma_i) {
+                for (let w2 of Gamma_j) {
+                    concats.push(w1 + w2);
+                }
+            }
+            let C_ij = Array.from(new Set(concats)).sort();
+            
+            // 1(a): Singleton block
+            let cond1_a = (Gamma_i.length === 1 || Gamma_j.length === 1);
+            let cond1_a_reason = cond1_a ? (Gamma_i.length === 1 && Gamma_j.length === 1 ? `|\\Gamma_{${i+1}}|=1, |\\Gamma_{${j+1}}|=1` : (Gamma_i.length === 1 ? `|\\Gamma_{${i+1}}|=1` : `|\\Gamma_{${j+1}}|=1`)) : null;
+            
+            // 1(b): Boundary zero
+            let cond1_b_left = Gamma_i.every(w => w[w.length - 1] === '0');
+            let cond1_b_right = Gamma_j.every(w => w[0] === '0');
+            let cond1_b = cond1_b_left || cond1_b_right;
+            let cond1_b_reason = cond1_b ? (cond1_b_left && cond1_b_right ? `ทุกสายใน \\(\\Gamma_{${i+1}}\\) ลงท้ายด้วย 0 และทุกสายใน \\(\\Gamma_{${j+1}}\\) ขึ้นต้นด้วย 0` : (cond1_b_left ? `ทุกสายใน \\(\\Gamma_{${i+1}}\\) ลงท้ายด้วย 0` : `ทุกสายใน \\(\\Gamma_{${j+1}}\\) ขึ้นต้นด้วย 0`)) : null;
+            
+            // 1(c): Lower bounded by some Gamma_k in P
+            let cond1_c_reducers = [];
+            for (let k = 0; k < n; k++) {
+                if (set_ll(P[k], C_ij)) {
+                    cond1_c_reducers.push(k + 1);
+                }
+            }
+            let cond1_c = cond1_c_reducers.length > 0;
+            let cond1_satisfied = cond1_a || cond1_b || cond1_c;
+            
+            // 2. Condition 2: Replacement RepSet(Gamma_i, {Gamma_j})
+            let cond2_a = (Gamma_j.length === 1);
+            let cond2_b = false;
+            let cond2_satisfied = false;
+            let repset_list = [];
+            let violating_sets = [];
+            
+            if (cond2_a) {
+                cond2_satisfied = true;
+            } else {
+                repset_list = compute_exact_repset(Gamma_i, Gamma_j);
+                for (let S of repset_list) {
+                    let has_reducer = false;
+                    for (let k = 0; k < n; k++) {
+                        if (set_ll(P[k], S)) {
+                            has_reducer = true;
+                            break;
+                        }
+                    }
+                    if (!has_reducer) {
+                        violating_sets.push(S);
+                    }
+                }
+                cond2_b = (violating_sets.length === 0);
+                cond2_satisfied = cond2_b;
+            }
+            
+            let pair_admissible = cond1_satisfied && cond2_satisfied;
+            if (!pair_admissible) {
+                all_admissible = false;
+            }
+            
+            pairs.push({
+                i: i + 1,
+                j: j + 1,
+                pair_label: `(\\Gamma_{${i+1}}, \\Gamma_{${j+1}})`,
+                cond1_satisfied,
+                cond1_a,
+                cond1_a_reason,
+                cond1_b,
+                cond1_b_reason,
+                cond1_c,
+                cond1_c_reducers,
+                cond2_satisfied,
+                cond2_a,
+                cond2_b,
+                violating_sets,
+                repset_count: repset_list.length,
+                repset_preview: repset_list.slice(0, 4),
+                concat_words: C_ij,
+                is_admissible: pair_admissible
+            });
+        }
+    }
+    
+    return {
+        is_admissible: all_admissible,
+        pairs: pairs
+    };
+}
+
 // Compute WQO Stabilizer Family E = min_ll R(P)
 function compute_stabilizer_family(P) {
     reduction_cache.clear();
@@ -472,6 +656,8 @@ let current_P = [];
 let current_E = [];
 let current_formula_summands = [];
 let current_checked_log = [];
+let current_is_admissible = true;
+let current_admissibility_result = null;
 
 // MathJax rendering queue to prevent overlapping promise freezes and scope rendering to target elements
 let typesetQueue = Promise.resolve();
@@ -576,88 +762,115 @@ function randomizeBlocks(num_blocks) {
     document.getElementById('btn-compute').click();
 }
 
-// Attach event listeners safely using currentTarget
-document.querySelectorAll('.btn-random').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-        let num = parseInt(e.currentTarget.getAttribute('data-random'));
-        randomizeBlocks(num);
-    });
+function load_blocks_to_ui(blocks) {
+    blocksContainer.innerHTML = '';
+    blockCount = 0;
+    for (let b of blocks) {
+        let val = Array.isArray(b) ? b.join(', ') : b;
+        addBlockRow(val, true);
+    }
+    reindexBlocks(true);
+    safeTypeset([blocksContainer]);
+}
+
+// Global toggle for pair details in verification table
+window.togglePairDetail = function(idx) {
+    let el = document.getElementById(`pair-detail-${idx}`);
+    if (el) {
+        el.classList.toggle('hidden');
+        safeTypeset([el]);
+    }
+};
+
+// 3. Preset and Hunter Handlers
+document.getElementById('btn-preset-ex1').addEventListener('click', () => {
+    load_blocks_to_ui([['110', '011'], ['101']]);
+    document.getElementById('btn-compute').click();
 });
+
+document.getElementById('btn-preset-ex2').addEventListener('click', () => {
+    load_blocks_to_ui([['00110'], ['1000', '01011'], ['01100', '0111']]);
+    document.getElementById('btn-compute').click();
+});
+
+document.getElementById('btn-preset-quasi').addEventListener('click', () => {
+    load_blocks_to_ui([['10', '01']]);
+    document.getElementById('btn-compute').click();
+});
+
+document.getElementById('btn-preset-twosided').addEventListener('click', () => {
+    load_blocks_to_ui([['10'], ['01']]);
+    document.getElementById('btn-compute').click();
+});
+
+function hunt_admissible(num_blocks, options = {}) {
+    let errorMsg = document.getElementById('error-msg');
+    errorMsg.style.display = 'none';
+    
+    let max_attempts = 400;
+    for (let attempt = 0; attempt < max_attempts; attempt++) {
+        let block_sizes = [];
+        let total_words = 0;
+        for (let i = 0; i < num_blocks; i++) {
+            let size = 1;
+            if (options.require_rich) {
+                size = (i < 2 || Math.random() < 0.5) ? 2 : 1;
+            } else {
+                size = (num_blocks === 1) ? 2 : (Math.random() < 0.35 ? 2 : 1);
+            }
+            block_sizes.push(size);
+            total_words += size;
+        }
+        
+        let pool = generate_incomparable_pool(total_words);
+        let word_idx = 0;
+        let P_test = [];
+        for (let i = 0; i < num_blocks; i++) {
+            let size = block_sizes[i];
+            let words = [];
+            for (let j = 0; j < size; j++) {
+                words.push(pool[word_idx]);
+                word_idx++;
+            }
+            P_test.push(words);
+        }
+        
+        if (!is_valid_partition_antichain(P_test)) continue;
+        
+        let adm = verify_admissibility(P_test);
+        if (adm.is_admissible) {
+            if (options.require_rich) {
+                let multi_count = P_test.filter(b => b.length >= 2).length;
+                if (multi_count < 2) continue;
+            }
+            load_blocks_to_ui(P_test);
+            document.getElementById('btn-compute').click();
+            return true;
+        }
+    }
+    
+    // Fallback certified examples from monograph if random search times out
+    if (num_blocks === 2) {
+        load_blocks_to_ui([['110', '011'], ['101']]);
+    } else if (num_blocks === 3) {
+        load_blocks_to_ui([['00110'], ['1000', '01011'], ['01100', '0111']]);
+    } else if (num_blocks === 4) {
+        load_blocks_to_ui([['00110'], ['1000', '01011'], ['01100', '0111'], ['000101']]);
+    } else {
+        load_blocks_to_ui([['10', '01']]);
+    }
+    document.getElementById('btn-compute').click();
+    return false;
+}
+
+document.getElementById('btn-hunt-adm-2').addEventListener('click', () => hunt_admissible(2));
+document.getElementById('btn-hunt-adm-3').addEventListener('click', () => hunt_admissible(3));
+document.getElementById('btn-hunt-adm-4').addEventListener('click', () => hunt_admissible(4));
+document.getElementById('btn-hunt-rich-adm').addEventListener('click', () => hunt_admissible(3, { require_rich: true }));
+document.getElementById('btn-random-antichain').addEventListener('click', () => randomizeBlocks(Math.random() < 0.5 ? 2 : 3));
 
 document.getElementById('btn-add-block').addEventListener('click', () => {
     addBlockRow('');
-});
-
-document.getElementById('btn-hunt-concat').addEventListener('click', () => {
-    let found = false;
-    for (let attempt = 0; attempt < 300; attempt++) {
-        let num_blocks = 3;
-        let pool = generate_incomparable_pool(num_blocks * 2);
-        let P_test = [];
-        for (let i = 0; i < num_blocks; i++) {
-            P_test.push([pool[2*i], pool[2*i+1]]);
-        }
-        if (!is_valid_partition_antichain(P_test)) continue;
-        try {
-            let E_test = compute_stabilizer_family(P_test);
-            if (E_test.length >= 5 && E_test.some(s => s.origin_type === 'replacement')) {
-                blocksContainer.innerHTML = '';
-                blockCount = 0;
-                for (let b of P_test) {
-                    addBlockRow(b.join(', '), true);
-                }
-                reindexBlocks(true);
-                document.getElementById('btn-compute').click();
-                found = true;
-                break;
-            }
-        } catch (e) {}
-    }
-    if (!found) {
-        blocksContainer.innerHTML = '';
-        blockCount = 0;
-        addBlockRow('0100, 1000', true);
-        addBlockRow('0010, 101', true);
-        addBlockRow('0001, 011', true);
-        reindexBlocks(true);
-        document.getElementById('btn-compute').click();
-    }
-});
-
-document.getElementById('btn-hunt-replace').addEventListener('click', () => {
-    let found = false;
-    for (let attempt = 0; attempt < 300; attempt++) {
-        let num_blocks = Math.random() < 0.5 ? 2 : 3;
-        let pool = generate_incomparable_pool(num_blocks * 2);
-        let P_test = [];
-        for (let i = 0; i < num_blocks; i++) {
-            P_test.push([pool[2*i], pool[2*i+1]]);
-        }
-        if (!is_valid_partition_antichain(P_test)) continue;
-        try {
-            let E_test = compute_stabilizer_family(P_test);
-            if (E_test.some(s => s.origin_type === 'replacement')) {
-                blocksContainer.innerHTML = '';
-                blockCount = 0;
-                for (let b of P_test) {
-                    addBlockRow(b.join(', '), true);
-                }
-                reindexBlocks(true);
-                document.getElementById('btn-compute').click();
-                found = true;
-                break;
-            }
-        } catch (e) {}
-    }
-    if (!found) {
-        blocksContainer.innerHTML = '';
-        blockCount = 0;
-        addBlockRow('0100, 1000', true);
-        addBlockRow('0010, 101', true);
-        addBlockRow('0001, 011', true);
-        reindexBlocks(true);
-        document.getElementById('btn-compute').click();
-    }
 });
 
 document.getElementById('btn-export-latex').addEventListener('click', (e) => {
@@ -668,8 +881,11 @@ document.getElementById('btn-export-latex').addEventListener('click', (e) => {
         return `    S_${idx+1} &= \\{ ${set.join(', ')} \\}${originNote}`;
     }).join(' \\\\\\ \n');
     let formula_latex = `\\langle a \\rangle_{\\mathcal{P}} = ${current_formula_summands.join(' \\vee ')}`;
+    let adm_note = current_is_admissible 
+        ? `จากการตรวจสอบตามบทนิยาม 5.4.7 พบว่าทุกคู่ดัชนี $i \\neq j$ สอดคล้องกับเงื่อนไขการต่อกันและเงื่อนไขการแทนที่เซต ดังนั้น $\\mathcal{P}$ จึงเป็นเซตกำหนดไอดีลยอมรับได้ (Admissible Ideal Assignment Set)`
+        : `ข้อสังเกต: เซตกำหนดไอดีล $\\mathcal{P}$ นี้ไม่สอดคล้องกับเงื่อนไขในบทนิยาม 5.4.7 จึงไม่เป็นเซตกำหนดไอดีลยอมรับได้`;
     
-    let fullLatex = `\\begin{example}\nLet $\\mathcal{P} = \\{ \\Gamma_1, \\dots, \\Gamma_{${current_P.length}} \\}$ be a partition assignment with:\n\\[ ${P_latex} \\]\nBy Theorem 5.3 and Higman's Lemma, the WQO stabilizer family $\\mathbb{E} = \\min_{\\ll} \\mathbb{R}(\\mathcal{P})$ converges to:\n\\begin{align*}\n${E_latex}\n\\end{align*}\nThe principal generator formula simplifies to:\n\\[ ${formula_latex} \\]\n\\end{example}`;
+    let fullLatex = `\\begin{example}\nพิจารณาเซตกำหนดไอดีล $\\mathcal{P} = \\{ \\Gamma_1, \\dots, \\Gamma_{${current_P.length}} \\}$ บน $\\mathsf{F}$ โดยที่\n\\[ ${P_latex} \\]\n${adm_note}\n\nโดยทฤษฎีบท 5.4.12 และบทตั้งของฮิกแมน วงศ์เสถียรภาพ $\\mathbb{E} = \\min_{\\ll} \\mathcal{R}(\\mathcal{P})$ ประกอบด้วยสมาชิกเล็กสุด ดังนี้\n\\begin{align*}\n${E_latex}\n\\end{align*}\nและสูตรตัวก่อกำเนิดหลักของสมาชิกไอดีลผลแบ่งกั้น $\\langle a \\rangle_{\\mathcal{P}}$ ในกึ่งกรุปอันดับ $le$ สรุปได้เป็น:\n\\[ ${formula_latex} \\]\n\\end{example}`;
     
     navigator.clipboard.writeText(fullLatex);
     let oldBtnText = e.currentTarget.innerHTML;
@@ -681,8 +897,8 @@ document.getElementById('btn-export-latex').addEventListener('click', (e) => {
     }, 2000);
 });
 
-// Initialize with random 2 incomparable blocks on load
-randomizeBlocks(2);
+// Initialize with Book Example 5.4.8 (Part 1) on load
+load_blocks_to_ui([['110', '011'], ['101']]);
 
 document.getElementById('btn-compute').addEventListener('click', () => {
     let errorMsg = document.getElementById('error-msg');
@@ -734,16 +950,118 @@ document.getElementById('btn-compute').addEventListener('click', () => {
         
         let l_gamma = Math.max(...all_words_flat.map(w => w.length)) - 1;
         
+        // Admissibility Verification (Definition 5.4.7)
+        let adm = verify_admissibility(P);
+        current_is_admissible = adm.is_admissible;
+        current_admissibility_result = adm;
+        
+        // Render Admissibility Banner Card
+        let bannerCard = document.getElementById('admissible-banner-card');
+        let bannerIcon = document.getElementById('admissible-banner-icon');
+        let bannerTitle = document.getElementById('admissible-banner-title');
+        let bannerDesc = document.getElementById('admissible-banner-desc');
+        let bannerBadge = document.getElementById('admissible-banner-badge');
+        
+        if (adm.is_admissible) {
+            bannerCard.className = 'admissible-banner-card pass';
+            bannerIcon.innerText = '🌟';
+            bannerTitle.innerText = 'เซตกำหนดไอดีลยอมรับได้ (Admissible Ideal Assignment Set)';
+            bannerDesc.innerHTML = adm.is_single_block 
+                ? 'เซตกำหนดไอดีลแบบ 1 บล็อก ถือเป็นเซตยอมรับได้โดยปริยาย (ไม่มีคู่ดัชนี \\(i \\neq j\\))'
+                : `สอดคล้องกับบทนิยาม 5.4.7 ครบทั้งเงื่อนไขการต่อกัน (ข้อ 1) และการแทนที่เซต (ข้อ 2) สำหรับทุกคู่ดัชนี \\(i \\neq j\\) ทั้ง ${adm.pairs.length} คู่`;
+            bannerBadge.className = 'badge-status pass';
+            bannerBadge.innerText = '✅ Admissible Verified';
+        } else {
+            bannerCard.className = 'admissible-banner-card fail';
+            bannerIcon.innerText = '⚠️';
+            bannerTitle.innerText = 'ไม่เป็นเซตกำหนดไอดีลยอมรับได้ (Non-Admissible Ideal Assignment)';
+            let failedCount = adm.pairs.filter(p => !p.is_admissible).length;
+            bannerDesc.innerHTML = `มี ${failedCount} คู่ดัชนีที่ไม่ผ่านเกณฑ์ตามบทนิยาม 5.4.7 (สูตรตัวก่อกำเนิดหลักอาจไม่รับประกันสมบัติขอบเขตบนสมาชิก \\(\\mathcal{P}\\)-ไอดีล)`;
+            bannerBadge.className = 'badge-status fail';
+            bannerBadge.innerText = '❌ Non-Admissible';
+        }
+        
         // Compute E
         let E = compute_stabilizer_family(P);
         current_P = P;
         current_E = E;
         
-        // Render Summary
+        // Render Step 1 Summary
         document.getElementById('result-summary').innerHTML = `
-            \\[ \\mathcal{P} = \\{ ${P.map(b => `\\{ ${b.join(', ')} \\}`).join(', ')} \\} \\]
-            <p>Maximum word length in \\(\\mathcal{P}\\) is \\(${l_gamma + 1}\\), so the length parameter is \\(l_\\Gamma = ${l_gamma}\\).</p>
+            \\[ \\mathcal{P} = \\{ ${P.map((b, idx) => `\\Gamma_{${idx+1}} = \\{ ${b.join(', ')} \\}`).join(',\\quad ')} \\} \\]
+            <p>จำนวนบล็อกทั้งหมด \\(|\\mathcal{P}| = ${P.length}\\) บล็อก, ความยาวสายอักขระมากสุดคือ \\(${l_gamma + 1}\\) จึงได้พารามิเตอร์ความยาว \\(l_\\Gamma = ${l_gamma}\\)</p>
+            <p style="color: var(--success); font-weight:600; font-size:0.95rem;">✅ ตรวจสอบแล้ว: บล็อกทุกบล็อกแยกต่างหากจากกัน และยูเนียนของสายอักขระทั้งหมดเป็นปฏิโซ่แท้บน \\((\\mathsf{F}, \\le)\\)</p>
         `;
+        
+        // Render Step 2 Admissibility Matrix
+        let admEl = document.getElementById('result-admissibility');
+        if (adm.is_single_block) {
+            admEl.innerHTML = `
+                <div style="padding: 14px; background: var(--bg-secondary); border-radius: 10px; border: 1px solid var(--glass-border); font-size: 0.95rem;">
+                    เนื่องจาก \\(|\\mathcal{P}| = 1\\) (มีเพียงบล็อกเดียว \\(\\Gamma_1\\)) จึงไม่มีคู่ดัชนีที่ต่างกัน \\(i \\neq j\\) ให้ต้องพิจารณา ทำให้สอดคล้องกับบทนิยาม 5.4.7 โดยอัตโนมัติ (Vacuously True)
+                </div>
+            `;
+        } else {
+            let rowsHtml = adm.pairs.map((p, idx) => {
+                let cond1_pills = [];
+                if (p.cond1_a) cond1_pills.push(`<span class="condition-pill satisfied" title="${p.cond1_a_reason || ''}">✅ 1(a) เซตโทน</span>`);
+                if (p.cond1_b) cond1_pills.push(`<span class="condition-pill satisfied" title="${p.cond1_b_reason || ''}">✅ 1(b) ขอบศูนย์</span>`);
+                if (p.cond1_c) cond1_pills.push(`<span class="condition-pill satisfied">✅ 1(c) มี \\(\\Gamma_{${p.cond1_c_reducers.join(',')}} \\ll \\Gamma_${p.i}\\Gamma_${p.j}\\)</span>`);
+                if (!p.cond1_satisfied) cond1_pills.push(`<span class="condition-pill failed">❌ ไม่ผ่าน 1(a,b,c)</span>`);
+                
+                let cond2_pills = [];
+                if (p.cond2_a) cond2_pills.push(`<span class="condition-pill satisfied">✅ 2(a) บล็อกตัวแทนเซตโทน</span>`);
+                else if (p.cond2_b) cond2_pills.push(`<span class="condition-pill satisfied">✅ 2(b) ทุกเซตมี \\(\\Gamma_k \\ll S\\) (${p.repset_count} เซต)</span>`);
+                else cond2_pills.push(`<span class="condition-pill failed">❌ 2(b) ล้มเหลว (${p.violating_sets.length} เซตไม่ลดทอน)</span>`);
+                
+                let statusBadge = p.is_admissible 
+                    ? `<span class="badge-status pass">✅ ผ่าน</span>` 
+                    : `<span class="badge-status fail">❌ ไม่ผ่าน</span>`;
+                    
+                let detailBtn = `<button class="pair-detail-btn" onclick="togglePairDetail(${idx})">🔍 ดูรายละเอียด</button>`;
+                
+                let detailContent = `
+                    <div id="pair-detail-${idx}" class="pair-detail-content hidden">
+                        <div><strong>การต่อกัน \\(\\Gamma_${p.i}\\Gamma_${p.j}\\) (${p.concat_words.length} สาย):</strong> \\(\\{ ${p.concat_words.join(', ')} \\}\\)</div>
+                        ${p.cond2_a ? '<div style="margin-top:4px; color:var(--text-secondary);">การแทนที่: ไม่ต้องสร้าง RepSet เนื่องจากบล็อกตัวแทนเป็นเซตโทน (ข้อ 2(a))</div>' : `
+                            <div style="margin-top:4px;"><strong>การแทนที่ \\(\\operatorname{RepSet}(\\Gamma_${p.i}, \\{\\Gamma_${p.j}\\})\\) (${p.repset_count} เซต):</strong></div>
+                            <ul style="margin: 4px 0 0 16px; padding: 0;">
+                                ${p.repset_preview.map((s, s_idx) => `<li>\\(S_{${s_idx+1}} = \\{ ${s.join(', ')} \\}\\)</li>`).join('')}
+                                ${p.repset_count > 4 ? `<li>...และอีก ${p.repset_count - 4} เซต</li>` : ''}
+                            </ul>
+                            ${p.violating_sets.length > 0 ? `<div style="color:var(--error); margin-top:4px;"><strong>เซตที่ละเมิดเงื่อนไข (ไม่มี \\(\\Gamma_k\\) ลดทอน):</strong> ${p.violating_sets.map(vs => `\\(\\{${vs.join(',')}\\}\\)`).join('; ')}</div>` : ''}
+                        `}
+                    </div>
+                `;
+                
+                return `
+                    <tr>
+                        <td style="font-weight:700; white-space:nowrap;">\\(${p.pair_label}\\)</td>
+                        <td>${cond1_pills.join(' ')}</td>
+                        <td>${cond2_pills.join(' ')}</td>
+                        <td style="text-align:center;">${statusBadge}</td>
+                        <td>${detailBtn}${detailContent}</td>
+                    </tr>
+                `;
+            }).join('');
+            
+            admEl.innerHTML = `
+                <div class="admissible-table-wrapper">
+                    <table class="admissible-table">
+                        <thead>
+                            <tr>
+                                <th>คู่ดัชนี</th>
+                                <th>เงื่อนไขการต่อกัน (ข้อ 1)</th>
+                                <th>เงื่อนไขการแทนที่เซต (ข้อ 2)</th>
+                                <th style="text-align:center;">สถานะ</th>
+                                <th>หลักฐานเชิงการจัด</th>
+                            </tr>
+                        </thead>
+                        <tbody>${rowsHtml}</tbody>
+                    </table>
+                </div>
+            `;
+        }
         
         // Render Stabilizer Family
         let e_items = E.map((set, idx) => {

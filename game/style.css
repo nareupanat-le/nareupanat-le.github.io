@@ -225,3 +225,142 @@ header p { color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6; ma
 .list-group { list-style: none; padding: 0; margin: 0; }
 .list-item { padding: 0.5rem; border-bottom: 1px solid var(--glass-border); display: flex; align-items: center; justify-content: space-between; }
 .list-item:last-child { border-bottom: none; }
+
+/* Admissibility Verification Styles */
+.admissible-banner-card {
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    transition: all 0.3s ease;
+}
+.admissible-banner-card.pass {
+    background: linear-gradient(135deg, rgba(21, 128, 61, 0.08) 0%, rgba(21, 128, 61, 0.02) 100%);
+    border: 2px solid rgba(21, 128, 61, 0.4);
+    box-shadow: 0 0 25px rgba(21, 128, 61, 0.1);
+}
+.admissible-banner-card.fail {
+    background: linear-gradient(135deg, rgba(185, 28, 28, 0.08) 0%, rgba(185, 28, 28, 0.02) 100%);
+    border: 2px solid rgba(185, 28, 28, 0.4);
+    box-shadow: 0 0 25px rgba(185, 28, 28, 0.1);
+}
+.admissible-banner-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+.admissible-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.admissible-banner-card.pass .admissible-title { color: #15803d; }
+.admissible-banner-card.fail .admissible-title { color: #b91c1c; }
+
+.admissible-table-wrapper {
+    overflow-x: auto;
+    margin-top: 1rem;
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    background: #ffffff;
+}
+.admissible-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+    text-align: left;
+}
+.admissible-table th {
+    background: var(--bg-secondary);
+    padding: 10px 14px;
+    font-weight: 600;
+    border-bottom: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+}
+.admissible-table td {
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--glass-border);
+    vertical-align: top;
+}
+.admissible-table tr:last-child td {
+    border-bottom: none;
+}
+.admissible-table tr:hover {
+    background: rgba(122, 92, 58, 0.02);
+}
+
+.badge-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+.badge-status.pass {
+    background: rgba(21, 128, 61, 0.12);
+    border: 1px solid rgba(21, 128, 61, 0.3);
+    color: #15803d;
+}
+.badge-status.fail {
+    background: rgba(185, 28, 28, 0.12);
+    border: 1px solid rgba(185, 28, 28, 0.3);
+    color: #b91c1c;
+}
+
+.condition-pill {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-right: 4px;
+    margin-bottom: 4px;
+}
+.condition-pill.satisfied {
+    background: rgba(21, 128, 61, 0.1);
+    border: 1px solid rgba(21, 128, 61, 0.25);
+    color: #15803d;
+}
+.condition-pill.failed {
+    background: rgba(185, 28, 28, 0.08);
+    border: 1px solid rgba(185, 28, 28, 0.2);
+    color: #b91c1c;
+}
+
+.pair-detail-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--glass-border);
+    color: var(--text-secondary);
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    margin-top: 6px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: all 0.2s;
+}
+.pair-detail-btn:hover {
+    background: #ffffff;
+    color: var(--text-primary);
+}
+
+.pair-detail-content {
+    background: var(--bg-secondary);
+    border: 1px dashed var(--glass-border);
+    border-radius: 8px;
+    padding: 8px 12px;
+    margin-top: 6px;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    font-family: ui-monospace, monospace;
+}
+
