@@ -175,8 +175,16 @@
     </ol>
   </p>
 </main>
-<footer class="site-footer"><p>© <span id="y"></span> Nareupanat Lekkoksung</p></footer>
+<footer class="site-footer">
+  <p>© <span id="y"></span> Nareupanat Lekkoksung</p>
+  <div class="site-counter">
+    <span id="busuanzi_container_site_uv" style="display:none">
+      Visitors: <span id="busuanzi_value_site_uv"></span>
+    </span>
+  </div>
+</footer>
 <!-- Scripts ควรอยู่ท้ายสุดของ body เพื่อโหลดหน้าเว็บให้เสร็จก่อน -->
+<script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 <script>
   // Script แสดงปีปัจจุบัน
   document.getElementById('y').textContent = new Date().getFullYear();

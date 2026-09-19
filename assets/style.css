@@ -67,6 +67,23 @@ body{
   padding:20px;
 }
 
+.site-footer{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.site-footer p{
+  margin: 0;
+}
+
+.site-counter{
+  font-size: 14px;
+  color: var(--muted);
+}
+
 
 /* ========== 04) Header & Navigation ========== */
 .site-header{
