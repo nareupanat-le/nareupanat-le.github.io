@@ -24,7 +24,7 @@ function genDerivEasyExp() {
         &= \\frac{d}{dx} ${a === 1 ? "" : a}e^{${k}x} ${b > 0 ? "+" : "-"} \\frac{d}{dx} ${Math.abs(b)}x \\\\
         &= ${a === 1 ? "1" : a} \\frac{d}{dx} e^{${k}x} ${b > 0 ? "+" : "-"} ${Math.abs(b)} \\frac{d}{dx} x \\\\
         &= ${a === 1 ? "1" : a}e^{${k}x}\\frac{d}{dx}(${k}x) ${b > 0 ? "+" : "-"} ${Math.abs(b)}(1) \\\\
-        &= (${a === 1 ? "1" : a})e^{${k}x}(${k}) ${b > 0 ? "+" : "-"} ${Math.abs(b)}.
+        &= (${a === 1 ? "1" : a})e^{${k}x}(${k}) ${b > 0 ? "+" : "-"} ${Math.abs(b)}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
@@ -37,9 +37,9 @@ function genDerivEasyExp() {
         f'(${x0}) &= ${a * k}e^{${k}(${x0})} ${b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`} \\\\
         &= ${a * k}e^0 ${b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`} \\\\
         &= ${a * k}(1) ${b > 0 ? `+ ${b}` : `- ${Math.abs(b)}`} \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
 

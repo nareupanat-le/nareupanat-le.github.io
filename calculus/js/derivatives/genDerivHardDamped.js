@@ -23,11 +23,11 @@ function genDerivHardDamped() {
         &= e^{-${a === 1 ? "" : a}x} \\frac{d}{dx} \\cos(${b}x) + \\cos(${b}x) \\frac{d}{dx} e^{-${a === 1 ? "" : a}x} \\\\
         &= e^{-${a === 1 ? "" : a}x} \\left( -\\sin(${b}x) \\frac{d}{dx}(${b}x) \\right) + \\cos(${b}x) \\left( e^{-${a === 1 ? "" : a}x} \\frac{d}{dx}(-${a === 1 ? "" : a}x) \\right) \\\\
         &= e^{-${a === 1 ? "" : a}x} ( -\\sin(${b}x) (${b}) ) + \\cos(${b}x) ( e^{-${a === 1 ? "" : a}x} (-${a}) ) \\\\
-        &= -${b}e^{-${a === 1 ? "" : a}x}\\sin(${b}x) - ${a}e^{-${a === 1 ? "" : a}x}\\cos(${b}x).
+        &= -${b}e^{-${a === 1 ? "" : a}x}\\sin(${b}x) - ${a}e^{-${a === 1 ? "" : a}x}\\cos(${b}x)
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = -e^{-${a === 1 ? "" : a}x}(${b}\\sin(${b}x) + ${a}\\cos(${b}x)).
+        f'(x) = -e^{-${a === 1 ? "" : a}x}(${b}\\sin(${b}x) + ${a}\\cos(${b}x))
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -36,9 +36,9 @@ function genDerivHardDamped() {
         f'(${x0}) &= -e^{-${a}(${x0})}(${b}\\sin(${b}(${x0})) + ${a}\\cos(${b}(${x0}))) \\\\
         &= -e^0(${b}\\sin(0) + ${a}\\cos(0)) \\\\
         &= -(1)(0 + ${a}(1)) \\\\
-        &= -${a}.
+        &= -${a}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = -${a}$.
+      ดังนั้น $f'(${x0}) = -${a}$
     </div>
   `;
 

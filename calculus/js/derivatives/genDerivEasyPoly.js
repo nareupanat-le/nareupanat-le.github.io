@@ -24,7 +24,7 @@ function genDerivEasyPoly() {
         f'(x) &= \\frac{d}{dx} \\left(${fExpr}\\right) \\\\
         &= \\frac{d}{dx} ${a === 1 ? "" : a}x^3 ${b > 0 ? "+" : "-"} \\frac{d}{dx} ${Math.abs(b)}x^2 ${c > 0 ? "+" : "-"} \\frac{d}{dx} ${Math.abs(c)}x ${d > 0 ? "+" : "-"} \\frac{d}{dx} ${Math.abs(d)} \\\\
         &= ${a === 1 ? "1" : a} \\frac{d}{dx} x^3 ${b > 0 ? "+" : "-"} ${Math.abs(b)} \\frac{d}{dx} x^2 ${c > 0 ? "+" : "-"} ${Math.abs(c)} \\frac{d}{dx} x ${d > 0 ? "+" : "-"} \\frac{d}{dx} ${Math.abs(d)} \\\\
-        &= (${a === 1 ? "1" : a})(3)x^2 ${b > 0 ? "+" : "-"} (${Math.abs(b)})(2)x ${c > 0 ? "+" : "-"} (${Math.abs(c)})(1) ${d > 0 ? "+" : "-"} 0.
+        &= (${a === 1 ? "1" : a})(3)x^2 ${b > 0 ? "+" : "-"} (${Math.abs(b)})(2)x ${c > 0 ? "+" : "-"} (${Math.abs(c)})(1) ${d > 0 ? "+" : "-"} 0
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
@@ -36,9 +36,9 @@ function genDerivEasyPoly() {
       $$\\begin{align*}
         f'(${x0}) &= ${3*a}(${x0})^2 ${2*b > 0 ? "+" : "-"} ${Math.abs(2*b)}(${x0}) ${c > 0 ? "+" : "-"} ${Math.abs(c)} \\\\
         &= ${3*a}(${x0*x0}) ${2*b > 0 ? "+" : "-"} ${Math.abs(2*b)*x0} ${c > 0 ? "+" : "-"} ${Math.abs(c)} \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
 

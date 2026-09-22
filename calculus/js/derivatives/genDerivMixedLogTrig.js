@@ -28,11 +28,11 @@ function genDerivMixedLogTrig() {
         &= \\frac{1}{e^{\\tan(${k}x)} + ${a}x + ${b}} \\left[ e^{\\tan(${k}x)} \\frac{d}{dx}\\tan(${k}x) + ${a} + 0 \\right] \\\\
         &= \\frac{1}{e^{\\tan(${k}x)} + ${a}x + ${b}} \\left[ e^{\\tan(${k}x)} \\sec^2(${k}x) \\frac{d}{dx}(${k}x) + ${a} \\right] \\\\
         &= \\frac{1}{e^{\\tan(${k}x)} + ${a}x + ${b}} \\left[ e^{\\tan(${k}x)} \\sec^2(${k}x) (${k}) + ${a} \\right] \\\\
-        &= \\frac{${k}e^{\\tan(${k}x)}\\sec^2(${k}x) + ${a}}{e^{\\tan(${k}x)} + ${a}x + ${b}}.
+        &= \\frac{${k}e^{\\tan(${k}x)}\\sec^2(${k}x) + ${a}}{e^{\\tan(${k}x)} + ${a}x + ${b}}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -41,9 +41,9 @@ function genDerivMixedLogTrig() {
         f'(${x0}) &= \\frac{${k}e^{\\tan(0)}\\sec^2(0) + ${a}}{e^{\\tan(0)} + ${a}(0) + ${b}} \\\\
         &= \\frac{${k}(e^0)(1)^2 + ${a}}{e^0 + ${b}} \\\\
         &= \\frac{${k} + ${a}}{1 + ${b}} \\\\
-        &= ${slopeValLatex}.
+        &= ${slopeValLatex}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
+      ดังนั้น $f'(${x0}) = ${slopeValLatex}$
     </div>
   `;
   return {

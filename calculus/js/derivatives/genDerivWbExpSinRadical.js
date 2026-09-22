@@ -29,11 +29,11 @@ function genDerivWbExpSinRadical() {
         f'(x) &= \\frac{d}{dx} \\left[ \\frac{${a}e^{-${b}x} + ${c}\\sin(${d}x)}{\\sqrt{4 - x^2}} \\right] \\\\
         &= \\frac{\\sqrt{4 - x^2} \\frac{d}{dx}(${a}e^{-${b}x} + ${c}\\sin(${d}x)) - (${a}e^{-${b}x} + ${c}\\sin(${d}x)) \\frac{d}{dx}(\\sqrt{4 - x^2})}{(\\sqrt{4 - x^2})^2} \\\\
         &= \\frac{\\sqrt{4 - x^2} \\left[ ${a}e^{-${b}x}(-${b}) + ${c}\\cos(${d}x)(${d}) \\right] - (${a}e^{-${b}x} + ${c}\\sin(${d}x)) \\left[ \\frac{1}{2\\sqrt{4 - x^2}} (-2x) \\right]}{4 - x^2} \\\\
-        &= \\frac{\\sqrt{4 - x^2} (${c*d}\\cos(${d}x) - ${a*b}e^{-${b}x}) + \\frac{x(${a}e^{-${b}x} + ${c}\\sin(${d}x))}{\\sqrt{4 - x^2}}}{4 - x^2}.
+        &= \\frac{\\sqrt{4 - x^2} (${c*d}\\cos(${d}x) - ${a*b}e^{-${b}x}) + \\frac{x(${a}e^{-${b}x} + ${c}\\sin(${d}x))}{\\sqrt{4 - x^2}}}{4 - x^2}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -43,9 +43,9 @@ function genDerivWbExpSinRadical() {
         &= \\frac{2 (${c*d}(1) - ${a*b}(1)) + 0}{4} \\\\
         &= \\frac{2 (${c*d} - ${a*b})}{4} \\\\
         &= \\frac{${numVal}}{2} \\\\
-        &= ${slopeValLatex}.
+        &= ${slopeValLatex}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
+      ดังนั้น $f'(${x0}) = ${slopeValLatex}$
     </div>
   `;
   return {

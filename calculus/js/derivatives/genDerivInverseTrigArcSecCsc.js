@@ -24,11 +24,11 @@ function genDerivInverseTrigArcSecCsc() {
         f'(x) &= \\frac{d}{dx} \\left[ ${a === 1 ? "" : a}\\operatorname{arcsec}(${k}x) \\right] \\\\
         &= ${a === 1 ? "1" : a} \\left( \\frac{1}{|${k}x|\\sqrt{(${k}x)^2-1}} \\right) \\frac{d}{dx} (${k}x) \\\\
         &= \\frac{${a === 1 ? "1" : a}}{${k}|x|\\sqrt{${k*k}x^2-1}} (${k}) \\\\
-        &= \\frac{${a}}{|x|\\sqrt{${k*k}x^2-1}}.
+        &= \\frac{${a}}{|x|\\sqrt{${k*k}x^2-1}}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -36,9 +36,9 @@ function genDerivInverseTrigArcSecCsc() {
       $$\\begin{align*}
         f'(${x0}) &= \\frac{${a}}{|${x0}|\\sqrt{${k*k}(${x0})^2-1}} \\\\
         &= \\frac{${a}}{1\\sqrt{${k*k}-1}} \\\\
-        &= ${slopeValLatex}.
+        &= ${slopeValLatex}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
+      ดังนั้น $f'(${x0}) = ${slopeValLatex}$
     </div>
   `;
   return {

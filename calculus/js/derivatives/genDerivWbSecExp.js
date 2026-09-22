@@ -34,11 +34,11 @@ function genDerivWbSecExp() {
         &= e^{${a}x^2 - ${a}x} \\frac{d}{dx}\\sec(${b}x^2 - ${b}x) + \\sec(${b}x^2 - ${b}x) \\frac{d}{dx} e^{${a}x^2 - ${a}x} \\\\
         &= e^{${a}x^2 - ${a}x} \\left[ \\sec(${b}x^2 - ${b}x)\\tan(${b}x^2 - ${b}x) \\frac{d}{dx}(${b}x^2 - ${b}x) \\right] + \\sec(${b}x^2 - ${b}x) \\left[ e^{${a}x^2 - ${a}x} \\frac{d}{dx}(${a}x^2 - ${a}x) \\right] \\\\
         &= e^{${a}x^2 - ${a}x} \\left[ \\sec(${b}x^2 - ${b}x)\\tan(${b}x^2 - ${b}x) (${2*b}x - ${b}) \\right] + \\sec(${b}x^2 - ${b}x) \\left[ e^{${a}x^2 - ${a}x} (${2*a}x - ${a}) \\right] \\\\
-        &= (${2*b}x - ${b})e^{${a}x^2 - ${a}x}\\sec(${b}x^2 - ${b}x)\\tan(${b}x^2 - ${b}x) + (${2*a}x - ${a})e^{${a}x^2 - ${a}x}\\sec(${b}x^2 - ${b}x).
+        &= (${2*b}x - ${b})e^{${a}x^2 - ${a}x}\\sec(${b}x^2 - ${b}x)\\tan(${b}x^2 - ${b}x) + (${2*a}x - ${a})e^{${a}x^2 - ${a}x}\\sec(${b}x^2 - ${b}x)
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -47,9 +47,9 @@ function genDerivWbSecExp() {
         f'(${x0}) &= (${2*b} - ${b})e^{0}\\sec(0)\\tan(0) + (${2*a} - ${a})e^{0}\\sec(0) \\\\
         &= (${b})(1)(1)(0) + (${a})(1)(1) \\\\
         &= 0 + ${a} \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

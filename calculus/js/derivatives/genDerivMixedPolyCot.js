@@ -29,11 +29,11 @@ function genDerivMixedPolyCot() {
         &= (${uExpr}) \\frac{d}{dx} \\cot\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right) + \\cot\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right) \\frac{d}{dx} (${uExpr}) \\\\
         &= (${uExpr}) \\left( -\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right) \\frac{d}{dx}\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right) \\right) + \\cot\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right) (${2*a}x) \\\\
         &= (${uExpr}) \\left( -\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right) (${k}) \\right) + ${2*a}x \\cot\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right) \\\\
-        &= ${2*a}x \\cot\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right) - ${k === 1 ? "" : k}(${uExpr})\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right).
+        &= ${2*a}x \\cot\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right) - ${k === 1 ? "" : k}(${uExpr})\\csc^2\\left(${k === 1 ? "" : k}x + \\frac{\\pi}{4}\\right)
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -42,9 +42,9 @@ function genDerivMixedPolyCot() {
         f'(${x0}) &= ${2*a}(${x0}) \\cot\\left(\\frac{\\pi}{4}\\right) - ${k === 1 ? "1" : k}(${a}(${x0})^2 + ${b})\\csc^2\\left(\\frac{\\pi}{4}\\right) \\\\
         &= 0 - ${k === 1 ? "1" : k}(${b})(\\sqrt{2})^2 \\\\
         &= -${k === 1 ? "1" : k}(${b})(2) \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

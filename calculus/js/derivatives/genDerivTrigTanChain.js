@@ -24,11 +24,11 @@ function genDerivTrigTanChain() {
         f'(x) &= \\frac{d}{dx} \\left[ ${a === 1 ? "" : a}\\tan(${k}x^2 + ${b}x) \\right] \\\\
         &= ${a === 1 ? "1" : a} \\sec^2(${k}x^2 + ${b}x) \\frac{d}{dx} (${k}x^2 + ${b}x) \\\\
         &= ${a === 1 ? "1" : a} \\sec^2(${k}x^2 + ${b}x) (${2*k}x + ${b}) \\\\
-        &= ${a === 1 ? "" : a}(${2*k}x + ${b}) \\sec^2(${k}x^2 + ${b}x).
+        &= ${a === 1 ? "" : a}(${2*k}x + ${b}) \\sec^2(${k}x^2 + ${b}x)
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -37,9 +37,9 @@ function genDerivTrigTanChain() {
         f'(${x0}) &= ${a === 1 ? "" : a}(${2*k}(${x0}) + ${b}) \\sec^2(${k}(${x0})^2 + ${b}(${x0})) \\\\
         &= ${a === 1 ? "" : a}(0 + ${b}) \\sec^2(0) \\\\
         &= ${a === 1 ? "" : a}(${b})(1)^2 \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

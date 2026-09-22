@@ -25,11 +25,11 @@ function genDerivWbProductExpPoly() {
         &= ${a === 1 ? "" : (a === -1 ? "-" : a)}x^3 \\frac{d}{dx} (e^{${b}x^2 - ${b}}) + e^{${b}x^2 - ${b}} \\frac{d}{dx} (${a === 1 ? "" : (a === -1 ? "-" : a)}x^3) \\\\
         &= ${a === 1 ? "" : (a === -1 ? "-" : a)}x^3 \\left( e^{${b}x^2 - ${b}} \\frac{d}{dx}(${b}x^2 - ${b}) \\right) + e^{${b}x^2 - ${b}} (${3*a}x^2) \\\\
         &= ${a === 1 ? "" : (a === -1 ? "-" : a)}x^3 \\left( e^{${b}x^2 - ${b}} (${2*b}x) \\right) + ${3*a}x^2 e^{${b}x^2 - ${b}} \\\\
-        &= ${2*a*b}x^4 e^{${b}x^2 - ${b}} + ${3*a}x^2 e^{${b}x^2 - ${b}}.
+        &= ${2*a*b}x^4 e^{${b}x^2 - ${b}} + ${3*a}x^2 e^{${b}x^2 - ${b}}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -38,9 +38,9 @@ function genDerivWbProductExpPoly() {
         f'(${x0}) &= ${2*a*b}(${x0})^4 e^{${b}(${x0})^2 - ${b}} + ${3*a}(${x0})^2 e^{${b}(${x0})^2 - ${b}} \\\\
         &= ${2*a*b}(1)e^0 + ${3*a}(1)e^0 \\\\
         &= ${2*a*b} + ${3*a} \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

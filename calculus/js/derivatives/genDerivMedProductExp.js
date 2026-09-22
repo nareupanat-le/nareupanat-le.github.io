@@ -30,7 +30,7 @@ function genDerivMedProductExp() {
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -39,9 +39,9 @@ function genDerivMedProductExp() {
         f'(${x0}) &= (${k*a}(${x0}) + ${k*b + a}) e^{${k}(${x0})} \\\\
         &= (${k*a*x0} + ${k*b + a}) e^0 \\\\
         &= ${slopeVal}(1) \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
 

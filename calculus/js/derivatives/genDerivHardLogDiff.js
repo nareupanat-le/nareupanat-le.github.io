@@ -25,11 +25,11 @@ function genDerivHardLogDiff() {
         \\frac{1}{y} \\frac{dy}{dx} &= ${k}x \\frac{d}{dx}\\ln(x) + \\ln(x) \\frac{d}{dx}(${k}x) \\\\
         \\frac{1}{y} \\frac{dy}{dx} &= ${k}x \\left(\\frac{1}{x}\\right) + \\ln(x) (${k}) \\\\
         \\frac{1}{y} \\frac{dy}{dx} &= ${k} + ${k}\\ln(x) \\\\
-        \\frac{dy}{dx} &= y (${k} + ${k}\\ln(x)).
+        \\frac{dy}{dx} &= y (${k} + ${k}\\ln(x))
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -38,9 +38,9 @@ function genDerivHardLogDiff() {
         f'(${x0}) &= (${x0})^{${k}(${x0})} (${k} + ${k}\\ln(${x0})) \\\\
         &= 1 (${k} + ${k}(0)) \\\\
         &= 1(${k}) \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

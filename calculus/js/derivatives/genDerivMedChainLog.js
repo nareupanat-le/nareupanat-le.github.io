@@ -24,11 +24,11 @@ function genDerivMedChainLog() {
         f'(x) &= \\frac{d}{dx} \\ln(${a === 1 ? "" : a}x^2 + ${b}x + ${c}) \\\\
         &= \\frac{1}{${a === 1 ? "" : a}x^2 + ${b}x + ${c}} \\frac{d}{dx} (${a === 1 ? "" : a}x^2 + ${b}x + ${c}) \\\\
         &= \\frac{1}{${a === 1 ? "" : a}x^2 + ${b}x + ${c}} \\left[ \\frac{d}{dx}(${a === 1 ? "" : a}x^2) + \\frac{d}{dx}(${b}x) + \\frac{d}{dx}(${c}) \\right] \\\\
-        &= \\frac{1}{${a === 1 ? "" : a}x^2 + ${b}x + ${c}} (${2*a}x + ${b} + 0).
+        &= \\frac{1}{${a === 1 ? "" : a}x^2 + ${b}x + ${c}} (${2*a}x + ${b} + 0)
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -36,9 +36,9 @@ function genDerivMedChainLog() {
       $$\\begin{align*}
         f'(${x0}) &= \\frac{${2*a}(${x0}) + ${b}}{${a}(${x0})^2 + ${b}(${x0}) + ${c}} \\\\
         &= \\frac{${b}}{0 + 0 + ${c}} \\\\
-        &= ${slopeValLatex}.
+        &= ${slopeValLatex}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
+      ดังนั้น $f'(${x0}) = ${slopeValLatex}$
     </div>
   `;
   return {

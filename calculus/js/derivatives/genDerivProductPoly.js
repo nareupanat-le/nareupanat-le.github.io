@@ -30,11 +30,11 @@ function genDerivProductPoly() {
         &= (${uExpr}) \\left[ \\frac{d}{dx}(${c === 1 ? "" : c}x) + \\frac{d}{dx}(${d}) \\right] + (${vExpr}) \\left[ \\frac{d}{dx}(${a === 1 ? "" : a}x^2) + \\frac{d}{dx}(${b}) \\right] \\\\
         &= (${uExpr}) (${c} + 0) + (${vExpr}) (${2*a}x + 0) \\\\
         &= (${a*c}x^2 + ${b*c}) + (${2*a*c}x^2 + ${2*a*d}x) \\\\
-        &= ${3*a*c}x^2 + ${2*a*d}x + ${b*c}.
+        &= ${3*a*c}x^2 + ${2*a*d}x + ${b*c}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -42,9 +42,9 @@ function genDerivProductPoly() {
       $$\\begin{align*}
         f'(${x0}) &= ${3*a*c}(${x0})^2 + ${2*a*d}(${x0}) + ${b*c} \\\\
         &= ${3*a*c} + ${2*a*d} + ${b*c} \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

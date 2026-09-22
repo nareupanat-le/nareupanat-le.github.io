@@ -23,11 +23,11 @@ function genDerivHardInverseTrigCancellation() {
         &= \\left( x \\frac{d}{dx} \\arcsin(${k}x) + \\arcsin(${k}x) \\frac{d}{dx}(x) \\right) + \\frac{1}{${k}} \\left( \\frac{1}{2\\sqrt{1-${k*k}x^2}} \\frac{d}{dx}(1-${k*k}x^2) \\right) \\\\
         &= \\left( x \\left(\\frac{1}{\\sqrt{1-(${k}x)^2}}\\right)(${k}) + \\arcsin(${k}x)(1) \\right) + \\frac{1}{${k}} \\left( \\frac{1}{2\\sqrt{1-${k*k}x^2}} (-${2*k*k}x) \\right) \\\\
         &= \\frac{${k}x}{\\sqrt{1-${k*k}x^2}} + \\arcsin(${k}x) - \\frac{${k}x}{\\sqrt{1-${k*k}x^2}} \\\\
-        &= \\arcsin(${k}x).
+        &= \\arcsin(${k}x)
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -35,9 +35,9 @@ function genDerivHardInverseTrigCancellation() {
       $$\\begin{align*}
         f'(${x0}) &= \\arcsin(${k}(${x0})) \\\\
         &= \\arcsin(0) \\\\
-        &= 0.
+        &= 0
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = 0$.
+      ดังนั้น $f'(${x0}) = 0$
     </div>
   `;
   return {

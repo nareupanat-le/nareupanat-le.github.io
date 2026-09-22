@@ -20,11 +20,11 @@ function genDerivMedInverseTrig() {
         f'(x) &= \\frac{d}{dx} \\left[ \\arctan(${k}x) \\right] \\\\
         &= \\frac{1}{1+(${k}x)^2} \\frac{d}{dx} (${k}x) \\\\
         &= \\frac{1}{1+${k*k}x^2} (${k}) \\\\
-        &= \\frac{${k}}{1+${k*k}x^2}.
+        &= \\frac{${k}}{1+${k*k}x^2}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -32,9 +32,9 @@ function genDerivMedInverseTrig() {
       $$\\begin{align*}
         f'(${x0}) &= \\frac{${k}}{1+${k*k}(${x0})^2} \\\\
         &= \\frac{${k}}{1+0} \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

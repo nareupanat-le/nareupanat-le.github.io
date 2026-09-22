@@ -33,7 +33,7 @@ function genDerivMedChainRadical() {
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -43,9 +43,9 @@ function genDerivMedChainRadical() {
         &= \\frac{${b % 2 === 0 ? b/2 : b}}{${b % 2 === 0 ? "" : "2"}\\sqrt{0 + 0 + ${c2}}} \\\\
         &= \\frac{${b % 2 === 0 ? b/2 : b}}{${b % 2 === 0 ? "" : "2"}\\sqrt{${c2}}} \\\\
         &= \\frac{${b % 2 === 0 ? b/2 : b}}{${b % 2 === 0 ? "" : "2"}(${c_sqrt})} \\\\
-        &= ${slopeValLatex}.
+        &= ${slopeValLatex}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
+      ดังนั้น $f'(${x0}) = ${slopeValLatex}$
     </div>
   `;
   return {

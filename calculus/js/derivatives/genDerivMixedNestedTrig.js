@@ -21,11 +21,11 @@ function genDerivMixedNestedTrig() {
         f'(x) &= \\frac{d}{dx} \\tan(\\arcsin(${k}x)) \\\\
         &= \\sec^2(\\arcsin(${k}x)) \\frac{d}{dx} \\arcsin(${k}x) \\\\
         &= \\sec^2(\\arcsin(${k}x)) \\left( \\frac{1}{\\sqrt{1-(${k}x)^2}} \\right) \\frac{d}{dx} (${k}x) \\\\
-        &= \\sec^2(\\arcsin(${k}x)) \\left( \\frac{1}{\\sqrt{1-${k*k}x^2}} \\right) (${k}).
+        &= \\sec^2(\\arcsin(${k}x)) \\left( \\frac{1}{\\sqrt{1-${k*k}x^2}} \\right) (${k})
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -35,9 +35,9 @@ function genDerivMixedNestedTrig() {
         &= \\frac{${k}\\sec^2(\\arcsin(0))}{\\sqrt{1}} \\\\
         &= \\frac{${k}\\sec^2(0)}{1} \\\\
         &= ${k}(1)^2 \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

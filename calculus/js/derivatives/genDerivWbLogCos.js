@@ -26,11 +26,11 @@ function genDerivWbLogCos() {
         &= \\frac{d}{dx} \\ln(e^{${a}x^2} + ${b}x) - \\frac{d}{dx} \\cos(${c}x^3) \\\\
         &= \\left( \\frac{1}{e^{${a}x^2} + ${b}x} \\frac{d}{dx}(e^{${a}x^2} + ${b}x) \\right) - \\left( -\\sin(${c}x^3) \\frac{d}{dx}(${c}x^3) \\right) \\\\
         &= \\left( \\frac{1}{e^{${a}x^2} + ${b}x} (e^{${a}x^2}(${2*a}x) + ${b}) \\right) + \\sin(${c}x^3) (${3*c}x^2) \\\\
-        &= \\frac{${2*a}x e^{${a}x^2} + ${b}}{e^{${a}x^2} + ${b}x} + ${3*c}x^2 \\sin(${c}x^3).
+        &= \\frac{${2*a}x e^{${a}x^2} + ${b}}{e^{${a}x^2} + ${b}x} + ${3*c}x^2 \\sin(${c}x^3)
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -38,9 +38,9 @@ function genDerivWbLogCos() {
       $$\\begin{align*}
         f'(${x0}) &= \\frac{${2*a}(0) e^0 + ${b}}{e^0 + 0} + ${3*c}(0) \\sin(0) \\\\
         &= \\frac{0 + ${b}}{1 + 0} + 0 \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

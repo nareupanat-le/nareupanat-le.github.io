@@ -31,11 +31,11 @@ function genDerivMedQuotientRational() {
         &= \\frac{(${c === 1 ? "" : c}x + ${d}) \\left[ \\frac{d}{dx}(${a === 1 ? "" : a}x) + \\frac{d}{dx}(${b}) \\right] - (${a === 1 ? "" : a}x + ${b}) \\left[ \\frac{d}{dx}(${c === 1 ? "" : c}x) + \\frac{d}{dx}(${d}) \\right]}{(${c === 1 ? "" : c}x + ${d})^2} \\\\
         &= \\frac{(${c === 1 ? "" : c}x + ${d})(${a} + 0) - (${a === 1 ? "" : a}x + ${b})(${c} + 0)}{(${c === 1 ? "" : c}x + ${d})^2} \\\\
         &= \\frac{${a}(${c === 1 ? "" : c}x + ${d}) - ${c}(${a === 1 ? "" : a}x + ${b})}{(${c === 1 ? "" : c}x + ${d})^2} \\\\
-        &= \\frac{${a*c}x + ${a*d} - ${a*c}x - ${b*c}}{(${c === 1 ? "" : c}x + ${d})^2}.
+        &= \\frac{${a*c}x + ${a*d} - ${a*c}x - ${b*c}}{(${c === 1 ? "" : c}x + ${d})^2}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -43,9 +43,9 @@ function genDerivMedQuotientRational() {
       $$\\begin{align*}
         f'(${x0}) &= \\frac{${det}}{(${c === 1 ? "" : c}(${x0}) + ${d})^2} \\\\
         &= \\frac{${det}}{(${d})^2} \\\\
-        &= ${slopeValLatex}.
+        &= ${slopeValLatex}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
+      ดังนั้น $f'(${x0}) = ${slopeValLatex}$
     </div>
   `;
 

@@ -23,7 +23,7 @@ function genDerivHardSecondDerivative() {
         f'(x) &= \\frac{d}{dx} (x^2 e^{${k}x}) \\\\
         &= x^2 \\frac{d}{dx}e^{${k}x} + e^{${k}x} \\frac{d}{dx}x^2 \\\\
         &= x^2(e^{${k}x}(${k})) + e^{${k}x}(2x) \\\\
-        &= ${k}x^2 e^{${k}x} + 2x e^{${k}x}.
+        &= ${k}x^2 e^{${k}x} + 2x e^{${k}x}
       \\end{align*}$$
       <strong>หาอนุพันธ์อันดับสอง $f''(x)$</strong>
       $$\\begin{align*}
@@ -32,11 +32,11 @@ function genDerivHardSecondDerivative() {
         &= \\left[ ${k}x^2 \\frac{d}{dx}e^{${k}x} + e^{${k}x} \\frac{d}{dx}(${k}x^2) \\right] + \\left[ 2x \\frac{d}{dx}e^{${k}x} + e^{${k}x} \\frac{d}{dx}(2x) \\right] \\\\
         &= \\left[ ${k}x^2\\left(e^{${k}x}\\frac{d}{dx}(${k}x)\\right) + e^{${k}x}(${2*k}x) \\right] + \\left[ 2x\\left(e^{${k}x}\\frac{d}{dx}(${k}x)\\right) + e^{${k}x}(2) \\right] \\\\
         &= \\left[ ${k}x^2(e^{${k}x}(${k})) + e^{${k}x}(${2*k}x) \\right] + \\left[ 2x(e^{${k}x}(${k})) + e^{${k}x}(2) \\right] \\\\
-        &= ${k*k}x^2 e^{${k}x} + ${2*k}x e^{${k}x} + ${2*k}x e^{${k}x} + 2 e^{${k}x}.
+        &= ${k*k}x^2 e^{${k}x} + ${2*k}x e^{${k}x} + ${2*k}x e^{${k}x} + 2 e^{${k}x}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f''(x) = ${deriv2Expr}.
+        f''(x) = ${deriv2Expr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -45,9 +45,9 @@ function genDerivHardSecondDerivative() {
         f''(${x0}) &= (${k*k}(${x0})^2 + ${4*k}(${x0}) + 2) e^{${k}(${x0})} \\\\
         &= (0 + 0 + 2) e^{0} \\\\
         &= 2(1) \\\\
-        &= 2.
+        &= 2
       \\end{align*}$$
-      ดังนั้น $f''(${x0}) = 2$.
+      ดังนั้น $f''(${x0}) = 2$
     </div>
   `;
   return {

@@ -28,11 +28,11 @@ function genDerivMixedQuotientTrigRadical() {
         &= \\frac{\\sqrt{x^2 + ${b}} \\left(\\cos(${k}x)\\frac{d}{dx}(${k}x)\\right) - \\sin(${k}x) \\left(\\frac{1}{2\\sqrt{x^2+${b}}}\\frac{d}{dx}(x^2+${b})\\right)}{x^2 + ${b}} \\\\
         &= \\frac{\\sqrt{x^2 + ${b}} \\left(\\cos(${k}x)(${k})\\right) - \\sin(${k}x) \\left(\\frac{1}{2\\sqrt{x^2+${b}}} \\left[ \\frac{d}{dx}(x^2) + \\frac{d}{dx}(${b}) \\right] \\right)}{x^2 + ${b}} \\\\
         &= \\frac{\\sqrt{x^2 + ${b}} (${k}\\cos(${k}x)) - \\sin(${k}x) \\left(\\frac{1}{2\\sqrt{x^2+${b}}} (2x + 0)\\right)}{x^2 + ${b}} \\\\
-        &= \\frac{${k}\\sqrt{x^2 + ${b}}\\cos(${k}x) - \\frac{x\\sin(${k}x)}{\\sqrt{x^2+${b}}}}{x^2 + ${b}}.
+        &= \\frac{${k}\\sqrt{x^2 + ${b}}\\cos(${k}x) - \\frac{x\\sin(${k}x)}{\\sqrt{x^2+${b}}}}{x^2 + ${b}}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -41,9 +41,9 @@ function genDerivMixedQuotientTrigRadical() {
         f'(${x0}) &= \\frac{${k}((${x0})^2+${b})\\cos(${k}(${x0})) - (${x0})\\sin(${k}(${x0}))}{((${x0})^2+${b})^{\\frac{3}{2}}} \\\\
         &= \\frac{${k}(${b})\\cos(0) - 0}{(${b})^{\\frac{3}{2}}} \\\\
         &= \\frac{${k * b}(1) - 0}{${b}\\sqrt{${b}}} \\\\
-        &= ${slopeValLatex}.
+        &= ${slopeValLatex}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
+      ดังนั้น $f'(${x0}) = ${slopeValLatex}$
     </div>
   `;
   return {

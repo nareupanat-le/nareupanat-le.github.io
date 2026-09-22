@@ -34,9 +34,9 @@ function genDerivEasyTrig() {
         f'(${x0}) &= ${a * k}\\cos(${k}(${x0})) \\\\
         &= ${a * k}\\cos(0) \\\\
         &= ${a * k}(1) \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
 

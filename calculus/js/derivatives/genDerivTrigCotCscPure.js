@@ -23,11 +23,11 @@ function genDerivTrigCotCscPure() {
         f'(x) &= \\frac{d}{dx} \\left[ ${a === 1 ? "" : a}\\cot\\left(${k}x + \\frac{\\pi}{4}\\right) \\right] \\\\
         &= ${a === 1 ? "1" : a} \\left( -\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right) \\right) \\frac{d}{dx} \\left(${k}x + \\frac{\\pi}{4}\\right) \\\\
         &= -${a === 1 ? "1" : a}\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right) \\left[ \\frac{d}{dx}(${k}x) + \\frac{d}{dx}\\left(\\frac{\\pi}{4}\\right) \\right] \\\\
-        &= -${a === 1 ? "1" : a}\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right) (${k} + 0).
+        &= -${a === 1 ? "1" : a}\\csc^2\\left(${k}x + \\frac{\\pi}{4}\\right) (${k} + 0)
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -37,9 +37,9 @@ function genDerivTrigCotCscPure() {
         &= -${a*k}\\csc^2\\left(\\frac{\\pi}{4}\\right) \\\\
         &= -${a*k}(\\sqrt{2})^2 \\\\
         &= -${a*k}(2) \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

@@ -25,11 +25,11 @@ function genDerivGeneralExp() {
         f'(x) &= \\frac{d}{dx} \\left[ ${base}^{${k}x + ${b}} \\right] \\\\
         &= ${base}^{${k}x + ${b}} \\ln(${base}) \\frac{d}{dx} (${k}x + ${b}) \\\\
         &= ${base}^{${k}x + ${b}} \\ln(${base}) (${k}) \\\\
-        &= ${k} \\ln(${base}) \\cdot ${base}^{${k}x + ${b}}.
+        &= ${k} \\ln(${base}) \\cdot ${base}^{${k}x + ${b}}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -37,9 +37,9 @@ function genDerivGeneralExp() {
       $$\\begin{align*}
         f'(${x0}) &= ${k} \\ln(${base}) \\cdot ${base}^{${k}(${x0}) + ${b}} \\\\
         &= ${k} \\ln(${base}) \\cdot ${base}^{${b}} \\\\
-        &= ${k * Math.pow(base, b)} \\ln(${base}).
+        &= ${k * Math.pow(base, b)} \\ln(${base})
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${k * Math.pow(base, b)} \\ln(${base})$.
+      ดังนั้น $f'(${x0}) = ${k * Math.pow(base, b)} \\ln(${base})$
     </div>
   `;
   return {

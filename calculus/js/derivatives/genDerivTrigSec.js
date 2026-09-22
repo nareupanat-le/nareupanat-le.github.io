@@ -21,11 +21,11 @@ function genDerivTrigSec() {
       $$\\begin{align*}
         f'(x) &= \\frac{d}{dx} \\left[ ${a}\\sec(x) + ${b}\\tan(x) \\right] \\\\
         &= ${a} \\frac{d}{dx} \\sec(x) + ${b} \\frac{d}{dx} \\tan(x) \\\\
-        &= ${a}\\sec(x)\\tan(x) + ${b}\\sec^2(x).
+        &= ${a}\\sec(x)\\tan(x) + ${b}\\sec^2(x)
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -34,9 +34,9 @@ function genDerivTrigSec() {
         f'(${x0}) &= ${a}\\sec(0)\\tan(0) + ${b}\\sec^2(0) \\\\
         &= ${a}(1)(0) + ${b}(1)^2 \\\\
         &= 0 + ${b} \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

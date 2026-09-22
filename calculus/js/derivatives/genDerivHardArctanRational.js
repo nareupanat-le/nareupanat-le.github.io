@@ -31,11 +31,11 @@ function genDerivHardArctanRational() {
         &= \\frac{1}{1 + \\left( \\frac{${a === 1 ? "" : a}x + ${b}}{${c === 1 ? "" : c}x + ${d}} \\right)^2} \\frac{d}{dx} \\left( \\frac{${a === 1 ? "" : a}x + ${b}}{${c === 1 ? "" : c}x + ${d}} \\right) \\\\
         &= \\frac{(${c === 1 ? "" : c}x + ${d})^2}{(${c === 1 ? "" : c}x + ${d})^2 + (${a === 1 ? "" : a}x + ${b})^2} \\left[ \\frac{(${c === 1 ? "" : c}x + ${d})(${a}) - (${a === 1 ? "" : a}x + ${b})(${c})}{(${c === 1 ? "" : c}x + ${d})^2} \\right] \\\\
         &= \\frac{${a*c}x + ${a*d} - ${a*c}x - ${b*c}}{(${c === 1 ? "" : c}x + ${d})^2 + (${a === 1 ? "" : a}x + ${b})^2} \\\\
-        &= \\frac{${det}}{(${c === 1 ? "" : c}x + ${d})^2 + (${a === 1 ? "" : a}x + ${b})^2}.
+        &= \\frac{${det}}{(${c === 1 ? "" : c}x + ${d})^2 + (${a === 1 ? "" : a}x + ${b})^2}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -43,7 +43,7 @@ function genDerivHardArctanRational() {
       $$\\begin{align*}
         f'(${x0}) &= \\frac{${det}}{(${c === 1 ? "" : c}(${x0}) + ${d})^2 + (${a === 1 ? "" : a}(${x0}) + ${b})^2} \\\\
         &= \\frac{${det}}{(${d})^2 + (${b})^2} \\\\
-        &= ${slopeValLatex}.
+        &= ${slopeValLatex}
       \\end{align*}$$
       ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
     </div>

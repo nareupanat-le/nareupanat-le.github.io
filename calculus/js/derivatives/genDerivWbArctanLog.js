@@ -25,11 +25,11 @@ function genDerivWbArctanLog() {
         &= ${a} \\frac{d}{dx} \\arctan(${b}x) - \\frac{d}{dx} \\ln(${c}x^2 + 1) \\\\
         &= ${a} \\left( \\frac{1}{1 + (${b}x)^2} \\frac{d}{dx}(${b}x) \\right) - \\left( \\frac{1}{${c}x^2 + 1} \\frac{d}{dx}(${c}x^2 + 1) \\right) \\\\
         &= ${a} \\left( \\frac{1}{1 + ${b*b}x^2} (${b}) \\right) - \\left( \\frac{1}{${c}x^2 + 1} (${2*c}x) \\right) \\\\
-        &= \\frac{${a*b}}{1 + ${b*b}x^2} - \\frac{${2*c}x}{${c}x^2 + 1}.
+        &= \\frac{${a*b}}{1 + ${b*b}x^2} - \\frac{${2*c}x}{${c}x^2 + 1}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -37,9 +37,9 @@ function genDerivWbArctanLog() {
       $$\\begin{align*}
         f'(${x0}) &= \\frac{${a*b}}{1 + ${b*b}(0)} - \\frac{0}{1} \\\\
         &= \\frac{${a*b}}{1} - 0 \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

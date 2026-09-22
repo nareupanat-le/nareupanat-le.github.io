@@ -36,7 +36,7 @@ function genDerivHardLogNestedRadical() {
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -45,9 +45,9 @@ function genDerivHardLogNestedRadical() {
         f'(${x0}) &= \\frac{${derivNum}}{${det % 2 === 0 ? "" : "2"}(${a === 1 ? "" : a}(${x0}) + ${b})(${c === 1 ? "" : c}(${x0}) + ${d})} \\\\
         &= \\frac{${derivNum}}{${det % 2 === 0 ? "" : "2"}(${b})(${d})} \\\\
         &= \\frac{${derivNum}}{${det % 2 === 0 ? "" : "2"}(${b*d})} \\\\
-        &= ${slopeValLatex}.
+        &= ${slopeValLatex}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
+      ดังนั้น $f'(${x0}) = ${slopeValLatex}$
     </div>
   `;
   return {

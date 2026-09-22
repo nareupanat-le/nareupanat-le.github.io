@@ -24,11 +24,11 @@ function genDerivTrigCscCot() {
         &= ${a} \\frac{d}{dx} \\sin(${k}x) - \\frac{d}{dx} \\cos(${k}x) \\\\
         &= ${a} \\left(\\cos(${k}x)\\frac{d}{dx}(${k}x)\\right) - \\left(-\\sin(${k}x)\\frac{d}{dx}(${k}x)\\right) \\\\
         &= ${a} \\left(\\cos(${k}x)(${k})\\right) - \\left(-\\sin(${k}x)(${k})\\right) \\\\
-        &= ${a*k}\\cos(${k}x) + ${k}\\sin(${k}x).
+        &= ${a*k}\\cos(${k}x) + ${k}\\sin(${k}x)
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -37,9 +37,9 @@ function genDerivTrigCscCot() {
         f'(${x0}) &= ${a*k}\\cos(${k}(${x0})) + ${k}\\sin(${k}(${x0})) \\\\
         &= ${a*k}\\cos(0) + ${k}\\sin(0) \\\\
         &= ${a*k}(1) + ${k}(0) \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {

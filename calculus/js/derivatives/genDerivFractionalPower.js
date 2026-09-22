@@ -32,7 +32,7 @@ function genDerivFractionalPower() {
         f'(x) &= \\frac{d}{dx} \\left(${fExpr}\\right) \\\\
         &= \\frac{d}{dx} ${a === 1 ? "" : a}x^3 + \\frac{d}{dx} \\frac{${b}}{x} + \\frac{d}{dx} ${c}\\sqrt{x} \\\\
         &= ${a === 1 ? "1" : a} \\frac{d}{dx} x^3 + ${b} \\frac{d}{dx} x^{-1} + ${c} \\frac{d}{dx} x^{\\frac{1}{2}} \\\\
-        &= (${a === 1 ? "1" : a})(3)x^2 + (${b})(-1)x^{-2} + (${c})\\left(\\frac{1}{2}\\right)x^{-\\frac{1}{2}}.
+        &= (${a === 1 ? "1" : a})(3)x^2 + (${b})(-1)x^{-2} + (${c})\\left(\\frac{1}{2}\\right)x^{-\\frac{1}{2}}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
@@ -45,9 +45,9 @@ function genDerivFractionalPower() {
         f'(${x0}) &= ${3*a}(${x0})^2 - \\frac{${b}}{(${x0})^2} + ${cFracDen === "" ? `\\frac{${cFracNum}}{\\sqrt{${x0}}}` : `\\frac{${cFracNum}}{${cFracDen}\\sqrt{${x0}}}`} \\\\
         &= ${3*a}(1) - \\frac{${b}}{1} + ${cFracDen === "" ? `${cFracNum}` : `\\frac{${cFracNum}}{${cFracDen}}`} \\\\
         &= ${3*a} - ${b} + ${cFracDen === "" ? `${cFracNum}` : `\\frac{${cFracNum}}{${cFracDen}}`} \\\\
-        &= ${slopeValLatex}.
+        &= ${slopeValLatex}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeValLatex}$.
+      ดังนั้น $f'(${x0}) = ${slopeValLatex}$
     </div>
   `;
   return {

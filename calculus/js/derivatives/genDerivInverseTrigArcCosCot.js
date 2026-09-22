@@ -26,11 +26,11 @@ function genDerivInverseTrigArcCosCot() {
         &= ${a === 1 ? "1" : a} \\frac{d}{dx} \\arccos(${k}x) + ${b === 1 ? "1" : b} \\frac{d}{dx} \\operatorname{arccot}(${m === 1 ? "x" : `${m}x`}) \\\\
         &= ${a === 1 ? "1" : a} \\left(-\\frac{1}{\\sqrt{1-(${k}x)^2}} \\frac{d}{dx}(${k}x)\\right) + ${b === 1 ? "1" : b} \\left(-\\frac{1}{1+(${m === 1 ? "x" : `${m}x`})^2} \\frac{d}{dx}(${m === 1 ? "x" : `${m}x`})\\right) \\\\
         &= -${a === 1 ? "1" : a} \\left(\\frac{1}{\\sqrt{1-${k*k}x^2}} (${k})\\right) - ${b === 1 ? "1" : b} \\left(\\frac{1}{1+${m*m}x^2} (${m})\\right) \\\\
-        &= -\\frac{${a*k}}{\\sqrt{1-${k*k}x^2}} - \\frac{${b*m}}{1+${m*m}x^2}.
+        &= -\\frac{${a*k}}{\\sqrt{1-${k*k}x^2}} - \\frac{${b*m}}{1+${m*m}x^2}
       \\end{align*}$$
       ดังนั้น
       \\begin{equation*}
-        f'(x) = ${derivExpr}.
+        f'(x) = ${derivExpr}
       \\end{equation*}
     </div>
     <div class="solution-step">
@@ -39,9 +39,9 @@ function genDerivInverseTrigArcCosCot() {
         f'(${x0}) &= -\\frac{${a*k}}{\\sqrt{1-${k*k}(${x0})^2}} - \\frac{${b*m}}{1+${m*m}(${x0})^2} \\\\
         &= -\\frac{${a*k}}{\\sqrt{1}} - \\frac{${b*m}}{1} \\\\
         &= -${a*k} - ${b*m} \\\\
-        &= ${slopeVal}.
+        &= ${slopeVal}
       \\end{align*}$$
-      ดังนั้น $f'(${x0}) = ${slopeVal}$.
+      ดังนั้น $f'(${x0}) = ${slopeVal}$
     </div>
   `;
   return {
