@@ -52,7 +52,7 @@ function genDerivWbArctanLog() {
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(0)$ (แทนค่า $x=0$):`,
-    hintText: `ใช้สูตรของ \\arctan(u) และ \\ln(u) แล้วแทนค่า x=0 ทันทีเพื่อความรวดเร็ว`,
+    hintText: `ใช้สูตรของ $\\arctan(u)$ และ $\\ln(u)$ แล้วแทนค่า $x=0$ ทันทีเพื่อความรวดเร็ว`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1

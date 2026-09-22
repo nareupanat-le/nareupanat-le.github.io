@@ -62,7 +62,7 @@ function genDerivWbSecExp() {
     derivLatex: derivExpr,
     ansLatex: `${slopeVal}`,
     promptText: `✍️ ทดลองคำนวณค่าของ $f'(1)$ (แทนค่า $x=1$):`,
-    hintText: `ใช้กฎผลคูณและกฎลูกโซ่ระวังพจน์ \\sec(u) ได้ \\sec(u)\\tan(u)u' และ e^u ได้ e^uu'`,
+    hintText: `ใช้กฎผลคูณและกฎลูกโซ่ระวังพจน์ $\\sec(u)$ ได้ $\\sec(u)\\tan(u)u'$ และ $e^u$ ได้ $e^uu'`,
     solHtml: solText,
     exactNum: slopeVal,
     exactDen: 1

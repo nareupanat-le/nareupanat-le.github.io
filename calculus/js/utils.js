@@ -124,8 +124,8 @@ function adaptMathEquations() {
 }
 
 function safeRenderMath(element) {
-  if (window.MathJax && MathJax.typesetPromise) {
-    MathJax.typesetPromise(element ? [element] : []).then(function() {
+  if (window.MathJax && window.MathJax.typesetPromise) {
+    window.MathJax.typesetPromise(element ? [element] : []).then(function() {
       setTimeout(adaptMathEquations, 50);
     }).catch(function(err) {
       console.warn("MathJax error:", err);

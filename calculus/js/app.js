@@ -349,7 +349,7 @@ function renderProblemView(prob) {
   document.getElementById('solContent').innerHTML = prob.solHtml;
 
   // Hint content
-  document.getElementById('hintContent').textContent = prob.hintText || "ลองตรวจสอบรูปแบบและจัดรูปทีละขั้นตอน";
+  document.getElementById('hintContent').innerHTML = prob.hintText || "ลองตรวจสอบรูปแบบและจัดรูปทีละขั้นตอน";
   document.getElementById('hintBox').classList.add('hidden');
 
   // รีเซ็ตสถานะ
