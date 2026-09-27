@@ -35,10 +35,25 @@
     <div class="container">
         <header>
             <div class="glow-orb"></div>
-            <h1>Admissible Partition Ideal Calculator</h1>
-            <p>Verification and hunting engine for Admissible Partition Ideal Assignments, WQO Stabilizer Family \(\mathbb{E}(\mathcal{R}) = \min_{\ll} \mathcal{R}(\mathcal{P})\), and Principal Generator Formula \(\langle a \rangle_{\mathcal{P}}\) in \(le\)-semigroups. <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.09.22.12:26</span></p>
+            <h1>Partition Ideal Theory &amp; Semigroups Explorer</h1>
+            <p>Interactive mathematical research suite for Admissible Partition Ideals, WQO Stabilizer Families, and \(le\)-/\(poe\)-semigroup structures. <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.09.27</span></p>
         </header>
 
+        <!-- Main Portal Navigation Tabs -->
+        <div class="portal-nav-bar">
+            <button id="tab-btn-hunter" class="portal-nav-tab active" type="button">
+                <span>📘</span>
+                <span>Admissible Ideal Hunter &amp; WQO Generator</span>
+            </button>
+            <button id="tab-btn-explorer" class="portal-nav-tab" type="button">
+                <span>🔬</span>
+                <span>LE &amp; POE Semigroups Explorer</span>
+                <span class="tab-badge">Interactive</span>
+            </button>
+        </div>
+
+        <!-- TAB 1: ADMISSIBLE PARTITION IDEAL HUNTER (100% ORIGINAL TOOL) -->
+        <div id="portal-pane-hunter" class="portal-pane active">
         <section class="card glass-panel">
             <h2>1. Select Preset or Hunt Partition Ideal Assignment \(\mathcal{P}\)</h2>
             
@@ -187,8 +202,270 @@
                 <div id="result-formula" class="math-formula-box"></div>
             </div>
         </section>
+        </div> <!-- portal-pane-hunter -->
+
+        <!-- TAB 2: LE & POE SEMIGROUPS EXPLORER (CLIENT-SIDE LE_APP) -->
+        <div id="portal-pane-explorer" class="portal-pane" style="display: none;">
+            <!-- Dataset & Navigation Control Panel -->
+            <section class="card glass-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
+                    <div>
+                        <h2 style="margin: 0; font-size: 1.5rem;">🔬 LE &amp; POE Semigroups Explorer</h2>
+                        <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 0.95rem;">
+                            Interactive structure explorer and algebraic ideal analyzer for \(le\)-semigroups and \(poe\)-semigroups.
+                        </p>
+                    </div>
+                    <div id="exp-data-loading" style="display: none; align-items: center; gap: 8px; color: var(--accent-pink); font-size: 0.9rem; font-weight: 600;">
+                        <span>⏳ Loading dataset...</span>
+                    </div>
+                </div>
+
+                <!-- Dataset Selectors -->
+                <div class="control-grid">
+                    <div class="control-field">
+                        <label for="exp-dataset-type">Algebraic Structure Type:</label>
+                        <select id="exp-dataset-type" class="control-select">
+                            <option value="le">LE-Semigroups (with Lattice Join ∨ &amp; Meet ∧)</option>
+                            <option value="poe">POE-Semigroups (Partially Ordered with Top e)</option>
+                        </select>
+                    </div>
+                    <div class="control-field">
+                        <label for="exp-dataset-n">Semigroup Order \(n\):</label>
+                        <select id="exp-dataset-n" class="control-select">
+                            <option value="5" selected>n = 5 (Fast, 4,943 LE / 979 POE)</option>
+                            <option value="6">n = 6 (Extensive, 53,065 LE / 13,701 POE)</option>
+                        </select>
+                    </div>
+                    <div class="control-field">
+                        <label for="exp-index-select">Semigroup Index:</label>
+                        <div style="display: flex; gap: 6px;">
+                            <button id="exp-btn-prev-index" class="btn btn-secondary btn-sm" title="Previous Index">◀</button>
+                            <select id="exp-index-select" class="control-select" style="flex: 2;"></select>
+                            <input type="number" id="exp-index-input" class="control-input" style="width: 75px;" min="1" value="1">
+                            <button id="exp-btn-next-index" class="btn btn-secondary btn-sm" title="Next Index">▶</button>
+                        </div>
+                    </div>
+                    <div class="control-field">
+                        <label for="exp-order-select">Order Configuration (Order No):</label>
+                        <div style="display: flex; gap: 6px;">
+                            <button id="exp-btn-prev-order" class="btn btn-secondary btn-sm" title="Previous Order">◀</button>
+                            <select id="exp-order-select" class="control-select" style="flex: 1;"></select>
+                            <button id="exp-btn-next-order" class="btn btn-secondary btn-sm" title="Next Order">▶</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                    <button id="exp-btn-random" class="btn btn-secondary btn-sm" style="background: var(--bg-secondary);">
+                        🎲 Random Semigroup
+                    </button>
+                </div>
+            </section>
+
+            <!-- Semigroup Structure & Matrices Card -->
+            <section class="card glass-panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                    <div>
+                        <h3 id="exp-semigroup-title" style="margin: 0; color: var(--text-primary); font-size: 1.25rem;">
+                            Semigroup Viewer
+                        </h3>
+                        <div style="color: var(--text-secondary); font-size: 0.95rem; margin-top: 4px;">
+                            Top element \(e\) = <span id="exp-top-element"><strong>-</strong></span> |
+                            Levels = <span id="exp-levels">[]</span>
+                        </div>
+                    </div>
+                    <span id="exp-semigroup-badge" class="badge-status badge-admissible">LE | n=5</span>
+                </div>
+
+                <div style="background: var(--bg-secondary); border: 1px solid var(--glass-border); padding: 10px 14px; border-radius: 10px; margin-bottom: 16px; font-size: 0.9rem;">
+                    <strong>Covering Relation:</strong> <span id="exp-covering-pairs" style="font-family: 'Fira Code', monospace; color: var(--accent-purple);">{}</span>
+                </div>
+
+                <!-- Vis.js Poset Diagram -->
+                <div style="margin-bottom: 20px;">
+                    <h4 style="margin: 0 0 8px 0; color: var(--text-secondary); font-size: 0.95rem;">
+                        🌌 Interactive Poset Hasse Diagram (Bottom = Level 0, Top = \(e\))
+                    </h4>
+                    <div id="exp-hasse-network" style="height: 320px; background: #faf8f5; border: 1px solid var(--glass-border); border-radius: 12px; position: relative;"></div>
+                </div>
+
+                <!-- Side-by-Side Tables -->
+                <div class="matrices-grid">
+                    <div id="exp-mult-table-box"></div>
+                    <div id="exp-join-table-box">
+                        <div id="exp-join-table-container"></div>
+                    </div>
+                    <div id="exp-meet-table-box">
+                        <div id="exp-meet-table-container"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Explorer Analysis Subtabs -->
+            <section class="card glass-panel">
+                <div class="exp-subnav">
+                    <button class="exp-subtab-btn active" data-subtab="pideal">
+                        🎯 1. \(\mathcal{P}\)-Ideal Elements
+                    </button>
+                    <button class="exp-subtab-btn" data-subtab="p1p2">
+                        ⚖️ 2. \(\mathcal{P}_1\) vs \(\mathcal{P}_2\) Comparator &amp; Hunter
+                    </button>
+                    <button class="exp-subtab-btn" data-subtab="psimple">
+                        🌟 3. \(\mathcal{P}\)-Simple Detector
+                    </button>
+                    <button class="exp-subtab-btn" data-subtab="regularity">
+                        ⚡ 4. \(\mathcal{R}\)-Regularity &amp; \(X\)-Coincidence
+                    </button>
+                </div>
+
+                <!-- SUBPANE 1: P-IDEAL ELEMENTS -->
+                <div id="subpane-pideal" class="exp-subpane" style="display: block;">
+                    <h3>Verify \(\mathcal{P}\)-Ideal Elements for Current Semigroup</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                        An element \(a \in S\) is a \(\mathcal{P}\)-ideal element if \(a^2 \le a\) and for every block \(B \in \mathcal{P}\), \(\bigwedge_{\alpha \in B} \bar{\alpha}(a) \le a\).
+                    </p>
+
+                    <div class="presets-container">
+                        <span class="preset-label">Quick Presets:</span>
+                        <button class="btn-preset exp-preset-btn" data-target="exp-p-blocks" data-val="01, 10">Quasi-ideal {01, 10}</button>
+                        <button class="btn-preset exp-preset-btn" data-target="exp-p-blocks" data-val="010, 101">Two-sided {010, 101}</button>
+                        <button class="btn-preset exp-preset-btn" data-target="exp-p-blocks" data-val="010">Interior {010}</button>
+                        <button class="btn-preset exp-preset-btn" data-target="exp-p-blocks" data-val="01">Left Ideal {01}</button>
+                        <button class="btn-preset exp-preset-btn" data-target="exp-p-blocks" data-val="10">Right Ideal {10}</button>
+                        <button class="btn-preset exp-preset-btn" data-target="exp-p-blocks" data-val="001, 010, 100">Tri-Left {001, 010, 100}</button>
+                    </div>
+
+                    <div style="margin-top: 12px;">
+                        <label for="exp-p-blocks" style="font-weight: 600; font-size: 0.9rem; color: var(--text-secondary);">
+                            Partition Blocks (one block per line, comma-separated full words):
+                        </label>
+                        <textarea id="exp-p-blocks" class="block-input" style="width: 100%; height: 90px; margin-top: 6px;" placeholder="01, 10">01, 10</textarea>
+                    </div>
+
+                    <div style="margin-top: 12px;">
+                        <button id="exp-btn-compute-pideal" class="btn btn-primary">
+                            🔍 Compute \(\mathcal{P}\)-Ideal Elements
+                        </button>
+                    </div>
+
+                    <div id="exp-pideal-results"></div>
+                </div>
+
+                <!-- SUBPANE 2: P1 vs P2 COMPARATOR -->
+                <div id="subpane-p1p2" class="exp-subpane" style="display: none;">
+                    <h3>\(\mathcal{P}_1\) vs \(\mathcal{P}_2\) Ideal Element Non-Equivalence Hunter</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                        Find semigroups having elements \(a\) that are \(\mathcal{P}_1\)-ideal elements but <strong>NOT</strong> \(\mathcal{P}_2\)-ideal elements (\(\mathcal{I}_{\mathcal{P}_1} \setminus \mathcal{I}_{\mathcal{P}_2} \neq \emptyset\)).
+                    </p>
+
+                    <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+                        <button id="exp-btn-swap-p1p2" class="btn btn-secondary btn-sm">
+                            🔁 Swap \(\mathcal{P}_1 \leftrightarrow \mathcal{P}_2\)
+                        </button>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
+                        <div style="background: rgba(122,92,58,0.05); padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border);">
+                            <label for="exp-p1-blocks" style="font-weight: 700; color: var(--accent-purple);">Partition \(\mathcal{P}_1\):</label>
+                            <textarea id="exp-p1-blocks" class="block-input" style="width: 100%; height: 80px; margin-top: 6px;">01, 10</textarea>
+                        </div>
+                        <div style="background: rgba(217,119,6,0.05); padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border);">
+                            <label for="exp-p2-blocks" style="font-weight: 700; color: var(--accent-pink);">Partition \(\mathcal{P}_2\):</label>
+                            <textarea id="exp-p2-blocks" class="block-input" style="width: 100%; height: 80px; margin-top: 6px;">010</textarea>
+                        </div>
+                    </div>
+
+                    <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 14px;">
+                        <button id="exp-btn-p1p2-single" class="btn btn-secondary">
+                            🔬 Check Current Semigroup
+                        </button>
+                        <button id="exp-btn-p1p2-dataset" class="btn btn-primary">
+                            🚀 Batch Scan Entire Dataset for \(\mathcal{P}_1 \not\subseteq \mathcal{P}_2\)
+                        </button>
+                    </div>
+
+                    <div id="exp-p1p2-results"></div>
+                </div>
+
+                <!-- SUBPANE 3: P-SIMPLE -->
+                <div id="subpane-psimple" class="exp-subpane" style="display: none;">
+                    <h3>\(\mathcal{P}\)-Simple and \((\mathcal{P}_1, \mathcal{P}_2)\)-Simple Detector</h3>
+                    <p style="color: var(--text-secondary); font-size: 0.95rem;">
+                        An \(le\)-semigroup \(S\) is \(\mathcal{P}\)-simple if the top element \(e\) is its only \(\mathcal{P}\)-ideal element (\(\mathcal{I}_{\mathcal{P}}(S) = \{e\}\)).
+                    </p>
+
+                    <div style="background: var(--bg-secondary); padding: 14px; border-radius: 10px; border: 1px solid var(--glass-border); margin-bottom: 14px;">
+                        <h4 style="margin: 0 0 8px 0;">Part A: \(\mathcal{P}\)-Simple Search</h4>
+                        <textarea id="exp-psimple-p" class="block-input" style="width: 100%; height: 70px;">01, 10</textarea>
+                        <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
+                            <button id="exp-btn-check-simple-current" class="btn btn-secondary btn-sm">
+                                🔬 Check Current Semigroup
+                            </button>
+                            <button id="exp-btn-scan-psimple" class="btn btn-primary btn-sm">
+                                🚀 Scan Dataset for \(\mathcal{P}\)-Simple
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-secondary); padding: 14px; border-radius: 10px; border: 1px solid var(--glass-border);">
+                        <h4 style="margin: 0 0 8px 0;">Part B: \(\mathcal{P}_1\)-Simple but NOT \(\mathcal{P}_2\)-Simple</h4>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
+                            <div>
+                                <label for="exp-psimple-p1" style="font-weight: 600; font-size: 0.85rem;">\(\mathcal{P}_1\) Blocks:</label>
+                                <textarea id="exp-psimple-p1" class="block-input" style="width: 100%; height: 60px;">01, 10</textarea>
+                            </div>
+                            <div>
+                                <label for="exp-psimple-p2" style="font-weight: 600; font-size: 0.85rem;">\(\mathcal{P}_2\) Blocks:</label>
+                                <textarea id="exp-psimple-p2" class="block-input" style="width: 100%; height: 60px;">010</textarea>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <button id="exp-btn-scan-p1p2simple" class="btn btn-primary btn-sm">
+                                🚀 Scan Dataset for \(\mathcal{P}_1\)-Simple &amp; \(\mathcal{P}_2\)-Not Simple
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="exp-psimple-results"></div>
+                </div>
+
+                <!-- SUBPANE 4: REGULARITY & COINCIDENCE -->
+                <div id="subpane-regularity" class="exp-subpane" style="display: none;">
+                    <h3>\(\mathcal{R}\)-Regularity (LE) &amp; \(X\)-Coincidence (POE)</h3>
+
+                    <div style="background: var(--bg-secondary); padding: 14px; border-radius: 10px; border: 1px solid var(--glass-border); margin-bottom: 14px;">
+                        <h4 style="margin: 0 0 8px 0;">\(\mathcal{R}\)-Regularity Analysis (for LE-semigroups)</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 0 0 8px 0;">
+                            Condition: \(a \le \bar{\alpha}(a)\) for every word \(\alpha \in R\).
+                        </p>
+                        <input type="text" id="exp-r-words" class="block-input" style="width: 100%;" value="101, 010" placeholder="e.g. 101, 010">
+                        <div style="margin-top: 10px;">
+                            <button id="exp-btn-check-rregular" class="btn btn-secondary btn-sm">
+                                🔬 Check \(\mathcal{R}\)-Regular Elements
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="background: var(--bg-secondary); padding: 14px; border-radius: 10px; border: 1px solid var(--glass-border);">
+                        <h4 style="margin: 0 0 8px 0;">\(X\)-Coincidence (for POE-semigroups)</h4>
+                        <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 0 0 8px 0;">
+                            Verifies whether \(\mathcal{I}_\alpha(S) = \mathcal{I}_\beta(S)\) for all \(\alpha, \beta \in X\).
+                        </p>
+                        <input type="text" id="exp-x-words" class="block-input" style="width: 100%;" value="01, 10, 010" placeholder="e.g. 01, 10, 010">
+                        <div style="margin-top: 10px;">
+                            <button id="exp-btn-check-xcoincidence" class="btn btn-secondary btn-sm">
+                                🔬 Verify \(X\)-Coincidence
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="exp-regcoin-results"></div>
+                </div>
+            </section>
+        </div>
     </div>
     <script src="app.js"></script>
+    <script src="explorer.js"></script>
 
 <footer class="site-footer">
   <p>© <span id="y"></span> Nareupanat Lekkoksung</p>
