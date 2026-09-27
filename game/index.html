@@ -281,24 +281,36 @@
                     <strong>Covering Relation:</strong> <span id="exp-covering-pairs" style="font-family: 'Fira Code', monospace; color: var(--accent-purple);">{}</span>
                 </div>
 
-                <!-- Vis.js Poset Diagram -->
-                <div style="margin-bottom: 20px;">
-                    <h4 style="margin: 0 0 8px 0; color: var(--text-secondary); font-size: 0.95rem;">
-                        🌌 Interactive Poset Hasse Diagram (Bottom = Level 0, Top = \(e\))
-                    </h4>
-                    <div id="exp-hasse-network" style="height: 320px; background: #faf8f5; border: 1px solid var(--glass-border); border-radius: 12px; position: relative;"></div>
+                <!-- Pair Multiplication Table & Hasse Diagram Side-by-Side -->
+                <div class="structure-visual-grid">
+                    <div class="structure-visual-col">
+                        <h4 style="margin: 0 0 8px 0; color: var(--text-secondary); font-size: 0.95rem;">
+                            ✖ Semigroup Multiplication Table \((\cdot)\)
+                        </h4>
+                        <div id="exp-mult-table-box"></div>
+                    </div>
+                    <div class="structure-visual-col">
+                        <h4 style="margin: 0 0 8px 0; color: var(--text-secondary); font-size: 0.95rem;">
+                            🌌 Poset Hasse Diagram \((S, \le)\)
+                        </h4>
+                        <div id="exp-hasse-network" style="height: 340px; background: #faf8f5; border: 1px solid var(--glass-border); border-radius: 12px; position: relative;"></div>
+                    </div>
                 </div>
 
-                <!-- Side-by-Side Tables -->
-                <div class="matrices-grid">
-                    <div id="exp-mult-table-box"></div>
-                    <div id="exp-join-table-box">
-                        <div id="exp-join-table-container"></div>
+                <!-- Collapsible Join & Meet Tables (Hidden by default since they can be deduced from Hasse diagram) -->
+                <details id="exp-lattice-tables-details" style="margin-top: 14px; background: var(--bg-secondary); border: 1px solid var(--glass-border); border-radius: 10px; padding: 10px 14px; font-size: 0.9rem;">
+                    <summary style="cursor: pointer; font-weight: 600; color: var(--text-secondary);">
+                        📐 Show Raw Lattice Tables (Join \(\vee\) &amp; Meet \(\wedge\)) &mdash; <span style="font-weight: normal; font-size: 0.82rem; color: var(--text-secondary);">Deduced directly from Hasse diagram above</span>
+                    </summary>
+                    <div class="matrices-grid" style="margin-top: 12px;">
+                        <div id="exp-join-table-box">
+                            <div id="exp-join-table-container"></div>
+                        </div>
+                        <div id="exp-meet-table-box">
+                            <div id="exp-meet-table-container"></div>
+                        </div>
                     </div>
-                    <div id="exp-meet-table-box">
-                        <div id="exp-meet-table-container"></div>
-                    </div>
-                </div>
+                </details>
             </section>
 
             <!-- Explorer Analysis Subtabs -->

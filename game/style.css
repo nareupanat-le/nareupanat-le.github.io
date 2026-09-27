@@ -485,6 +485,20 @@ header p { color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6; ma
     border-color: var(--accent-purple);
 }
 
+/* Visual Layout: Multiplication Table & Hasse Diagram Side-by-Side */
+.structure-visual-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    align-items: start;
+    margin-bottom: 12px;
+}
+
+.structure-visual-col {
+    display: flex;
+    flex-direction: column;
+}
+
 /* Matrices & Tables */
 .matrices-grid {
     display: grid;

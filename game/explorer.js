@@ -577,14 +577,17 @@
         // Render Tables
         renderMatrixTable(dom.multTableContainer, entry.table, 'Multiplication Table', '·');
 
+        let detailsElem = document.getElementById('exp-lattice-tables-details');
         if (state.datasetType === 'le' && entry.join && entry.meet) {
-            dom.joinTableBox.style.display = 'block';
-            dom.meetTableBox.style.display = 'block';
+            if (detailsElem) detailsElem.style.display = 'block';
+            if (dom.joinTableBox) dom.joinTableBox.style.display = 'block';
+            if (dom.meetTableBox) dom.meetTableBox.style.display = 'block';
             renderMatrixTable(dom.joinTableContainer, entry.join, 'Lattice Join Table', '∨');
             renderMatrixTable(dom.meetTableContainer, entry.meet, 'Lattice Meet Table', '∧');
         } else {
-            dom.joinTableBox.style.display = 'none';
-            dom.meetTableBox.style.display = 'none';
+            if (detailsElem) detailsElem.style.display = 'none';
+            if (dom.joinTableBox) dom.joinTableBox.style.display = 'none';
+            if (dom.meetTableBox) dom.meetTableBox.style.display = 'none';
         }
 
         // Render Hasse Diagram
