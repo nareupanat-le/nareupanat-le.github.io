@@ -1,6 +1,6 @@
 
 :root {
-    --container: 840px;
+    --container: 1040px;
     --gap: 24px;
     --radius: 16px;
     
@@ -488,7 +488,7 @@ header p { color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6; ma
 /* Visual Layout: Multiplication Table & Hasse Diagram Side-by-Side */
 .structure-visual-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 20px;
     align-items: start;
     margin-bottom: 12px;
@@ -602,5 +602,110 @@ header p { color: var(--text-secondary); font-size: 1.1rem; line-height: 1.6; ma
     border: 1px solid var(--glass-border);
     border-radius: 8px;
     margin-top: 10px;
+    -webkit-overflow-scrolling: touch;
 }
+
+/* Static Hasse Diagram SVG Node Styling */
+.hasse-node circle {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: default;
+}
+.hasse-node:hover circle {
+    stroke-width: 3.5px;
+    filter: drop-shadow(0 2px 6px rgba(122, 92, 58, 0.3));
+}
+
+/* ==========================================
+   RESPONSIVE DESIGN (PC, NOTEBOOK, TABLET, MOBILE)
+   ========================================== */
+
+/* Tablet & Mobile Adjustments (<= 768px) */
+@media (max-width: 768px) {
+    .container {
+        padding: 14px;
+    }
+
+    .portal-nav-bar {
+        flex-direction: column;
+        gap: 6px;
+        padding: 6px;
+    }
+
+    .portal-nav-tab {
+        padding: 10px 14px;
+        font-size: 0.92rem;
+        justify-content: flex-start;
+        width: 100%;
+    }
+
+    .structure-visual-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .control-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .exp-subnav {
+        gap: 6px;
+    }
+
+    .exp-subtab-btn {
+        padding: 7px 12px;
+        font-size: 0.82rem;
+        flex: 1 1 auto;
+        text-align: center;
+    }
+
+    .matrix-table th, .matrix-table td {
+        padding: 5px 6px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Small Smartphone Adjustments (<= 480px) */
+@media (max-width: 480px) {
+    .container {
+        padding: 10px;
+    }
+
+    .card, .glass-panel {
+        padding: 1rem 0.85rem;
+        border-radius: 12px;
+    }
+
+    h1 {
+        font-size: 1.6rem;
+    }
+
+    h2 {
+        font-size: 1.25rem;
+    }
+
+    h3 {
+        font-size: 1.1rem;
+    }
+
+    .matrix-table th, .matrix-table td {
+        padding: 4px 4px;
+        font-size: 0.78rem;
+    }
+
+    .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .presets-container {
+        gap: 0.35rem;
+    }
+
+    .btn-preset {
+        font-size: 0.78rem;
+        padding: 0.35rem 0.65rem;
+    }
+}
+
 

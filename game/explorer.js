@@ -498,62 +498,84 @@
     }
 
     function renderHasseDiagram(levels, coveringPairs, topElement) {
-        if (!dom.hasseContainer || typeof vis === 'undefined') return;
+        if (!dom.hasseContainer) return;
 
         let n = levels.length;
-        let nodes = [];
-        let edges = [];
+        let min_lv = Math.min(...levels);
+        let max_lv = Math.max(...levels);
+        let num_lvs = max_lv - min_lv + 1;
 
+        // Group elements by level
+        let level_groups = {};
         for (let i = 1; i <= n; i++) {
             let lv = levels[i - 1];
-            let isTop = (i === topElement);
-            nodes.push({
-                id: i,
-                label: `x${i} = ${i}`,
-                level: lv,
-                shape: isTop ? 'star' : 'dot',
-                size: isTop ? 22 : 16,
-                color: isTop ? { background: '#d97706', border: '#b45309' } : { background: '#7A5C3A', border: '#61492F' },
-                font: { color: isTop ? '#92400e' : '#292524', face: 'Outfit, sans-serif', size: 14, bold: isTop }
-            });
+            if (!level_groups[lv]) level_groups[lv] = [];
+            level_groups[lv].push(i);
         }
 
-        coveringPairs.forEach(pair => {
-            edges.push({
-                from: pair[0],
-                to: pair[1],
-                arrows: 'to',
-                color: { color: 'rgba(122, 92, 58, 0.45)', highlight: '#7A5C3A' },
-                width: 2
-            });
-        });
+        let width = 320;
+        let height = 260;
+        let pad_y = 36;
+        let pad_x = 36;
+        let avail_h = height - 2 * pad_y;
+        let avail_w = width - 2 * pad_x;
 
-        let data = {
-            nodes: new vis.DataSet(nodes),
-            edges: new vis.DataSet(edges)
-        };
-
-        let options = {
-            layout: {
-                hierarchical: {
-                    direction: 'DU', // Bottom-up (Level 0 at bottom, Top at top)
-                    sortMethod: 'directed',
-                    levelSeparation: 65,
-                    nodeSpacing: 70
-                }
-            },
-            interaction: {
-                hover: true,
-                dragNodes: true,
-                zoomView: true
-            },
-            physics: false
-        };
-
-        if (state.hasseNetwork) {
-            state.hasseNetwork.destroy();
+        // Calculate (x, y) coordinates for each element
+        let coords = {};
+        for (let lv_str in level_groups) {
+            let lv = parseInt(lv_str, 10);
+            let elems = level_groups[lv];
+            let y = (num_lvs === 1) ? (height / 2) : (height - pad_y - (lv - min_lv) * (avail_h / (num_lvs - 1)));
+            let k = elems.length;
+            for (let idx = 0; idx < k; idx++) {
+                let elem = elems[idx];
+                let x = (k === 1) ? (width / 2) : (pad_x + (idx + 0.5) * (avail_w / k));
+                coords[elem] = { x: x, y: y };
+            }
         }
-        state.hasseNetwork = new vis.Network(dom.hasseContainer, data, options);
+
+        // Generate SVG covering lines
+        let linesSvg = coveringPairs.map(pair => {
+            let p1 = coords[pair[0]];
+            let p2 = coords[pair[1]];
+            if (!p1 || !p2) return '';
+            return `<line x1="${p1.x.toFixed(1)}" y1="${p1.y.toFixed(1)}" x2="${p2.x.toFixed(1)}" y2="${p2.y.toFixed(1)}" stroke="#7A5C3A" stroke-width="2" stroke-opacity="0.65" stroke-linecap="round" />`;
+        }).join('');
+
+        // Generate SVG node circles and text
+        let nodesSvg = Object.keys(coords).map(elemStr => {
+            let elem = parseInt(elemStr, 10);
+            let pos = coords[elem];
+            let isTop = (elem === topElement);
+            let fill = isTop ? '#fef3c7' : '#ffffff';
+            let stroke = isTop ? '#d97706' : '#7A5C3A';
+            let strokeWidth = isTop ? 2.5 : 2;
+            let textFill = isTop ? '#92400e' : '#1c1917';
+            let r = 16;
+
+            let topBadge = isTop ? `<text x="${pos.x.toFixed(1)}" y="${(pos.y - 21).toFixed(1)}" text-anchor="middle" fill="#d97706" font-size="10.5" font-weight="700" font-family="'Outfit', sans-serif">top e</text>` : '';
+
+            return `
+                <g class="hasse-node">
+                    <circle cx="${pos.x.toFixed(1)}" cy="${pos.y.toFixed(1)}" r="${r}" fill="${fill}" stroke="${stroke}" stroke-width="${strokeWidth}">
+                        <title>Element ${elem} (Level ${levels[elem - 1]})</title>
+                    </circle>
+                    <text x="${pos.x.toFixed(1)}" y="${(pos.y + 1).toFixed(1)}" text-anchor="middle" dominant-baseline="central" fill="${textFill}" font-family="'Outfit', -apple-system, sans-serif" font-weight="700" font-size="14">${elem}</text>
+                    ${topBadge}
+                </g>
+            `;
+        }).join('');
+
+        let svgHtml = `
+            <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 10px;">
+                <svg viewBox="0 0 ${width} ${height}" style="width: 100%; max-width: ${width}px; height: auto; max-height: ${height}px;" preserveAspectRatio="xMidYMid meet">
+                    ${linesSvg}
+                    ${nodesSvg}
+                </svg>
+            </div>
+        `;
+
+        dom.hasseContainer.innerHTML = svgHtml;
     }
 
     function renderCurrentSemigroup() {
