@@ -96,14 +96,36 @@
             btnScanP1P2Simple: document.getElementById('exp-btn-scan-p1p2simple'),
             psimpleResultsContainer: document.getElementById('exp-psimple-results'),
 
-            // Tool 4: Regularity & Coincidence
+            // Tool 4: R-Regularity (LE)
             rWordsInput: document.getElementById('exp-r-words'),
+            r1WordsInput: document.getElementById('exp-r1-words'),
+            r2WordsInput: document.getElementById('exp-r2-words'),
+            btnSwapR1R2: document.getElementById('exp-btn-swap-r1r2'),
             btnCheckRRegular: document.getElementById('exp-btn-check-rregular'),
             btnScanRRegular: document.getElementById('exp-btn-scan-rregular'),
+            btnScanR1R2: document.getElementById('exp-btn-scan-r1r2'),
+            rregResultsContainer: document.getElementById('exp-rreg-results'),
+
+            // Tool 5: X-Coincidence (POE)
+            poeBadgeIndex: document.getElementById('exp-poe-badge-index'),
+            poeBadgeOrder: document.getElementById('exp-poe-badge-order'),
+            poeBadgeTop: document.getElementById('exp-poe-badge-top'),
+            poeSwitchAlert: document.getElementById('exp-poe-switch-alert'),
+            btnForcePoe: document.getElementById('exp-btn-force-poe'),
+            poeBtnPrevIdx: document.getElementById('exp-poe-btn-prev-idx'),
+            poeBtnNextIdx: document.getElementById('exp-poe-btn-next-idx'),
+            poeBtnPrevOrd: document.getElementById('exp-poe-btn-prev-ord'),
+            poeBtnNextOrd: document.getElementById('exp-poe-btn-next-ord'),
+            poeBtnRandom: document.getElementById('exp-poe-btn-random'),
+
             xWordsInput: document.getElementById('exp-x-words'),
+            x1WordsInput: document.getElementById('exp-x1-words'),
+            x2WordsInput: document.getElementById('exp-x2-words'),
+            btnSwapX1X2: document.getElementById('exp-btn-swap-x1x2'),
             btnCheckXCoincidence: document.getElementById('exp-btn-check-xcoincidence'),
             btnScanXCoincidence: document.getElementById('exp-btn-scan-xcoincidence'),
-            regCoinResultsContainer: document.getElementById('exp-regcoin-results')
+            btnScanX1X2: document.getElementById('exp-btn-scan-x1x2'),
+            xcoincResultsContainer: document.getElementById('exp-xcoinc-results')
         };
     }
 
@@ -596,6 +618,12 @@
             dom.coveringSpan.textContent = '∅ (Antichain / None)';
         }
 
+        // Update POE Context Banner if on POE or LE
+        if (dom.poeBadgeIndex) dom.poeBadgeIndex.textContent = entry.index;
+        if (dom.poeBadgeOrder) dom.poeBadgeOrder.textContent = entry.order_no;
+        if (dom.poeBadgeTop) dom.poeBadgeTop.textContent = entry.top;
+        if (dom.poeSwitchAlert) dom.poeSwitchAlert.style.display = (state.datasetType === 'poe') ? 'none' : 'block';
+
         // Render Tables
         renderMatrixTable(dom.multTableContainer, entry.table, 'Multiplication Table', '·');
 
@@ -1058,7 +1086,7 @@
     }
 
     // ==========================================
-    // 7. Tool 4: Regularity & X-Coincidence
+    // 7. Tool 4: R-Regularity (LE) & Tool 5: X-Coincidence (POE)
     // ==========================================
 
     function handleCheckRRegular() {
@@ -1066,53 +1094,533 @@
         if (!entry) return;
 
         let raw = dom.rWordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        for (let w of raw) {
+            if (!is_full_word(w)) {
+                dom.rregResultsContainer.innerHTML = `<div class="error-msg">❌ Word '${w}' is not a full word on {0, 1}.</div>`;
+                return;
+            }
+        }
+
         let a_regs = is_R_regular(entry, raw);
 
         let html = `
             <div class="result-card" style="margin-top: 16px;">
+                <div class="result-identity-card">
+                    <div class="identity-badge-row">
+                        <span class="badge-index">LE-Semigroup Index: <strong>#${entry.index}</strong></span>
+                        <span class="badge-order">Order No: <strong>#${entry.order_no}</strong></span>
+                        <span class="badge-top">Top Element: <strong>e = ${entry.top}</strong></span>
+                    </div>
+                </div>
                 <h4>\\(\\mathcal{R}\\)-Regularity Analysis</h4>
-                <p><strong>Semigroup:</strong> n=${entry.n}, Index=${entry.index}, Order No=${entry.order_no}</p>
                 <p><strong>Full Words \\(R\\):</strong> {${raw.join(', ')}}</p>
-                <div style="background:var(--bg-secondary); padding:12px; border-radius:8px;">
-                    <strong>\\(\\mathcal{R}\\)-Regular Elements (\(a \\le \\bar{\\alpha}(a)\)):</strong>
-                    <div style="font-size:1.15rem; color:var(--accent-purple); font-weight:700; margin-top:4px;">
+                <div style="background:var(--bg-secondary); padding:14px; border-radius:8px;">
+                    <strong>\\(\\mathcal{R}\\)-Regular Elements (\(a \\le \\bar{\\alpha}(a)\) for all \(\\alpha \\in R\)):</strong>
+                    <div style="font-size:1.2rem; color:var(--accent-purple); font-weight:700; margin-top:6px;">
                         \\(\\{${a_regs.join(', ') || '\\emptyset'}\\}\\)
                     </div>
                 </div>
             </div>
         `;
-        dom.regCoinResultsContainer.innerHTML = html;
-        if (window.MathJax && window.MathJax.typesetPromise) {
-            window.MathJax.typesetPromise();
+        dom.rregResultsContainer.innerHTML = html;
+        if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+    }
+
+    async function handleScanRRegular() {
+        let raw = dom.rWordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        for (let w of raw) {
+            if (!is_full_word(w)) {
+                dom.rregResultsContainer.innerHTML = `<div class="error-msg">❌ Word '${w}' is not a full word on {0, 1}.</div>`;
+                return;
+            }
+        }
+        if (raw.length === 0) {
+            dom.rregResultsContainer.innerHTML = `<div class="error-msg">⚠️ Please specify at least 1 word in R.</div>`;
+            return;
+        }
+
+        dom.rregResultsContainer.innerHTML = `<div class="card glass-panel" style="text-align:center;">⏳ Batch scanning LE dataset for \\(\\mathcal{R}\\)-regular semigroups... Please wait.</div>`;
+
+        let le_data = state.dataCache[`le_n${state.datasetN}`];
+        if (!le_data) le_data = await loadDataset('le', state.datasetN);
+
+        setTimeout(() => {
+            let found = [];
+            for (let entry of le_data) {
+                let a_regs = is_R_regular(entry, raw);
+                if (a_regs.length > 0) {
+                    found.push({
+                        index: entry.index,
+                        order_no: entry.order_no || 1,
+                        top: entry.top,
+                        a_regs: a_regs
+                    });
+                }
+            }
+
+            let html = `
+                <div class="result-card" style="margin-top: 16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                        <h4 style="margin:0;">🚀 Scan Results: \\(\\mathcal{R}\\)-Regular Semigroups</h4>
+                        <span class="badge-status ${found.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
+                            ${found.length} Semigroups Found
+                        </span>
+                    </div>
+                    <p style="margin-bottom:10px;">Scanned <strong>${le_data.length}</strong> LE-semigroups for \\(R = \\{${raw.join(', ')}\\}\\).</p>
+                    <div class="table-responsive" style="max-height:420px; overflow-y:auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>LE Index</th>
+                                    <th>Order No</th>
+                                    <th>Top \(e\)</th>
+                                    <th>\(\\mathcal{R}\)-Regular Elements</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${found.slice(0, 150).map((r, i) => `
+                                    <tr>
+                                        <td>${i + 1}</td>
+                                        <td><span class="badge-index"><strong>#${r.index}</strong></span></td>
+                                        <td><span class="badge-order"><strong>#${r.order_no}</strong></span></td>
+                                        <td><span class="badge-top"><strong>${r.top}</strong></span></td>
+                                        <td style="color:var(--accent-purple); font-weight:700;">\\(\\{${r.a_regs.join(', ')}\\}\\)</td>
+                                        <td>
+                                            <button class="btn btn-secondary btn-sm jump-semigroup-btn" data-index="${r.index}" data-order="${r.order_no}" data-type="le">
+                                                👁 View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    ${found.length > 150 ? `<p style="font-size:0.85rem; color:var(--text-secondary); margin-top:8px;">(Displaying first 150 of ${found.length} results)</p>` : ''}
+                </div>
+            `;
+            dom.rregResultsContainer.innerHTML = html;
+            dom.rregResultsContainer.querySelectorAll('.jump-semigroup-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    let idx = parseInt(btn.dataset.index, 10);
+                    let ord = parseInt(btn.dataset.order, 10);
+                    jumpToSemigroup(idx, ord, 'le');
+                });
+            });
+            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+        }, 50);
+    }
+
+    async function handleScanR1R2() {
+        let raw1 = dom.r1WordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        let raw2 = dom.r2WordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+        let le_data = state.dataCache[`le_n${state.datasetN}`];
+        if (!le_data) le_data = await loadDataset('le', state.datasetN);
+
+        dom.rregResultsContainer.innerHTML = `<div class="card glass-panel" style="text-align:center;">⏳ Batch scanning LE dataset for \\(R_1 \\not\\subseteq R_2\\) regularity...</div>`;
+
+        setTimeout(() => {
+            let found = [];
+            for (let entry of le_data) {
+                let regs1 = is_R_regular(entry, raw1);
+                let regs2 = is_R_regular(entry, raw2);
+                let diff = regs1.filter(a => !regs2.includes(a));
+                if (diff.length > 0) {
+                    found.push({
+                        index: entry.index,
+                        order_no: entry.order_no || 1,
+                        top: entry.top,
+                        regs1: regs1,
+                        regs2: regs2,
+                        diff: diff
+                    });
+                }
+            }
+
+            let html = `
+                <div class="result-card" style="margin-top: 16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                        <h4 style="margin:0;">🚀 Scan Results: \\(R_1\\)-Regular but NOT \\(R_2\\)-Regular</h4>
+                        <span class="badge-status ${found.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
+                            ${found.length} Semigroups Found
+                        </span>
+                    </div>
+                    <div class="table-responsive" style="max-height:420px; overflow-y:auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>LE Index</th>
+                                    <th>Order No</th>
+                                    <th>Top \(e\)</th>
+                                    <th>\(R_1\)-Reg</th>
+                                    <th>\(R_2\)-Reg</th>
+                                    <th>Difference (\(R_1 \\setminus R_2\))</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${found.slice(0, 150).map((r, i) => `
+                                    <tr>
+                                        <td>${i + 1}</td>
+                                        <td><span class="badge-index"><strong>#${r.index}</strong></span></td>
+                                        <td><span class="badge-order"><strong>#${r.order_no}</strong></span></td>
+                                        <td><span class="badge-top"><strong>${r.top}</strong></span></td>
+                                        <td>{${r.regs1.join(', ')}}</td>
+                                        <td>{${r.regs2.join(', ')}}</td>
+                                        <td style="color:var(--accent-pink); font-weight:700;">{${r.diff.join(', ')}}</td>
+                                        <td>
+                                            <button class="btn btn-secondary btn-sm jump-semigroup-btn" data-index="${r.index}" data-order="${r.order_no}" data-type="le">
+                                                👁 View
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            `;
+            dom.rregResultsContainer.innerHTML = html;
+            dom.rregResultsContainer.querySelectorAll('.jump-semigroup-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    let idx = parseInt(btn.dataset.index, 10);
+                    let ord = parseInt(btn.dataset.order, 10);
+                    jumpToSemigroup(idx, ord, 'le');
+                });
+            });
+            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+        }, 50);
+    }
+
+    async function ensurePoeLoaded() {
+        if (state.datasetType !== 'poe') {
+            dom.datasetTypeSelect.value = 'poe';
+            await switchDataset();
         }
     }
 
-    function handleCheckXCoincidence() {
+    async function handleCheckXCoincidence() {
+        await ensurePoeLoaded();
         let entry = state.currentEntry;
         if (!entry) return;
 
         let raw = dom.xWordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        for (let w of raw) {
+            if (!is_full_word(w)) {
+                dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">❌ Word '${w}' is not a full word on {0, 1}.</div>`;
+                return;
+            }
+        }
+        if (raw.length === 0) {
+            dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">⚠️ Please specify at least 1 word in X.</div>`;
+            return;
+        }
+
         let res = compute_X_coincidence_for_poe(entry.table, entry.levels, entry.top, raw);
+        let covPairs = entry.covering_pairs || covering_pairs_from_levels(entry.levels);
+        let covText = covPairs.length > 0 ? covPairs.map(p => `${p[0]} ≤ ${p[1]}`).join(', ') : '∅';
+        let citationText = `POE-semigroup (n=${entry.n}, index=${entry.index}, order_no=${entry.order_no}, top=${entry.top}): X-coincident=${res.is_coincident} for X={${raw.join(', ')}}`;
 
         let html = `
             <div class="result-card" style="margin-top: 16px;">
-                <h4>\(X\)-Coincidence Verification</h4>
-                <p><strong>Semigroup:</strong> n=${entry.n}, Index=${entry.index}, Order No=${entry.order_no}</p>
-                <div style="margin-bottom:12px;">
-                    ${raw.map(alpha => `<div>\\(\\mathcal{I}_{${alpha}}(S) = \\{${(res.ideals[alpha] || []).join(', ') || '\\emptyset'}\\}\\)</div>`).join('')}
+                <!-- High-Visibility Identity Banner -->
+                <div class="result-identity-card">
+                    <div class="identity-badge-row">
+                        <span class="badge-index">POE-Semigroup Index: <strong>#${entry.index}</strong></span>
+                        <span class="badge-order">Order No: <strong>#${entry.order_no}</strong></span>
+                        <span class="badge-top">Top Element: <strong>e = ${entry.top}</strong></span>
+                        <button class="btn btn-secondary btn-sm copy-citation-btn" data-citation="${citationText}">📋 Copy Info</button>
+                    </div>
+                    <div class="identity-details">
+                        <span>Order Levels: <code>[${entry.levels.join(', ')}]</code></span>
+                        <span>Covering Relations: <code>{${covText}}</code></span>
+                    </div>
                 </div>
-                <div style="padding:12px; border-radius:8px; background:${res.is_coincident ? 'rgba(21,128,61,0.08)' : 'var(--bg-secondary)'}; border:1px solid ${res.is_coincident ? 'var(--success)' : 'var(--glass-border)'};">
-                    <h5 style="margin:0 0 6px 0; color:${res.is_coincident ? 'var(--success)' : 'var(--error)'};">
-                        ${res.is_coincident ? '✔ X-Coincidence Holds! (All \\(\\alpha\\)-ideals coincide)' : '✘ X-Coincidence Fails (Ideals differ)'}
-                    </h5>
-                    ${res.is_coincident ? `<div>Common Ideal Set: \\(\\{${res.common_ideal.join(', ') || '\\emptyset'}\\}\\)</div>` : ''}
+
+                <!-- Coincidence Status Card -->
+                <div style="padding: 14px 18px; border-radius: 10px; margin-bottom: 14px; border: 2px solid ${res.is_coincident ? 'var(--success)' : 'var(--error)'}; background: ${res.is_coincident ? 'rgba(21, 128, 61, 0.08)' : 'rgba(185, 28, 28, 0.08)'};">
+                    <h4 style="margin: 0 0 6px 0; color: ${res.is_coincident ? 'var(--success)' : 'var(--error)'}; font-size: 1.15rem;">
+                        ${res.is_coincident ? '✔ X-Coincidence Holds on this POE-Semigroup!' : '✘ X-Coincidence Fails on this POE-Semigroup'}
+                    </h4>
+                    <p style="margin: 0; font-size: 0.95rem; color: var(--text-primary);">
+                        ${res.is_coincident 
+                            ? `Every word in \\(X\\) induces the exact same ideal set: <strong style="color:var(--accent-purple); font-size:1.1rem;">\\(\\mathcal{I}_X(S) = \\{${res.common_ideal.join(', ') || '\\emptyset'}\\}\\)</strong>`
+                            : 'The ideal sets \\(\\mathcal{I}_\\alpha(S)\\) differ across words in \\(X\\).'}
+                    </p>
+                </div>
+
+                <!-- Per-Word Breakdown Table -->
+                <h5 style="margin: 12px 0 8px 0; color: var(--text-secondary);">Ideal Sets Breakdown for Each Word \\(\\alpha \\in X\\):</h5>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Word \(\\alpha\)</th>
+                                <th>Valuation Formula \(\\bar{\\alpha}(a)\)</th>
+                                <th>\(\\alpha\)-Ideal Elements Set \(\\mathcal{I}_\\alpha(S)\)</th>
+                                <th>Match Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${raw.map(alpha => {
+                                let ideals = res.ideals[alpha] || [];
+                                return `
+                                    <tr>
+                                        <td><code style="font-size:1rem; font-weight:700; color:var(--accent-purple);">${alpha}</code></td>
+                                        <td>Mapping \(0 \\mapsto e (${entry.top}), 1 \\mapsto a\)</td>
+                                        <td><strong style="color:var(--text-primary); font-size:1rem;">\\(\\{${ideals.join(', ') || '\\emptyset'}\\}\\)</strong></td>
+                                        <td>${res.is_coincident ? '<span style="color:var(--success); font-weight:700;">✔ Coincident</span>' : '<span style="color:var(--text-secondary);">Evaluated</span>'}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         `;
-        dom.regCoinResultsContainer.innerHTML = html;
-        if (window.MathJax && window.MathJax.typesetPromise) {
-            window.MathJax.typesetPromise();
+
+        dom.xcoincResultsContainer.innerHTML = html;
+
+        let copyBtn = dom.xcoincResultsContainer.querySelector('.copy-citation-btn');
+        if (copyBtn) {
+            copyBtn.addEventListener('click', () => {
+                navigator.clipboard.writeText(copyBtn.dataset.citation);
+                copyBtn.textContent = '✔ Copied!';
+                setTimeout(() => { copyBtn.textContent = '📋 Copy Info'; }, 2000);
+            });
         }
+
+        if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+    }
+
+    async function handleScanXCoincidence() {
+        let raw = dom.xWordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        for (let w of raw) {
+            if (!is_full_word(w)) {
+                dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">❌ Word '${w}' is not a full word on {0, 1}.</div>`;
+                return;
+            }
+        }
+        if (raw.length === 0) {
+            dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">⚠️ Please specify at least 1 word in X.</div>`;
+            return;
+        }
+
+        dom.xcoincResultsContainer.innerHTML = `<div class="card glass-panel" style="text-align:center;">⏳ Batch scanning entire POE dataset for \\(X\\)-coincident structures... Please wait.</div>`;
+
+        let poe_data = state.dataCache[`poe_n${state.datasetN}`];
+        if (!poe_data) poe_data = await loadDataset('poe', state.datasetN);
+
+        setTimeout(() => {
+            let found = [];
+            let totalConfigs = 0;
+
+            for (let entry of poe_data) {
+                let table = entry.table;
+                let orders = entry.orders || [{ levels: entry.levels, top_element: entry.top }];
+                for (let ordNo = 1; ordNo <= orders.length; ordNo++) {
+                    totalConfigs++;
+                    let ordObj = orders[ordNo - 1];
+                    let levels = ordObj.levels;
+                    let top = ordObj.top_element || ordObj.top;
+                    if (!top) {
+                        let maxL = Math.max(...levels);
+                        top = levels.indexOf(maxL) + 1;
+                    }
+                    let info = compute_X_coincidence_for_poe(table, levels, top, raw);
+                    if (info.is_coincident) {
+                        found.push({
+                            index: entry.index,
+                            order_no: ordNo,
+                            top: top,
+                            levels: levels,
+                            common_ideal: info.common_ideal || []
+                        });
+                    }
+                }
+            }
+
+            let html = `
+                <div class="result-card" style="margin-top: 16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                        <h4 style="margin:0;">🚀 Batch Scan Results: \\(X\\)-Coincident POE-Semigroups</h4>
+                        <span class="badge-status ${found.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
+                            ${found.length} Configurations Found
+                        </span>
+                    </div>
+                    <p style="margin-bottom:10px;">Scanned <strong>${totalConfigs.toLocaleString()}</strong> configurations in POE dataset for \\(X = \\{${raw.join(', ')}\\}\\).</p>
+
+                    ${found.length === 0 ? `
+                        <div style="padding:16px; background:var(--bg-secondary); border-radius:8px;">
+                            No POE semigroups found satisfying \\(X\\)-coincidence for these words.
+                        </div>
+                    ` : `
+                        <div class="table-responsive" style="max-height:480px; overflow-y:auto;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>POE Index</th>
+                                        <th>Order No</th>
+                                        <th>Top \(e\)</th>
+                                        <th>Common Ideal \(\\mathcal{I}_X(S)\)</th>
+                                        <th>Levels</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${found.slice(0, 150).map((r, i) => `
+                                        <tr>
+                                            <td>${i + 1}</td>
+                                            <td><span class="badge-index"><strong>#${r.index}</strong></span></td>
+                                            <td><span class="badge-order"><strong>#${r.order_no}</strong></span></td>
+                                            <td><span class="badge-top"><strong>${r.top}</strong></span></td>
+                                            <td style="font-weight:700; color:var(--accent-purple);">\\(\\{${r.common_ideal.join(', ') || '\\emptyset'}\\}\\)</td>
+                                            <td><code>[${r.levels.join(', ')}]</code></td>
+                                            <td>
+                                                <button class="btn btn-secondary btn-sm jump-semigroup-btn" data-index="${r.index}" data-order="${r.order_no}" data-type="poe">
+                                                    👁 View in Inspector
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        ${found.length > 150 ? `<p style="font-size:0.85rem; color:var(--text-secondary); margin-top:8px;">(Displaying first 150 of ${found.length} results)</p>` : ''}
+                    `}
+                </div>
+            `;
+
+            dom.xcoincResultsContainer.innerHTML = html;
+
+            dom.xcoincResultsContainer.querySelectorAll('.jump-semigroup-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    let idx = parseInt(btn.dataset.index, 10);
+                    let ord = parseInt(btn.dataset.order, 10);
+                    jumpToSemigroup(idx, ord, 'poe');
+                });
+            });
+
+            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+        }, 50);
+    }
+
+    async function handleScanX1X2Coincidence() {
+        let raw1 = dom.x1WordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        let raw2 = dom.x2WordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+
+        for (let w of raw1.concat(raw2)) {
+            if (!is_full_word(w)) {
+                dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">❌ Word '${w}' is not a full word on {0, 1}.</div>`;
+                return;
+            }
+        }
+
+        dom.xcoincResultsContainer.innerHTML = `<div class="card glass-panel" style="text-align:center;">⏳ Batch scanning POE dataset for \\(X_1\\)-coincident but NOT \\(X_2\\)-coincident semigroups...</div>`;
+
+        let poe_data = state.dataCache[`poe_n${state.datasetN}`];
+        if (!poe_data) poe_data = await loadDataset('poe', state.datasetN);
+
+        setTimeout(() => {
+            let found = [];
+            let totalConfigs = 0;
+
+            for (let entry of poe_data) {
+                let table = entry.table;
+                let orders = entry.orders || [{ levels: entry.levels, top_element: entry.top }];
+                for (let ordNo = 1; ordNo <= orders.length; ordNo++) {
+                    totalConfigs++;
+                    let ordObj = orders[ordNo - 1];
+                    let levels = ordObj.levels;
+                    let top = ordObj.top_element || ordObj.top;
+                    if (!top) {
+                        let maxL = Math.max(...levels);
+                        top = levels.indexOf(maxL) + 1;
+                    }
+
+                    let info1 = compute_X_coincidence_for_poe(table, levels, top, raw1);
+                    let info2 = compute_X_coincidence_for_poe(table, levels, top, raw2);
+
+                    if (info1.is_coincident && !info2.is_coincident) {
+                        found.push({
+                            index: entry.index,
+                            order_no: ordNo,
+                            top: top,
+                            levels: levels,
+                            common_ideal1: info1.common_ideal || []
+                        });
+                    }
+                }
+            }
+
+            let html = `
+                <div class="result-card" style="margin-top: 16px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                        <h4 style="margin:0;">🚀 Scan Results: \\(X_1\\)-Coincident but NOT \\(X_2\\)-Coincident</h4>
+                        <span class="badge-status ${found.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
+                            ${found.length} Semigroups Found
+                        </span>
+                    </div>
+                    <p style="margin-bottom:10px;">Scanned <strong>${totalConfigs.toLocaleString()}</strong> configurations where \\(X_1 = \\{${raw1.join(', ')}\\}\\) and \\(X_2 = \\{${raw2.join(', ')}\\}\\).</p>
+
+                    ${found.length === 0 ? `
+                        <div style="padding:16px; background:var(--bg-secondary); border-radius:8px;">
+                            No POE semigroups found where \\(X_1\\)-coincidence holds and \\(X_2\\)-coincidence fails.
+                        </div>
+                    ` : `
+                        <div class="table-responsive" style="max-height:480px; overflow-y:auto;">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>POE Index</th>
+                                        <th>Order No</th>
+                                        <th>Top \(e\)</th>
+                                        <th>Common Ideal \(\\mathcal{I}_{X_1}(S)\)</th>
+                                        <th>Levels</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${found.slice(0, 150).map((r, i) => `
+                                        <tr>
+                                            <td>${i + 1}</td>
+                                            <td><span class="badge-index"><strong>#${r.index}</strong></span></td>
+                                            <td><span class="badge-order"><strong>#${r.order_no}</strong></span></td>
+                                            <td><span class="badge-top"><strong>${r.top}</strong></span></td>
+                                            <td style="font-weight:700; color:var(--accent-purple);">\\(\\{${r.common_ideal1.join(', ') || '\\emptyset'}\\}\\)</td>
+                                            <td><code>[${r.levels.join(', ')}]</code></td>
+                                            <td>
+                                                <button class="btn btn-secondary btn-sm jump-semigroup-btn" data-index="${r.index}" data-order="${r.order_no}" data-type="poe">
+                                                    👁 View in Inspector
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        ${found.length > 150 ? `<p style="font-size:0.85rem; color:var(--text-secondary); margin-top:8px;">(Displaying first 150 of ${found.length} results)</p>` : ''}
+                    `}
+                </div>
+            `;
+
+            dom.xcoincResultsContainer.innerHTML = html;
+
+            dom.xcoincResultsContainer.querySelectorAll('.jump-semigroup-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    let idx = parseInt(btn.dataset.index, 10);
+                    let ord = parseInt(btn.dataset.order, 10);
+                    jumpToSemigroup(idx, ord, 'poe');
+                });
+            });
+
+            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+        }, 50);
     }
 
     // ==========================================
@@ -1153,22 +1661,27 @@
         });
     }
 
-    function jumpToSemigroup(index, orderNo) {
+    async function jumpToSemigroup(index, orderNo, targetType) {
+        if (targetType && state.datasetType !== targetType) {
+            if (dom.datasetTypeSelect) dom.datasetTypeSelect.value = targetType;
+            await switchDataset();
+        }
+
         state.currentIndex = index;
-        dom.indexSelect.value = index;
-        dom.indexInput.value = index;
+        if (dom.indexSelect) dom.indexSelect.value = index;
+        if (dom.indexInput) dom.indexInput.value = index;
 
         let data = state.dataCache[`${state.datasetType}_n${state.datasetN}`];
         updateOrderSelector(data);
 
         state.currentOrderNo = orderNo;
-        dom.orderSelect.value = orderNo;
+        if (dom.orderSelect) dom.orderSelect.value = orderNo;
 
         renderCurrentSemigroup();
         switchExplorerSubTab('inspector');
 
         // Scroll to top of explorer
-        dom.paneExplorer.scrollIntoView({ behavior: 'smooth' });
+        if (dom.paneExplorer) dom.paneExplorer.scrollIntoView({ behavior: 'smooth' });
     }
 
     function setupEventListeners() {
@@ -1292,9 +1805,99 @@
         if (dom.btnScanPSimple) dom.btnScanPSimple.addEventListener('click', handleScanPSimple);
         if (dom.btnScanP1P2Simple) dom.btnScanP1P2Simple.addEventListener('click', handleScanP1P2Simple);
 
-        // Tool 4: Reg / Coincidence
+        // Tool 4: R-Regularity (LE)
         if (dom.btnCheckRRegular) dom.btnCheckRRegular.addEventListener('click', handleCheckRRegular);
+        if (dom.btnScanRRegular) dom.btnScanRRegular.addEventListener('click', handleScanRRegular);
+        if (dom.btnSwapR1R2) {
+            dom.btnSwapR1R2.addEventListener('click', () => {
+                let tmp = dom.r1WordsInput.value;
+                dom.r1WordsInput.value = dom.r2WordsInput.value;
+                dom.r2WordsInput.value = tmp;
+            });
+        }
+        if (dom.btnScanR1R2) dom.btnScanR1R2.addEventListener('click', handleScanR1R2);
+
+        // Tool 5: X-Coincidence (POE)
+        if (dom.btnForcePoe) {
+            dom.btnForcePoe.addEventListener('click', async () => {
+                await ensurePoeLoaded();
+            });
+        }
+        if (dom.poeBtnPrevIdx) {
+            dom.poeBtnPrevIdx.addEventListener('click', async () => {
+                await ensurePoeLoaded();
+                let idx = state.availableIndices.indexOf(state.currentIndex);
+                if (idx > 0) {
+                    state.currentIndex = state.availableIndices[idx - 1];
+                    dom.indexSelect.value = state.currentIndex;
+                    dom.indexInput.value = state.currentIndex;
+                    updateOrderSelector();
+                    renderCurrentSemigroup();
+                }
+            });
+        }
+        if (dom.poeBtnNextIdx) {
+            dom.poeBtnNextIdx.addEventListener('click', async () => {
+                await ensurePoeLoaded();
+                let idx = state.availableIndices.indexOf(state.currentIndex);
+                if (idx !== -1 && idx < state.availableIndices.length - 1) {
+                    state.currentIndex = state.availableIndices[idx + 1];
+                    dom.indexSelect.value = state.currentIndex;
+                    dom.indexInput.value = state.currentIndex;
+                    updateOrderSelector();
+                    renderCurrentSemigroup();
+                }
+            });
+        }
+        if (dom.poeBtnPrevOrd) {
+            dom.poeBtnPrevOrd.addEventListener('click', async () => {
+                await ensurePoeLoaded();
+                let idx = state.availableOrders.indexOf(state.currentOrderNo);
+                if (idx > 0) {
+                    state.currentOrderNo = state.availableOrders[idx - 1];
+                    dom.orderSelect.value = state.currentOrderNo;
+                    renderCurrentSemigroup();
+                }
+            });
+        }
+        if (dom.poeBtnNextOrd) {
+            dom.poeBtnNextOrd.addEventListener('click', async () => {
+                await ensurePoeLoaded();
+                let idx = state.availableOrders.indexOf(state.currentOrderNo);
+                if (idx !== -1 && idx < state.availableOrders.length - 1) {
+                    state.currentOrderNo = state.availableOrders[idx + 1];
+                    dom.orderSelect.value = state.currentOrderNo;
+                    renderCurrentSemigroup();
+                }
+            });
+        }
+        if (dom.poeBtnRandom) {
+            dom.poeBtnRandom.addEventListener('click', async () => {
+                await ensurePoeLoaded();
+                if (state.availableIndices.length === 0) return;
+                let randIdx = state.availableIndices[Math.floor(Math.random() * state.availableIndices.length)];
+                state.currentIndex = randIdx;
+                dom.indexSelect.value = randIdx;
+                dom.indexInput.value = randIdx;
+                updateOrderSelector();
+                if (state.availableOrders.length > 0) {
+                    state.currentOrderNo = state.availableOrders[Math.floor(Math.random() * state.availableOrders.length)];
+                    dom.orderSelect.value = state.currentOrderNo;
+                }
+                renderCurrentSemigroup();
+            });
+        }
+
         if (dom.btnCheckXCoincidence) dom.btnCheckXCoincidence.addEventListener('click', handleCheckXCoincidence);
+        if (dom.btnScanXCoincidence) dom.btnScanXCoincidence.addEventListener('click', handleScanXCoincidence);
+        if (dom.btnSwapX1X2) {
+            dom.btnSwapX1X2.addEventListener('click', () => {
+                let tmp = dom.x1WordsInput.value;
+                dom.x1WordsInput.value = dom.x2WordsInput.value;
+                dom.x2WordsInput.value = tmp;
+            });
+        }
+        if (dom.btnScanX1X2) dom.btnScanX1X2.addEventListener('click', handleScanX1X2Coincidence);
 
         // Tool presets
         document.querySelectorAll('.exp-preset-btn').forEach(btn => {
