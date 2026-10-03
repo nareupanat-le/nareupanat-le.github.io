@@ -206,22 +206,91 @@
 
         <!-- TAB 2: LE & POE SEMIGROUPS EXPLORER (CLIENT-SIDE LE_APP) -->
         <div id="portal-pane-explorer" class="portal-pane" style="display: none;">
+
+            <!-- User Guide & Documentation Panel (English) -->
+            <section id="exp-user-guide-panel" class="card glass-panel exp-guide-panel">
+                <div class="guide-header">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 1.5rem;">📖</span>
+                        <div>
+                            <h3 style="margin: 0; font-size: 1.25rem; color: var(--text-primary);">User Guide &amp; Research Documentation</h3>
+                            <p style="margin: 2px 0 0 0; color: var(--text-secondary); font-size: 0.88rem;">Step-by-step instructions for exploring ordered semigroups and partition ideals.</p>
+                        </div>
+                    </div>
+                    <button id="exp-btn-close-guide" class="btn btn-secondary btn-sm guide-close-btn" title="Collapse Guide">
+                        ✖ Close Guide
+                    </button>
+                </div>
+
+                <div class="guide-content-grid">
+                    <div class="guide-card">
+                        <div class="guide-card-title">
+                            <span class="guide-badge">1</span>
+                            <h4>Structure &amp; Dataset Selection</h4>
+                        </div>
+                        <ul class="guide-list">
+                            <li><strong>LE-Semigroups:</strong> Ordered semigroups with a lattice structure where multiplication distributes over joins (\(\cdot\) over \(\vee\)).</li>
+                            <li><strong>POE-Semigroups:</strong> Partially ordered semigroups with a greatest (top) element \(e\) satisfying \(x \le e\) for all \(x\).</li>
+                            <li><strong>Order Size \(n\):</strong> Select \(n = 5\) (Fast, instant loading) or \(n = 6\) (Comprehensive collection).</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-card">
+                        <div class="guide-card-title">
+                            <span class="guide-badge">2</span>
+                            <h4>Navigation &amp; Structure Inspector</h4>
+                        </div>
+                        <ul class="guide-list">
+                            <li><strong>Semigroup Index:</strong> Navigate using <strong>◀</strong> / <strong>▶</strong> buttons, dropdown menu, or enter an index number into the <strong>#</strong> box.</li>
+                            <li><strong>Order Configuration:</strong> Select the partial order configuration (Order No) or click <strong>🎲 Random</strong> to sample instances.</li>
+                            <li><strong>Hasse Diagram:</strong> Displays the hierarchy of partial order levels, the top element \(e\), and covering relations (\(x \prec y\)).</li>
+                            <li><strong>Cayley Tables:</strong> Inspect the multiplication matrix and, for LE-semigroups, the Join (\(\vee\)) and Meet (\(\wedge\)) matrices.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-card">
+                        <div class="guide-card-title">
+                            <span class="guide-badge">3</span>
+                            <h4>Dedicated Research Toolsets</h4>
+                        </div>
+                        <ul class="guide-list">
+                            <li>🎯 <strong>1. P-Ideals:</strong> Enter partition blocks (e.g. <code>01, 10</code>) to compute the admissible \(\mathcal{A}\)-ideal and the Theorem 5.4.12 principal generator \(\langle a \rangle_{\mathcal{P}}\).</li>
+                            <li>⚖️ <strong>2. P1 vs P2:</strong> Verify \(\mathcal{A}(P_1) \subseteq \mathcal{A}(P_2)\) for the active semigroup, or run a <strong>🚀 Batch Scan</strong> across the dataset to find counter-examples.</li>
+                            <li>🌟 <strong>3. P-Simple:</strong> Detect whether the semigroup has no non-trivial proper partition ideals (\(P\)-simple or \((P_1, P_2)\)-simple).</li>
+                            <li>⚡ <strong>4. R-Regularity (LE):</strong> Test \(e = \bigvee_{\omega \in R} \overline{\omega}(e)\) and scan the entire LE dataset for counter-examples (\(R_1 \not\subseteq R_2\)).</li>
+                            <li>🔗 <strong>5. X-Coincidence (POE):</strong> Verify whether \(X\)-walks force coincidence. Use <strong>🚀 Batch Scan</strong> to find all \(X\)-coincident structures across 12,305 configurations, and click <strong>📋 Copy Info</strong> to copy citations for your paper.</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="guide-footer-tip">
+                    💡 <strong>Pro Tip:</strong> When running batch scans, click <strong>👁 View in Inspector</strong> on any result row to instantly jump to that semigroup and view its Hasse diagram and multiplication table.
+                </div>
+            </section>
+
             <!-- Dataset & Navigation Control Panel -->
-            <section class="card glass-panel">
-                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
+            <section class="card glass-panel" style="margin-bottom: 24px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
                     <div>
-                        <h2 style="margin: 0; font-size: 1.5rem;">🔬 LE &amp; POE Semigroups Explorer</h2>
+                        <h2 style="margin: 0; font-size: 1.5rem; display: flex; align-items: center; gap: 10px;">
+                            <span>🔬 LE &amp; POE Semigroups Explorer</span>
+                        </h2>
                         <p style="margin: 4px 0 0 0; color: var(--text-secondary); font-size: 0.95rem;">
                             Interactive structure explorer and algebraic ideal analyzer for \(le\)-semigroups and \(poe\)-semigroups.
                         </p>
                     </div>
-                    <div id="exp-data-loading" style="display: none; align-items: center; gap: 8px; color: var(--accent-pink); font-size: 0.9rem; font-weight: 600;">
-                        <span>⏳ Loading dataset...</span>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button id="exp-btn-toggle-guide" class="btn btn-secondary btn-sm" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; font-weight: 600;" title="Toggle User Guide (English)">
+                            <span>📖 User Guide</span>
+                        </button>
+                        <div id="exp-data-loading" style="display: none; align-items: center; gap: 8px; color: var(--accent-pink); font-size: 0.9rem; font-weight: 600;">
+                            <span>⏳ Loading dataset...</span>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Dataset Selectors -->
-                <div class="control-grid">
+                <!-- Row 1: Dataset Selection Bar -->
+                <div class="exp-dataset-bar">
                     <div class="control-field">
                         <label for="exp-dataset-type">Algebraic Structure Type:</label>
                         <select id="exp-dataset-type" class="control-select">
@@ -236,29 +305,34 @@
                             <option value="6">n = 6 (Extensive, 53,065 LE / 13,701 POE)</option>
                         </select>
                     </div>
-                    <div class="control-field">
-                        <label for="exp-index-select">Semigroup Index:</label>
-                        <div style="display: flex; gap: 6px;">
-                            <button id="exp-btn-prev-index" class="btn btn-secondary btn-sm" title="Previous Index">◀</button>
-                            <select id="exp-index-select" class="control-select" style="flex: 2;"></select>
-                            <input type="number" id="exp-index-input" class="control-input" style="width: 75px;" min="1" value="1">
-                            <button id="exp-btn-next-index" class="btn btn-secondary btn-sm" title="Next Index">▶</button>
-                        </div>
-                    </div>
-                    <div class="control-field">
-                        <label for="exp-order-select">Order Configuration (Order No):</label>
-                        <div style="display: flex; gap: 6px;">
-                            <button id="exp-btn-prev-order" class="btn btn-secondary btn-sm" title="Previous Order">◀</button>
-                            <select id="exp-order-select" class="control-select" style="flex: 1;"></select>
-                            <button id="exp-btn-next-order" class="btn btn-secondary btn-sm" title="Next Order">▶</button>
-                        </div>
-                    </div>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                    <button id="exp-btn-random" class="btn btn-secondary btn-sm" style="background: var(--bg-secondary);">
-                        🎲 Random Semigroup
-                    </button>
+                <!-- Row 2: Active Semigroup Navigator Bar -->
+                <div class="exp-navigator-bar">
+                    <div class="control-field exp-nav-field">
+                        <label for="exp-index-select">Semigroup Index:</label>
+                        <div class="nav-cluster">
+                            <button id="exp-btn-prev-index" class="nav-arrow-btn" title="Previous Index" aria-label="Previous Index">◀</button>
+                            <select id="exp-index-select" class="control-select nav-select" title="Select Semigroup Index"></select>
+                            <div class="nav-jump-box" title="Direct Index Jump (Type # and press Enter)">
+                                <span class="nav-jump-prefix">#</span>
+                                <input type="number" id="exp-index-input" class="control-input nav-input" min="1" value="1" title="Direct Index Jump">
+                            </div>
+                            <button id="exp-btn-next-index" class="nav-arrow-btn" title="Next Index" aria-label="Next Index">▶</button>
+                        </div>
+                    </div>
+
+                    <div class="control-field exp-nav-field">
+                        <label for="exp-order-select">Order Configuration (Order No):</label>
+                        <div class="nav-cluster">
+                            <button id="exp-btn-prev-order" class="nav-arrow-btn" title="Previous Order" aria-label="Previous Order">◀</button>
+                            <select id="exp-order-select" class="control-select nav-select" title="Select Order Configuration"></select>
+                            <button id="exp-btn-next-order" class="nav-arrow-btn" title="Next Order" aria-label="Next Order">▶</button>
+                            <button id="exp-btn-random" class="btn btn-secondary nav-random-btn" title="Pick Random Semigroup">
+                                🎲 Random
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </section>
 

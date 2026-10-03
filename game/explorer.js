@@ -46,10 +46,13 @@
             expSubBtns: document.querySelectorAll('.exp-subtab-btn'),
             expSubPanes: document.querySelectorAll('.exp-subpane'),
 
-            // Dataset Controls
+            // Dataset Controls & Guide
             datasetTypeSelect: document.getElementById('exp-dataset-type'),
             datasetNSelect: document.getElementById('exp-dataset-n'),
             dataLoadingIndicator: document.getElementById('exp-data-loading'),
+            guidePanel: document.getElementById('exp-user-guide-panel'),
+            btnToggleGuide: document.getElementById('exp-btn-toggle-guide'),
+            btnCloseGuide: document.getElementById('exp-btn-close-guide'),
 
             // Semigroup Selector
             indexSelect: document.getElementById('exp-index-select'),
@@ -1693,6 +1696,34 @@
         dom.expSubBtns.forEach(btn => {
             btn.addEventListener('click', () => switchExplorerSubTab(btn.dataset.subtab));
         });
+
+        // English User Guide Toggle & Close
+        if (dom.btnToggleGuide && dom.guidePanel) {
+            dom.btnToggleGuide.addEventListener('click', () => {
+                let isHidden = (dom.guidePanel.style.display === 'none' || getComputedStyle(dom.guidePanel).display === 'none');
+                dom.guidePanel.style.display = isHidden ? 'block' : 'none';
+                if (isHidden) {
+                    dom.guidePanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    localStorage.removeItem('exp_guide_hidden');
+                } else {
+                    localStorage.setItem('exp_guide_hidden', '1');
+                }
+            });
+        }
+        if (dom.btnCloseGuide && dom.guidePanel) {
+            dom.btnCloseGuide.addEventListener('click', () => {
+                dom.guidePanel.style.display = 'none';
+                localStorage.setItem('exp_guide_hidden', '1');
+            });
+        }
+        // Initialize Guide Visibility from localStorage (open by default for first-time visitors)
+        if (dom.guidePanel) {
+            if (localStorage.getItem('exp_guide_hidden') === '1') {
+                dom.guidePanel.style.display = 'none';
+            } else {
+                dom.guidePanel.style.display = 'block';
+            }
+        }
 
         // Dataset Selectors
         if (dom.datasetTypeSelect) dom.datasetTypeSelect.addEventListener('change', switchDataset);
