@@ -238,6 +238,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setupCanvasEvents(mainCanvas);
   
+  // Responsive layout: redraw on window resize and device orientation change
+  window.addEventListener('resize', () => {
+    drawGraph();
+  });
+  window.addEventListener('orientationchange', () => {
+    setTimeout(drawGraph, 100);
+  });
+
   // Initial sync
   syncFromCartesian(false);
 });
@@ -263,7 +271,9 @@ function setupCanvasEvents(canvas) {
     // Convert canvas coords (pixels) to math coords ([-6, 6])
     const cx = canvas.width / 2;
     const cy = canvas.height / 2;
-    const radiusPixels = (canvas.width / 2) * 0.88;
+    const displayWidth = rect.width || 440;
+    const radiusRatio = displayWidth < 380 ? 0.81 : 0.87;
+    const radiusPixels = (canvas.width / 2) * radiusRatio;
     const scale = radiusPixels / state.maxCoord;
 
     const mathX = (canvasX - cx) / scale;
@@ -299,6 +309,7 @@ function setupCanvasEvents(canvas) {
   canvas.addEventListener('touchstart', onDown, { passive: false });
   window.addEventListener('touchmove', onMove, { passive: false });
   window.addEventListener('touchend', onUp);
+  window.addEventListener('touchcancel', onUp);
 }
 
 // Point Drag handler
@@ -712,7 +723,8 @@ window.drawGraph = function () {
   const cx = w / 2;
   const cy = h / 2;
   const maxR = state.maxCoord;
-  const radiusPx = (w / 2) * 0.88;
+  const radiusRatio = w < 380 ? 0.81 : 0.87;
+  const radiusPx = (w / 2) * radiusRatio;
   const scale = radiusPx / maxR;
 
   // Background
@@ -800,11 +812,11 @@ window.drawGraph = function () {
       ctx.stroke();
 
       // Outer rim labels
-      const labelDist = radiusPx + 14;
+      const labelDist = radiusPx + (w < 380 ? 11 : 14);
       const lx = cx + cosA * labelDist;
       const ly = cy - sinA * labelDist;
       ctx.fillStyle = '#7A5C3A';
-      ctx.font = '10px system-ui, sans-serif';
+      ctx.font = (w < 380 ? '9px' : '10px') + ' system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(a.label, lx, ly);
@@ -831,7 +843,11 @@ window.drawGraph = function () {
   ctx.fillStyle = '#7A5C3A';
   ctx.font = 'bold 12px system-ui, sans-serif';
   ctx.textAlign = 'right';
-  ctx.fillText('X (แกนเชิงขั้ว)', cx + radiusPx + 8, cy + 18);
+  if (w < 380) {
+    ctx.fillText('X', cx + radiusPx + 6, cy + 14);
+  } else {
+    ctx.fillText('X (แกนเชิงขั้ว)', cx + radiusPx + 8, cy + 18);
+  }
   ctx.textAlign = 'left';
   ctx.fillText('Y', cx + 6, cy - radiusPx - 4);
 
