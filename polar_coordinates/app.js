@@ -47,66 +47,66 @@ function fmt(num) {
 
 // Convert angle to formatted Pi fraction string for TeX
 function formatAngleTeX(rad) {
-  let normalized = rad % (2 * Math.PI);
-  if (normalized < 0) normalized += 2 * Math.PI;
+  if (Math.abs(rad) < 1e-4) return '0';
+  const m = rad / Math.PI;
 
-  const fractions = [
-    { val: 0, tex: '0' },
-    { val: Math.PI / 6, tex: '\\frac{\\pi}{6}' },
-    { val: Math.PI / 4, tex: '\\frac{\\pi}{4}' },
-    { val: Math.PI / 3, tex: '\\frac{\\pi}{3}' },
-    { val: Math.PI / 2, tex: '\\frac{\\pi}{2}' },
-    { val: (2 * Math.PI) / 3, tex: '\\frac{2\\pi}{3}' },
-    { val: (3 * Math.PI) / 4, tex: '\\frac{3\\pi}{4}' },
-    { val: (5 * Math.PI) / 6, tex: '\\frac{5\\pi}{6}' },
-    { val: Math.PI, tex: '\\pi' },
-    { val: (7 * Math.PI) / 6, tex: '\\frac{7\\pi}{6}' },
-    { val: (5 * Math.PI) / 4, tex: '\\frac{5\\pi}{4}' },
-    { val: (4 * Math.PI) / 3, tex: '\\frac{4\\pi}{3}' },
-    { val: (3 * Math.PI) / 2, tex: '\\frac{3\\pi}{2}' },
-    { val: (5 * Math.PI) / 3, tex: '\\frac{5\\pi}{3}' },
-    { val: (7 * Math.PI) / 4, tex: '\\frac{7\\pi}{4}' },
-    { val: (11 * Math.PI) / 6, tex: '\\frac{11\\pi}{6}' },
-    { val: 2 * Math.PI, tex: '2\\pi' }
-  ];
+  let bestP = null, bestQ = null, minDiff = 1e9;
+  for (const q of [1, 2, 3, 4, 6, 12]) {
+    const p = Math.round(m * q);
+    const diff = Math.abs(m - p / q);
+    if (diff < 0.005 && diff < minDiff) {
+      minDiff = diff;
+      bestP = p;
+      bestQ = q;
+    }
+  }
 
-  for (const f of fractions) {
-    if (Math.abs(normalized - f.val) < 0.02) {
-      return f.tex;
+  if (bestP !== null) {
+    const p = bestP;
+    const q = bestQ;
+    if (q === 1) {
+      if (p === 1) return '\\pi';
+      if (p === -1) return '-\\pi';
+      return p + '\\pi';
+    } else {
+      const sign = p < 0 ? '-' : '';
+      const absP = Math.abs(p);
+      const pStr = absP === 1 ? '' : absP.toString();
+      return `${sign}\\frac{${pStr}\\pi}{${q}}`;
     }
   }
 
   return fmt(rad) + '\\text{ rad}';
 }
 
-// Convert angle to simple text for input fields (e.g. "pi/4")
+// Convert angle to simple text for input fields (e.g. "pi/4", "9pi/4", "-pi/2")
 function formatAnglePlain(rad) {
-  let normalized = rad % (2 * Math.PI);
-  if (normalized < 0) normalized += 2 * Math.PI;
+  if (Math.abs(rad) < 1e-4) return '0';
+  const m = rad / Math.PI;
 
-  const plainFractions = [
-    { val: 0, text: '0' },
-    { val: Math.PI / 6, text: 'pi/6' },
-    { val: Math.PI / 4, text: 'pi/4' },
-    { val: Math.PI / 3, text: 'pi/3' },
-    { val: Math.PI / 2, text: 'pi/2' },
-    { val: (2 * Math.PI) / 3, text: '2pi/3' },
-    { val: (3 * Math.PI) / 4, text: '3pi/4' },
-    { val: (5 * Math.PI) / 6, text: '5pi/6' },
-    { val: Math.PI, text: 'pi' },
-    { val: (7 * Math.PI) / 6, text: '7pi/6' },
-    { val: (5 * Math.PI) / 4, text: '5pi/4' },
-    { val: (4 * Math.PI) / 3, text: '4pi/3' },
-    { val: (3 * Math.PI) / 2, text: '3pi/2' },
-    { val: (5 * Math.PI) / 3, text: '5pi/3' },
-    { val: (7 * Math.PI) / 4, text: '7pi/4' },
-    { val: (11 * Math.PI) / 6, text: '11pi/6' },
-    { val: 2 * Math.PI, text: '2pi' }
-  ];
+  let bestP = null, bestQ = null, minDiff = 1e9;
+  for (const q of [1, 2, 3, 4, 6, 12]) {
+    const p = Math.round(m * q);
+    const diff = Math.abs(m - p / q);
+    if (diff < 0.005 && diff < minDiff) {
+      minDiff = diff;
+      bestP = p;
+      bestQ = q;
+    }
+  }
 
-  for (const f of plainFractions) {
-    if (Math.abs(normalized - f.val) < 0.02) {
-      return f.text;
+  if (bestP !== null) {
+    const p = bestP;
+    const q = bestQ;
+    if (q === 1) {
+      if (p === 1) return 'pi';
+      if (p === -1) return '-pi';
+      return p + 'pi';
+    } else {
+      const sign = p < 0 ? '-' : '';
+      const absP = Math.abs(p);
+      const pStr = absP === 1 ? '' : absP.toString();
+      return `${sign}${pStr}pi/${q}`;
     }
   }
 
@@ -330,6 +330,29 @@ function updateCalculationUI() {
       : 'เนื่องจาก $x = 0, y < 0$ จุดอยู่บนแกน $-Y$ ได้ $\\theta = \\frac{3\\pi}{2}$';
   }
 
+  let multiTurnNote = '';
+  if (Math.abs(state.theta) > 2 * Math.PI) {
+    const turns = Math.floor(Math.abs(state.theta) / (2 * Math.PI));
+    const sgnText = state.theta > 0 ? 'ทวนเข็มนาฬิกา' : 'ตามเข็มนาฬิกา';
+    const remAngle = ((state.theta % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    multiTurnNote = `
+      <div style="background: rgba(41, 128, 185, 0.08); border-left: 3px solid #2980b9; padding: 8px 12px; margin-top: 10px; border-radius: 4px; font-size: 0.86rem; line-height: 1.5;">
+        🌀 <strong>มุมหมุนมากกว่า 1 รอบ (${sgnText}):</strong><br>
+        $\\theta = ${formatAngleTeX(state.theta)} \\approx ${fmt(state.theta)}\\text{ rad}$ 
+        (หมุนไป <strong>${turns} รอบเต็ม</strong> + เศษมุม $${formatAngleTeX(remAngle)}$)
+        <br><span style="color: #555; font-size: 0.82rem;">เส้นบนกราฟจะม้วนเป็นรูป<strong>ก้นหอย (Spiral)</strong> เพื่อแสดงการหมุนหลายรอบ และตำแหน่งสุดท้ายจะตกอยู่ที่เดียวกับมุม $${formatAngleTeX(remAngle)}$</span>
+      </div>
+    `;
+  } else if (state.theta < 0) {
+    const posAngle = ((state.theta % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+    multiTurnNote = `
+      <div style="background: rgba(41, 128, 185, 0.08); border-left: 3px solid #2980b9; padding: 8px 12px; margin-top: 10px; border-radius: 4px; font-size: 0.86rem; line-height: 1.5;">
+        🔄 <strong>มุมติดลบ (วัดตามเข็มนาฬิกา):</strong><br>
+        $\\theta = ${formatAngleTeX(state.theta)}$ เทียบเท่ากับมุมทวนเข็ม $${formatAngleTeX(posAngle)}$
+      </div>
+    `;
+  }
+
   const html = `
     <div class="math-step">
       <strong>ก. แปลงพิกัดฉาก $(x, y) \\to$ เชิงขั้ว $(r, \\theta)$:</strong><br>
@@ -342,6 +365,7 @@ function updateCalculationUI() {
       <strong>ข. แปลงพิกัดเชิงขั้ว $(r, \\theta) \\to$ พิกัดฉาก $(x, y)$:</strong><br>
       $$x = r \\cos\\theta = (${rStr}) \\cos(${thetaTeX}) = ${xStr}$$
       $$y = r \\sin\\theta = (${rStr}) \\sin(${thetaTeX}) = ${yStr}$$
+      ${multiTurnNote}
     </div>
   `;
 
@@ -697,25 +721,129 @@ window.drawGraph = function () {
     ctx.restore();
   }
 
-  // Angle Arc
-  if (chkAngleArc && Math.abs(state.x) + Math.abs(state.y) > 0.05) {
+  // Angle Arc / Spiral Guide (ก้นหอยเมื่อหมุนเกิน 1 รอบ)
+  if (chkAngleArc && Math.abs(state.theta) > 0.005) {
     ctx.save();
-    ctx.beginPath();
-    const arcRadius = Math.min(36, Math.abs(state.r) * scale * 0.45);
-    ctx.arc(cx, cy, Math.max(arcRadius, 18), 0, -state.theta, state.theta > 0);
-    ctx.strokeStyle = '#2980b9';
-    ctx.lineWidth = 1.8;
-    ctx.stroke();
+    const theta = state.theta;
+    const absTheta = Math.abs(theta);
+    const s = theta >= 0 ? 1 : -1;
+    const ptDistPx = Math.hypot(ptCanvas.x - cx, ptCanvas.y - cy);
 
-    // Arc theta label
-    const midTheta = state.theta / 2;
-    const arcLabelDist = Math.max(arcRadius, 18) + 12;
-    const alx = cx + Math.cos(midTheta) * arcLabelDist;
-    const aly = cy - Math.sin(midTheta) * arcLabelDist;
-    ctx.fillStyle = '#2980b9';
-    ctx.font = 'bold 11px system-ui, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('θ', alx, aly);
+    if (absTheta > 2 * Math.PI) {
+      // 🌀 Case A: Multi-turn angle (|theta| > 2*pi) -> Draw Archimedean Spiral!
+      const turns = absTheta / (2 * Math.PI);
+      const rStart = 16;
+      // Cap maximum radius so spiral does not exceed the point or canvas boundary
+      const rMax = Math.min(88, Math.max(34, ptDistPx * 0.72));
+      const b = (rMax - rStart) / absTheta;
+
+      // Sample points along the spiral
+      const numSteps = Math.min(600, Math.max(90, Math.ceil(40 * turns)));
+      ctx.beginPath();
+      ctx.strokeStyle = '#2980b9';
+      ctx.lineWidth = 2.0;
+
+      let lastX = cx + rStart, lastY = cy;
+      for (let i = 0; i <= numSteps; i++) {
+        const phi = (i / numSteps) * absTheta;
+        const currentR = rStart + b * phi;
+        const currentAngle = s * phi;
+        const px = cx + currentR * Math.cos(currentAngle);
+        const py = cy - currentR * Math.sin(currentAngle);
+        if (i === 0) {
+          ctx.moveTo(px, py);
+        } else {
+          ctx.lineTo(px, py);
+        }
+        lastX = px;
+        lastY = py;
+      }
+      ctx.stroke();
+
+      // Tangent vector at the tip for the arrowhead:
+      const tipAngle = s * absTheta;
+      const dx = b * Math.cos(tipAngle) - s * rMax * Math.sin(tipAngle);
+      const dy = -b * Math.sin(tipAngle) - s * rMax * Math.cos(tipAngle);
+      const arrowTangent = Math.atan2(dy, dx);
+
+      // Draw arrowhead at tip
+      const arrowLen = 9;
+      const arrowWing = 0.44;
+      ctx.fillStyle = '#2980b9';
+      ctx.beginPath();
+      ctx.moveTo(lastX, lastY);
+      ctx.lineTo(
+        lastX - arrowLen * Math.cos(arrowTangent - arrowWing),
+        lastY - arrowLen * Math.sin(arrowTangent - arrowWing)
+      );
+      ctx.lineTo(
+        lastX - (arrowLen * 0.6) * Math.cos(arrowTangent),
+        lastY - (arrowLen * 0.6) * Math.sin(arrowTangent)
+      );
+      ctx.lineTo(
+        lastX - arrowLen * Math.cos(arrowTangent + arrowWing),
+        lastY - arrowLen * Math.sin(arrowTangent + arrowWing)
+      );
+      ctx.closePath();
+      ctx.fill();
+
+      // Badge showing number of turns
+      const turnLabel = `${(turns).toFixed(2)} รอบ`;
+      ctx.font = 'bold 10px system-ui, sans-serif';
+      ctx.fillStyle = '#2980b9';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(`🌀 ${turnLabel}`, lastX + 8, lastY - 4);
+
+    } else {
+      // Case B: Standard angle (|theta| <= 2*pi) -> Draw Circular Arc with Arrowhead
+      const arcRadius = Math.min(34, Math.max(18, ptDistPx * 0.45));
+      ctx.beginPath();
+      if (s > 0) {
+        ctx.arc(cx, cy, arcRadius, 0, -theta, true);
+      } else {
+        ctx.arc(cx, cy, arcRadius, 0, -theta, false);
+      }
+      ctx.strokeStyle = '#2980b9';
+      ctx.lineWidth = 1.8;
+      ctx.stroke();
+
+      // Arrowhead at the tip
+      const tipX = cx + arcRadius * Math.cos(theta);
+      const tipY = cy - arcRadius * Math.sin(theta);
+      const arrowTangent = s > 0 ? -theta - Math.PI / 2 : -theta + Math.PI / 2;
+      const arrowLen = 8;
+      const arrowWing = 0.44;
+
+      ctx.fillStyle = '#2980b9';
+      ctx.beginPath();
+      ctx.moveTo(tipX, tipY);
+      ctx.lineTo(
+        tipX - arrowLen * Math.cos(arrowTangent - arrowWing),
+        tipY - arrowLen * Math.sin(arrowTangent - arrowWing)
+      );
+      ctx.lineTo(
+        tipX - (arrowLen * 0.6) * Math.cos(arrowTangent),
+        tipY - (arrowLen * 0.6) * Math.sin(arrowTangent)
+      );
+      ctx.lineTo(
+        tipX - arrowLen * Math.cos(arrowTangent + arrowWing),
+        tipY - arrowLen * Math.sin(arrowTangent + arrowWing)
+      );
+      ctx.closePath();
+      ctx.fill();
+
+      // Label theta near arc midpoint
+      const midTheta = theta / 2;
+      const arcLabelDist = arcRadius + 12;
+      const alx = cx + Math.cos(midTheta) * arcLabelDist;
+      const aly = cy - Math.sin(midTheta) * arcLabelDist;
+      ctx.fillStyle = '#2980b9';
+      ctx.font = 'bold 11px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('θ', alx, aly);
+    }
     ctx.restore();
   }
 

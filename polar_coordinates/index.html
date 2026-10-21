@@ -593,7 +593,7 @@
             </button>
           </div>
           <div class="input-tip">
-            💡 มุม $\theta$ ใช้หน่วย<strong>เรเดียน</strong> พิมพ์ <code>pi/4</code>, <code>2pi/3</code> ได้ และ $r$ ติดลบได้ เช่น <code>-3</code>, <code>-sqrt(2)</code>
+            💡 มุม $\theta$ ใช้หน่วย<strong>เรเดียน</strong> พิมพ์ <code>pi/4</code>, <code>2pi/3</code> ได้ และถ้ากรอก<strong>มุมเกิน 1 รอบ</strong> (เช่น <code>9pi/4</code>) หรือมุมติดลบ กราฟจะแสดงเป็นเส้น<strong>ก้นหอย (Spiral 🌀)</strong> เพื่อบอกจำนวนรอบที่หมุน!
           </div>
           <div class="math-input-row">
             <label class="input-label" for="inputR">r:</label>
@@ -625,6 +625,16 @@
             <button class="preset-btn" onclick="applyPresetAngle(5*Math.PI/3, '5pi/3')">5&pi;/3</button>
             <button class="preset-btn" onclick="applyPresetAngle(7*Math.PI/4, '7pi/4')">7&pi;/4</button>
             <button class="preset-btn" onclick="applyPresetAngle(11*Math.PI/6, '11pi/6')">11&pi;/6</button>
+          </div>
+
+          <!-- Multi-turn & Negative Angle Presets -->
+          <div style="font-size: 0.8rem; color: #666; margin-top: 8px;">มุมเกิน 1 รอบ (ก้นหอย 🌀) / มุมติดลบ:</div>
+          <div class="angle-presets">
+            <button class="preset-btn" onclick="applyPresetAngle(9*Math.PI/4, '9pi/4')">9&pi;/4 (1.12 รอบ)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(13*Math.PI/6, '13pi/6')">13&pi;/6 (1.08 รอบ)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(5*Math.PI, '5pi')">5&pi; (2.5 รอบ)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(-Math.PI/4, '-pi/4')">-&pi;/4 (ตามเข็ม)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(-5*Math.PI/2, '-5pi/2')">-5&pi;/2 (1.25 รอบตามเข็ม)</button>
           </div>
         </div>
 
