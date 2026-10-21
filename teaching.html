@@ -94,4 +94,10 @@
       var linkUrl = link.getAttribute('href');
       
       // ตรวจสอบทั้งแบบปกติ และกรณี index.html (บาง Server home คือ / บางทีคือ /index.html)
-      if (linkUrl === currentUrl || (linkUrl === '/' && currentUrl === '/index.
+      if (linkUrl === currentUrl || (linkUrl === '/' && currentUrl === '/index.html')) {
+        link.classList.add('active');
+      }
+    });
+  });
+</script>
+</body></html>
