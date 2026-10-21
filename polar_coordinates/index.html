@@ -597,8 +597,8 @@
           <!-- Real-time Polar conversion result box -->
           <div id="cartesianResultBox" class="result-badge-box">
             <div style="font-size: 0.82rem; color: #7A5C3A; font-weight: 700; margin-bottom: 3px;">🎯 แปลงเป็นพิกัดเชิงขั้ว $(r, \theta)$ ได้:</div>
-            <div id="cartesianResultText" style="font-size: 0.95rem;">
-              <strong>r</strong> ≈ 4.24 &nbsp;|&nbsp; <strong>&theta;</strong> = <strong>&pi;/4</strong> (≈ <strong>0.25&pi;</strong> หรือ 0.79 rad)
+            <div id="cartesianResultText" style="font-size: 1.05rem;">
+              $$r = 3\sqrt{2}, \quad \theta = \frac{\pi}{4}$$
             </div>
           </div>
         </div>
@@ -616,19 +616,19 @@
           </div>
           <div class="math-input-row">
             <label class="input-label" for="inputR">r:</label>
-            <input type="text" id="inputR" class="math-text-input" value="3*sqrt(2)" placeholder="เช่น 4 หรือ 2*sqrt(2) หรือ -3" oninput="applyPolarInputs()" onchange="applyPolarInputs()" onkeydown="if(event.key==='Enter')applyPolarInputs()">
-            <span id="previewR" class="val-preview">≈ 4.24</span>
+            <input type="text" id="inputR" class="math-text-input" value="3*sqrt(2)" placeholder="เช่น 4 หรือ 2*sqrt(3) หรือ -3" oninput="applyPolarInputs()" onchange="applyPolarInputs()" onkeydown="if(event.key==='Enter')applyPolarInputs()">
+            <span id="previewR" class="val-preview">= 3*sqrt(2)</span>
           </div>
           <div class="math-input-row">
             <label class="input-label" for="inputTheta">&theta;:</label>
             <input type="text" id="inputTheta" class="math-text-input" value="pi/4" placeholder="เช่น pi/4 หรือ 2pi/3" oninput="applyPolarInputs()" onchange="applyPolarInputs()" onkeydown="if(event.key==='Enter')applyPolarInputs()">
-            <span id="previewTheta" class="val-preview">≈ 0.25 π (0.79 rad)</span>
+            <span id="previewTheta" class="val-preview">= pi/4</span>
           </div>
           <!-- Real-time Cartesian conversion result box -->
           <div id="polarResultBox" class="result-badge-box">
             <div style="font-size: 0.82rem; color: #7A5C3A; font-weight: 700; margin-bottom: 3px;">🎯 แปลงเป็นพิกัดฉาก $(x, y)$ ได้:</div>
-            <div id="polarResultText" style="font-size: 0.95rem;">
-              <strong>(x, y)</strong> ≈ (3.00, 3.00)
+            <div id="polarResultText" style="font-size: 1.05rem;">
+              $$x = 3, \quad y = 3$$
             </div>
           </div>
 

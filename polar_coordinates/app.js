@@ -45,6 +45,88 @@ function fmt(num) {
   return s.endsWith('.00') ? s.slice(0, -3) : s.replace(/\.?0+$/, '');
 }
 
+// Simplify r into exact radical form (e.g. 2\sqrt{3}, 4\sqrt{3}, 3\sqrt{2}, 4, \sqrt{2})
+function simplifyRExact(x, y) {
+  const rSq = x * x + y * y;
+  if (rSq < 1e-9) {
+    return { tex: '0', plain: '0' };
+  }
+
+  // Check rational P/Q with Q in [1, 2, 4, 8, 9, 16, 25, 36, 49, 64, 100]
+  let bestP = null, bestQ = null, minDiff = 1e9;
+  for (const q of [1, 2, 4, 8, 9, 16, 25, 36, 49, 64, 100]) {
+    const p = Math.round(rSq * q);
+    const diff = Math.abs(rSq - p / q);
+    if (diff < 0.005 && diff < minDiff) {
+      minDiff = diff;
+      bestP = p;
+      bestQ = q;
+    }
+  }
+
+  if (bestP !== null && minDiff < 0.005 && bestP > 0) {
+    const p = bestP;
+    const q = bestQ;
+    const num = p * q;
+    let bestA = 1;
+    const maxA = Math.floor(Math.sqrt(num));
+    for (let a = maxA; a > 1; a--) {
+      if (num % (a * a) === 0) {
+        bestA = a;
+        break;
+      }
+    }
+    const b = Math.floor(num / (bestA * bestA));
+    let den = q;
+
+    function gcd(n1, n2) {
+      n1 = Math.abs(n1); n2 = Math.abs(n2);
+      while (n2) { const t = n2; n2 = n1 % n2; n1 = t; }
+      return n1;
+    }
+
+    const g = gcd(bestA, den);
+    bestA /= g;
+    den /= g;
+
+    let tex = '', plain = '';
+    if (b === 1) {
+      if (den === 1) {
+        tex = bestA.toString();
+        plain = bestA.toString();
+      } else {
+        tex = `\\frac{${bestA}}{${den}}`;
+        plain = `${bestA}/${den}`;
+      }
+    } else {
+      const radTex = `\\sqrt{${b}}`;
+      const radPlain = `sqrt(${b})`;
+      if (bestA === 1) {
+        if (den === 1) {
+          tex = radTex;
+          plain = radPlain;
+        } else {
+          tex = `\\frac{${radTex}}{${den}}`;
+          plain = `${radPlain}/${den}`;
+        }
+      } else {
+        if (den === 1) {
+          tex = `${bestA}${radTex}`;
+          plain = `${bestA}*${radPlain}`;
+        } else {
+          tex = `\\frac{${bestA}${radTex}}{${den}}`;
+          plain = `(${bestA}*${radPlain})/${den}`;
+        }
+      }
+    }
+    return { tex, plain };
+  }
+
+  // Fallback to clean format if square isn't rational
+  const val = Math.sqrt(rSq);
+  return { tex: fmt(val), plain: fmt(val) };
+}
+
 // Convert angle to formatted Pi fraction string for TeX
 function formatAngleTeX(rad) {
   if (Math.abs(rad) < 1e-4) return '0';
@@ -111,22 +193,6 @@ function formatAnglePlain(rad) {
   }
 
   return `${m.toFixed(3)}pi`;
-}
-
-// Describe theta for HTML badges (showing fraction of pi, decimal pi, and radians)
-function describeThetaHtml(rad) {
-  const radNorm = ((rad % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-  const m = rad / Math.PI;
-  const mNorm = radNorm / Math.PI;
-  const plainFrac = formatAnglePlain(rad);
-  const isFraction = plainFrac.includes('pi') && !plainFrac.includes('.');
-
-  if (isFraction) {
-    return `<strong>&theta;</strong> = <strong>${plainFrac}</strong> (≈ <strong>${m.toFixed(3)}&pi;</strong> หรือ ${fmt(rad)} rad)`;
-  } else {
-    const negM = (radNorm - 2 * Math.PI) / Math.PI;
-    return `<strong>&theta;</strong> ≈ <strong>${m.toFixed(3)}&pi;</strong> (≈ ${fmt(rad)} rad, มุมลบ: ${negM.toFixed(3)}&pi;)`;
-  }
 }
 
 /**
@@ -279,15 +345,17 @@ function updateInputsUI(source = 'all') {
   const inputR = document.getElementById('inputR');
   const inputTheta = document.getElementById('inputTheta');
 
+  const rInfo = simplifyRExact(state.x, state.y);
+
   // If dragged, snapped, or full sync, update all text inputs
   if (source === 'drag' || source === 'all') {
     if (inputX) inputX.value = fmt(state.x);
     if (inputY) inputY.value = fmt(state.y);
-    if (inputR) inputR.value = fmt(state.r);
+    if (inputR) inputR.value = rInfo.plain;
     if (inputTheta) inputTheta.value = formatAnglePlain(state.theta);
   } else if (source === 'cartesian') {
-    // When Cartesian was inputted, update Polar fields
-    if (inputR) inputR.value = fmt(state.r);
+    // When Cartesian was inputted, update Polar fields with exact radical & clean theta
+    if (inputR) inputR.value = rInfo.plain;
     if (inputTheta) inputTheta.value = formatAnglePlain(state.theta);
   } else if (source === 'polar') {
     // When Polar was inputted, update Cartesian fields
@@ -295,34 +363,31 @@ function updateInputsUI(source = 'all') {
     if (inputY) inputY.value = fmt(state.y);
   }
 
-  // Previews
+  // Previews (Exact, no approximation clutter)
   const px = document.getElementById('previewX');
   const py = document.getElementById('previewY');
   const pr = document.getElementById('previewR');
   const pt = document.getElementById('previewTheta');
 
-  if (px) px.textContent = `≈ ${fmt(state.x)}`;
-  if (py) py.textContent = `≈ ${fmt(state.y)}`;
-  if (pr) pr.textContent = `≈ ${fmt(state.r)}`;
+  if (px) px.textContent = `= ${fmt(state.x)}`;
+  if (py) py.textContent = `= ${fmt(state.y)}`;
+  if (pr) pr.textContent = `= ${rInfo.plain}`;
+  if (pt) pt.textContent = `= ${formatAnglePlain(state.theta)}`;
 
-  const m = state.theta / Math.PI;
-  if (pt) {
-    pt.textContent = `≈ ${m.toFixed(3)} π (${fmt(state.theta)} rad)`;
-  }
-
-  // Live Result Badges under Card 1 and Card 2
+  // Live Result Badges under Card 1 and Card 2 (Exact MathJax typesetting)
   const cartRes = document.getElementById('cartesianResultText');
   if (cartRes) {
-    cartRes.innerHTML = `<strong>r</strong> ≈ ${fmt(state.r)} &nbsp;|&nbsp; ${describeThetaHtml(state.theta)}`;
+    cartRes.innerHTML = `$$r = ${rInfo.tex}, \\quad \\theta = ${formatAngleTeX(state.theta)}$$`;
   }
 
   const polRes = document.getElementById('polarResultText');
   if (polRes) {
-    polRes.innerHTML = `<strong>(x, y)</strong> ≈ (${fmt(state.x)}, ${fmt(state.y)})`;
+    polRes.innerHTML = `$$x = ${fmt(state.x)}, \\quad y = ${fmt(state.y)}$$`;
   }
 
   // Update Quadrant Badge
   updateQuadrantBadge();
+  triggerMathJax();
 }
 
 // Determine Quadrant & update badge text
@@ -357,18 +422,8 @@ function updateCalculationUI() {
 
   const xStr = fmt(state.x);
   const yStr = fmt(state.y);
-  const rStr = fmt(state.r);
+  const rInfo = simplifyRExact(state.x, state.y);
   const thetaTeX = formatAngleTeX(state.theta);
-  const m = state.theta / Math.PI;
-  const mStr = `${m.toFixed(3)}\\pi`;
-  const plainTh = formatAnglePlain(state.theta);
-  const isFraction = plainTh.includes('pi') && !plainTh.includes('.');
-  let thetaDisplayTeX = thetaTeX;
-  if (isFraction) {
-    thetaDisplayTeX = `${thetaTeX} \\approx \\mathbf{${mStr}} \\approx ${fmt(state.theta)}\\text{ rad}`;
-  } else {
-    thetaDisplayTeX = `\\mathbf{${mStr}} \\approx ${fmt(state.theta)}\\text{ rad}`;
-  }
 
   // Quadrant explanation (pure radians)
   let quadReason = '';
@@ -377,8 +432,7 @@ function updateCalculationUI() {
   } else if (state.x < 0) {
     quadReason = 'เนื่องจาก $x < 0$ (Quadrant II หรือ III) ต้องปรับมุมโดยการบวก $\\pi$: $\\theta = \\arctan(y/x) + \\pi$';
   } else if (state.x > 0 && state.y < 0) {
-    const negM = (state.theta - 2 * Math.PI) / Math.PI;
-    quadReason = `เนื่องจาก $x > 0, y < 0$ (Quadrant IV) $\\theta = \\arctan(y/x) + 2\\pi \\approx \\mathbf{${mStr}}$ (หรือมองเป็นมุมลบ $\\mathbf{${negM.toFixed(3)}\\pi}$)`;
+    quadReason = `เนื่องจาก $x > 0, y < 0$ (Quadrant IV) $\\theta = \\arctan(y/x) + 2\\pi = ${thetaTeX}$`;
   } else if (Math.abs(state.x) < 1e-4) {
     quadReason = state.y >= 0 
       ? 'เนื่องจาก $x = 0, y > 0$ จุดอยู่บนแกน $+Y$ ได้ $\\theta = \\frac{\\pi}{2}$' 
@@ -393,7 +447,7 @@ function updateCalculationUI() {
     multiTurnNote = `
       <div style="background: rgba(41, 128, 185, 0.08); border-left: 3px solid #2980b9; padding: 8px 12px; margin-top: 10px; border-radius: 4px; font-size: 0.86rem; line-height: 1.5;">
         🌀 <strong>มุมหมุนมากกว่า 1 รอบ (${sgnText}):</strong><br>
-        $\\theta = ${formatAngleTeX(state.theta)} \\approx ${fmt(state.theta)}\\text{ rad}$ 
+        $\\theta = ${formatAngleTeX(state.theta)}$ 
         (หมุนไป <strong>${turns} รอบเต็ม</strong> + เศษมุม $${formatAngleTeX(remAngle)}$)
         <br><span style="color: #555; font-size: 0.82rem;">เส้นบนกราฟจะม้วนเป็นรูป<strong>ก้นหอย (Spiral)</strong> เพื่อแสดงการหมุนหลายรอบ และตำแหน่งสุดท้ายจะตกอยู่ที่เดียวกับมุม $${formatAngleTeX(remAngle)}$</span>
       </div>
@@ -411,15 +465,15 @@ function updateCalculationUI() {
   const html = `
     <div class="math-step">
       <strong>ก. แปลงพิกัดฉาก $(x, y) \\to$ เชิงขั้ว $(r, \\theta)$:</strong><br>
-      $$r = \\sqrt{x^2 + y^2} = \\sqrt{(${xStr})^2 + (${yStr})^2} = ${rStr}$$
-      $$\\theta = \\operatorname{atan2}(${yStr}, ${xStr}) = ${thetaDisplayTeX}$$
+      $$r = \\sqrt{x^2 + y^2} = \\sqrt{(${xStr})^2 + (${yStr})^2} = ${rInfo.tex}$$
+      $$\\theta = \\operatorname{atan2}(${yStr}, ${xStr}) = ${thetaTeX}$$
       <div style="font-size: 0.82rem; color: #666; margin-top: 4px;">${quadReason}</div>
     </div>
     <hr style="border: none; border-top: 1px dashed rgba(122,92,58,0.2); margin: 8px 0;">
     <div class="math-step">
       <strong>ข. แปลงพิกัดเชิงขั้ว $(r, \\theta) \\to$ พิกัดฉาก $(x, y)$:</strong><br>
-      $$x = r \\cos\\theta = (${rStr}) \\cos(${thetaTeX}) = ${xStr}$$
-      $$y = r \\sin\\theta = (${rStr}) \\sin(${thetaTeX}) = ${yStr}$$
+      $$x = r \\cos\\theta = (${rInfo.tex}) \\cos(${thetaTeX}) = ${xStr}$$
+      $$y = r \\sin\\theta = (${rInfo.tex}) \\sin(${thetaTeX}) = ${yStr}$$
       ${multiTurnNote}
     </div>
   `;
@@ -992,12 +1046,13 @@ window.drawGraph = function () {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // Label badge near point (Pure Radians)
+  // Label badge near point (Pure Radians & Exact Radical)
   if (chkLabels) {
+    const rInfo = simplifyRExact(state.x, state.y);
     const labelX = ptCanvas.x + 10;
     const labelY = ptCanvas.y - 10;
     const textCart = `(${fmt(state.x)}, ${fmt(state.y)})`;
-    const textPol = `[${fmt(state.r)}, ${formatAnglePlain(state.theta)}]`;
+    const textPol = `[${rInfo.plain}, ${formatAnglePlain(state.theta)}]`;
 
     ctx.font = 'bold 11px system-ui, sans-serif';
     const textW = Math.max(ctx.measureText(textCart).width, ctx.measureText(textPol).width) + 14;
