@@ -51,7 +51,7 @@ function formatAngleTeX(rad) {
   const m = rad / Math.PI;
 
   let bestP = null, bestQ = null, minDiff = 1e9;
-  for (const q of [1, 2, 3, 4, 6, 12]) {
+  for (const q of [1, 2, 3, 4, 6, 8, 12]) {
     const p = Math.round(m * q);
     const diff = Math.abs(m - p / q);
     if (diff < 0.005 && diff < minDiff) {
@@ -76,16 +76,16 @@ function formatAngleTeX(rad) {
     }
   }
 
-  return fmt(rad) + '\\text{ rad}';
+  return `${m.toFixed(3)}\\pi`;
 }
 
-// Convert angle to simple text for input fields (e.g. "pi/4", "9pi/4", "-pi/2")
+// Convert angle to simple text for input fields (e.g. "pi/4", "9pi/4", "-pi/2", "1.804pi")
 function formatAnglePlain(rad) {
   if (Math.abs(rad) < 1e-4) return '0';
   const m = rad / Math.PI;
 
   let bestP = null, bestQ = null, minDiff = 1e9;
-  for (const q of [1, 2, 3, 4, 6, 12]) {
+  for (const q of [1, 2, 3, 4, 6, 8, 12]) {
     const p = Math.round(m * q);
     const diff = Math.abs(m - p / q);
     if (diff < 0.005 && diff < minDiff) {
@@ -110,7 +110,23 @@ function formatAnglePlain(rad) {
     }
   }
 
-  return fmt(rad);
+  return `${m.toFixed(3)}pi`;
+}
+
+// Describe theta for HTML badges (showing fraction of pi, decimal pi, and radians)
+function describeThetaHtml(rad) {
+  const radNorm = ((rad % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  const m = rad / Math.PI;
+  const mNorm = radNorm / Math.PI;
+  const plainFrac = formatAnglePlain(rad);
+  const isFraction = plainFrac.includes('pi') && !plainFrac.includes('.');
+
+  if (isFraction) {
+    return `<strong>&theta;</strong> = <strong>${plainFrac}</strong> (≈ <strong>${m.toFixed(3)}&pi;</strong> หรือ ${fmt(rad)} rad)`;
+  } else {
+    const negM = (radNorm - 2 * Math.PI) / Math.PI;
+    return `<strong>&theta;</strong> ≈ <strong>${m.toFixed(3)}&pi;</strong> (≈ ${fmt(rad)} rad, มุมลบ: ${negM.toFixed(3)}&pi;)`;
+  }
 }
 
 /**
@@ -230,52 +246,80 @@ function handlePointDrag(mathX, mathY) {
   state.x = Math.round(mathX * 20) / 20; // 0.05 step
   state.y = Math.round(mathY * 20) / 20;
 
-  syncFromCartesian(true);
+  syncFromCartesian('drag');
 }
 
 // Sync Cartesian (x, y) to Polar (r, theta)
-function syncFromCartesian(fromDrag = false) {
+function syncFromCartesian(source = 'all') {
   state.r = Math.hypot(state.x, state.y);
   state.theta = Math.atan2(state.y, state.x);
   if (state.theta < 0) state.theta += 2 * Math.PI;
 
-  updateInputsUI(fromDrag);
+  updateInputsUI(source);
   updateCalculationUI();
   updateEquivalentRepsUI();
   drawGraph();
 }
 
 // Sync Polar (r, theta) to Cartesian (x, y)
-function syncFromPolar(fromDrag = false) {
+function syncFromPolar(source = 'all') {
   state.x = state.r * Math.cos(state.theta);
   state.y = state.r * Math.sin(state.theta);
 
-  updateInputsUI(fromDrag);
+  updateInputsUI(source);
   updateCalculationUI();
   updateEquivalentRepsUI();
   drawGraph();
 }
 
 // Update Input fields & evaluated previews
-function updateInputsUI(fromDrag = false) {
+function updateInputsUI(source = 'all') {
   const inputX = document.getElementById('inputX');
   const inputY = document.getElementById('inputY');
   const inputR = document.getElementById('inputR');
   const inputTheta = document.getElementById('inputTheta');
 
-  // If dragged, update text values with formatted decimals or clean fractions
-  if (fromDrag) {
-    inputX.value = fmt(state.x);
-    inputY.value = fmt(state.y);
-    inputR.value = fmt(state.r);
-    inputTheta.value = formatAnglePlain(state.theta);
+  // If dragged, snapped, or full sync, update all text inputs
+  if (source === 'drag' || source === 'all') {
+    if (inputX) inputX.value = fmt(state.x);
+    if (inputY) inputY.value = fmt(state.y);
+    if (inputR) inputR.value = fmt(state.r);
+    if (inputTheta) inputTheta.value = formatAnglePlain(state.theta);
+  } else if (source === 'cartesian') {
+    // When Cartesian was inputted, update Polar fields
+    if (inputR) inputR.value = fmt(state.r);
+    if (inputTheta) inputTheta.value = formatAnglePlain(state.theta);
+  } else if (source === 'polar') {
+    // When Polar was inputted, update Cartesian fields
+    if (inputX) inputX.value = fmt(state.x);
+    if (inputY) inputY.value = fmt(state.y);
   }
 
   // Previews
-  document.getElementById('previewX').textContent = `≈ ${fmt(state.x)}`;
-  document.getElementById('previewY').textContent = `≈ ${fmt(state.y)}`;
-  document.getElementById('previewR').textContent = `≈ ${fmt(state.r)}`;
-  document.getElementById('previewTheta').textContent = `≈ ${fmt(state.theta)} rad`;
+  const px = document.getElementById('previewX');
+  const py = document.getElementById('previewY');
+  const pr = document.getElementById('previewR');
+  const pt = document.getElementById('previewTheta');
+
+  if (px) px.textContent = `≈ ${fmt(state.x)}`;
+  if (py) py.textContent = `≈ ${fmt(state.y)}`;
+  if (pr) pr.textContent = `≈ ${fmt(state.r)}`;
+
+  const m = state.theta / Math.PI;
+  if (pt) {
+    pt.textContent = `≈ ${m.toFixed(3)} π (${fmt(state.theta)} rad)`;
+  }
+
+  // Live Result Badges under Card 1 and Card 2
+  const cartRes = document.getElementById('cartesianResultText');
+  if (cartRes) {
+    cartRes.innerHTML = `<strong>r</strong> ≈ ${fmt(state.r)} &nbsp;|&nbsp; ${describeThetaHtml(state.theta)}`;
+  }
+
+  const polRes = document.getElementById('polarResultText');
+  if (polRes) {
+    polRes.innerHTML = `<strong>(x, y)</strong> ≈ (${fmt(state.x)}, ${fmt(state.y)})`;
+  }
 
   // Update Quadrant Badge
   updateQuadrantBadge();
@@ -315,6 +359,16 @@ function updateCalculationUI() {
   const yStr = fmt(state.y);
   const rStr = fmt(state.r);
   const thetaTeX = formatAngleTeX(state.theta);
+  const m = state.theta / Math.PI;
+  const mStr = `${m.toFixed(3)}\\pi`;
+  const plainTh = formatAnglePlain(state.theta);
+  const isFraction = plainTh.includes('pi') && !plainTh.includes('.');
+  let thetaDisplayTeX = thetaTeX;
+  if (isFraction) {
+    thetaDisplayTeX = `${thetaTeX} \\approx \\mathbf{${mStr}} \\approx ${fmt(state.theta)}\\text{ rad}`;
+  } else {
+    thetaDisplayTeX = `\\mathbf{${mStr}} \\approx ${fmt(state.theta)}\\text{ rad}`;
+  }
 
   // Quadrant explanation (pure radians)
   let quadReason = '';
@@ -323,7 +377,8 @@ function updateCalculationUI() {
   } else if (state.x < 0) {
     quadReason = 'เนื่องจาก $x < 0$ (Quadrant II หรือ III) ต้องปรับมุมโดยการบวก $\\pi$: $\\theta = \\arctan(y/x) + \\pi$';
   } else if (state.x > 0 && state.y < 0) {
-    quadReason = 'เนื่องจาก $x > 0, y < 0$ (Quadrant IV) $\\theta = \\arctan(y/x) + 2\\pi$';
+    const negM = (state.theta - 2 * Math.PI) / Math.PI;
+    quadReason = `เนื่องจาก $x > 0, y < 0$ (Quadrant IV) $\\theta = \\arctan(y/x) + 2\\pi \\approx \\mathbf{${mStr}}$ (หรือมองเป็นมุมลบ $\\mathbf{${negM.toFixed(3)}\\pi}$)`;
   } else if (Math.abs(state.x) < 1e-4) {
     quadReason = state.y >= 0 
       ? 'เนื่องจาก $x = 0, y > 0$ จุดอยู่บนแกน $+Y$ ได้ $\\theta = \\frac{\\pi}{2}$' 
@@ -357,7 +412,7 @@ function updateCalculationUI() {
     <div class="math-step">
       <strong>ก. แปลงพิกัดฉาก $(x, y) \\to$ เชิงขั้ว $(r, \\theta)$:</strong><br>
       $$r = \\sqrt{x^2 + y^2} = \\sqrt{(${xStr})^2 + (${yStr})^2} = ${rStr}$$
-      $$\\theta = \\operatorname{atan2}(${yStr}, ${xStr}) = ${thetaTeX}$$
+      $$\\theta = \\operatorname{atan2}(${yStr}, ${xStr}) = ${thetaDisplayTeX}$$
       <div style="font-size: 0.82rem; color: #666; margin-top: 4px;">${quadReason}</div>
     </div>
     <hr style="border: none; border-top: 1px dashed rgba(122,92,58,0.2); margin: 8px 0;">
@@ -413,7 +468,7 @@ window.applyRepresentation = function (r, th) {
   state.theta = th;
   document.getElementById('inputR').value = fmt(r);
   document.getElementById('inputTheta').value = formatAnglePlain(th);
-  syncFromPolar(false);
+  syncFromPolar('all');
 };
 
 // Event handlers: Apply Cartesian Inputs (Supports math expressions like sqrt(2))
@@ -424,10 +479,20 @@ window.applyCartesianInputs = function () {
   const valX = evaluateMath(strX);
   const valY = evaluateMath(strY);
 
-  if (!isNaN(valX)) state.x = valX;
-  if (!isNaN(valY)) state.y = valY;
+  if (!isNaN(valX)) {
+    state.x = valX;
+    const px = document.getElementById('previewX');
+    if (px) px.textContent = `≈ ${fmt(valX)}`;
+  }
+  if (!isNaN(valY)) {
+    state.y = valY;
+    const py = document.getElementById('previewY');
+    if (py) py.textContent = `≈ ${fmt(valY)}`;
+  }
 
-  syncFromCartesian(false);
+  if (!isNaN(valX) && !isNaN(valY)) {
+    syncFromCartesian('cartesian');
+  }
 };
 
 // Event handlers: Apply Polar Inputs (Supports math expressions like 2*sqrt(3), pi/3)
@@ -438,10 +503,21 @@ window.applyPolarInputs = function () {
   const valR = evaluateMath(strR);
   const valTheta = evaluateMath(strTheta);
 
-  if (!isNaN(valR)) state.r = valR;
-  if (!isNaN(valTheta)) state.theta = valTheta;
+  if (!isNaN(valR)) {
+    state.r = valR;
+    const pr = document.getElementById('previewR');
+    if (pr) pr.textContent = `≈ ${fmt(valR)}`;
+  }
+  if (!isNaN(valTheta)) {
+    state.theta = valTheta;
+    const pt = document.getElementById('previewTheta');
+    const m = valTheta / Math.PI;
+    if (pt) pt.textContent = `≈ ${m.toFixed(3)} π (${fmt(valTheta)} rad)`;
+  }
 
-  syncFromPolar(false);
+  if (!isNaN(valR) && !isNaN(valTheta)) {
+    syncFromPolar('polar');
+  }
 };
 
 // Quick Angle Presets in Radians
