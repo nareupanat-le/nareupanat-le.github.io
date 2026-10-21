@@ -838,10 +838,13 @@
 
       <h5 style="color: var(--muted); margin-top: 20px;">3. ความไม่เป็นหนึ่งเดียวของพิกัดเชิงขั้ว (Non-Uniqueness)</h5>
       <p class="justify">
-        ต่างจากพิกัดฉากที่มีคู่ลำดับเดียว จุดหนึ่งจุดในพิกัดเชิงขั้วสามารถแทนด้วยพิกัดได้นับไม่ถ้วน:
+        ต่างจากพิกัดฉากที่มีคู่ลำดับเดียว จุดหนึ่งจุดในพิกัดเชิงขั้วสามารถแทนด้วยพิกัดได้นับไม่ถ้วน (เมื่อ $k$ เป็นจำนวนเต็มใด ๆ):
       </p>
       <div class="math-box">
-        $$(r, \theta) = (r, \theta + 2k\pi) = (-r, \theta + (2k+1)\pi) \quad \text{เมื่อ } k \in \mathbb{Z}$$
+        $$(r, \theta) = (r, \theta + 2k\pi) = (-r, \theta + (2k+1)\pi), \quad k \in \mathbb{Z}$$
+        <div style="text-align: center; font-size: 0.88rem; color: #555; margin-top: 4px;">
+          (เมื่อ $k \in \mathbb{Z}$ คือจำนวนเต็มใด ๆ เช่น $0, \pm 1, \pm 2, \dots$)
+        </div>
       </div>
       <p class="justify">
         <strong>ความหมายของ $r < 0$:</strong> หากกำหนด $r = -3, \theta = \frac{\pi}{4}$ 
