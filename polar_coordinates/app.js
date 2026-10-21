@@ -425,18 +425,30 @@ function updateCalculationUI() {
   const rInfo = simplifyRExact(state.x, state.y);
   const thetaTeX = formatAngleTeX(state.theta);
 
-  // Quadrant explanation (pure radians)
+  // Quadrant explanation & LaTeX arctan formula (pure radians)
   let quadReason = '';
-  if (state.x > 0 && state.y >= 0) {
+  let thetaFormulaTeX = '';
+
+  if (Math.abs(state.x) < 1e-4) {
+    if (state.y > 0) {
+      thetaFormulaTeX = `\\theta = \\frac{\\pi}{2}`;
+      quadReason = 'เนื่องจาก $x = 0, y > 0$ จุดอยู่บนแกน $+Y$ จึงได้ $\\theta = \\frac{\\pi}{2}$';
+    } else if (state.y < 0) {
+      thetaFormulaTeX = `\\theta = \\frac{3\\pi}{2}`;
+      quadReason = 'เนื่องจาก $x = 0, y < 0$ จุดอยู่บนแกน $-Y$ จึงได้ $\\theta = \\frac{3\\pi}{2}$';
+    } else {
+      thetaFormulaTeX = `\\theta = 0`;
+      quadReason = 'จุดกำเนิด (Pole / Origin)';
+    }
+  } else if (state.x > 0 && state.y >= 0) {
+    thetaFormulaTeX = `\\theta = \\arctan\\left(\\frac{y}{x}\\right) = \\arctan\\left(\\frac{${yStr}}{${xStr}}\\right) = ${thetaTeX}`;
     quadReason = 'เนื่องจาก $x > 0, y \\ge 0$ (Quadrant I) จึงใช้ค่า $\\theta = \\arctan(y/x)$ ได้โดยตรง';
   } else if (state.x < 0) {
+    thetaFormulaTeX = `\\theta = \\arctan\\left(\\frac{y}{x}\\right) + \\pi = \\arctan\\left(\\frac{${yStr}}{${xStr}}\\right) + \\pi = ${thetaTeX}`;
     quadReason = 'เนื่องจาก $x < 0$ (Quadrant II หรือ III) ต้องปรับมุมโดยการบวก $\\pi$: $\\theta = \\arctan(y/x) + \\pi$';
   } else if (state.x > 0 && state.y < 0) {
-    quadReason = `เนื่องจาก $x > 0, y < 0$ (Quadrant IV) $\\theta = \\arctan(y/x) + 2\\pi = ${thetaTeX}$`;
-  } else if (Math.abs(state.x) < 1e-4) {
-    quadReason = state.y >= 0 
-      ? 'เนื่องจาก $x = 0, y > 0$ จุดอยู่บนแกน $+Y$ ได้ $\\theta = \\frac{\\pi}{2}$' 
-      : 'เนื่องจาก $x = 0, y < 0$ จุดอยู่บนแกน $-Y$ ได้ $\\theta = \\frac{3\\pi}{2}$';
+    thetaFormulaTeX = `\\theta = \\arctan\\left(\\frac{y}{x}\\right) + 2\\pi = \\arctan\\left(\\frac{${yStr}}{${xStr}}\\right) + 2\\pi = ${thetaTeX}`;
+    quadReason = `เนื่องจาก $x > 0, y < 0$ (Quadrant IV) จึงต้องบวกมุมด้วย $2\\pi$: $\\theta = \\arctan(y/x) + 2\\pi = ${thetaTeX}$`;
   }
 
   let multiTurnNote = '';
@@ -466,7 +478,7 @@ function updateCalculationUI() {
     <div class="math-step">
       <strong>ก. แปลงพิกัดฉาก $(x, y) \\to$ เชิงขั้ว $(r, \\theta)$:</strong><br>
       $$r = \\sqrt{x^2 + y^2} = \\sqrt{(${xStr})^2 + (${yStr})^2} = ${rInfo.tex}$$
-      $$\\theta = \\operatorname{atan2}(${yStr}, ${xStr}) = ${thetaTeX}$$
+      $$${thetaFormulaTeX}$$
       <div style="font-size: 0.82rem; color: #666; margin-top: 4px;">${quadReason}</div>
     </div>
     <hr style="border: none; border-top: 1px dashed rgba(122,92,58,0.2); margin: 8px 0;">
