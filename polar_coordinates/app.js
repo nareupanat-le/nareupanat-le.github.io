@@ -1,5 +1,6 @@
 /**
  * Polar Coordinates Interactive Learning App
+ * Pure Radian & Math Expression Parsing Edition
  * Author: Nareupanat Lekkoksung (with Antigravity pair programmer)
  */
 
@@ -9,41 +10,22 @@ const state = {
   x: 3.0,
   y: 3.0,
   r: 4.24,
-  theta: Math.PI / 4, // always kept in radians internally
+  theta: Math.PI / 4, // always in radians
 
-  // Units & View Modes
-  unit: 'rad', // 'rad' | 'deg'
+  // View settings
   gridMode: 'both', // 'cartesian' | 'polar' | 'both'
-  maxCoord: 6.0, // axis domain [-6, 6]
+  maxCoord: 6.0,    // domain [-6, 6]
   
-  // Dragging interaction state
+  // Dragging state
   isDragging: false,
-  dragTarget: null, // 'main' | 'quiz'
 
   // Saved points collection
   savedPoints: [],
-  palette: ['#c0392b', '#2980b9', '#27ae60', '#8e44ad', '#d35400', '#16a085'],
-
-  // Challenge / Quiz state
-  quiz: {
-    type: 'plot', // 'plot' | 'identify'
-    targetR: 3,
-    targetTheta: Math.PI / 3,
-    targetLabel: '(3, \\frac{\\pi}{3})',
-    userX: 0,
-    userY: 0,
-    options: [],
-    correctIndex: 0,
-    score: 0,
-    streak: 0,
-    solved: false
-  }
+  palette: ['#c0392b', '#2980b9', '#27ae60', '#8e44ad', '#d35400', '#16a085']
 };
 
 // Canvas references
 let mainCanvas, mainCtx;
-let quizCanvas, quizCtx;
-let quizIdCanvas, quizIdCtx;
 
 // MathJax debouncer
 let typesetTimeout = null;
@@ -94,62 +76,92 @@ function formatAngleTeX(rad) {
     }
   }
 
-  // Fallback to decimal radians
   return fmt(rad) + '\\text{ rad}';
 }
 
-// Parse angle expression entered by student (e.g. "pi/3", "2pi/3", "45", "1.57")
-function parseAngleString(str, unit) {
-  if (!str) return 0;
-  let clean = str.trim().toLowerCase().replace(/\s+/g, '');
-  if (unit === 'deg') {
-    // If unit is degree, parse as degrees and convert to rad
-    clean = clean.replace(/°/g, '');
-    const deg = parseFloat(clean);
-    return isNaN(deg) ? 0 : (deg * Math.PI) / 180;
+// Convert angle to simple text for input fields (e.g. "pi/4")
+function formatAnglePlain(rad) {
+  let normalized = rad % (2 * Math.PI);
+  if (normalized < 0) normalized += 2 * Math.PI;
+
+  const plainFractions = [
+    { val: 0, text: '0' },
+    { val: Math.PI / 6, text: 'pi/6' },
+    { val: Math.PI / 4, text: 'pi/4' },
+    { val: Math.PI / 3, text: 'pi/3' },
+    { val: Math.PI / 2, text: 'pi/2' },
+    { val: (2 * Math.PI) / 3, text: '2pi/3' },
+    { val: (3 * Math.PI) / 4, text: '3pi/4' },
+    { val: (5 * Math.PI) / 6, text: '5pi/6' },
+    { val: Math.PI, text: 'pi' },
+    { val: (7 * Math.PI) / 6, text: '7pi/6' },
+    { val: (5 * Math.PI) / 4, text: '5pi/4' },
+    { val: (4 * Math.PI) / 3, text: '4pi/3' },
+    { val: (3 * Math.PI) / 2, text: '3pi/2' },
+    { val: (5 * Math.PI) / 3, text: '5pi/3' },
+    { val: (7 * Math.PI) / 4, text: '7pi/4' },
+    { val: (11 * Math.PI) / 6, text: '11pi/6' },
+    { val: 2 * Math.PI, text: '2pi' }
+  ];
+
+  for (const f of plainFractions) {
+    if (Math.abs(normalized - f.val) < 0.02) {
+      return f.text;
+    }
   }
 
-  // Radian mode
-  clean = clean.replace(/π/g, 'pi');
-  if (clean.includes('pi')) {
-    clean = clean.replace(/([0-9.]+)pi/g, '$1*pi');
-    clean = clean.replace(/pi/g, Math.PI.toString());
+  return fmt(rad);
+}
+
+/**
+ * Safe Math Expression Evaluator
+ * Supports: sqrt(2), 2*sqrt(3), 2sqrt(3), pi, π, fractions (3/2), decimals, parentheses, arithmetic
+ */
+function evaluateMath(str) {
+  if (!str) return NaN;
+  let s = str.trim().toLowerCase().replace(/\s+/g, '');
+  s = s.replace(/π/g, 'pi');
+
+  // Handle implicit multiplication like 2sqrt(3) -> 2*sqrt(3), 2pi -> 2*pi, (2)(3) -> (2)*(3)
+  s = s.replace(/([0-9.]+)sqrt/g, '$1*sqrt');
+  s = s.replace(/([0-9.]+)pi/g, '$1*pi');
+  s = s.replace(/\)([\(0-9a-z])/g, ')*$1');
+  s = s.replace(/([0-9])\(/g, '$1*(');
+  s = s.replace(/sqrt/g, 'Math.sqrt');
+  s = s.replace(/pi/g, 'Math.PI');
+  s = s.replace(/\^/g, '**');
+
+  // Strict token validation
+  const testSafe = s
+    .replace(/Math\.sqrt/g, '')
+    .replace(/Math\.PI/g, '')
+    .replace(/[0-9.+\-*/()]/g, '');
+
+  if (testSafe.length !== 0) {
+    return NaN;
   }
 
   try {
-    if (/^[0-9.+\-*/()]+$/.test(clean)) {
-      const val = Function('"use strict"; return (' + clean + ')')();
-      return isNaN(val) ? 0 : val;
-    }
+    const val = Function('"use strict"; return (' + s + ')')();
+    return (typeof val === 'number' && !isNaN(val)) ? val : NaN;
   } catch (e) {
-    // ignore
+    return NaN;
   }
-
-  const val = parseFloat(clean);
-  return isNaN(val) ? 0 : val;
 }
 
-// Initialize application on DOM ready
+// Initialize on DOM load
 document.addEventListener('DOMContentLoaded', () => {
   mainCanvas = document.getElementById('plotCanvas');
   mainCtx = mainCanvas.getContext('2d');
 
-  quizCanvas = document.getElementById('quizCanvas');
-  quizCtx = quizCanvas ? quizCanvas.getContext('2d') : null;
-
-  quizIdCanvas = document.getElementById('quizIdentifyCanvas');
-  quizIdCtx = quizIdCanvas ? quizIdCanvas.getContext('2d') : null;
-
-  setupCanvasEvents(mainCanvas, 'main');
-  if (quizCanvas) setupCanvasEvents(quizCanvas, 'quiz');
-
-  // Initial synchronization
-  syncFromCartesian();
-  generateNewQuiz();
+  setupCanvasEvents(mainCanvas);
+  
+  // Initial sync
+  syncFromCartesian(false);
 });
 
 // Setup Mouse & Touch Events for Canvas
-function setupCanvasEvents(canvas, target) {
+function setupCanvasEvents(canvas) {
   function getPos(e) {
     const rect = canvas.getBoundingClientRect();
     let clientX, clientY;
@@ -181,22 +193,20 @@ function setupCanvasEvents(canvas, target) {
   function onDown(e) {
     e.preventDefault();
     state.isDragging = true;
-    state.dragTarget = target;
     const { mathX, mathY } = getPos(e);
-    handlePointDrag(mathX, mathY, target);
+    handlePointDrag(mathX, mathY);
   }
 
   function onMove(e) {
-    if (!state.isDragging || state.dragTarget !== target) return;
+    if (!state.isDragging) return;
     e.preventDefault();
     const { mathX, mathY } = getPos(e);
-    handlePointDrag(mathX, mathY, target);
+    handlePointDrag(mathX, mathY);
   }
 
   function onUp(e) {
     if (state.isDragging) {
       state.isDragging = false;
-      state.dragTarget = null;
     }
   }
 
@@ -210,79 +220,62 @@ function setupCanvasEvents(canvas, target) {
 }
 
 // Point Drag handler
-function handlePointDrag(mathX, mathY, target) {
-  // Clamp within bounds
+function handlePointDrag(mathX, mathY) {
   const dist = Math.hypot(mathX, mathY);
   if (dist > state.maxCoord) {
     mathX = (mathX / dist) * state.maxCoord;
     mathY = (mathY / dist) * state.maxCoord;
   }
 
-  if (target === 'main') {
-    state.x = Math.round(mathX * 20) / 20; // 0.05 step
-    state.y = Math.round(mathY * 20) / 20;
-    syncFromCartesian();
-  } else if (target === 'quiz') {
-    state.quiz.userX = Math.round(mathX * 20) / 20;
-    state.quiz.userY = Math.round(mathY * 20) / 20;
-    drawQuizPlot();
-  }
+  state.x = Math.round(mathX * 20) / 20; // 0.05 step
+  state.y = Math.round(mathY * 20) / 20;
+
+  syncFromCartesian(true);
 }
 
-// Sync Cartesian (x, y) to Polar (r, theta) and UI controls
-function syncFromCartesian() {
+// Sync Cartesian (x, y) to Polar (r, theta)
+function syncFromCartesian(fromDrag = false) {
   state.r = Math.hypot(state.x, state.y);
   state.theta = Math.atan2(state.y, state.x);
   if (state.theta < 0) state.theta += 2 * Math.PI;
 
-  updateInputsUI();
+  updateInputsUI(fromDrag);
   updateCalculationUI();
   updateEquivalentRepsUI();
   drawGraph();
 }
 
-// Sync Polar (r, theta) to Cartesian (x, y) and UI controls
-function syncFromPolar() {
+// Sync Polar (r, theta) to Cartesian (x, y)
+function syncFromPolar(fromDrag = false) {
   state.x = state.r * Math.cos(state.theta);
   state.y = state.r * Math.sin(state.theta);
 
-  updateInputsUI();
+  updateInputsUI(fromDrag);
   updateCalculationUI();
   updateEquivalentRepsUI();
   drawGraph();
 }
 
-// Update Input fields & sliders
-function updateInputsUI() {
-  document.getElementById('inputX').value = fmt(state.x);
-  document.getElementById('sliderX').value = state.x;
+// Update Input fields & evaluated previews
+function updateInputsUI(fromDrag = false) {
+  const inputX = document.getElementById('inputX');
+  const inputY = document.getElementById('inputY');
+  const inputR = document.getElementById('inputR');
+  const inputTheta = document.getElementById('inputTheta');
 
-  document.getElementById('inputY').value = fmt(state.y);
-  document.getElementById('sliderY').value = state.y;
-
-  document.getElementById('inputR').value = fmt(state.r);
-  document.getElementById('sliderR').value = state.r;
-
-  // Theta representation in text input
-  if (state.unit === 'rad') {
-    const angleTeX = formatAngleTeX(state.theta);
-    // User-friendly plain string for input
-    document.getElementById('inputTheta').value = angleTeX.replace(/\\frac\{([^}]+)\}\{([^}]+)\}/g, '$1/$2').replace(/\\pi/g, 'pi').replace(/\\text\{ rad\}/g, '');
-    document.getElementById('sliderTheta').min = '0';
-    document.getElementById('sliderTheta').max = (2 * Math.PI).toString();
-    document.getElementById('sliderTheta').step = '0.01';
-    let normTheta = state.theta % (2 * Math.PI);
-    if (normTheta < 0) normTheta += 2 * Math.PI;
-    document.getElementById('sliderTheta').value = normTheta;
-  } else {
-    let deg = (state.theta * 180) / Math.PI;
-    deg = ((deg % 360) + 360) % 360;
-    document.getElementById('inputTheta').value = fmt(deg);
-    document.getElementById('sliderTheta').min = '0';
-    document.getElementById('sliderTheta').max = '360';
-    document.getElementById('sliderTheta').step = '1';
-    document.getElementById('sliderTheta').value = deg;
+  // If dragged, update text values with formatted decimals or clean fractions
+  if (fromDrag) {
+    inputX.value = fmt(state.x);
+    inputY.value = fmt(state.y);
+    inputR.value = fmt(state.r);
+    inputTheta.value = formatAnglePlain(state.theta);
   }
+
+  // Previews
+  document.getElementById('previewX').textContent = `≈ ${fmt(state.x)}`;
+  document.getElementById('previewY').textContent = `≈ ${fmt(state.y)}`;
+  document.getElementById('previewR').textContent = `≈ ${fmt(state.r)}`;
+  document.getElementById('previewTheta').textContent = `≈ ${fmt(state.theta)} rad`;
 
   // Update Quadrant Badge
   updateQuadrantBadge();
@@ -298,9 +291,9 @@ function updateQuadrantBadge() {
   if (Math.abs(state.x) < eps && Math.abs(state.y) < eps) {
     text = 'จุดกำเนิด (Pole / Origin)';
   } else if (Math.abs(state.y) < eps) {
-    text = state.x > 0 ? 'แกนเชิงขั้ว (+X Axis)' : 'แกน -X Axis';
+    text = state.x > 0 ? 'แกนเชิงขั้ว (+X Axis, θ = 0)' : 'แกน -X Axis (θ = π)';
   } else if (Math.abs(state.x) < eps) {
-    text = state.y > 0 ? 'แกน +Y Axis (90°)' : 'แกน -Y Axis (270°)';
+    text = state.y > 0 ? 'แกน +Y Axis (θ = π/2)' : 'แกน -Y Axis (θ = 3π/2)';
   } else if (state.x > 0 && state.y > 0) {
     text = 'Quadrant I (+, +)';
   } else if (state.x < 0 && state.y > 0) {
@@ -313,7 +306,7 @@ function updateQuadrantBadge() {
   badge.textContent = text;
 }
 
-// Update Step-by-Step Mathematical Breakdown
+// Update Step-by-Step Mathematical Breakdown in Pure Radians
 function updateCalculationUI() {
   const box = document.getElementById('calcBreakdown');
   if (!box) return;
@@ -322,25 +315,26 @@ function updateCalculationUI() {
   const yStr = fmt(state.y);
   const rStr = fmt(state.r);
   const thetaTeX = formatAngleTeX(state.theta);
-  const degVal = fmt(((state.theta * 180) / Math.PI) % 360);
 
-  // Quadrant explanation
+  // Quadrant explanation (pure radians)
   let quadReason = '';
   if (state.x > 0 && state.y >= 0) {
     quadReason = 'เนื่องจาก $x > 0, y \\ge 0$ (Quadrant I) จึงใช้ค่า $\\theta = \\arctan(y/x)$ ได้โดยตรง';
   } else if (state.x < 0) {
-    quadReason = 'เนื่องจาก $x < 0$ (Quadrant II หรือ III) ต้องปรับมุมโดยการบวก $\\pi$ ($180^\\circ$): $\\theta = \\arctan(y/x) + \\pi$';
+    quadReason = 'เนื่องจาก $x < 0$ (Quadrant II หรือ III) ต้องปรับมุมโดยการบวก $\\pi$: $\\theta = \\arctan(y/x) + \\pi$';
   } else if (state.x > 0 && state.y < 0) {
     quadReason = 'เนื่องจาก $x > 0, y < 0$ (Quadrant IV) $\\theta = \\arctan(y/x) + 2\\pi$';
   } else if (Math.abs(state.x) < 1e-4) {
-    quadReason = state.y >= 0 ? 'เนื่องจาก $x = 0, y > 0$ จุดอยู่บนแกน $+Y$ ได้ $\\theta = \\frac{\\pi}{2}$' : 'เนื่องจาก $x = 0, y < 0$ จุดอยู่บนแกน $-Y$ ได้ $\\theta = \\frac{3\\pi}{2}$';
+    quadReason = state.y >= 0 
+      ? 'เนื่องจาก $x = 0, y > 0$ จุดอยู่บนแกน $+Y$ ได้ $\\theta = \\frac{\\pi}{2}$' 
+      : 'เนื่องจาก $x = 0, y < 0$ จุดอยู่บนแกน $-Y$ ได้ $\\theta = \\frac{3\\pi}{2}$';
   }
 
   const html = `
     <div class="math-step">
       <strong>ก. แปลงพิกัดฉาก $(x, y) \\to$ เชิงขั้ว $(r, \\theta)$:</strong><br>
       $$r = \\sqrt{x^2 + y^2} = \\sqrt{(${xStr})^2 + (${yStr})^2} = ${rStr}$$
-      $$\\theta = \\operatorname{atan2}(${yStr}, ${xStr}) = ${thetaTeX} \\approx ${degVal}^\\circ$$
+      $$\\theta = \\operatorname{atan2}(${yStr}, ${xStr}) = ${thetaTeX}$$
       <div style="font-size: 0.82rem; color: #666; margin-top: 4px;">${quadReason}</div>
     </div>
     <hr style="border: none; border-top: 1px dashed rgba(122,92,58,0.2); margin: 8px 0;">
@@ -355,7 +349,7 @@ function updateCalculationUI() {
   triggerMathJax();
 }
 
-// Update Multiple Equivalent Polar Representations
+// Update Multiple Equivalent Polar Representations (Pure Radians)
 function updateEquivalentRepsUI() {
   const container = document.getElementById('repListContainer');
   if (!container) return;
@@ -363,23 +357,21 @@ function updateEquivalentRepsUI() {
   const r = state.r;
   const th = state.theta;
 
-  // 4 standard representations
   const reps = [
     { r: r, theta: th, label: 'รูปมาตรฐาน ($r \\ge 0$)' },
-    { r: r, theta: th + 2 * Math.PI, label: 'บวกเพิ่ม $2\\pi$ ($+360^\\circ$)' },
-    { r: -r, theta: th + Math.PI, label: 'กลับทิศรัศมี $-r$ และหมุนเพิ่ม $\\pi$' },
-    { r: -r, theta: th - Math.PI, label: 'กลับทิศรัศมี $-r$ และหมุนลบ $\\pi$' }
+    { r: r, theta: th + 2 * Math.PI, label: 'บวกมุมเพิ่ม $2\\pi$' },
+    { r: -r, theta: th + Math.PI, label: 'กลับทิศรัศมี $-r$ และหมุนมุมเพิ่ม $\\pi$' },
+    { r: -r, theta: th - Math.PI, label: 'กลับทิศรัศมี $-r$ และหมุนมุมลบ $\\pi$' }
   ];
 
   let html = '';
-  reps.forEach((rep, idx) => {
+  reps.forEach((rep) => {
     const rVal = fmt(rep.r);
     const thTex = formatAngleTeX(rep.theta);
-    const degVal = fmt((rep.theta * 180) / Math.PI);
     html += `
       <div class="rep-item">
         <div>
-          <strong>$(${rVal}, ${thTex})$</strong> <span style="font-size: 0.78rem; color: #777;">(${degVal}°)</span>
+          <strong>$(${rVal}, ${thTex})$</strong>
           <div style="font-size: 0.75rem; color: #888;">${rep.label}</div>
         </div>
         <button class="apply-btn" onclick="applyRepresentation(${rep.r}, ${rep.theta})">ลองใช้คู่นี้</button>
@@ -395,69 +387,44 @@ function updateEquivalentRepsUI() {
 window.applyRepresentation = function (r, th) {
   state.r = r;
   state.theta = th;
-  // Calculate equivalent Cartesian to keep graph exact
-  syncFromPolar();
+  document.getElementById('inputR').value = fmt(r);
+  document.getElementById('inputTheta').value = formatAnglePlain(th);
+  syncFromPolar(false);
 };
 
-// Event handlers for Cartesian inputs
-window.onCartesianChange = function () {
-  const x = parseFloat(document.getElementById('inputX').value);
-  const y = parseFloat(document.getElementById('inputY').value);
-  if (!isNaN(x)) state.x = x;
-  if (!isNaN(y)) state.y = y;
-  syncFromCartesian();
+// Event handlers: Apply Cartesian Inputs (Supports math expressions like sqrt(2))
+window.applyCartesianInputs = function () {
+  const strX = document.getElementById('inputX').value;
+  const strY = document.getElementById('inputY').value;
+
+  const valX = evaluateMath(strX);
+  const valY = evaluateMath(strY);
+
+  if (!isNaN(valX)) state.x = valX;
+  if (!isNaN(valY)) state.y = valY;
+
+  syncFromCartesian(false);
 };
 
-window.onSliderXChange = function () {
-  state.x = parseFloat(document.getElementById('sliderX').value);
-  syncFromCartesian();
+// Event handlers: Apply Polar Inputs (Supports math expressions like 2*sqrt(3), pi/3)
+window.applyPolarInputs = function () {
+  const strR = document.getElementById('inputR').value;
+  const strTheta = document.getElementById('inputTheta').value;
+
+  const valR = evaluateMath(strR);
+  const valTheta = evaluateMath(strTheta);
+
+  if (!isNaN(valR)) state.r = valR;
+  if (!isNaN(valTheta)) state.theta = valTheta;
+
+  syncFromPolar(false);
 };
 
-window.onSliderYChange = function () {
-  state.y = parseFloat(document.getElementById('sliderY').value);
-  syncFromCartesian();
-};
-
-// Event handlers for Polar inputs
-window.onPolarRChange = function () {
-  const r = parseFloat(document.getElementById('inputR').value);
-  if (!isNaN(r)) state.r = r;
-  syncFromPolar();
-};
-
-window.onSliderRChange = function () {
-  state.r = parseFloat(document.getElementById('sliderR').value);
-  syncFromPolar();
-};
-
-window.onPolarThetaChange = function () {
-  const str = document.getElementById('inputTheta').value;
-  state.theta = parseAngleString(str, state.unit);
-  syncFromPolar();
-};
-
-window.onSliderThetaChange = function () {
-  const val = parseFloat(document.getElementById('sliderTheta').value);
-  if (state.unit === 'deg') {
-    state.theta = (val * Math.PI) / 180;
-  } else {
-    state.theta = val;
-  }
-  syncFromPolar();
-};
-
-// Quick Angle Presets
-window.applyPresetAngle = function (rad, label) {
+// Quick Angle Presets in Radians
+window.applyPresetAngle = function (rad, text) {
   state.theta = rad;
-  syncFromPolar();
-};
-
-// Set angle unit (rad or deg)
-window.setAngleUnit = function (unit) {
-  state.unit = unit;
-  document.getElementById('btnUnitRad').classList.toggle('active', unit === 'rad');
-  document.getElementById('btnUnitDeg').classList.toggle('active', unit === 'deg');
-  updateInputsUI();
+  document.getElementById('inputTheta').value = text;
+  syncFromPolar(false);
 };
 
 // Set grid mode (cartesian, polar, both)
@@ -473,21 +440,25 @@ window.setGridMode = function (mode) {
 window.resetPoint = function () {
   state.x = 3.0;
   state.y = 3.0;
-  syncFromCartesian();
+  document.getElementById('inputX').value = '3';
+  document.getElementById('inputY').value = '3';
+  syncFromCartesian(false);
 };
 
-// Snap Point to clean coordinates
+// Snap Point to clean integer/special angle coordinates
 window.snapPointToGrid = function () {
   if (state.gridMode === 'polar') {
-    // Snap r to integer and theta to nearest pi/12
     state.r = Math.round(state.r);
     state.theta = Math.round(state.theta / (Math.PI / 12)) * (Math.PI / 12);
-    syncFromPolar();
+    document.getElementById('inputR').value = fmt(state.r);
+    document.getElementById('inputTheta').value = formatAnglePlain(state.theta);
+    syncFromPolar(false);
   } else {
-    // Snap x and y to integer
     state.x = Math.round(state.x);
     state.y = Math.round(state.y);
-    syncFromCartesian();
+    document.getElementById('inputX').value = fmt(state.x);
+    document.getElementById('inputY').value = fmt(state.y);
+    syncFromCartesian(false);
   }
 };
 
@@ -548,7 +519,7 @@ window.deleteSavedPoint = function (index) {
 };
 
 // ==========================================
-// Canvas Drawing Routine (Main Explorer)
+// Canvas Drawing Routine (Pure Radians)
 // ==========================================
 window.drawGraph = function () {
   if (!mainCanvas || !mainCtx) return;
@@ -615,7 +586,7 @@ window.drawGraph = function () {
     }
   }
 
-  // 2. Draw Polar Grid if active
+  // 2. Draw Polar Grid if active (Pure Radians)
   if (state.gridMode === 'polar' || state.gridMode === 'both') {
     // Concentric Circles
     for (let r = 1; r <= maxR; r++) {
@@ -631,21 +602,21 @@ window.drawGraph = function () {
       ctx.fillText(r.toString(), cx + r * scale + 3, cy - 3);
     }
 
-    // Radial Spokes (every 30 deg and 45 deg)
+    // Radial Spokes (Pure Radians labels only)
     const angles = [
       { rad: 0, label: '0' },
-      { rad: Math.PI / 6, label: 'π/6 (30°)' },
-      { rad: Math.PI / 4, label: 'π/4 (45°)' },
-      { rad: Math.PI / 3, label: 'π/3 (60°)' },
-      { rad: Math.PI / 2, label: 'π/2 (90°)' },
+      { rad: Math.PI / 6, label: 'π/6' },
+      { rad: Math.PI / 4, label: 'π/4' },
+      { rad: Math.PI / 3, label: 'π/3' },
+      { rad: Math.PI / 2, label: 'π/2' },
       { rad: (2 * Math.PI) / 3, label: '2π/3' },
       { rad: (3 * Math.PI) / 4, label: '3π/4' },
       { rad: (5 * Math.PI) / 6, label: '5π/6' },
-      { rad: Math.PI, label: 'π (180°)' },
+      { rad: Math.PI, label: 'π' },
       { rad: (7 * Math.PI) / 6, label: '7π/6' },
       { rad: (5 * Math.PI) / 4, label: '5π/4' },
       { rad: (4 * Math.PI) / 3, label: '4π/3' },
-      { rad: (3 * Math.PI) / 2, label: '3π/2 (270°)' },
+      { rad: (3 * Math.PI) / 2, label: '3π/2' },
       { rad: (5 * Math.PI) / 3, label: '5π/3' },
       { rad: (7 * Math.PI) / 4, label: '7π/4' },
       { rad: (11 * Math.PI) / 6, label: '11π/6' }
@@ -667,7 +638,7 @@ window.drawGraph = function () {
       const lx = cx + cosA * labelDist;
       const ly = cy - sinA * labelDist;
       ctx.fillStyle = '#7A5C3A';
-      ctx.font = '9px system-ui, sans-serif';
+      ctx.font = '10px system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(a.label, lx, ly);
@@ -707,7 +678,6 @@ window.drawGraph = function () {
 
   // Negative R guide
   if (chkNegativeR && state.r < 0) {
-    // Show dashed line pointing in direction theta
     const dirX = Math.cos(state.theta) * Math.abs(state.r);
     const dirY = Math.sin(state.theta) * Math.abs(state.r);
     const dirCanvas = toCanvas(dirX, dirY);
@@ -731,7 +701,7 @@ window.drawGraph = function () {
   if (chkAngleArc && Math.abs(state.x) + Math.abs(state.y) > 0.05) {
     ctx.save();
     ctx.beginPath();
-    const arcRadius = Math.min(36, state.r * scale * 0.45);
+    const arcRadius = Math.min(36, Math.abs(state.r) * scale * 0.45);
     ctx.arc(cx, cy, Math.max(arcRadius, 18), 0, -state.theta, state.theta > 0);
     ctx.strokeStyle = '#2980b9';
     ctx.lineWidth = 1.8;
@@ -810,7 +780,6 @@ window.drawGraph = function () {
 
   // 6. Draw Main Active Point P
   ctx.save();
-  // Pulsing glow
   ctx.beginPath();
   ctx.arc(ptCanvas.x, ptCanvas.y, 8, 0, 2 * Math.PI);
   ctx.fillStyle = '#b33939';
@@ -819,12 +788,12 @@ window.drawGraph = function () {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // Label badge near point
+  // Label badge near point (Pure Radians)
   if (chkLabels) {
     const labelX = ptCanvas.x + 10;
     const labelY = ptCanvas.y - 10;
     const textCart = `(${fmt(state.x)}, ${fmt(state.y)})`;
-    const textPol = `[${fmt(state.r)}, ${fmt((state.theta * 180) / Math.PI)}°]`;
+    const textPol = `[${fmt(state.r)}, ${formatAnglePlain(state.theta)}]`;
 
     ctx.font = 'bold 11px system-ui, sans-serif';
     const textW = Math.max(ctx.measureText(textCart).width, ctx.measureText(textPol).width) + 14;
@@ -849,300 +818,17 @@ window.drawGraph = function () {
 };
 
 // ==========================================
-// Challenge / Quiz Engine
+// Tab Switching
 // ==========================================
 window.switchTab = function (tab) {
   document.getElementById('sectionExplorer').style.display = tab === 'explorer' ? 'block' : 'none';
-  document.getElementById('sectionChallenge').style.display = tab === 'challenge' ? 'block' : 'none';
   document.getElementById('sectionFormulas').style.display = tab === 'formulas' ? 'block' : 'none';
 
   document.getElementById('tabBtnExplorer').classList.toggle('active', tab === 'explorer');
-  document.getElementById('tabBtnChallenge').classList.toggle('active', tab === 'challenge');
   document.getElementById('tabBtnFormulas').classList.toggle('active', tab === 'formulas');
 
   if (tab === 'explorer') {
     drawGraph();
-  } else if (tab === 'challenge') {
-    if (state.quiz.type === 'plot') {
-      drawQuizPlot();
-    } else {
-      drawQuizIdentify();
-    }
   }
-  triggerMathJax();
-};
-
-window.setQuizType = function (type) {
-  state.quiz.type = type;
-  document.getElementById('quizModePlotBtn').classList.toggle('active', type === 'plot');
-  document.getElementById('quizModeIdentifyBtn').classList.toggle('active', type === 'identify');
-
-  document.getElementById('quizPlotArea').style.display = type === 'plot' ? 'flex' : 'none';
-  document.getElementById('quizIdentifyArea').style.display = type === 'identify' ? 'flex' : 'none';
-
-  generateNewQuiz();
-};
-
-window.generateNewQuiz = function () {
-  const quiz = state.quiz;
-  const feedback = document.getElementById('quizFeedbackBox');
-  if (feedback) {
-    feedback.className = 'quiz-feedback';
-    feedback.style.display = 'none';
-  }
-
-  // Predefined student-friendly coordinate pairs
-  const problemBank = [
-    { r: 3, theta: Math.PI / 4, label: '(3, \\frac{\\pi}{4})' },
-    { r: 4, theta: (2 * Math.PI) / 3, label: '(4, \\frac{2\\pi}{3})' },
-    { r: 2, theta: (5 * Math.PI) / 6, label: '(2, \\frac{5\\pi}{6})' },
-    { r: 3.5, theta: (4 * Math.PI) / 3, label: '(3.5, \\frac{4\\pi}{3})' },
-    { r: 2.5, theta: (7 * Math.PI) / 4, label: '(2.5, \\frac{7\\pi}{4})' },
-    { r: -3, theta: Math.PI / 3, label: '(-3, \\frac{\\pi}{3})' },
-    { r: -2.5, theta: (3 * Math.PI) / 4, label: '(-2.5, \\frac{3\\pi}{4})' },
-    { r: 3, theta: Math.PI / 2, label: '(3, \\frac{\\pi}{2})' }
-  ];
-
-  const item = problemBank[Math.floor(Math.random() * problemBank.length)];
-  quiz.targetR = item.r;
-  quiz.targetTheta = item.theta;
-  quiz.targetLabel = item.label;
-  quiz.solved = false;
-
-  const targetX = item.r * Math.cos(item.theta);
-  const targetY = item.r * Math.sin(item.theta);
-
-  if (quiz.type === 'plot') {
-    // Initial user point at origin
-    quiz.userX = 0;
-    quiz.userY = 0;
-    document.getElementById('quizQuestionText').innerHTML = `
-      จงคลิกหรือลากจุดสีน้ำเงินบนกราฟไปวางที่พิกัดเชิงขั้ว: <strong>$P${quiz.targetLabel}$</strong>
-    `;
-    drawQuizPlot();
-  } else {
-    // Identify quiz: generate 4 choices
-    document.getElementById('quizQuestionText').innerHTML = `
-      จุดสีแดงบนกราฟด้านล่าง มีพิกัดเชิงขั้วตรงกับตัวเลือกใด?
-    `;
-
-    const choices = [
-      { r: item.r, theta: item.theta, text: `(${fmt(item.r)}, ${formatAngleTeX(item.theta)})`, isCorrect: true },
-      { r: item.r, theta: item.theta + Math.PI / 2, text: `(${fmt(item.r)}, ${formatAngleTeX(item.theta + Math.PI / 2)})`, isCorrect: false },
-      { r: -item.r, theta: item.theta, text: `(${fmt(-item.r)}, ${formatAngleTeX(item.theta)})`, isCorrect: false },
-      { r: item.r, theta: (2 * Math.PI) - item.theta, text: `(${fmt(item.r)}, ${formatAngleTeX((2 * Math.PI) - item.theta)})`, isCorrect: false }
-    ];
-
-    // Shuffle
-    choices.sort(() => Math.random() - 0.5);
-    quiz.options = choices;
-
-    const optContainer = document.getElementById('quizIdentifyOptions');
-    if (optContainer) {
-      let optHtml = '';
-      choices.forEach((c, idx) => {
-        optHtml += `
-          <button class="btn-outline" style="padding: 10px; font-size: 0.95rem; text-align: center;" onclick="submitIdentifyQuiz(${idx})">
-            $${c.text}$
-          </button>
-        `;
-      });
-      optContainer.innerHTML = optHtml;
-    }
-
-    drawQuizIdentify();
-  }
-
-  triggerMathJax();
-};
-
-// Draw Quiz Plot Canvas
-function drawQuizPlot() {
-  if (!quizCanvas || !quizCtx) return;
-  const ctx = quizCtx;
-  const w = quizCanvas.width;
-  const h = quizCanvas.height;
-  const cx = w / 2;
-  const cy = h / 2;
-  const scale = (w / 2 * 0.85) / state.maxCoord;
-
-  ctx.clearRect(0, 0, w, h);
-
-  // Concentric Circles
-  for (let r = 1; r <= 5; r++) {
-    ctx.beginPath();
-    ctx.arc(cx, cy, r * scale, 0, 2 * Math.PI);
-    ctx.strokeStyle = 'rgba(122, 92, 58, 0.18)';
-    ctx.stroke();
-    ctx.fillStyle = 'rgba(122, 92, 58, 0.6)';
-    ctx.font = '10px system-ui';
-    ctx.fillText(r.toString(), cx + r * scale + 2, cy - 2);
-  }
-
-  // Radial rays
-  [0, Math.PI/6, Math.PI/4, Math.PI/3, Math.PI/2, 2*Math.PI/3, 3*Math.PI/4, 5*Math.PI/6, Math.PI, 7*Math.PI/6, 5*Math.PI/4, 4*Math.PI/3, 3*Math.PI/2, 5*Math.PI/3, 7*Math.PI/4, 11*Math.PI/6].forEach(a => {
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(cx + Math.cos(a) * (w/2 * 0.85), cy - Math.sin(a) * (w/2 * 0.85));
-    ctx.strokeStyle = 'rgba(122, 92, 58, 0.12)';
-    ctx.stroke();
-  });
-
-  // Axes
-  ctx.strokeStyle = '#7A5C3A';
-  ctx.lineWidth = 1.2;
-  ctx.beginPath();
-  ctx.moveTo(0, cy); ctx.lineTo(w, cy);
-  ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
-  ctx.stroke();
-
-  // User Point
-  const ux = cx + state.quiz.userX * scale;
-  const uy = cy - state.quiz.userY * scale;
-
-  ctx.beginPath();
-  ctx.arc(ux, uy, 7, 0, 2 * Math.PI);
-  ctx.fillStyle = '#2980b9';
-  ctx.fill();
-  ctx.strokeStyle = '#fff';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  // If solved, show target point in green
-  if (state.quiz.solved) {
-    const tx = cx + (state.quiz.targetR * Math.cos(state.quiz.targetTheta)) * scale;
-    const ty = cy - (state.quiz.targetR * Math.sin(state.quiz.targetTheta)) * scale;
-    ctx.beginPath();
-    ctx.arc(tx, ty, 6, 0, 2 * Math.PI);
-    ctx.fillStyle = '#27ae60';
-    ctx.fill();
-    ctx.strokeStyle = '#fff';
-    ctx.stroke();
-  }
-}
-
-// Draw Quiz Identify Canvas
-function drawQuizIdentify() {
-  if (!quizIdCanvas || !quizIdCtx) return;
-  const ctx = quizIdCtx;
-  const w = quizIdCanvas.width;
-  const h = quizIdCanvas.height;
-  const cx = w / 2;
-  const cy = h / 2;
-  const scale = (w / 2 * 0.85) / state.maxCoord;
-
-  ctx.clearRect(0, 0, w, h);
-
-  // Concentric circles
-  for (let r = 1; r <= 5; r++) {
-    ctx.beginPath();
-    ctx.arc(cx, cy, r * scale, 0, 2 * Math.PI);
-    ctx.strokeStyle = 'rgba(122, 92, 58, 0.18)';
-    ctx.stroke();
-    ctx.fillStyle = 'rgba(122, 92, 58, 0.6)';
-    ctx.font = '10px system-ui';
-    ctx.fillText(r.toString(), cx + r * scale + 2, cy - 2);
-  }
-
-  // Radial rays
-  [0, Math.PI/6, Math.PI/4, Math.PI/3, Math.PI/2, 2*Math.PI/3, 3*Math.PI/4, 5*Math.PI/6, Math.PI, 7*Math.PI/6, 5*Math.PI/4, 4*Math.PI/3, 3*Math.PI/2, 5*Math.PI/3, 7*Math.PI/4, 11*Math.PI/6].forEach(a => {
-    ctx.beginPath();
-    ctx.moveTo(cx, cy);
-    ctx.lineTo(cx + Math.cos(a) * (w/2 * 0.85), cy - Math.sin(a) * (w/2 * 0.85));
-    ctx.strokeStyle = 'rgba(122, 92, 58, 0.12)';
-    ctx.stroke();
-  });
-
-  // Axes
-  ctx.strokeStyle = '#7A5C3A';
-  ctx.lineWidth = 1.2;
-  ctx.beginPath();
-  ctx.moveTo(0, cy); ctx.lineTo(w, cy);
-  ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
-  ctx.stroke();
-
-  // Draw Mystery Target Point in Red
-  const tx = cx + (state.quiz.targetR * Math.cos(state.quiz.targetTheta)) * scale;
-  const ty = cy - (state.quiz.targetR * Math.sin(state.quiz.targetTheta)) * scale;
-
-  ctx.beginPath();
-  ctx.arc(tx, ty, 7, 0, 2 * Math.PI);
-  ctx.fillStyle = '#c0392b';
-  ctx.fill();
-  ctx.strokeStyle = '#fff';
-  ctx.lineWidth = 2;
-  ctx.stroke();
-
-  ctx.fillStyle = '#c0392b';
-  ctx.font = 'bold 12px system-ui';
-  ctx.fillText('P ?', tx + 8, ty - 6);
-}
-
-// Submit Plot Quiz
-window.submitPlotQuiz = function () {
-  const quiz = state.quiz;
-  const targetX = quiz.targetR * Math.cos(quiz.targetTheta);
-  const targetY = quiz.targetR * Math.sin(quiz.targetTheta);
-  const dist = Math.hypot(quiz.userX - targetX, quiz.userY - targetY);
-
-  const feedback = document.getElementById('quizFeedbackBox');
-  quiz.solved = true;
-  drawQuizPlot();
-
-  if (dist <= 0.45) {
-    quiz.score += 10;
-    quiz.streak += 1;
-    feedback.className = 'quiz-feedback success';
-    feedback.innerHTML = `
-      🎉 <strong>ถูกต้องยอดเยี่ยม!</strong> คุณวางจุดได้แม่นยำมาก 
-      (ระยะ $r = ${fmt(quiz.targetR)}$, มุม $\\theta = ${formatAngleTeX(quiz.targetTheta)}$)
-      <br><button class="btn-action" style="margin-top: 8px; font-size: 0.85rem;" onclick="generateNewQuiz()">ลุยข้อต่อไป</button>
-    `;
-  } else {
-    quiz.streak = 0;
-    feedback.className = 'quiz-feedback error';
-    let hint = '';
-    if (quiz.targetR < 0) {
-      hint = `💡 <em>ข้อควรระวัง:</em> รัศมี $r = ${quiz.targetR}$ ติดลบ หมายความว่าให้หันหน้าไปทิศ $\\theta$ แล้วเดินถอยหลังไปในทิศตรงข้าม!`;
-    }
-    feedback.innerHTML = `
-      ❌ <strong>ยังไม่ถูกต้อง</strong> (ตำแหน่งที่ถูกคือจุดสีเขียวบนกราฟ)
-      <br>${hint}
-      <br>ตำแหน่งเป้าหมายคือพิกัดฉาก: $(x, y) = (${fmt(targetX)}, ${fmt(targetY)})$
-      <br><button class="btn-action" style="margin-top: 8px; font-size: 0.85rem;" onclick="generateNewQuiz()">ลองข้อใหม่</button>
-    `;
-  }
-
-  document.getElementById('quizScore').textContent = quiz.score;
-  document.getElementById('quizStreak').textContent = quiz.streak;
-  triggerMathJax();
-};
-
-// Submit Identify Quiz
-window.submitIdentifyQuiz = function (choiceIndex) {
-  const quiz = state.quiz;
-  const choice = quiz.options[choiceIndex];
-  const feedback = document.getElementById('quizFeedbackBox');
-
-  if (choice && choice.isCorrect) {
-    quiz.score += 10;
-    quiz.streak += 1;
-    feedback.className = 'quiz-feedback success';
-    feedback.innerHTML = `
-      🎉 <strong>ถูกต้อง!</strong> จุดดังกล่าวคือพิกัด $${choice.text}$
-      <br><button class="btn-action" style="margin-top: 8px; font-size: 0.85rem;" onclick="generateNewQuiz()">ลุยข้อต่อไป</button>
-    `;
-  } else {
-    quiz.streak = 0;
-    feedback.className = 'quiz-feedback error';
-    const correctOpt = quiz.options.find(c => c.isCorrect);
-    feedback.innerHTML = `
-      ❌ <strong>ยังไม่ถูกต้อง</strong> คำตอบที่ถูกต้องคือ: $${correctOpt.text}$
-      <br><button class="btn-action" style="margin-top: 8px; font-size: 0.85rem;" onclick="generateNewQuiz()">ลองข้อใหม่</button>
-    `;
-  }
-
-  document.getElementById('quizScore').textContent = quiz.score;
-  document.getElementById('quizStreak').textContent = quiz.streak;
   triggerMathJax();
 };
