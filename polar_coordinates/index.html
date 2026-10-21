@@ -1,0 +1,823 @@
+<!doctype html>
+<html lang="th" class="debug">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>ระบบพิกัดเชิงขั้ว (Polar Coordinates) — Nareupanat Lekkoksung</title>
+  
+  <!-- Site Base Stylesheet -->
+  <link rel="stylesheet" href="/assets/style.css">
+
+  <!-- MathJax Configuration -->
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+      }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- App Specific Styles matching site theme -->
+  <style>
+    /* Card Container matching site design tokens */
+    .app-card {
+      background: #ffffff;
+      border: 1px solid rgba(122, 92, 58, 0.2);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+    }
+
+    /* Sub-card inside sections */
+    .sub-card {
+      background: #faf8f5;
+      border: 1px solid rgba(122, 92, 58, 0.18);
+      border-radius: 12px;
+      padding: 16px 18px;
+      margin-bottom: 16px;
+    }
+
+    .sub-card-title {
+      font-weight: 700;
+      color: var(--muted);
+      margin-top: 0;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 1.05rem;
+    }
+
+    /* Tab Navigation */
+    .tab-nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 2px solid rgba(122, 92, 58, 0.12);
+    }
+
+    .tab-btn {
+      padding: 9px 18px;
+      border-radius: 24px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: 1px solid rgba(122, 92, 58, 0.25);
+      background: #faf8f5;
+      color: var(--muted);
+      transition: all 0.2s ease;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-btn:hover {
+      background: rgba(122, 92, 58, 0.08);
+      border-color: var(--muted);
+    }
+
+    .tab-btn.active {
+      background: var(--muted);
+      color: #ffffff;
+      border-color: var(--muted);
+      box-shadow: 0 2px 8px rgba(122, 92, 58, 0.25);
+    }
+
+    /* Two-column layout for Explorer */
+    .explorer-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 820px) {
+      .explorer-grid {
+        grid-template-columns: 1.15fr 1fr;
+        align-items: start;
+      }
+    }
+
+    /* Canvas styling */
+    .canvas-container {
+      position: relative;
+      background: #ffffff;
+      border: 1px solid rgba(122, 92, 58, 0.25);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      box-shadow: inset 0 0 12px rgba(122, 92, 58, 0.04);
+    }
+
+    canvas#plotCanvas {
+      display: block;
+      width: 100%;
+      max-width: 440px;
+      aspect-ratio: 1 / 1;
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    .canvas-toolbar {
+      width: 100%;
+      background: #faf8f5;
+      border-bottom: 1px solid rgba(122, 92, 58, 0.15);
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 0.85rem;
+    }
+
+    .canvas-footer {
+      width: 100%;
+      background: #faf8f5;
+      border-top: 1px solid rgba(122, 92, 58, 0.15);
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #555;
+    }
+
+    /* Toggle pill groups */
+    .btn-group {
+      display: inline-flex;
+      border: 1px solid rgba(122, 92, 58, 0.25);
+      border-radius: 20px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .group-btn {
+      padding: 5px 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+      font-family: inherit;
+    }
+
+    .group-btn:not(:last-child) {
+      border-right: 1px solid rgba(122, 92, 58, 0.2);
+    }
+
+    .group-btn.active {
+      background: var(--muted);
+      color: #ffffff;
+    }
+
+    .group-btn:hover:not(.active) {
+      background: rgba(122, 92, 58, 0.08);
+    }
+
+    /* Checkbox options row */
+    .options-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 0.85rem;
+      margin: 10px 0;
+    }
+
+    .option-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      user-select: none;
+      color: var(--fg);
+    }
+
+    .option-label input[type="checkbox"] {
+      accent-color: var(--muted);
+      cursor: pointer;
+    }
+
+    /* Form controls */
+    .input-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .input-label {
+      min-width: 24px;
+      font-weight: 700;
+      color: var(--fg);
+    }
+
+    .num-input {
+      width: 76px;
+      padding: 6px 10px;
+      border: 1px solid rgba(122, 92, 58, 0.3);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--fg);
+      background: #fff;
+      text-align: center;
+    }
+
+    .slider-input {
+      flex: 1;
+      accent-color: var(--muted);
+      cursor: pointer;
+    }
+
+    .text-input-group {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex: 1;
+    }
+
+    .text-input {
+      flex: 1;
+      padding: 6px 10px;
+      border: 1px solid rgba(122, 92, 58, 0.3);
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      color: var(--fg);
+      background: #fff;
+    }
+
+    /* Quick angle buttons */
+    .angle-presets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 8px;
+    }
+
+    .preset-btn {
+      padding: 3px 8px;
+      font-size: 0.78rem;
+      border: 1px solid rgba(122, 92, 58, 0.25);
+      border-radius: 12px;
+      background: #fff;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .preset-btn:hover {
+      background: var(--muted);
+      color: #fff;
+    }
+
+    /* Action buttons */
+    .btn-action {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      border: 1px solid var(--muted);
+      background: var(--muted);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-action:hover {
+      background: var(--link-hover);
+    }
+
+    .btn-outline {
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid rgba(122, 92, 58, 0.3);
+      background: #fff;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: inherit;
+    }
+
+    .btn-outline:hover {
+      background: rgba(122, 92, 58, 0.08);
+      border-color: var(--muted);
+    }
+
+    /* Math and explanation box */
+    .math-box {
+      background: #ffffff;
+      border-left: 3px solid var(--muted);
+      padding: 12px 14px;
+      margin: 10px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+      line-height: 1.6;
+    }
+
+    .math-step {
+      margin-bottom: 8px;
+    }
+
+    .badge-quadrant {
+      display: inline-block;
+      padding: 2px 8px;
+      background: rgba(122, 92, 58, 0.12);
+      color: var(--muted);
+      border-radius: 10px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    /* Multiple representations table */
+    .rep-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .rep-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: #fff;
+      border: 1px solid rgba(122, 92, 58, 0.18);
+      border-radius: 6px;
+      font-size: 0.88rem;
+    }
+
+    .rep-item .apply-btn {
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      border-radius: 4px;
+      border: 1px solid rgba(122, 92, 58, 0.25);
+      background: #faf8f5;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .rep-item .apply-btn:hover {
+      background: var(--muted);
+      color: #fff;
+    }
+
+    /* Saved Points List */
+    .saved-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 180px;
+      overflow-y: auto;
+      margin-top: 8px;
+    }
+
+    .saved-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: #fff;
+      border: 1px solid rgba(122, 92, 58, 0.18);
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .saved-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+
+    .del-btn {
+      color: #c0392b;
+      cursor: pointer;
+      border: none;
+      background: none;
+      font-size: 1rem;
+      padding: 0 4px;
+    }
+
+    /* Quiz / Challenge styles */
+    .quiz-card {
+      background: #ffffff;
+      border: 1px dashed rgba(122, 92, 58, 0.4);
+      border-radius: 12px;
+      padding: 20px;
+      margin: 16px 0;
+    }
+
+    .quiz-question {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--fg);
+      margin-bottom: 12px;
+    }
+
+    .quiz-feedback {
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-top: 14px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .quiz-feedback.success {
+      display: block;
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+    }
+
+    .quiz-feedback.error {
+      display: block;
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ffcdd2;
+    }
+
+    .stat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 14px;
+      background: rgba(122, 92, 58, 0.1);
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    /* Theory section styling */
+    .theory-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14px 0;
+      font-size: 0.92rem;
+    }
+
+    .theory-table th, .theory-table td {
+      border: 1px solid rgba(122, 92, 58, 0.2);
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    .theory-table th {
+      background: #faf8f5;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .notice-box {
+      background: #faf8f5;
+      border-left: 4px solid var(--muted);
+      padding: 12px 16px;
+      margin: 14px 0;
+      border-radius: 0 8px 8px 0;
+      font-size: 0.92rem;
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="/">Home</a>
+  <nav class="nav">
+    <a href="/cv.html">CV</a>
+    <a href="/publications.html">Publications</a>
+    <a href="/talks.html">Talks</a>
+    <a href="/research.html">Research Interests</a>
+    <a href="/teaching.html" class="active">Teaching</a>
+  </nav>
+</header>
+
+<main>
+  <h3>ระบบพิกัดเชิงขั้ว (Polar Coordinates) <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.10.21.11:55</span></h3>
+  <p class="justify">
+    สื่อการเรียนรู้เชิงปฏิสัมพันธ์สำหรับการแปลงพิกัดและทำความเข้าใจความสัมพันธ์ระหว่าง 
+    <strong>ระบบพิกัดฉาก $(x, y)$</strong> และ <strong>ระบบพิกัดเชิงขั้ว $(r, \theta)$</strong> 
+    โดยสามารถสลับมุมมองระบบพิกัด ป้อนค่า ลากจุดบนกราฟ และศึกษาขั้นตอนการคำนวณได้แบบเรียลไทม์
+  </p>
+
+  <!-- Navigation Tabs -->
+  <div class="tab-nav">
+    <button class="tab-btn active" id="tabBtnExplorer" onclick="switchTab('explorer')">
+      🌐 สำรวจและแปลงพิกัด (Explorer)
+    </button>
+    <button class="tab-btn" id="tabBtnChallenge" onclick="switchTab('challenge')">
+      🎯 แบบฝึกหัดท้าทาย (Practice Quiz)
+    </button>
+    <button class="tab-btn" id="tabBtnFormulas" onclick="switchTab('formulas')">
+      📖 สรุปสูตรและข้อควรจำ (Formulas)
+    </button>
+  </div>
+
+  <!-- TAB 1: EXPLORER -->
+  <div id="sectionExplorer">
+    <div class="explorer-grid">
+      
+      <!-- Left Column: Canvas & View Controls -->
+      <div>
+        <div class="canvas-container">
+          <!-- Canvas Toolbar: Grid Selectors -->
+          <div class="canvas-toolbar">
+            <span style="font-weight: 600; color: var(--muted);">ระบบตาราง:</span>
+            <div class="btn-group">
+              <button class="group-btn" id="gridBtnCartesian" onclick="setGridMode('cartesian')">พิกัดฉาก</button>
+              <button class="group-btn" id="gridBtnPolar" onclick="setGridMode('polar')">พิกัดเชิงขั้ว</button>
+              <button class="group-btn active" id="gridBtnBoth" onclick="setGridMode('both')">ซ้อน 2 ระบบ</button>
+            </div>
+          </div>
+
+          <!-- The Canvas -->
+          <canvas id="plotCanvas" width="440" height="440"></canvas>
+
+          <!-- Canvas Footer: Status & Reset -->
+          <div class="canvas-footer">
+            <div id="canvasQuadrantBadge" class="badge-quadrant">Quadrant I</div>
+            <div style="display: flex; gap: 6px;">
+              <button class="btn-outline" style="padding: 2px 8px; font-size: 0.75rem;" onclick="resetPoint()">รีเซ็ตจุด</button>
+              <button class="btn-outline" style="padding: 2px 8px; font-size: 0.75rem;" onclick="snapPointToGrid()">Snap ตาราง</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Visual Guides Checkboxes -->
+        <div class="options-row">
+          <label class="option-label">
+            <input type="checkbox" id="chkTriangle" checked onchange="drawGraph()">
+            สามเหลี่ยมมุมฉาก ($x, y, r$)
+          </label>
+          <label class="option-label">
+            <input type="checkbox" id="chkAngleArc" checked onchange="drawGraph()">
+            ส่วนโค้งมุม ($\theta$)
+          </label>
+          <label class="option-label">
+            <input type="checkbox" id="chkNegativeR" checked onchange="drawGraph()">
+            แนวชี้ทิศเมื่อ $r < 0$
+          </label>
+          <label class="option-label">
+            <input type="checkbox" id="chkLabels" checked onchange="drawGraph()">
+            ป้ายพิกัดกำกับจุด
+          </label>
+        </div>
+
+        <!-- Saved Points List Card -->
+        <div class="sub-card">
+          <div class="sub-card-title">
+            <span>📌 จุดที่บันทึกไว้บนกราฟ</span>
+            <button class="btn-action" style="padding: 3px 10px; font-size: 0.8rem;" onclick="saveCurrentPoint()">
+              ➕ บันทึกจุดนี้
+            </button>
+          </div>
+          <div id="savedPointsList" class="saved-list">
+            <div style="font-size: 0.85rem; color: #888; font-style: italic;">ยังไม่มีจุดที่บันทึก (กดปุ่ม "บันทึกจุดนี้" เพื่อปักหมุดเปรียบเทียบหลายจุด)</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Dual Inputs & Live Math Breakdown -->
+      <div>
+        
+        <!-- Input 1: Cartesian (x, y) -->
+        <div class="sub-card">
+          <div class="sub-card-title">
+            <span>1. ระบบพิกัดฉาก $(x, y)$</span>
+            <span style="font-size: 0.8rem; font-weight: normal; color: #666;">คู่อันดับ $(x, y)$</span>
+          </div>
+          <div class="input-row">
+            <label class="input-label" for="inputX">x:</label>
+            <input type="number" id="inputX" class="num-input" step="0.1" value="3.0" oninput="onCartesianChange()">
+            <input type="range" id="sliderX" class="slider-input" min="-6" max="6" step="0.1" value="3" oninput="onSliderXChange()">
+          </div>
+          <div class="input-row">
+            <label class="input-label" for="inputY">y:</label>
+            <input type="number" id="inputY" class="num-input" step="0.1" value="3.0" oninput="onCartesianChange()">
+            <input type="range" id="sliderY" class="slider-input" min="-6" max="6" step="0.1" value="3" oninput="onSliderYChange()">
+          </div>
+        </div>
+
+        <!-- Input 2: Polar (r, theta) -->
+        <div class="sub-card">
+          <div class="sub-card-title">
+            <span>2. ระบบพิกัดเชิงขั้ว $(r, \theta)$</span>
+            <div class="btn-group">
+              <button class="group-btn active" id="btnUnitRad" onclick="setAngleUnit('rad')">เรเดียน (rad)</button>
+              <button class="group-btn" id="btnUnitDeg" onclick="setAngleUnit('deg')">องศา (°)</button>
+            </div>
+          </div>
+          <div class="input-row">
+            <label class="input-label" for="inputR">r:</label>
+            <input type="number" id="inputR" class="num-input" step="0.1" value="4.24" oninput="onPolarRChange()">
+            <input type="range" id="sliderR" class="slider-input" min="-6" max="6" step="0.1" value="4.24" oninput="onSliderRChange()">
+          </div>
+          <div class="input-row">
+            <label class="input-label" for="inputTheta">&theta;:</label>
+            <div class="text-input-group">
+              <input type="text" id="inputTheta" class="text-input" value="pi/4" placeholder="เช่น pi/4 หรือ 45" onchange="onPolarThetaChange()" onkeydown="if(event.key==='Enter')onPolarThetaChange()">
+              <button class="btn-outline" style="padding: 5px 8px; font-size: 0.8rem;" onclick="onPolarThetaChange()">แปลง</button>
+            </div>
+          </div>
+          <div class="input-row">
+            <span class="input-label" style="font-size: 0.8rem; color: #888;">สไลด์:</span>
+            <input type="range" id="sliderTheta" class="slider-input" min="0" max="6.28318" step="0.01" value="0.78539" oninput="onSliderThetaChange()">
+          </div>
+
+          <!-- Quick Angle Presets -->
+          <div style="font-size: 0.8rem; color: #666; margin-top: 6px;">มุมมาตรฐานที่พบบ่อย:</div>
+          <div class="angle-presets">
+            <button class="preset-btn" onclick="applyPresetAngle(0, '0')">0</button>
+            <button class="preset-btn" onclick="applyPresetAngle(Math.PI/6, 'pi/6')">&pi;/6 (30°)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(Math.PI/4, 'pi/4')">&pi;/4 (45°)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(Math.PI/3, 'pi/3')">&pi;/3 (60°)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(Math.PI/2, 'pi/2')">&pi;/2 (90°)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(2*Math.PI/3, '2pi/3')">2&pi;/3 (120°)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(3*Math.PI/4, '3pi/4')">3&pi;/4 (135°)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(5*Math.PI/6, '5pi/6')">5&pi;/6 (150°)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(Math.PI, 'pi')">&pi; (180°)</button>
+            <button class="preset-btn" onclick="applyPresetAngle(3*Math.PI/2, '3pi/2')">3&pi;/2 (270°)</button>
+          </div>
+        </div>
+
+        <!-- Step-by-Step Conversion Breakdown -->
+        <div class="sub-card">
+          <div class="sub-card-title">
+            <span>🧮 ขั้นตอนการคำนวณแปลงพิกัด</span>
+          </div>
+          <div class="math-box" id="calcBreakdown">
+            กำลังโหลดสูตรคำนวณ...
+          </div>
+        </div>
+
+        <!-- Multiple Representations Card -->
+        <div class="sub-card">
+          <div class="sub-card-title">
+            <span>🔄 พิกัดเชิงขั้วคู่อื่นที่แทนจุดเดียวกัน</span>
+          </div>
+          <p style="font-size: 0.82rem; margin: 0 0 6px 0; color: #666;">
+            เนื่องจาก $\theta$ วนรอบได้ $2\pi$ และการกลับทิศรัศมี $(-r)$ หมุนมุมไป $\pi$ จุดเดียวกันจึงเขียนได้หลายแบบ:
+          </p>
+          <div class="rep-list" id="repListContainer">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: CHALLENGE / QUIZ -->
+  <div id="sectionChallenge" style="display: none;">
+    <div class="app-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
+        <h4 style="margin: 0; color: var(--muted);">🎯 แบบฝึกหัดท้าทายความเข้าใจพิกัดเชิงขั้ว</h4>
+        <div>
+          <span class="stat-badge">คะแนน: <span id="quizScore">0</span></span>
+          <span class="stat-badge" style="margin-left: 6px;">ถูกต่อเนื่อง: <span id="quizStreak">0</span> 🔥</span>
+        </div>
+      </div>
+
+      <div class="btn-group" style="margin-bottom: 14px;">
+        <button class="group-btn active" id="quizModePlotBtn" onclick="setQuizType('plot')">แบบที่ 1: วางจุดให้ตรงพิกัด</button>
+        <button class="group-btn" id="quizModeIdentifyBtn" onclick="setQuizType('identify')">แบบที่ 2: ทายพิกัดจากตำแหน่งจุด</button>
+      </div>
+
+      <!-- Quiz Interactive Card -->
+      <div class="quiz-card">
+        <div class="quiz-question" id="quizQuestionText">กำลังสุ่มโจทย์...</div>
+        
+        <!-- Plot Quiz Canvas Area -->
+        <div id="quizPlotArea" style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+          <div style="font-size: 0.88rem; color: #666;">คลิกหรือลากจุดสีน้ำเงิน $P$ บนกราฟเพื่อวางตำแหน่งตามโจทย์ที่กำหนด:</div>
+          <canvas id="quizCanvas" width="380" height="380" style="border: 1px solid rgba(122,92,58,0.3); border-radius: 12px; max-width: 100%; aspect-ratio: 1/1; cursor: crosshair; touch-action: none; background: #fff;"></canvas>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn-action" onclick="submitPlotQuiz()">ตรวจคำตอบ</button>
+            <button class="btn-outline" onclick="generateNewQuiz()">ข้าม / สุ่มโจทย์ใหม่</button>
+          </div>
+        </div>
+
+        <!-- Identify Quiz Options Area -->
+        <div id="quizIdentifyArea" style="display: none; flex-direction: column; gap: 10px;">
+          <canvas id="quizIdentifyCanvas" width="340" height="340" style="margin: 0 auto; border: 1px solid rgba(122,92,58,0.3); border-radius: 12px; max-width: 100%; aspect-ratio: 1/1; background: #fff;"></canvas>
+          <div id="quizIdentifyOptions" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+            <!-- Buttons dynamically generated -->
+          </div>
+        </div>
+
+        <!-- Quiz Feedback Box -->
+        <div id="quizFeedbackBox" class="quiz-feedback"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 3: FORMULAS & CHEAT SHEET -->
+  <div id="sectionFormulas" style="display: none;">
+    <div class="app-card">
+      <h4 style="margin-top: 0; color: var(--muted);">📖 สรุปสูตรและหลักการสำคัญของระบบพิกัดเชิงขั้ว</h4>
+      
+      <p class="justify">
+        ในระบบพิกัดเชิงขั้ว ระนาบจะถูกกำหนดด้วย <strong>จุดขั้ว (Pole)</strong> เทียบเท่ากับจุดกำเนิด $(0, 0)$ และ <strong>แกนเชิงขั้ว (Polar Axis)</strong> ซึ่งเทียบเท่ากับแกน $X$ ฝั่งบวก พิกัดระบุด้วย $(r, \theta)$ โดยที่:
+      </p>
+      <ul>
+        <li>$r$ คือระยะทางเชิงทิศทางจากจุดกำเนิดไปยังจุดนั้น (รัศมีสามารถติดลบได้)</li>
+        <li>$\theta$ คือมุมที่ทำกับแกนเชิงขั้ว (วัดทวนเข็มนาฬิกาเป็นบวก, ตามเข็มนาฬิกาเป็นลบ)</li>
+      </ul>
+
+      <h5 style="color: var(--muted); margin-top: 20px;">1. สูตรการแปลงพิกัด (Coordinate Conversion)</h5>
+      <table class="theory-table">
+        <thead>
+          <tr>
+            <th>การแปลง</th>
+            <th>สูตรคำนวณ</th>
+            <th>ข้อสังเกตและข้อควรระวัง</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>จาก $(r, \theta) \to (x, y)$</strong></td>
+            <td>
+              $$x = r\cos\theta$$
+              $$y = r\sin\theta$$
+            </td>
+            <td>คำนวณได้โดยตรงเสมอ ไม่ว่า $r$ หรือ $\theta$ จะเป็นค่าใด</td>
+          </tr>
+          <tr>
+            <td><strong>จาก $(x, y) \to (r, \theta)$</strong></td>
+            <td>
+              $$r = \pm\sqrt{x^2 + y^2}$$
+              $$\tan\theta = \frac{y}{x} \quad (x \neq 0)$$
+            </td>
+            <td>
+              ต้องพิจารณา <strong>Quadrant</strong> ของจุด $(x, y)$ ร่วมด้วย เพื่อเลือกมุม $\theta$ ให้ถูกต้อง
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h5 style="color: var(--muted); margin-top: 20px;">2. การเลือกมุม $\theta$ ตามควอดรันต์ (Quadrant Rules)</h5>
+      <div class="notice-box">
+        ฟังก์ชัน $\arctan(y/x)$ บนเครื่องคิดเลขทั่วไปจะให้ค่าในช่วง $\left(-\frac{\pi}{2}, \frac{\pi}{2}\right)$ เท่านั้น ดังนั้น:
+        <ul>
+          <li><strong>Quadrant I</strong> ($x > 0, y > 0$): $\theta = \arctan\left(\frac{y}{x}\right)$</li>
+          <li><strong>Quadrant II</strong> ($x < 0, y > 0$): $\theta = \arctan\left(\frac{y}{x}\right) + \pi$ (หรือ $+ 180^\circ$)</li>
+          <li><strong>Quadrant III</strong> ($x < 0, y < 0$): $\theta = \arctan\left(\frac{y}{x}\right) + \pi$ (หรือ $- \pi$)</li>
+          <li><strong>Quadrant IV</strong> ($x > 0, y < 0$): $\theta = \arctan\left(\frac{y}{x}\right) + 2\pi$ (หรือใช้มุมลบ)</li>
+          <li><strong>กรณีบนแกน:</strong> ถ้า $x=0, y>0 \implies \theta = \frac{\pi}{2}$, ถ้า $x=0, y<0 \implies \theta = \frac{3\pi}{2}$</li>
+        </ul>
+      </div>
+
+      <h5 style="color: var(--muted); margin-top: 20px;">3. ความไม่เป็นหนึ่งเดียวของพิกัดเชิงขั้ว (Non-Uniqueness)</h5>
+      <p class="justify">
+        ต่างจากพิกัดฉากที่มีคู่ลำดับเดียว จุดหนึ่งจุดในพิกัดเชิงขั้วสามารถแทนด้วยพิกัดได้นับไม่ถ้วน:
+      </p>
+      <div class="math-box">
+        $$(r, \theta) = (r, \theta + 2k\pi) = (-r, \theta + (2k+1)\pi) \quad \text{เมื่อ } k \in \mathbb{Z}$$
+      </div>
+      <p class="justify">
+        <strong>ความหมายของ $r < 0$:</strong> หากกำหนด $r = -3, \theta = \frac{\pi}{4}$ 
+        หมายถึงให้หันหน้าไปในทิศมุม $\frac{\pi}{4}$ แล้ว <strong>ก้าวถอยหลัง</strong> ไป 3 หน่วย 
+        ซึ่งจะไปตกอยู่ที่ทิศทางของมุม $\frac{\pi}{4} + \pi = \frac{5\pi}{4}$ นั่นเอง
+      </p>
+    </div>
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <p>© <span id="y"></span> Nareupanat Lekkoksung</p>
+</footer>
+
+<!-- Scripts -->
+<script>
+  // Update year
+  document.getElementById('y').textContent = new Date().getFullYear();
+</script>
+<script src="app.js"></script>
+</body>
+</html>
