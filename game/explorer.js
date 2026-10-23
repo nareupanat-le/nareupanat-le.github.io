@@ -335,12 +335,24 @@
     }
 
     function parseBlocks(text) {
-        let lines = text.split('\n');
+        if (!text) return [];
+        text = text.trim();
+        if (!text) return [];
+
+        let rawBlocks = [];
+        // Support explicit braces: {01, 10}, {010}
+        let braceMatches = text.match(/\{([^}]+)\}/g);
+        if (braceMatches && braceMatches.length > 0) {
+            rawBlocks = braceMatches.map(m => m.replace(/[{}]/g, '').trim());
+        } else {
+            // Support newline, semicolon, or pipe as block delimiters
+            rawBlocks = text.split(/[\n;|]+/).map(s => s.trim()).filter(s => s.length > 0);
+        }
+
         let blocks = [];
-        for (let line of lines) {
-            line = line.trim();
-            if (!line) continue;
-            let words = line.split(',').map(w => w.trim()).filter(w => w.length > 0);
+        for (let raw of rawBlocks) {
+            // Words within the same block are comma- or whitespace-separated
+            let words = raw.split(/[\s,]+/).map(w => w.trim()).filter(w => w.length > 0);
             if (words.length > 0) {
                 for (let w of words) {
                     if (!is_full_word(w)) {
@@ -1826,6 +1838,8 @@
                 let tmp = dom.p1BlocksInput.value;
                 dom.p1BlocksInput.value = dom.p2BlocksInput.value;
                 dom.p2BlocksInput.value = tmp;
+                if (dom.p1BlocksInput) dom.p1BlocksInput.dispatchEvent(new Event('input'));
+                if (dom.p2BlocksInput) dom.p2BlocksInput.dispatchEvent(new Event('input'));
             });
         }
         if (dom.btnCheckP1P2Single) dom.btnCheckP1P2Single.addEventListener('click', handleCheckP1P2Single);
@@ -1936,9 +1950,75 @@
                 let targetId = btn.dataset.target;
                 let val = btn.dataset.val;
                 let targetInput = document.getElementById(targetId);
-                if (targetInput) targetInput.value = val;
+                if (targetInput) {
+                    targetInput.value = val;
+                    targetInput.dispatchEvent(new Event('input'));
+                }
             });
         });
+
+        // Pair presets for P1 vs P2
+        document.querySelectorAll('.exp-preset-pair-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (dom.p1BlocksInput) {
+                    dom.p1BlocksInput.value = btn.dataset.p1;
+                    dom.p1BlocksInput.dispatchEvent(new Event('input'));
+                }
+                if (dom.p2BlocksInput) {
+                    dom.p2BlocksInput.value = btn.dataset.p2;
+                    dom.p2BlocksInput.dispatchEvent(new Event('input'));
+                }
+            });
+        });
+
+        // Pair presets for P1-Simple vs P2-Simple
+        document.querySelectorAll('.exp-preset-pair-simple-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (dom.psimpleP1Input) {
+                    dom.psimpleP1Input.value = btn.dataset.p1;
+                    dom.psimpleP1Input.dispatchEvent(new Event('input'));
+                }
+                if (dom.psimpleP2Input) {
+                    dom.psimpleP2Input.value = btn.dataset.p2;
+                    dom.psimpleP2Input.dispatchEvent(new Event('input'));
+                }
+            });
+        });
+
+        // Live Real-Time Block Previews
+        function bindBlockPreview(inputId, previewId) {
+            let input = document.getElementById(inputId);
+            let preview = document.getElementById(previewId);
+            if (!input || !preview) return;
+
+            function update() {
+                try {
+                    let blocks = parseBlocks(input.value);
+                    if (blocks.length === 0) {
+                        preview.innerHTML = `<span style="color:var(--text-secondary); font-size:0.8rem;">💡 Empty partition</span>`;
+                    } else {
+                        let label = blocks.length === 1 ? '1 Block' : `${blocks.length} Blocks`;
+                        let content = blocks.map((b, i) => `<span style="background:rgba(122,92,58,0.08); padding:1px 6px; border-radius:4px; margin:1px 2px;">\\(\\Gamma_{${i + 1}} = \\{${b.join(', ')}\\}\\)</span>`).join(' ');
+                        preview.innerHTML = `<span class="badge-block-count">${label}</span> <span style="font-size:0.82rem;">${content}</span>`;
+                        if (window.MathJax && window.MathJax.typesetPromise) {
+                            window.MathJax.typesetPromise([preview]).catch(() => {});
+                        }
+                    }
+                } catch (e) {
+                    preview.innerHTML = `<span style="color:var(--error); font-size:0.8rem;">⚠️ ${e.message}</span>`;
+                }
+            }
+
+            input.addEventListener('input', update);
+            update();
+        }
+
+        bindBlockPreview('exp-p-blocks', 'exp-p-blocks-preview');
+        bindBlockPreview('exp-p1-blocks', 'exp-p1-blocks-preview');
+        bindBlockPreview('exp-p2-blocks', 'exp-p2-blocks-preview');
+        bindBlockPreview('exp-psimple-p', 'exp-psimple-p-preview');
+        bindBlockPreview('exp-psimple-p1', 'exp-psimple-p1-preview');
+        bindBlockPreview('exp-psimple-p2', 'exp-psimple-p2-preview');
     }
 
     // Initialize on DOM Ready

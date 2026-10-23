@@ -36,7 +36,7 @@
         <header>
             <div class="glow-orb"></div>
             <h1>Partition Ideal Theory &amp; Semigroups Explorer</h1>
-            <p>Interactive mathematical research suite for Admissible Partition Ideals, WQO Stabilizer Families, and \(le\)-/\(poe\)-semigroup structures. <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.10.03.13:32</span></p>
+            <p>Interactive mathematical research suite for Admissible Partition Ideals, WQO Stabilizer Families, and \(le\)-/\(poe\)-semigroup structures. <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.10.23.20:49</span></p>
         </header>
 
         <!-- Main Portal Navigation Tabs -->
@@ -425,10 +425,13 @@
                     </div>
 
                     <div style="margin-top: 12px;">
-                        <label for="exp-p-blocks" style="font-weight: 600; font-size: 0.9rem; color: var(--text-secondary);">
-                            Partition Blocks (one block per line, comma-separated full words):
+                        <label for="exp-p-blocks" style="font-weight: 600; font-size: 0.9rem; color: var(--text-secondary); display: flex; justify-content: space-between; align-items: center;">
+                            <span>Partition Blocks:</span>
+                            <span style="font-size: 0.78rem; font-weight: normal; color: var(--accent-purple);">Enter or ';' for new block</span>
                         </label>
-                        <textarea id="exp-p-blocks" class="block-input" style="width: 100%; height: 90px; margin-top: 6px;" placeholder="01, 10">01, 10</textarea>
+                        <div class="block-input-hint">💡 Separate blocks by <strong>Enter (new line)</strong> or <strong>semicolon ';'</strong> (e.g. <code>01, 10 ; 010</code>). Words in the same block are comma-separated.</div>
+                        <textarea id="exp-p-blocks" class="block-input" style="width: 100%; height: 80px; margin-top: 4px;" placeholder="01, 10 (Line 1 = Block 1)&#10;010 (Line 2 = Block 2)">01, 10</textarea>
+                        <div id="exp-p-blocks-preview" class="block-preview-tag"></div>
                     </div>
 
                     <div style="margin-top: 12px;">
@@ -447,7 +450,13 @@
                         Find semigroups having elements \(a\) that are \(\mathcal{P}_1\)-ideal elements but <strong>NOT</strong> \(\mathcal{P}_2\)-ideal elements (\(\mathcal{I}_{\mathcal{P}_1} \setminus \mathcal{I}_{\mathcal{P}_2} \neq \emptyset\)).
                     </p>
 
-                    <div style="display: flex; justify-content: flex-end; margin-bottom: 8px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 8px;">
+                        <div class="presets-container" style="margin: 0;">
+                            <span class="preset-label">Presets:</span>
+                            <button class="btn-preset exp-preset-pair-btn" data-p1="01, 10" data-p2="010">{01, 10} vs {010}</button>
+                            <button class="btn-preset exp-preset-pair-btn" data-p1="01, 10 ; 010" data-p2="01, 10">2 Blocks vs 1 Block</button>
+                            <button class="btn-preset exp-preset-pair-btn" data-p1="01 ; 10" data-p2="01, 10">{01}; {10} vs {01, 10}</button>
+                        </div>
                         <button id="exp-btn-swap-p1p2" class="btn btn-secondary btn-sm">
                             🔁 Swap \(\mathcal{P}_1 \leftrightarrow \mathcal{P}_2\)
                         </button>
@@ -455,12 +464,22 @@
 
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
                         <div style="background: rgba(122,92,58,0.05); padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border);">
-                            <label for="exp-p1-blocks" style="font-weight: 700; color: var(--accent-purple);">Partition \(\mathcal{P}_1\):</label>
-                            <textarea id="exp-p1-blocks" class="block-input" style="width: 100%; height: 80px; margin-top: 6px;">01, 10</textarea>
+                            <label for="exp-p1-blocks" style="font-weight: 700; color: var(--accent-purple); display: flex; justify-content: space-between; align-items: center;">
+                                <span>Partition \(\mathcal{P}_1\):</span>
+                                <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-secondary);">(Enter / ';' to add blocks)</span>
+                            </label>
+                            <div class="block-input-hint">1 block per line or separated by ';'</div>
+                            <textarea id="exp-p1-blocks" class="block-input" style="width: 100%; height: 75px; margin-top: 4px;" placeholder="01, 10">01, 10</textarea>
+                            <div id="exp-p1-blocks-preview" class="block-preview-tag"></div>
                         </div>
                         <div style="background: rgba(217,119,6,0.05); padding: 12px; border-radius: 10px; border: 1px solid var(--glass-border);">
-                            <label for="exp-p2-blocks" style="font-weight: 700; color: var(--accent-pink);">Partition \(\mathcal{P}_2\):</label>
-                            <textarea id="exp-p2-blocks" class="block-input" style="width: 100%; height: 80px; margin-top: 6px;">010</textarea>
+                            <label for="exp-p2-blocks" style="font-weight: 700; color: var(--accent-pink); display: flex; justify-content: space-between; align-items: center;">
+                                <span>Partition \(\mathcal{P}_2\):</span>
+                                <span style="font-size: 0.75rem; font-weight: normal; color: var(--text-secondary);">(Enter / ';' to add blocks)</span>
+                            </label>
+                            <div class="block-input-hint">1 block per line or separated by ';'</div>
+                            <textarea id="exp-p2-blocks" class="block-input" style="width: 100%; height: 75px; margin-top: 4px;" placeholder="010">010</textarea>
+                            <div id="exp-p2-blocks-preview" class="block-preview-tag"></div>
                         </div>
                     </div>
 
@@ -484,8 +503,17 @@
                     </p>
 
                     <div style="background: var(--bg-secondary); padding: 14px; border-radius: 10px; border: 1px solid var(--glass-border); margin-bottom: 14px;">
-                        <h4 style="margin: 0 0 8px 0;">Part A: \(\mathcal{P}\)-Simple Search</h4>
-                        <textarea id="exp-psimple-p" class="block-input" style="width: 100%; height: 70px;">01, 10</textarea>
+                        <h4 style="margin: 0 0 4px 0;">Part A: \(\mathcal{P}\)-Simple Search</h4>
+                        <div class="block-input-hint">💡 Supports multiple blocks! Separate blocks by <strong>Enter (new line)</strong> or <strong>semicolon ';'</strong> (e.g. <code>01, 10 ; 010</code>). Words in the same block are comma-separated.</div>
+                        <div class="presets-container" style="margin-bottom: 8px;">
+                            <span class="preset-label">Presets:</span>
+                            <button class="btn-preset exp-preset-btn" data-target="exp-psimple-p" data-val="01, 10">1 Block: {01, 10}</button>
+                            <button class="btn-preset exp-preset-btn" data-target="exp-psimple-p" data-val="010">1 Block: {010}</button>
+                            <button class="btn-preset exp-preset-btn" data-target="exp-psimple-p" data-val="01, 10 ; 010">2 Blocks: {01, 10}, {010}</button>
+                            <button class="btn-preset exp-preset-btn" data-target="exp-psimple-p" data-val="01 ; 10">2 Blocks: {01}, {10}</button>
+                        </div>
+                        <textarea id="exp-psimple-p" class="block-input" style="width: 100%; height: 75px;" placeholder="01, 10 (Line 1 = Block 1)&#10;010 (Line 2 = Block 2)">01, 10</textarea>
+                        <div id="exp-psimple-p-preview" class="block-preview-tag"></div>
                         <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
                             <button id="exp-btn-check-simple-current" class="btn btn-secondary btn-sm">
                                 🔬 Check Current Semigroup
@@ -497,15 +525,30 @@
                     </div>
 
                     <div style="background: var(--bg-secondary); padding: 14px; border-radius: 10px; border: 1px solid var(--glass-border);">
-                        <h4 style="margin: 0 0 8px 0;">Part B: \(\mathcal{P}_1\)-Simple but NOT \(\mathcal{P}_2\)-Simple</h4>
+                        <h4 style="margin: 0 0 4px 0;">Part B: \(\mathcal{P}_1\)-Simple but NOT \(\mathcal{P}_2\)-Simple</h4>
+                        <div class="block-input-hint">💡 Each partition can contain multiple blocks (separate by Enter or ';').</div>
+                        <div class="presets-container" style="margin-bottom: 8px;">
+                            <span class="preset-label">Presets:</span>
+                            <button class="btn-preset exp-preset-pair-simple-btn" data-p1="01, 10" data-p2="010">{01, 10} vs {010}</button>
+                            <button class="btn-preset exp-preset-pair-simple-btn" data-p1="01, 10 ; 010" data-p2="010">2 Blocks vs 1 Block</button>
+                            <button class="btn-preset exp-preset-pair-simple-btn" data-p1="01 ; 10" data-p2="01, 10">{01}; {10} vs {01, 10}</button>
+                        </div>
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px;">
                             <div>
-                                <label for="exp-psimple-p1" style="font-weight: 600; font-size: 0.85rem;">\(\mathcal{P}_1\) Blocks:</label>
-                                <textarea id="exp-psimple-p1" class="block-input" style="width: 100%; height: 60px;">01, 10</textarea>
+                                <label for="exp-psimple-p1" style="font-weight: 600; font-size: 0.85rem; display: flex; justify-content: space-between;">
+                                    <span>\(\mathcal{P}_1\) Blocks:</span>
+                                    <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: normal;">(Enter / ';' to add blocks)</span>
+                                </label>
+                                <textarea id="exp-psimple-p1" class="block-input" style="width: 100%; height: 70px;" placeholder="01, 10">01, 10</textarea>
+                                <div id="exp-psimple-p1-preview" class="block-preview-tag"></div>
                             </div>
                             <div>
-                                <label for="exp-psimple-p2" style="font-weight: 600; font-size: 0.85rem;">\(\mathcal{P}_2\) Blocks:</label>
-                                <textarea id="exp-psimple-p2" class="block-input" style="width: 100%; height: 60px;">010</textarea>
+                                <label for="exp-psimple-p2" style="font-weight: 600; font-size: 0.85rem; display: flex; justify-content: space-between;">
+                                    <span>\(\mathcal{P}_2\) Blocks:</span>
+                                    <span style="font-size: 0.75rem; color: var(--text-secondary); font-weight: normal;">(Enter / ';' to add blocks)</span>
+                                </label>
+                                <textarea id="exp-psimple-p2" class="block-input" style="width: 100%; height: 70px;" placeholder="010">010</textarea>
+                                <div id="exp-psimple-p2-preview" class="block-preview-tag"></div>
                             </div>
                         </div>
                         <div style="margin-top: 10px;">
