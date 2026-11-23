@@ -664,17 +664,272 @@
     }
 
     // ==========================================
+    // 3b. Dataset Switchers & Shared Scan Helpers
+    // ==========================================
+
+    async function ensureLeLoaded() {
+        if (state.datasetType !== 'le') {
+            if (dom.datasetTypeSelect) dom.datasetTypeSelect.value = 'le';
+            await switchDataset();
+        }
+    }
+
+    async function ensurePoeLoaded() {
+        if (state.datasetType !== 'poe') {
+            if (dom.datasetTypeSelect) dom.datasetTypeSelect.value = 'poe';
+            await switchDataset();
+        }
+    }
+
+    function escapeCsvCell(val) {
+        let s = String(val === undefined || val === null ? '' : val);
+        if (/[",\n\r]/.test(s)) {
+            return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+    }
+
+    function downloadCsv(filename, headers, matrixRows) {
+        let lines = [headers.map(escapeCsvCell).join(',')];
+        for (let row of matrixRows) {
+            lines.push(row.map(escapeCsvCell).join(','));
+        }
+        let blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+        let url = URL.createObjectURL(blob);
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    async function runChunkedScan({ items, chunkSize, container, labelHtml, processItem }) {
+        let scanToken = (state.activeScanToken || 0) + 1;
+        state.activeScanToken = scanToken;
+        let cancelled = false;
+
+        container.innerHTML = `
+            <div class="scan-progress-box">
+                <div style="font-weight:600; color:var(--text-primary);">${labelHtml}</div>
+                <div class="scan-progress-track"><div class="scan-progress-fill" id="exp-scan-fill"></div></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; font-size:0.85rem; color:var(--text-secondary);">
+                    <span id="exp-scan-progress-text">0 / ${items.length.toLocaleString()} (0%)</span>
+                    <button type="button" id="exp-scan-cancel-btn" class="btn btn-secondary btn-sm" style="flex:0 0 auto;">✖ Cancel</button>
+                </div>
+            </div>
+        `;
+
+        let fillEl = document.getElementById('exp-scan-fill');
+        let textEl = document.getElementById('exp-scan-progress-text');
+        let cancelBtn = document.getElementById('exp-scan-cancel-btn');
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', () => {
+                cancelled = true;
+            });
+        }
+
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([container]).catch(() => {});
+        }
+
+        let results = [];
+        let processedConfigs = 0;
+
+        for (let start = 0; start < items.length; start += chunkSize) {
+            if (cancelled || state.activeScanToken !== scanToken) {
+                if (cancelled) {
+                    container.innerHTML = `<div class="error-msg">⚠️ Scan cancelled after processing ${start.toLocaleString()} of ${items.length.toLocaleString()} entries (${results.length} matches collected so far).</div>`;
+                }
+                return null;
+            }
+
+            let end = Math.min(start + chunkSize, items.length);
+            for (let i = start; i < end; i++) {
+                processedConfigs += processItem(items[i], results);
+            }
+
+            let pct = Math.round((end / items.length) * 100);
+            if (fillEl) fillEl.style.width = `${pct}%`;
+            if (textEl) textEl.textContent = `${end.toLocaleString()} / ${items.length.toLocaleString()} (${pct}%) • ${results.length} found`;
+
+            await new Promise(resolve => setTimeout(resolve, 0));
+        }
+
+        return { results, processedConfigs };
+    }
+
+    function renderBatchScanCard(container, { titleHtml, badgeText, summaryHtml, emptyText, columns, rows, targetType, csvFilename, latexCaption }) {
+        const PAGE_LIMIT = 150;
+        let filteredRows = rows;
+
+        function matchesQuery(r, q) {
+            if (!q) return true;
+            let hay = [
+                r.index,
+                r.order_no,
+                r.top,
+                r.levels ? r.levels.join(',') : '',
+                ...columns.map(c => c.getCsvValue(r))
+            ].join(' ').toLowerCase();
+            return hay.includes(q);
+        }
+
+        function renderTbody(list) {
+            return list.slice(0, PAGE_LIMIT).map((r, i) => `
+                <tr>
+                    <td>${i + 1}</td>
+                    <td><span class="badge-index"><strong>#${r.index}</strong></span></td>
+                    <td><span class="badge-order"><strong>#${r.order_no}</strong></span></td>
+                    <td><span class="badge-top"><strong>${r.top}</strong></span></td>
+                    ${columns.map(col => `<td>${col.renderCellHtml(r)}</td>`).join('')}
+                    <td>
+                        <button type="button" class="btn btn-secondary btn-sm jump-semigroup-btn" style="flex:0 0 auto; white-space:nowrap;" data-index="${r.index}" data-order="${r.order_no}" data-type="${targetType}">
+                            👁 View
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        let html = `
+            <div class="result-card" style="margin-top: 16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:10px;">
+                    <h4 style="margin:0;">${titleHtml}</h4>
+                    <span class="badge-status ${rows.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
+                        ${badgeText}
+                    </span>
+                </div>
+                <p style="margin-bottom:10px;">${summaryHtml}</p>
+
+                ${rows.length === 0 ? `
+                    <div style="padding:16px; background:var(--bg-secondary); border-radius:8px;">
+                        ${emptyText}
+                    </div>
+                ` : `
+                    <div class="scan-toolbar">
+                        <input type="text" class="scan-filter-input" placeholder="🔎 Filter by Index, Order No, Top e, or Values...">
+                        <div class="scan-export-btns">
+                            <button type="button" class="btn btn-secondary btn-sm scan-copy-latex-btn">📋 Copy LaTeX</button>
+                            <button type="button" class="btn btn-secondary btn-sm scan-export-csv-btn">⬇️ Export CSV</button>
+                        </div>
+                    </div>
+                    <div class="table-responsive" style="max-height:440px; overflow-y:auto;">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>${targetType.toUpperCase()} Index</th>
+                                    <th>Order No</th>
+                                    <th>Top \(e\)</th>
+                                    ${columns.map(col => `<th>${col.labelHtml}</th>`).join('')}
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="scan-tbody">
+                                ${renderTbody(filteredRows)}
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="scan-count-note" style="font-size:0.84rem; color:var(--text-secondary); margin-top:8px;">
+                        ${filteredRows.length > PAGE_LIMIT ? `Showing first ${PAGE_LIMIT} of ${filteredRows.length} results` : `Showing all ${filteredRows.length} results`}
+                    </p>
+                `}
+            </div>
+        `;
+
+        container.innerHTML = html;
+
+        function bindJumpButtons() {
+            container.querySelectorAll('.jump-semigroup-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    let idx = parseInt(btn.dataset.index, 10);
+                    let ord = parseInt(btn.dataset.order, 10);
+                    let tType = btn.dataset.type || targetType;
+                    jumpToSemigroup(idx, ord, tType);
+                });
+            });
+        }
+
+        bindJumpButtons();
+
+        let filterInput = container.querySelector('.scan-filter-input');
+        let tbodyEl = container.querySelector('.scan-tbody');
+        let countNoteEl = container.querySelector('.scan-count-note');
+
+        if (filterInput && tbodyEl) {
+            filterInput.addEventListener('input', () => {
+                let q = filterInput.value.trim().toLowerCase();
+                filteredRows = rows.filter(r => matchesQuery(r, q));
+                tbodyEl.innerHTML = renderTbody(filteredRows);
+                if (countNoteEl) {
+                    countNoteEl.textContent = filteredRows.length > PAGE_LIMIT
+                        ? `Showing first ${PAGE_LIMIT} of ${filteredRows.length} matching results (from ${rows.length} total)`
+                        : `Showing ${filteredRows.length} matching result${filteredRows.length !== 1 ? 's' : ''}`;
+                }
+                bindJumpButtons();
+                if (window.MathJax && window.MathJax.typesetPromise) {
+                    window.MathJax.typesetPromise([tbodyEl]).catch(() => {});
+                }
+            });
+        }
+
+        let csvBtn = container.querySelector('.scan-export-csv-btn');
+        if (csvBtn) {
+            csvBtn.addEventListener('click', () => {
+                let headers = ['#', `${targetType.toUpperCase()} Index`, 'Order No', 'Top e', ...columns.map(c => c.csvHeader)];
+                let matrix = filteredRows.map((r, i) => [
+                    i + 1,
+                    r.index,
+                    r.order_no,
+                    r.top,
+                    ...columns.map(c => c.getCsvValue(r))
+                ]);
+                downloadCsv(csvFilename || `${targetType}_scan_results.csv`, headers, matrix);
+            });
+        }
+
+        let latexBtn = container.querySelector('.scan-copy-latex-btn');
+        if (latexBtn) {
+            latexBtn.addEventListener('click', () => {
+                const LATEX_CAP = 50;
+                let colSpec = 'r r r r ' + columns.map(() => 'l').join(' ');
+                let headerRow = ['\\#', 'Index', 'Order No', 'Top $e$', ...columns.map(c => c.latexHeader || c.csvHeader)].join(' & ') + ' \\\\';
+                let bodyRows = filteredRows.slice(0, LATEX_CAP).map((r, i) => {
+                    let cells = [i + 1, r.index, r.order_no, r.top, ...columns.map(c => c.getLatexValue ? c.getLatexValue(r) : c.getCsvValue(r))];
+                    return cells.join(' & ') + ' \\\\';
+                }).join('\n');
+                let extraNote = filteredRows.length > LATEX_CAP ? `\n% ... ${filteredRows.length - LATEX_CAP} additional rows omitted (export CSV for full table)` : '';
+                let tex = [
+                    `% ${latexCaption || 'Scan Results'}`,
+                    `\\begin{tabular}{${colSpec}}`,
+                    `\\hline`,
+                    headerRow,
+                    `\\hline`,
+                    bodyRows,
+                    `\\hline`,
+                    `\\end{tabular}${extraNote}`
+                ].join('\n');
+                navigator.clipboard.writeText(tex);
+                latexBtn.textContent = '✔ Copied LaTeX!';
+                setTimeout(() => { latexBtn.textContent = '📋 Copy LaTeX'; }, 2000);
+            });
+        }
+
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([container]).catch(() => {});
+        }
+    }
+
+    // ==========================================
     // 4. Tool 1: P-Ideal Elements Analysis
     // ==========================================
 
-    function handleComputePIdeal() {
+    async function handleComputePIdeal() {
+        await ensureLeLoaded();
         let entry = state.currentEntry;
         if (!entry) return;
-
-        if (state.datasetType !== 'le') {
-            dom.pIdealResultsContainer.innerHTML = `<div class="error-msg">⚠️ P-ideal block meets require Lattice Meets (LE-semigroup). Please select LE-semigroups.</div>`;
-            return;
-        }
 
         let rawText = dom.pBlocksInput.value;
         let blocks;
@@ -695,8 +950,8 @@
 
         let html = `
             <div class="result-card" style="margin-top: 16px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <h4 style="margin:0; color:var(--text-primary);">📊 Analysis Results for \(\mathcal{P}\)</h4>
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
+                    <h4 style="margin:0; color:var(--text-primary);">📊 Analysis Results for \(\mathcal{P}\) (LE Index #${entry.index}, Order #${entry.order_no})</h4>
                     <span class="badge-status ${ideal_elements.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
                         \(${ideal_elements.length}\) Ideal Element${ideal_elements.length !== 1 ? 's' : ''} Found
                     </span>
@@ -748,7 +1003,7 @@
 
         dom.pIdealResultsContainer.innerHTML = html;
         if (window.MathJax && window.MathJax.typesetPromise) {
-            window.MathJax.typesetPromise();
+            window.MathJax.typesetPromise([dom.pIdealResultsContainer]).catch(() => {});
         }
     }
 
@@ -756,14 +1011,10 @@
     // 5. Tool 2: P1 vs P2 Comparator & Hunter
     // ==========================================
 
-    function handleCheckP1P2Single() {
+    async function handleCheckP1P2Single() {
+        await ensureLeLoaded();
         let entry = state.currentEntry;
         if (!entry) return;
-
-        if (state.datasetType !== 'le') {
-            dom.p1p2ResultsContainer.innerHTML = `<div class="error-msg">⚠️ P-ideal comparison requires LE-semigroups.</div>`;
-            return;
-        }
 
         let blocks1, blocks2;
         try {
@@ -774,6 +1025,11 @@
             return;
         }
 
+        if (blocks1.length === 0 || blocks2.length === 0) {
+            dom.p1p2ResultsContainer.innerHTML = `<div class="error-msg">⚠️ Please enter at least 1 partition block for both \(\\mathcal{P}_1\) and \(\\mathcal{P}_2\).</div>`;
+            return;
+        }
+
         let p1_ideals = find_P_ideal_elements_for_le(entry, blocks1).map(x => x.a);
         let p2_ideals = find_P_ideal_elements_for_le(entry, blocks2).map(x => x.a);
         let diff = p1_ideals.filter(a => !p2_ideals.includes(a));
@@ -781,7 +1037,7 @@
         let html = `
             <div class="result-card" style="margin-top: 16px;">
                 <h4>Single Semigroup Comparison Result</h4>
-                <p><strong>Semigroup:</strong> n=${entry.n}, Index=${entry.index}, Order No=${entry.order_no}</p>
+                <p><strong>LE-Semigroup:</strong> n=${entry.n}, Index=#${entry.index}, Order No=#${entry.order_no}</p>
                 <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:12px;">
                     <div style="flex:1; background:rgba(122,92,58,0.06); padding:12px; border-radius:8px;">
                         <strong>\\(\\mathcal{I}_{\\mathcal{P}_1}(S)\\):</strong> \\(\\{${p1_ideals.join(', ') || '\\emptyset'}\\}\\)
@@ -801,16 +1057,11 @@
 
         dom.p1p2ResultsContainer.innerHTML = html;
         if (window.MathJax && window.MathJax.typesetPromise) {
-            window.MathJax.typesetPromise();
+            window.MathJax.typesetPromise([dom.p1p2ResultsContainer]).catch(() => {});
         }
     }
 
     async function handleScanP1P2Dataset() {
-        if (state.datasetType !== 'le') {
-            dom.p1p2ResultsContainer.innerHTML = `<div class="error-msg">⚠️ P-ideal batch scanner requires LE-semigroups.</div>`;
-            return;
-        }
-
         let blocks1, blocks2;
         try {
             blocks1 = parseBlocks(dom.p1BlocksInput.value);
@@ -820,114 +1071,87 @@
             return;
         }
 
-        let data = state.dataCache[`${state.datasetType}_n${state.datasetN}`];
-        if (!data) data = await loadDataset(state.datasetType, state.datasetN);
+        if (blocks1.length === 0 || blocks2.length === 0) {
+            dom.p1p2ResultsContainer.innerHTML = `<div class="error-msg">⚠️ Please enter at least 1 partition block for both \(\\mathcal{P}_1\) and \(\\mathcal{P}_2\).</div>`;
+            return;
+        }
 
-        dom.p1p2ResultsContainer.innerHTML = `<div class="card glass-panel" style="text-align:center;">⏳ Batch scanning ${data.length} semigroups... Please wait.</div>`;
+        await ensureLeLoaded();
+        let le_data = state.dataCache[`le_n${state.datasetN}`] || await loadDataset('le', state.datasetN);
 
-        setTimeout(() => {
-            let found = [];
-            for (let entry of data) {
+        let scan = await runChunkedScan({
+            items: le_data,
+            chunkSize: 1500,
+            container: dom.p1p2ResultsContainer,
+            labelHtml: `⏳ Batch scanning ${le_data.length.toLocaleString()} LE-semigroups (n=${state.datasetN}) for \\(\\mathcal{P}_1 \\not\\subseteq \\mathcal{P}_2\\)...`,
+            processItem: (entry, found) => {
                 let p1_ideals = find_P_ideal_elements_for_le(entry, blocks1).map(x => x.a);
                 let p2_ideals = find_P_ideal_elements_for_le(entry, blocks2).map(x => x.a);
                 let diff = p1_ideals.filter(a => !p2_ideals.includes(a));
-
                 if (diff.length > 0) {
                     found.push({
                         n: entry.n,
                         index: entry.index,
                         order_no: entry.order_no || 1,
                         top: entry.top,
-                        p1_ideals: p1_ideals,
-                        p2_ideals: p2_ideals,
-                        diff: diff
+                        levels: entry.levels,
+                        p1_ideals,
+                        p2_ideals,
+                        diff
                     });
                 }
+                return 1;
             }
+        });
 
-            let html = `
-                <div class="result-card" style="margin-top: 16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                        <h4 style="margin:0;">🚀 Batch Scan Results</h4>
-                        <span class="badge-status ${found.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
-                            ${found.length} Semigroups Found with \\(\\mathcal{P}_1 \\not\\subseteq \\mathcal{P}_2\\)
-                        </span>
-                    </div>
-                    <p>Scanned entire dataset (<strong>${data.length}</strong> total semigroups).</p>
+        if (!scan) return;
 
-                    ${found.length === 0 ? `
-                        <div style="padding:16px; background:var(--bg-secondary); border-radius:8px;">
-                            No semigroups found where \\(\\mathcal{P}_1\\) has an ideal element not in \\(\\mathcal{P}_2\\).
-                        </div>
-                    ` : `
-                        <div class="table-responsive" style="max-height:420px; overflow-y:auto;">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Index</th>
-                                        <th>Order No</th>
-                                        <th>Top \(e\)</th>
-                                        <th>\(\\mathcal{I}_{\\mathcal{P}_1}\)</th>
-                                        <th>\(\\mathcal{I}_{\\mathcal{P}_2}\)</th>
-                                        <th>Difference (\(\\mathcal{P}_1 \\setminus \\mathcal{P}_2\))</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${found.slice(0, 100).map((r, i) => `
-                                        <tr>
-                                            <td>${i + 1}</td>
-                                            <td><strong>${r.index}</strong></td>
-                                            <td>${r.order_no}</td>
-                                            <td>${r.top}</td>
-                                            <td>{${r.p1_ideals.join(', ')}}</td>
-                                            <td>{${r.p2_ideals.join(', ')}}</td>
-                                            <td style="color:var(--accent-pink); font-weight:700;">{${r.diff.join(', ')}}</td>
-                                            <td>
-                                                <button class="btn btn-secondary btn-sm jump-semigroup-btn" data-index="${r.index}" data-order="${r.order_no}">
-                                                    👁 View
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                        ${found.length > 100 ? `<p style="font-size:0.85rem; color:var(--text-secondary); margin-top:8px;">(Displaying first 100 of ${found.length} results)</p>` : ''}
-                    `}
-                </div>
-            `;
-
-            dom.p1p2ResultsContainer.innerHTML = html;
-
-            // Bind Jump buttons
-            dom.p1p2ResultsContainer.querySelectorAll('.jump-semigroup-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    let idx = parseInt(btn.dataset.index, 10);
-                    let ord = parseInt(btn.dataset.order, 10);
-                    jumpToSemigroup(idx, ord);
-                });
-            });
-
-            if (window.MathJax && window.MathJax.typesetPromise) {
-                window.MathJax.typesetPromise();
-            }
-        }, 50);
+        renderBatchScanCard(dom.p1p2ResultsContainer, {
+            titleHtml: '🚀 Batch Scan Results: \(\\mathcal{P}_1 \\not\\subseteq \\mathcal{P}_2\\)',
+            badgeText: `${scan.results.length} Semigroups Found`,
+            summaryHtml: `Scanned entire LE dataset (<strong>${le_data.length.toLocaleString()}</strong> total semigroups, n=${state.datasetN}).`,
+            emptyText: 'No semigroups found where \(\\mathcal{P}_1\\) has an ideal element not in \(\\mathcal{P}_2\\).',
+            targetType: 'le',
+            csvFilename: `p1_not_p2_n${state.datasetN}.csv`,
+            latexCaption: `LE-semigroups (n=${state.datasetN}) with I_P1 not subset I_P2`,
+            rows: scan.results,
+            columns: [
+                {
+                    labelHtml: '\\(\\mathcal{I}_{\\mathcal{P}_1}\\)',
+                    csvHeader: 'I_P1',
+                    latexHeader: '$\\mathcal{I}_{\\mathcal{P}_1}$',
+                    renderCellHtml: r => `{${r.p1_ideals.join(', ')}}`,
+                    getCsvValue: r => `{${r.p1_ideals.join('; ')}}`,
+                    getLatexValue: r => `$\\{${r.p1_ideals.join(', ')}\\}$`
+                },
+                {
+                    labelHtml: '\\(\\mathcal{I}_{\\mathcal{P}_2}\\)',
+                    csvHeader: 'I_P2',
+                    latexHeader: '$\\mathcal{I}_{\\mathcal{P}_2}$',
+                    renderCellHtml: r => `{${r.p2_ideals.join(', ')}}`,
+                    getCsvValue: r => `{${r.p2_ideals.join('; ')}}`,
+                    getLatexValue: r => `$\\{${r.p2_ideals.join(', ')}\\}$`
+                },
+                {
+                    labelHtml: 'Difference (\\(\\mathcal{P}_1 \\setminus \\mathcal{P}_2\\))',
+                    csvHeader: 'I_P1 \\ I_P2',
+                    latexHeader: '$\\mathcal{I}_{\\mathcal{P}_1} \\setminus \\mathcal{I}_{\\mathcal{P}_2}$',
+                    renderCellHtml: r => `<span style="color:var(--accent-pink); font-weight:700;">{${r.diff.join(', ')}}</span>`,
+                    getCsvValue: r => `{${r.diff.join('; ')}}`,
+                    getLatexValue: r => `$\\{${r.diff.join(', ')}\\}$`
+                }
+            ]
+        });
     }
 
     // ==========================================
     // 6. Tool 3: P-Simple & (P1, P2)-Simple Detector
     // ==========================================
 
-    function handleCheckSimpleCurrent() {
+    async function handleCheckSimpleCurrent() {
+        await ensureLeLoaded();
         let entry = state.currentEntry;
         if (!entry) return;
-
-        if (state.datasetType !== 'le') {
-            dom.psimpleResultsContainer.innerHTML = `<div class="error-msg">⚠️ Simple checking requires LE-semigroups.</div>`;
-            return;
-        }
 
         let blocks;
         try {
@@ -937,13 +1161,18 @@
             return;
         }
 
+        if (blocks.length === 0) {
+            dom.psimpleResultsContainer.innerHTML = `<div class="error-msg">⚠️ Please enter at least 1 partition block.</div>`;
+            return;
+        }
+
         let p_ideals = find_P_ideal_elements_for_le(entry, blocks).map(x => x.a);
         let isSimple = (p_ideals.length === 1 && p_ideals[0] === entry.top);
 
         let html = `
             <div class="result-card" style="margin-top: 16px;">
                 <h4>Current Semigroup \(\\mathcal{P}\)-Simplicity Verification</h4>
-                <p><strong>Semigroup:</strong> n=${entry.n}, Index=${entry.index}, Order No=${entry.order_no}, Top e=${entry.top}</p>
+                <p><strong>LE-Semigroup:</strong> n=${entry.n}, Index=#${entry.index}, Order No=#${entry.order_no}, Top e=${entry.top}</p>
                 <p><strong>Ideal Elements:</strong> \\(\\mathcal{I}_{\\mathcal{P}}(S) = \\{${p_ideals.join(', ') || '\\emptyset'}\\}\\)</p>
                 <div style="padding:14px; border-radius:8px; border:1px solid ${isSimple ? 'var(--success)' : 'var(--glass-border)'}; background:${isSimple ? 'rgba(21, 128, 61, 0.08)' : 'var(--bg-secondary)'};">
                     <h5 style="margin:0 0 6px 0; color:${isSimple ? 'var(--success)' : 'var(--error)'};">
@@ -960,7 +1189,7 @@
 
         dom.psimpleResultsContainer.innerHTML = html;
         if (window.MathJax && window.MathJax.typesetPromise) {
-            window.MathJax.typesetPromise();
+            window.MathJax.typesetPromise([dom.psimpleResultsContainer]).catch(() => {});
         }
     }
 
@@ -973,27 +1202,56 @@
             return;
         }
 
-        let data = state.dataCache[`${state.datasetType}_n${state.datasetN}`];
-        if (!data) data = await loadDataset(state.datasetType, state.datasetN);
+        if (blocks.length === 0) {
+            dom.psimpleResultsContainer.innerHTML = `<div class="error-msg">⚠️ Please enter at least 1 partition block.</div>`;
+            return;
+        }
 
-        dom.psimpleResultsContainer.innerHTML = `<div class="card glass-panel" style="text-align:center;">⏳ Batch scanning for \\(\\mathcal{P}\\)-Simple semigroups across ${data.length} structures...</div>`;
+        await ensureLeLoaded();
+        let le_data = state.dataCache[`le_n${state.datasetN}`] || await loadDataset('le', state.datasetN);
 
-        setTimeout(() => {
-            let found = [];
-            for (let entry of data) {
+        let scan = await runChunkedScan({
+            items: le_data,
+            chunkSize: 1500,
+            container: dom.psimpleResultsContainer,
+            labelHtml: `⏳ Batch scanning ${le_data.length.toLocaleString()} LE-semigroups for \\(\\mathcal{P}\\)-Simple structures...`,
+            processItem: (entry, found) => {
                 let p_ideals = find_P_ideal_elements_for_le(entry, blocks).map(x => x.a);
                 if (p_ideals.length === 1 && p_ideals[0] === entry.top) {
                     found.push({
                         n: entry.n,
                         index: entry.index,
                         order_no: entry.order_no || 1,
-                        top: entry.top
+                        top: entry.top,
+                        levels: entry.levels
                     });
                 }
+                return 1;
             }
+        });
 
-            renderSimpleScanResults(found, data.length, '\\mathcal{P}-Simple Semigroups');
-        }, 50);
+        if (!scan) return;
+
+        renderBatchScanCard(dom.psimpleResultsContainer, {
+            titleHtml: '🚀 Scan Results: \(\\mathcal{P}\\)-Simple Semigroups',
+            badgeText: `${scan.results.length} Semigroups Found`,
+            summaryHtml: `Scanned <strong>${le_data.length.toLocaleString()}</strong> LE-semigroups (n=${state.datasetN}).`,
+            emptyText: 'No semigroups matched the \(\\mathcal{P}\\)-simplicity criteria.',
+            targetType: 'le',
+            csvFilename: `p_simple_n${state.datasetN}.csv`,
+            latexCaption: `P-simple LE-semigroups (n=${state.datasetN})`,
+            rows: scan.results,
+            columns: [
+                {
+                    labelHtml: 'Levels',
+                    csvHeader: 'Levels',
+                    latexHeader: 'Levels',
+                    renderCellHtml: r => `<code>[${(r.levels || []).join(', ')}]</code>`,
+                    getCsvValue: r => `[${(r.levels || []).join(' ')}]`,
+                    getLatexValue: r => `\\texttt{[${(r.levels || []).join(', ')}]}`
+                }
+            ]
+        });
     }
 
     async function handleScanP1P2Simple() {
@@ -1006,115 +1264,93 @@
             return;
         }
 
-        let data = state.dataCache[`${state.datasetType}_n${state.datasetN}`];
-        if (!data) data = await loadDataset(state.datasetType, state.datasetN);
+        if (blocks1.length === 0 || blocks2.length === 0) {
+            dom.psimpleResultsContainer.innerHTML = `<div class="error-msg">⚠️ Please enter at least 1 partition block for both \(\\mathcal{P}_1\) and \(\\mathcal{P}_2\).</div>`;
+            return;
+        }
 
-        dom.psimpleResultsContainer.innerHTML = `<div class="card glass-panel" style="text-align:center;">⏳ Scanning for semigroups that are \\(\\mathcal{P}_1\\)-Simple but NOT \\(\\mathcal{P}_2\\)-Simple...</div>`;
+        await ensureLeLoaded();
+        let le_data = state.dataCache[`le_n${state.datasetN}`] || await loadDataset('le', state.datasetN);
 
-        setTimeout(() => {
-            let found = [];
-            for (let entry of data) {
+        let scan = await runChunkedScan({
+            items: le_data,
+            chunkSize: 1500,
+            container: dom.psimpleResultsContainer,
+            labelHtml: `⏳ Scanning ${le_data.length.toLocaleString()} LE-semigroups for \\(\\mathcal{P}_1\\)-Simple &amp; \\(\\mathcal{P}_2\\)-Not Simple...`,
+            processItem: (entry, found) => {
                 let p1_ideals = find_P_ideal_elements_for_le(entry, blocks1).map(x => x.a);
                 let p2_ideals = find_P_ideal_elements_for_le(entry, blocks2).map(x => x.a);
-
                 let is_p1_simple = (p1_ideals.length === 1 && p1_ideals[0] === entry.top);
                 let is_p2_simple = (p2_ideals.length === 1 && p2_ideals[0] === entry.top);
-
                 if (is_p1_simple && !is_p2_simple) {
                     found.push({
                         n: entry.n,
                         index: entry.index,
                         order_no: entry.order_no || 1,
                         top: entry.top,
-                        p1_count: p1_ideals.length,
-                        p2_count: p2_ideals.length
+                        levels: entry.levels,
+                        p2_ideals
                     });
                 }
+                return 1;
             }
-
-            renderSimpleScanResults(found, data.length, '\\mathcal{P}_1-Simple but NOT \\mathcal{P}_2-Simple Semigroups');
-        }, 50);
-    }
-
-    function renderSimpleScanResults(found, total, title) {
-        let html = `
-            <div class="result-card" style="margin-top: 16px;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                    <h4 style="margin:0;">🚀 Scan Results: \\(${title}\\)</h4>
-                    <span class="badge-status ${found.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
-                        ${found.length} Semigroups Found
-                    </span>
-                </div>
-                <p>Scanned <strong>${total}</strong> semigroups in current dataset.</p>
-
-                ${found.length === 0 ? `
-                    <div style="padding:16px; background:var(--bg-secondary); border-radius:8px;">
-                        No semigroups matched the simplicity criteria.
-                    </div>
-                ` : `
-                    <div class="table-responsive" style="max-height:420px; overflow-y:auto;">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Index</th>
-                                    <th>Order No</th>
-                                    <th>Top \(e\)</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${found.slice(0, 100).map((r, i) => `
-                                    <tr>
-                                        <td>${i + 1}</td>
-                                        <td><strong>${r.index}</strong></td>
-                                        <td>${r.order_no}</td>
-                                        <td>${r.top}</td>
-                                        <td>
-                                            <button class="btn btn-secondary btn-sm jump-semigroup-btn" data-index="${r.index}" data-order="${r.order_no}">
-                                                👁 View
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                    ${found.length > 100 ? `<p style="font-size:0.85rem; color:var(--text-secondary); margin-top:8px;">(Displaying first 100 of ${found.length} results)</p>` : ''}
-                `}
-            </div>
-        `;
-
-        dom.psimpleResultsContainer.innerHTML = html;
-
-        dom.psimpleResultsContainer.querySelectorAll('.jump-semigroup-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                let idx = parseInt(btn.dataset.index, 10);
-                let ord = parseInt(btn.dataset.order, 10);
-                jumpToSemigroup(idx, ord);
-            });
         });
 
-        if (window.MathJax && window.MathJax.typesetPromise) {
-            window.MathJax.typesetPromise();
-        }
+        if (!scan) return;
+
+        renderBatchScanCard(dom.psimpleResultsContainer, {
+            titleHtml: '🚀 Scan Results: \(\\mathcal{P}_1\\)-Simple but NOT \(\\mathcal{P}_2\\)-Simple',
+            badgeText: `${scan.results.length} Semigroups Found`,
+            summaryHtml: `Scanned <strong>${le_data.length.toLocaleString()}</strong> LE-semigroups (n=${state.datasetN}).`,
+            emptyText: 'No semigroups matched \(\\mathcal{P}_1\\)-simple and NOT \(\\mathcal{P}_2\\)-simple.',
+            targetType: 'le',
+            csvFilename: `p1_simple_not_p2_n${state.datasetN}.csv`,
+            latexCaption: `LE-semigroups (n=${state.datasetN}) P1-simple but not P2-simple`,
+            rows: scan.results,
+            columns: [
+                {
+                    labelHtml: '\\(\\mathcal{I}_{\\mathcal{P}_2}(S)\\)',
+                    csvHeader: 'I_P2',
+                    latexHeader: '$\\mathcal{I}_{\\mathcal{P}_2}(S)$',
+                    renderCellHtml: r => `{${r.p2_ideals.join(', ')}}`,
+                    getCsvValue: r => `{${r.p2_ideals.join('; ')}}`,
+                    getLatexValue: r => `$\\{${r.p2_ideals.join(', ')}\\}$`
+                }
+            ]
+        });
     }
 
     // ==========================================
     // 7. Tool 4: R-Regularity (LE) & Tool 5: X-Coincidence (POE)
     // ==========================================
 
-    function handleCheckRRegular() {
-        let entry = state.currentEntry;
-        if (!entry) return;
+    function parseWordList(text) {
+        return (text || '').split(/[\s,]+/).map(s => s.trim()).filter(s => s.length > 0);
+    }
 
-        let raw = dom.rWordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
-        for (let w of raw) {
+    function validateWordList(words, setName) {
+        if (words.length === 0) {
+            return `⚠️ Please specify at least 1 word in ${setName}.`;
+        }
+        for (let w of words) {
             if (!is_full_word(w)) {
-                dom.rregResultsContainer.innerHTML = `<div class="error-msg">❌ Word '${w}' is not a full word on {0, 1}.</div>`;
-                return;
+                return `❌ Word '${w}' in ${setName} is not a full word on {0, 1} (must contain both 0 and 1).`;
             }
         }
+        return null;
+    }
+
+    async function handleCheckRRegular() {
+        let raw = parseWordList(dom.rWordsInput.value);
+        let err = validateWordList(raw, 'R');
+        if (err) {
+            dom.rregResultsContainer.innerHTML = `<div class="error-msg">${err}</div>`;
+            return;
+        }
+
+        await ensureLeLoaded();
+        let entry = state.currentEntry;
+        if (!entry) return;
 
         let a_regs = is_R_regular(entry, raw);
 
@@ -1138,107 +1374,85 @@
             </div>
         `;
         dom.rregResultsContainer.innerHTML = html;
-        if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([dom.rregResultsContainer]).catch(() => {});
+        }
     }
 
     async function handleScanRRegular() {
-        let raw = dom.rWordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
-        for (let w of raw) {
-            if (!is_full_word(w)) {
-                dom.rregResultsContainer.innerHTML = `<div class="error-msg">❌ Word '${w}' is not a full word on {0, 1}.</div>`;
-                return;
-            }
-        }
-        if (raw.length === 0) {
-            dom.rregResultsContainer.innerHTML = `<div class="error-msg">⚠️ Please specify at least 1 word in R.</div>`;
+        let raw = parseWordList(dom.rWordsInput.value);
+        let err = validateWordList(raw, 'R');
+        if (err) {
+            dom.rregResultsContainer.innerHTML = `<div class="error-msg">${err}</div>`;
             return;
         }
 
-        dom.rregResultsContainer.innerHTML = `<div class="card glass-panel" style="text-align:center;">⏳ Batch scanning LE dataset for \\(\\mathcal{R}\\)-regular semigroups... Please wait.</div>`;
+        await ensureLeLoaded();
+        let le_data = state.dataCache[`le_n${state.datasetN}`] || await loadDataset('le', state.datasetN);
 
-        let le_data = state.dataCache[`le_n${state.datasetN}`];
-        if (!le_data) le_data = await loadDataset('le', state.datasetN);
-
-        setTimeout(() => {
-            let found = [];
-            for (let entry of le_data) {
+        let scan = await runChunkedScan({
+            items: le_data,
+            chunkSize: 1500,
+            container: dom.rregResultsContainer,
+            labelHtml: `⏳ Batch scanning ${le_data.length.toLocaleString()} LE-semigroups (n=${state.datasetN}) for \\(\\mathcal{R}\\)-regularity...`,
+            processItem: (entry, found) => {
                 let a_regs = is_R_regular(entry, raw);
                 if (a_regs.length > 0) {
                     found.push({
                         index: entry.index,
                         order_no: entry.order_no || 1,
                         top: entry.top,
-                        a_regs: a_regs
+                        levels: entry.levels,
+                        a_regs
                     });
                 }
+                return 1;
             }
+        });
 
-            let html = `
-                <div class="result-card" style="margin-top: 16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-                        <h4 style="margin:0;">🚀 Scan Results: \\(\\mathcal{R}\\)-Regular Semigroups</h4>
-                        <span class="badge-status ${found.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
-                            ${found.length} Semigroups Found
-                        </span>
-                    </div>
-                    <p style="margin-bottom:10px;">Scanned <strong>${le_data.length}</strong> LE-semigroups for \\(R = \\{${raw.join(', ')}\\}\\).</p>
-                    <div class="table-responsive" style="max-height:420px; overflow-y:auto;">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>LE Index</th>
-                                    <th>Order No</th>
-                                    <th>Top \(e\)</th>
-                                    <th>\(\\mathcal{R}\)-Regular Elements</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${found.slice(0, 150).map((r, i) => `
-                                    <tr>
-                                        <td>${i + 1}</td>
-                                        <td><span class="badge-index"><strong>#${r.index}</strong></span></td>
-                                        <td><span class="badge-order"><strong>#${r.order_no}</strong></span></td>
-                                        <td><span class="badge-top"><strong>${r.top}</strong></span></td>
-                                        <td style="color:var(--accent-purple); font-weight:700;">\\(\\{${r.a_regs.join(', ')}\\}\\)</td>
-                                        <td>
-                                            <button class="btn btn-secondary btn-sm jump-semigroup-btn" data-index="${r.index}" data-order="${r.order_no}" data-type="le">
-                                                👁 View
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                    ${found.length > 150 ? `<p style="font-size:0.85rem; color:var(--text-secondary); margin-top:8px;">(Displaying first 150 of ${found.length} results)</p>` : ''}
-                </div>
-            `;
-            dom.rregResultsContainer.innerHTML = html;
-            dom.rregResultsContainer.querySelectorAll('.jump-semigroup-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    let idx = parseInt(btn.dataset.index, 10);
-                    let ord = parseInt(btn.dataset.order, 10);
-                    jumpToSemigroup(idx, ord, 'le');
-                });
-            });
-            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
-        }, 50);
+        if (!scan) return;
+
+        renderBatchScanCard(dom.rregResultsContainer, {
+            titleHtml: '🚀 Scan Results: \(\\mathcal{R}\\)-Regular Semigroups',
+            badgeText: `${scan.results.length} Semigroups Found`,
+            summaryHtml: `Scanned <strong>${le_data.length.toLocaleString()}</strong> LE-semigroups (n=${state.datasetN}) for \\(R = \\{${raw.join(', ')}\\}\\).`,
+            emptyText: 'No LE-semigroups found having \(\\mathcal{R}\\)-regular elements for this word set.',
+            targetType: 'le',
+            csvFilename: `r_regular_n${state.datasetN}.csv`,
+            latexCaption: `LE-semigroups (n=${state.datasetN}) R-regular for R={${raw.join(', ')}}`,
+            rows: scan.results,
+            columns: [
+                {
+                    labelHtml: '\\(\\mathcal{R}\\)-Regular Elements',
+                    csvHeader: 'R-Regular Elements',
+                    latexHeader: '$\\mathcal{R}$-Regular Elements',
+                    renderCellHtml: r => `<span style="color:var(--accent-purple); font-weight:700;">\\(\\{${r.a_regs.join(', ')}\\}\\)</span>`,
+                    getCsvValue: r => `{${r.a_regs.join('; ')}}`,
+                    getLatexValue: r => `$\\{${r.a_regs.join(', ')}\\}$`
+                }
+            ]
+        });
     }
 
     async function handleScanR1R2() {
-        let raw1 = dom.r1WordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
-        let raw2 = dom.r2WordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        let raw1 = parseWordList(dom.r1WordsInput.value);
+        let raw2 = parseWordList(dom.r2WordsInput.value);
 
-        let le_data = state.dataCache[`le_n${state.datasetN}`];
-        if (!le_data) le_data = await loadDataset('le', state.datasetN);
+        let err = validateWordList(raw1, 'R₁') || validateWordList(raw2, 'R₂');
+        if (err) {
+            dom.rregResultsContainer.innerHTML = `<div class="error-msg">${err}</div>`;
+            return;
+        }
 
-        dom.rregResultsContainer.innerHTML = `<div class="card glass-panel" style="text-align:center;">⏳ Batch scanning LE dataset for \\(R_1 \\not\\subseteq R_2\\) regularity...</div>`;
+        await ensureLeLoaded();
+        let le_data = state.dataCache[`le_n${state.datasetN}`] || await loadDataset('le', state.datasetN);
 
-        setTimeout(() => {
-            let found = [];
-            for (let entry of le_data) {
+        let scan = await runChunkedScan({
+            items: le_data,
+            chunkSize: 1500,
+            container: dom.rregResultsContainer,
+            labelHtml: `⏳ Batch scanning ${le_data.length.toLocaleString()} LE-semigroups for \\(R_1 \\not\\subseteq R_2\\) regularity...`,
+            processItem: (entry, found) => {
                 let regs1 = is_R_regular(entry, raw1);
                 let regs2 = is_R_regular(entry, raw2);
                 let diff = regs1.filter(a => !regs2.includes(a));
@@ -1247,92 +1461,67 @@
                         index: entry.index,
                         order_no: entry.order_no || 1,
                         top: entry.top,
-                        regs1: regs1,
-                        regs2: regs2,
-                        diff: diff
+                        levels: entry.levels,
+                        regs1,
+                        regs2,
+                        diff
                     });
                 }
+                return 1;
             }
+        });
 
-            let html = `
-                <div class="result-card" style="margin-top: 16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-                        <h4 style="margin:0;">🚀 Scan Results: \\(R_1\\)-Regular but NOT \\(R_2\\)-Regular</h4>
-                        <span class="badge-status ${found.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
-                            ${found.length} Semigroups Found
-                        </span>
-                    </div>
-                    <div class="table-responsive" style="max-height:420px; overflow-y:auto;">
-                        <table class="data-table">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>LE Index</th>
-                                    <th>Order No</th>
-                                    <th>Top \(e\)</th>
-                                    <th>\(R_1\)-Reg</th>
-                                    <th>\(R_2\)-Reg</th>
-                                    <th>Difference (\(R_1 \\setminus R_2\))</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${found.slice(0, 150).map((r, i) => `
-                                    <tr>
-                                        <td>${i + 1}</td>
-                                        <td><span class="badge-index"><strong>#${r.index}</strong></span></td>
-                                        <td><span class="badge-order"><strong>#${r.order_no}</strong></span></td>
-                                        <td><span class="badge-top"><strong>${r.top}</strong></span></td>
-                                        <td>{${r.regs1.join(', ')}}</td>
-                                        <td>{${r.regs2.join(', ')}}</td>
-                                        <td style="color:var(--accent-pink); font-weight:700;">{${r.diff.join(', ')}}</td>
-                                        <td>
-                                            <button class="btn btn-secondary btn-sm jump-semigroup-btn" data-index="${r.index}" data-order="${r.order_no}" data-type="le">
-                                                👁 View
-                                            </button>
-                                        </td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            `;
-            dom.rregResultsContainer.innerHTML = html;
-            dom.rregResultsContainer.querySelectorAll('.jump-semigroup-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    let idx = parseInt(btn.dataset.index, 10);
-                    let ord = parseInt(btn.dataset.order, 10);
-                    jumpToSemigroup(idx, ord, 'le');
-                });
-            });
-            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
-        }, 50);
-    }
+        if (!scan) return;
 
-    async function ensurePoeLoaded() {
-        if (state.datasetType !== 'poe') {
-            dom.datasetTypeSelect.value = 'poe';
-            await switchDataset();
-        }
+        renderBatchScanCard(dom.rregResultsContainer, {
+            titleHtml: '🚀 Scan Results: \\(R_1\\)-Regular but NOT \\(R_2\\)-Regular',
+            badgeText: `${scan.results.length} Semigroups Found`,
+            summaryHtml: `Scanned <strong>${le_data.length.toLocaleString()}</strong> LE-semigroups (n=${state.datasetN}) with \\(R_1=\\{${raw1.join(', ')}\\}\\) and \\(R_2=\\{${raw2.join(', ')}\\}\\).`,
+            emptyText: 'No LE-semigroups found where an element is \(R_1\)-regular but not \(R_2\)-regular.',
+            targetType: 'le',
+            csvFilename: `r1_not_r2_n${state.datasetN}.csv`,
+            latexCaption: `LE-semigroups (n=${state.datasetN}) R1-regular but not R2-regular`,
+            rows: scan.results,
+            columns: [
+                {
+                    labelHtml: '\\(R_1\\)-Reg',
+                    csvHeader: 'R1-Reg',
+                    latexHeader: '$R_1$-Reg',
+                    renderCellHtml: r => `{${r.regs1.join(', ')}}`,
+                    getCsvValue: r => `{${r.regs1.join('; ')}}`,
+                    getLatexValue: r => `$\\{${r.regs1.join(', ')}\\}$`
+                },
+                {
+                    labelHtml: '\\(R_2\\)-Reg',
+                    csvHeader: 'R2-Reg',
+                    latexHeader: '$R_2$-Reg',
+                    renderCellHtml: r => `{${r.regs2.join(', ')}}`,
+                    getCsvValue: r => `{${r.regs2.join('; ')}}`,
+                    getLatexValue: r => `$\\{${r.regs2.join(', ')}\\}$`
+                },
+                {
+                    labelHtml: 'Difference (\\(R_1 \\setminus R_2\\))',
+                    csvHeader: 'R1 \\ R2',
+                    latexHeader: '$R_1 \\setminus R_2$',
+                    renderCellHtml: r => `<span style="color:var(--accent-pink); font-weight:700;">{${r.diff.join(', ')}}</span>`,
+                    getCsvValue: r => `{${r.diff.join('; ')}}`,
+                    getLatexValue: r => `$\\{${r.diff.join(', ')}\\}$`
+                }
+            ]
+        });
     }
 
     async function handleCheckXCoincidence() {
+        let raw = parseWordList(dom.xWordsInput.value);
+        let err = validateWordList(raw, 'X');
+        if (err) {
+            dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">${err}</div>`;
+            return;
+        }
+
         await ensurePoeLoaded();
         let entry = state.currentEntry;
         if (!entry) return;
-
-        let raw = dom.xWordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
-        for (let w of raw) {
-            if (!is_full_word(w)) {
-                dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">❌ Word '${w}' is not a full word on {0, 1}.</div>`;
-                return;
-            }
-        }
-        if (raw.length === 0) {
-            dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">⚠️ Please specify at least 1 word in X.</div>`;
-            return;
-        }
 
         let res = compute_X_coincidence_for_poe(entry.table, entry.levels, entry.top, raw);
         let covPairs = entry.covering_pairs || covering_pairs_from_levels(entry.levels);
@@ -1347,7 +1536,7 @@
                         <span class="badge-index">POE-Semigroup Index: <strong>#${entry.index}</strong></span>
                         <span class="badge-order">Order No: <strong>#${entry.order_no}</strong></span>
                         <span class="badge-top">Top Element: <strong>e = ${entry.top}</strong></span>
-                        <button class="btn btn-secondary btn-sm copy-citation-btn" data-citation="${citationText}">📋 Copy Info</button>
+                        <button type="button" class="btn btn-secondary btn-sm copy-citation-btn" style="flex:0 0 auto;" data-citation="${citationText}">📋 Copy Info</button>
                     </div>
                     <div class="identity-details">
                         <span>Order Levels: <code>[${entry.levels.join(', ')}]</code></span>
@@ -1408,36 +1597,32 @@
             });
         }
 
-        if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
+        if (window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise([dom.xcoincResultsContainer]).catch(() => {});
+        }
     }
 
     async function handleScanXCoincidence() {
-        let raw = dom.xWordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
-        for (let w of raw) {
-            if (!is_full_word(w)) {
-                dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">❌ Word '${w}' is not a full word on {0, 1}.</div>`;
-                return;
-            }
-        }
-        if (raw.length === 0) {
-            dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">⚠️ Please specify at least 1 word in X.</div>`;
+        let raw = parseWordList(dom.xWordsInput.value);
+        let err = validateWordList(raw, 'X');
+        if (err) {
+            dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">${err}</div>`;
             return;
         }
 
-        dom.xcoincResultsContainer.innerHTML = `<div class="card glass-panel" style="text-align:center;">⏳ Batch scanning entire POE dataset for \\(X\\)-coincident structures... Please wait.</div>`;
+        let poe_data = state.dataCache[`poe_n${state.datasetN}`] || await loadDataset('poe', state.datasetN);
 
-        let poe_data = state.dataCache[`poe_n${state.datasetN}`];
-        if (!poe_data) poe_data = await loadDataset('poe', state.datasetN);
-
-        setTimeout(() => {
-            let found = [];
-            let totalConfigs = 0;
-
-            for (let entry of poe_data) {
+        let scan = await runChunkedScan({
+            items: poe_data,
+            chunkSize: 300,
+            container: dom.xcoincResultsContainer,
+            labelHtml: `⏳ Batch scanning POE dataset (n=${state.datasetN}, ${poe_data.length.toLocaleString()} semigroups) for \\(X\\)-coincidence...`,
+            processItem: (entry, found) => {
                 let table = entry.table;
                 let orders = entry.orders || [{ levels: entry.levels, top_element: entry.top }];
+                let count = 0;
                 for (let ordNo = 1; ordNo <= orders.length; ordNo++) {
-                    totalConfigs++;
+                    count++;
                     let ordObj = orders[ordNo - 1];
                     let levels = ordObj.levels;
                     let top = ordObj.top_element || ordObj.top;
@@ -1456,99 +1641,65 @@
                         });
                     }
                 }
+                return count;
             }
+        });
 
-            let html = `
-                <div class="result-card" style="margin-top: 16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-                        <h4 style="margin:0;">🚀 Batch Scan Results: \\(X\\)-Coincident POE-Semigroups</h4>
-                        <span class="badge-status ${found.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
-                            ${found.length} Configurations Found
-                        </span>
-                    </div>
-                    <p style="margin-bottom:10px;">Scanned <strong>${totalConfigs.toLocaleString()}</strong> configurations in POE dataset for \\(X = \\{${raw.join(', ')}\\}\\).</p>
+        if (!scan) return;
 
-                    ${found.length === 0 ? `
-                        <div style="padding:16px; background:var(--bg-secondary); border-radius:8px;">
-                            No POE semigroups found satisfying \\(X\\)-coincidence for these words.
-                        </div>
-                    ` : `
-                        <div class="table-responsive" style="max-height:480px; overflow-y:auto;">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>POE Index</th>
-                                        <th>Order No</th>
-                                        <th>Top \(e\)</th>
-                                        <th>Common Ideal \(\\mathcal{I}_X(S)\)</th>
-                                        <th>Levels</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${found.slice(0, 150).map((r, i) => `
-                                        <tr>
-                                            <td>${i + 1}</td>
-                                            <td><span class="badge-index"><strong>#${r.index}</strong></span></td>
-                                            <td><span class="badge-order"><strong>#${r.order_no}</strong></span></td>
-                                            <td><span class="badge-top"><strong>${r.top}</strong></span></td>
-                                            <td style="font-weight:700; color:var(--accent-purple);">\\(\\{${r.common_ideal.join(', ') || '\\emptyset'}\\}\\)</td>
-                                            <td><code>[${r.levels.join(', ')}]</code></td>
-                                            <td>
-                                                <button class="btn btn-secondary btn-sm jump-semigroup-btn" data-index="${r.index}" data-order="${r.order_no}" data-type="poe">
-                                                    👁 View in Inspector
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                        ${found.length > 150 ? `<p style="font-size:0.85rem; color:var(--text-secondary); margin-top:8px;">(Displaying first 150 of ${found.length} results)</p>` : ''}
-                    `}
-                </div>
-            `;
-
-            dom.xcoincResultsContainer.innerHTML = html;
-
-            dom.xcoincResultsContainer.querySelectorAll('.jump-semigroup-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    let idx = parseInt(btn.dataset.index, 10);
-                    let ord = parseInt(btn.dataset.order, 10);
-                    jumpToSemigroup(idx, ord, 'poe');
-                });
-            });
-
-            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
-        }, 50);
+        renderBatchScanCard(dom.xcoincResultsContainer, {
+            titleHtml: '🚀 Batch Scan Results: \\(X\\)-Coincident POE-Semigroups',
+            badgeText: `${scan.results.length} Configurations Found`,
+            summaryHtml: `Scanned <strong>${scan.processedConfigs.toLocaleString()}</strong> configurations in POE dataset (n=${state.datasetN}) for \\(X = \\{${raw.join(', ')}\\}\\).`,
+            emptyText: 'No POE semigroups found satisfying \\(X\\)-coincidence for these words.',
+            targetType: 'poe',
+            csvFilename: `poe_x_coincident_n${state.datasetN}.csv`,
+            latexCaption: `POE-semigroups (n=${state.datasetN}) X-coincident for X={${raw.join(', ')}}`,
+            rows: scan.results,
+            columns: [
+                {
+                    labelHtml: 'Common Ideal \\(\\mathcal{I}_X(S)\\)',
+                    csvHeader: 'Common Ideal I_X(S)',
+                    latexHeader: '$\\mathcal{I}_X(S)$',
+                    renderCellHtml: r => `<span style="font-weight:700; color:var(--accent-purple);">\\(\\{${r.common_ideal.join(', ') || '\\emptyset'}\\}\\)</span>`,
+                    getCsvValue: r => `{${r.common_ideal.join('; ')}}`,
+                    getLatexValue: r => `$\\{${r.common_ideal.join(', ')}\\}$`
+                },
+                {
+                    labelHtml: 'Levels',
+                    csvHeader: 'Levels',
+                    latexHeader: 'Levels',
+                    renderCellHtml: r => `<code>[${r.levels.join(', ')}]</code>`,
+                    getCsvValue: r => `[${r.levels.join(' ')}]`,
+                    getLatexValue: r => `\\texttt{[${r.levels.join(', ')}]}`
+                }
+            ]
+        });
     }
 
     async function handleScanX1X2Coincidence() {
-        let raw1 = dom.x1WordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
-        let raw2 = dom.x2WordsInput.value.split(',').map(s => s.trim()).filter(s => s.length > 0);
+        let raw1 = parseWordList(dom.x1WordsInput.value);
+        let raw2 = parseWordList(dom.x2WordsInput.value);
 
-        for (let w of raw1.concat(raw2)) {
-            if (!is_full_word(w)) {
-                dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">❌ Word '${w}' is not a full word on {0, 1}.</div>`;
-                return;
-            }
+        let err = validateWordList(raw1, 'X₁') || validateWordList(raw2, 'X₂');
+        if (err) {
+            dom.xcoincResultsContainer.innerHTML = `<div class="error-msg">${err}</div>`;
+            return;
         }
 
-        dom.xcoincResultsContainer.innerHTML = `<div class="card glass-panel" style="text-align:center;">⏳ Batch scanning POE dataset for \\(X_1\\)-coincident but NOT \\(X_2\\)-coincident semigroups...</div>`;
+        let poe_data = state.dataCache[`poe_n${state.datasetN}`] || await loadDataset('poe', state.datasetN);
 
-        let poe_data = state.dataCache[`poe_n${state.datasetN}`];
-        if (!poe_data) poe_data = await loadDataset('poe', state.datasetN);
-
-        setTimeout(() => {
-            let found = [];
-            let totalConfigs = 0;
-
-            for (let entry of poe_data) {
+        let scan = await runChunkedScan({
+            items: poe_data,
+            chunkSize: 300,
+            container: dom.xcoincResultsContainer,
+            labelHtml: `⏳ Batch scanning POE dataset (n=${state.datasetN}) for \\(X_1\\)-coincident but NOT \\(X_2\\)-coincident...`,
+            processItem: (entry, found) => {
                 let table = entry.table;
                 let orders = entry.orders || [{ levels: entry.levels, top_element: entry.top }];
+                let count = 0;
                 for (let ordNo = 1; ordNo <= orders.length; ordNo++) {
-                    totalConfigs++;
+                    count++;
                     let ordObj = orders[ordNo - 1];
                     let levels = ordObj.levels;
                     let top = ordObj.top_element || ordObj.top;
@@ -1570,72 +1721,40 @@
                         });
                     }
                 }
+                return count;
             }
+        });
 
-            let html = `
-                <div class="result-card" style="margin-top: 16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
-                        <h4 style="margin:0;">🚀 Scan Results: \\(X_1\\)-Coincident but NOT \\(X_2\\)-Coincident</h4>
-                        <span class="badge-status ${found.length > 0 ? 'badge-admissible' : 'badge-inadmissible'}">
-                            ${found.length} Semigroups Found
-                        </span>
-                    </div>
-                    <p style="margin-bottom:10px;">Scanned <strong>${totalConfigs.toLocaleString()}</strong> configurations where \\(X_1 = \\{${raw1.join(', ')}\\}\\) and \\(X_2 = \\{${raw2.join(', ')}\\}\\).</p>
+        if (!scan) return;
 
-                    ${found.length === 0 ? `
-                        <div style="padding:16px; background:var(--bg-secondary); border-radius:8px;">
-                            No POE semigroups found where \\(X_1\\)-coincidence holds and \\(X_2\\)-coincidence fails.
-                        </div>
-                    ` : `
-                        <div class="table-responsive" style="max-height:480px; overflow-y:auto;">
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>POE Index</th>
-                                        <th>Order No</th>
-                                        <th>Top \(e\)</th>
-                                        <th>Common Ideal \(\\mathcal{I}_{X_1}(S)\)</th>
-                                        <th>Levels</th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${found.slice(0, 150).map((r, i) => `
-                                        <tr>
-                                            <td>${i + 1}</td>
-                                            <td><span class="badge-index"><strong>#${r.index}</strong></span></td>
-                                            <td><span class="badge-order"><strong>#${r.order_no}</strong></span></td>
-                                            <td><span class="badge-top"><strong>${r.top}</strong></span></td>
-                                            <td style="font-weight:700; color:var(--accent-purple);">\\(\\{${r.common_ideal1.join(', ') || '\\emptyset'}\\}\\)</td>
-                                            <td><code>[${r.levels.join(', ')}]</code></td>
-                                            <td>
-                                                <button class="btn btn-secondary btn-sm jump-semigroup-btn" data-index="${r.index}" data-order="${r.order_no}" data-type="poe">
-                                                    👁 View in Inspector
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>
-                        </div>
-                        ${found.length > 150 ? `<p style="font-size:0.85rem; color:var(--text-secondary); margin-top:8px;">(Displaying first 150 of ${found.length} results)</p>` : ''}
-                    `}
-                </div>
-            `;
-
-            dom.xcoincResultsContainer.innerHTML = html;
-
-            dom.xcoincResultsContainer.querySelectorAll('.jump-semigroup-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    let idx = parseInt(btn.dataset.index, 10);
-                    let ord = parseInt(btn.dataset.order, 10);
-                    jumpToSemigroup(idx, ord, 'poe');
-                });
-            });
-
-            if (window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise();
-        }, 50);
+        renderBatchScanCard(dom.xcoincResultsContainer, {
+            titleHtml: '🚀 Scan Results: \\(X_1\\)-Coincident but NOT \\(X_2\\)-Coincident',
+            badgeText: `${scan.results.length} Configurations Found`,
+            summaryHtml: `Scanned <strong>${scan.processedConfigs.toLocaleString()}</strong> configurations (n=${state.datasetN}) with \\(X_1 = \\{${raw1.join(', ')}\\}\\) and \\(X_2 = \\{${raw2.join(', ')}\\}\\).`,
+            emptyText: 'No POE semigroups found where \\(X_1\\)-coincidence holds and \\(X_2\\)-coincidence fails.',
+            targetType: 'poe',
+            csvFilename: `poe_x1_not_x2_n${state.datasetN}.csv`,
+            latexCaption: `POE-semigroups (n=${state.datasetN}) X1-coincident but not X2-coincident`,
+            rows: scan.results,
+            columns: [
+                {
+                    labelHtml: 'Common Ideal \\(\\mathcal{I}_{X_1}(S)\\)',
+                    csvHeader: 'Common Ideal I_X1(S)',
+                    latexHeader: '$\\mathcal{I}_{X_1}(S)$',
+                    renderCellHtml: r => `<span style="font-weight:700; color:var(--accent-purple);">\\(\\{${r.common_ideal1.join(', ') || '\\emptyset'}\\}\\)</span>`,
+                    getCsvValue: r => `{${r.common_ideal1.join('; ')}}`,
+                    getLatexValue: r => `$\\{${r.common_ideal1.join(', ')}\\}$`
+                },
+                {
+                    labelHtml: 'Levels',
+                    csvHeader: 'Levels',
+                    latexHeader: 'Levels',
+                    renderCellHtml: r => `<code>[${r.levels.join(', ')}]</code>`,
+                    getCsvValue: r => `[${r.levels.join(' ')}]`,
+                    getLatexValue: r => `\\texttt{[${r.levels.join(', ')}]}`
+                }
+            ]
+        });
     }
 
     // ==========================================
@@ -1693,10 +1812,17 @@
         if (dom.orderSelect) dom.orderSelect.value = orderNo;
 
         renderCurrentSemigroup();
-        switchExplorerSubTab('inspector');
 
-        // Scroll to top of explorer
-        if (dom.paneExplorer) dom.paneExplorer.scrollIntoView({ behavior: 'smooth' });
+        // Highlight Semigroup Viewer card without hiding the active tool subtab
+        let viewerCard = document.getElementById('exp-viewer-card');
+        if (viewerCard) {
+            viewerCard.classList.remove('viewer-flash');
+            void viewerCard.offsetWidth;
+            viewerCard.classList.add('viewer-flash');
+            viewerCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else if (dom.paneExplorer) {
+            dom.paneExplorer.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 
     function setupEventListeners() {
@@ -1709,32 +1835,27 @@
             btn.addEventListener('click', () => switchExplorerSubTab(btn.dataset.subtab));
         });
 
-        // English User Guide Toggle & Close
+        // English User Guide Toggle & Close (collapsed by default)
         if (dom.btnToggleGuide && dom.guidePanel) {
             dom.btnToggleGuide.addEventListener('click', () => {
                 let isHidden = (dom.guidePanel.style.display === 'none' || getComputedStyle(dom.guidePanel).display === 'none');
                 dom.guidePanel.style.display = isHidden ? 'block' : 'none';
                 if (isHidden) {
                     dom.guidePanel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                    localStorage.removeItem('exp_guide_hidden');
+                    localStorage.setItem('exp_guide_open', '1');
                 } else {
-                    localStorage.setItem('exp_guide_hidden', '1');
+                    localStorage.removeItem('exp_guide_open');
                 }
             });
         }
         if (dom.btnCloseGuide && dom.guidePanel) {
             dom.btnCloseGuide.addEventListener('click', () => {
                 dom.guidePanel.style.display = 'none';
-                localStorage.setItem('exp_guide_hidden', '1');
+                localStorage.removeItem('exp_guide_open');
             });
         }
-        // Initialize Guide Visibility from localStorage (open by default for first-time visitors)
         if (dom.guidePanel) {
-            if (localStorage.getItem('exp_guide_hidden') === '1') {
-                dom.guidePanel.style.display = 'none';
-            } else {
-                dom.guidePanel.style.display = 'block';
-            }
+            dom.guidePanel.style.display = (localStorage.getItem('exp_guide_open') === '1') ? 'block' : 'none';
         }
 
         // Dataset Selectors

@@ -33,10 +33,10 @@
 </header>
 
     <div class="container">
-        <header>
+        <header class="app-hero-header">
             <div class="glow-orb"></div>
             <h1>Partition Ideal Theory &amp; Semigroups Explorer</h1>
-            <p>Interactive mathematical research suite for Admissible Partition Ideals, WQO Stabilizer Families, and \(le\)-/\(poe\)-semigroup structures. <span style="font-size: 0.8rem; font-weight: 500; color: var(--muted); background: rgba(122,92,58,0.1); padding: 2px 8px; border-radius: 12px; vertical-align: middle; margin-left: 6px;">v.2026.10.23.20:49</span></p>
+            <p>Interactive mathematical research suite for Admissible Partition Ideals, WQO Stabilizer Families, and \(le\)-/\(poe\)-semigroup structures.</p>
         </header>
 
         <!-- Main Portal Navigation Tabs -->
@@ -207,8 +207,8 @@
         <!-- TAB 2: LE & POE SEMIGROUPS EXPLORER (CLIENT-SIDE LE_APP) -->
         <div id="portal-pane-explorer" class="portal-pane" style="display: none;">
 
-            <!-- User Guide & Documentation Panel (English) -->
-            <section id="exp-user-guide-panel" class="card glass-panel exp-guide-panel">
+            <!-- User Guide & Documentation Panel (English, collapsed by default) -->
+            <section id="exp-user-guide-panel" class="card glass-panel exp-guide-panel" style="display: none;">
                 <div class="guide-header">
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <span style="font-size: 1.5rem;">📖</span>
@@ -336,8 +336,10 @@
                 </div>
             </section>
 
+            <!-- Two-Column Sticky Split Workspace on Desktop -->
+            <div class="exp-workspace-split">
             <!-- Semigroup Structure & Matrices Card -->
-            <section class="card glass-panel">
+            <section id="exp-viewer-card" class="card glass-panel exp-viewer-sticky">
                 <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
                     <div>
                         <h3 id="exp-semigroup-title" style="margin: 0; color: var(--text-primary); font-size: 1.25rem;">
@@ -388,7 +390,7 @@
             </section>
 
             <!-- Explorer Analysis Subtabs -->
-            <section class="card glass-panel">
+            <section id="exp-tools-card" class="card glass-panel exp-tools-pane">
                 <div class="exp-subnav">
                     <button class="exp-subtab-btn active" data-subtab="pideal">
                         🎯 1. \(\mathcal{P}\)-Ideal Elements
@@ -525,7 +527,7 @@
                     </div>
 
                     <div style="background: var(--bg-secondary); padding: 14px; border-radius: 10px; border: 1px solid var(--glass-border);">
-                        <h4 style="margin: 0 0 4px 0;">Part B: \(\mathcal{P}_1\)-Simple but NOT \(\mathcal{P}_2\)-Simple</h4>
+                        <h4 style="margin: 0 0 4px 0;">Part B: \(\mathcal{P}_1\)-Simples but NOT \(\mathcal{P}_2\)-Simple</h4>
                         <div class="block-input-hint">💡 Each partition can contain multiple blocks (separate by Enter or ';').</div>
                         <div class="presets-container" style="margin-bottom: 8px;">
                             <span class="preset-label">Presets:</span>
@@ -579,7 +581,8 @@
                             <button class="btn-preset exp-preset-btn" data-target="exp-r-words" data-val="101">{101}</button>
                             <button class="btn-preset exp-preset-btn" data-target="exp-r-words" data-val="010, 101, 001, 100">{010, 101, 001, 100}</button>
                         </div>
-                        <input type="text" id="exp-r-words" class="block-input" style="width: 100%; margin-bottom: 10px;" value="101, 010" placeholder="e.g. 101, 010">
+                        <input type="text" id="exp-r-words" class="block-input" style="width: 100%; margin-bottom: 4px;" value="101, 010" placeholder="e.g. 101, 010">
+                        <div class="block-input-hint" style="margin-bottom: 10px;">💡 Comma-separated full words on {0, 1} (each word must contain both 0 and 1).</div>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
                             <button id="exp-btn-check-rregular" class="btn btn-secondary">
                                 🔬 Check \(\mathcal{R}\)-Regular Elements
@@ -595,9 +598,10 @@
                             <h4 style="margin: 0; color: var(--text-primary); font-size: 1rem;">
                                 Part B: Find Elements \(\mathcal{R}_1\)-Regular but NOT \(\mathcal{R}_2\)-Regular
                             </h4>
-                            <button id="exp-btn-swap-r1r2" class="btn btn-secondary btn-sm">🔁 Swap \(R_1 \leftrightarrow R_2\)</button>
+                            <button id="exp-btn-swap-r1r2" class="btn btn-secondary btn-sm" style="flex: 0 0 auto;">🔁 Swap \(R_1 \leftrightarrow R_2\)</button>
                         </div>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-bottom: 10px;">
+                        <div class="block-input-hint">💡 Enter comma-separated full words on {0, 1} for \(R_1\) and \(R_2\).</div>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-bottom: 10px;">
                             <div>
                                 <label for="exp-r1-words" style="font-weight: 700; color: var(--accent-purple); font-size: 0.85rem;">Set \(R_1\) Words:</label>
                                 <input type="text" id="exp-r1-words" class="block-input" style="width: 100%; margin-top: 4px;" value="101, 010">
@@ -638,7 +642,7 @@
                                 </span>
                             </div>
                             <!-- Inline Quick Navigator -->
-                            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                            <div class="poe-inline-nav">
                                 <button id="exp-poe-btn-prev-idx" class="btn btn-secondary btn-sm" title="Previous POE Index">◀ Index</button>
                                 <button id="exp-poe-btn-next-idx" class="btn btn-secondary btn-sm" title="Next POE Index">Index ▶</button>
                                 <button id="exp-poe-btn-prev-ord" class="btn btn-secondary btn-sm" title="Previous Order No">◀ Order</button>
@@ -716,7 +720,8 @@
                     <div id="exp-xcoinc-results"></div>
                 </div>
             </section>
-        </div>
+            </div> <!-- exp-workspace-split -->
+        </div> <!-- portal-pane-explorer -->
     </div>
     <script src="app.js"></script>
     <script src="explorer.js"></script>
